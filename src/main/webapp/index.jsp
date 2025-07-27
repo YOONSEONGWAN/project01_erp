@@ -10,7 +10,10 @@
 	<h1>종복치킨</h1>
 	<a href="${pageContext.request.contextPath }/user/signup-form.jsp">회원가입</a>
 	<a href="${pageContext.request.contextPath }/user/loginform.jsp">로그인</a>
-	<p>수정 테스트중</p>
+	<p>수정 테스트중
+		브랜치 테스트
+	</p> 
+	
 	</a>
 </body>
 </html>
