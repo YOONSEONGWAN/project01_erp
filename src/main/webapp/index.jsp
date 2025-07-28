@@ -11,7 +11,8 @@
 	<a href="${pageContext.request.contextPath }/user/signup-form.jsp">회원가입</a>
 	<a href="${pageContext.request.contextPath }/user/loginform.jsp">로그인</a>
 	<p>수정 테스트중
-		브랜치 테스트
+		브랜치 테스트2
+		디벨롭브랜치2
 	</p> 
 	
 	</a>
