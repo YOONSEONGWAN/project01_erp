@@ -8,6 +8,6 @@
 </head>
 <body>
 	<a href="${pageContext.request.contextPath }/user/headquaterLoginForm.jsp">본사 페이지</a>
-	<a href="${pageContext.request.contextPath }/index/branchindex.jsp">지점 페이지</a>
+	<a href="${pageContext.request.contextPath }/user2/loginform2.jsp">지점 페이지</a>
 </body>
 </html>
