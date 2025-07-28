@@ -7,7 +7,7 @@
 	String title=request.getParameter("title");
 	String content=request.getParameter("content");
 	// 글 작성자는 세션 객체로부터 얻어낸다.
-	String writer=(String)session.getAttribute("userName");
+	String writer=(String)session.getAttribute("writer");
 	// DB 에 저장하기
 	HqBoardDto dto=new HqBoardDto();
 	dto.setWriter(writer);

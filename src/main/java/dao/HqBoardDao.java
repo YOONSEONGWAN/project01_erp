@@ -501,7 +501,7 @@ public class HqBoardDao {
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-					INSERT INTO board
+					INSERT INTO hqboard
 					(num, writer, title, content)
 					VALUES(?, ?, ?, ?)
 					""";

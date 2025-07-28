@@ -1,3 +1,14 @@
+CREATE TABLE hqBoard (
+    num NUMBER PRIMARY KEY,         -- 글 번호
+    writer VARCHAR2(100) NOT NULL,  -- 작성자
+    title VARCHAR2(200) NOT NULL,   -- 글 제목
+    content VARCHAR2(4000) NOT NULL,-- 글 내용
+    viewCount NUMBER NOT NULL,      -- 조회수
+    createdAt VARCHAR2(50) NOT NULL -- 작성일자 (문자열로 저장)
+);
+
+CREATE SEQUENCE hqboard_seq; -- 본사 게시판 시퀀스
+
 CREATE TABLE Inventory (
 	num NUMBER PRIMARY KEY,
     inventory_id NUMBER NOT NULL, -- 본사창고:1, 지점 창고: 2,3,...
