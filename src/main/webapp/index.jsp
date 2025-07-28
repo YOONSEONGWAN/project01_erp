@@ -12,11 +12,11 @@
 	<a href="${pageContext.request.contextPath }/user/loginform.jsp">로그인</a>
 	<p>수정 테스트중
 		브랜치 테스트2
-		디벨롭브랜치q2
+		디벨롭브랜치2
+		수정 테스트합니다
+    디벨롭브랜치q2
 		디벨롭브랜치2  
 	</p> 
-	
-	</a>
 develop
 </body>
 </html>
