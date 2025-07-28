@@ -8,5 +8,6 @@
 </head>
 <body>
 	<h1>지점 인덱스</h1>
+	<a href="${pageContext.request.contextPath }/order/list.jsp">발주 관리 페이지</a>
 </body>
 </html>
