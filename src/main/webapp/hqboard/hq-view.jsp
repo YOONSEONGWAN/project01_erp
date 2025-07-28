@@ -14,7 +14,9 @@
 	if(!dto.getWriter().equals(userName)){
 		HqBoardDao.getInstance().addViewCount(num);
 	}
-
+	
+	// 글 정보를 출력
+	
 	//로그인 여부를 알아내기
 	boolean isLogin = userName == null ? false : true;
 %>
@@ -68,6 +70,19 @@
 				<td><%=dto.getCreatedAt() %></td>
 			</tr>
 		</table>
+		<div class="card mt-4">
+		  <div class="card-header bg-light">
+		    <strong>본문 내용</strong>
+		  </div>
+		  <div class="card-body p-1">
+		    <%=dto.getContent() %>
+		  </div>
+		</div>
+		<%if(dto.getWriter().equals(userName)){ %>
+			<div class="text-end pt-2">
+				<a class="btn btn-warning mt-2 ms-1 " href="edit.jsp?num=<%=dto.getNum() %>"><i class="fas fa-pen"></i>수정하기</a>
+			</div>
+		<%} %>
 	</div>
 </body>
 </html>

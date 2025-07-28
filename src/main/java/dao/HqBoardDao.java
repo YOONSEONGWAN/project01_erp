@@ -377,20 +377,24 @@ public class HqBoardDao {
 						LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
 						LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
 					FROM hqboard b
-					INNER JOIN users u ON b.writer = u.userName) 
+					INNER JOIN users2 u ON b.writer = u.name) 
 				WHERE num=?
 			""";
 			pstmt = conn.prepareStatement(sql);
 			// 바인딩 예시: pstmt.setInt(1, num);
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
-			while (rs.next()) { // 업데이트 요소 작성 
-				/*dto = new BookDto();
+			if (rs.next()) { // 업데이트 요소 작성 
+				dto=new HqBoardDto();
 				dto.setNum(num);
-				dto.setName(rs.getString("name"));
-				dto.setAuthor(rs.getString("author"));
-				dto.setPublisher(rs.getString("publisher"));*/
-
+				dto.setWriter(rs.getString("writer"));
+				dto.setTitle(rs.getString("title"));
+				dto.setContent(rs.getString("content"));
+				dto.setViewCount(rs.getInt("viewCount"));
+				dto.setCreatedAt(rs.getString("createdAt"));
+				dto.setProfileImage(rs.getString("profileImage"));
+				dto.setPrevNum(rs.getInt("prevNum"));
+				dto.setNextNum(rs.getInt("nextNum"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

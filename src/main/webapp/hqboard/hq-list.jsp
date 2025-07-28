@@ -48,11 +48,11 @@
 	
 	// 전체 글의 갯수 
 	int totalRow= 0; // 기본값 설정
-	/*if(StringUtils.isEmpty(keyword)){ // 전달된 키워드가 없으면
+	if(StringUtils.isEmpty(keyword)){ // 전달된 키워드가 없으면
 		totalRow=HqBoardDao.getInstance().getCount(); // 전체 글의 개수를 리턴
 	}else{ // 전달된 키워드가 있다면 키워드가 있는 글의 갯수 리턴
 		totalRow=HqBoardDao.getInstance().getCountByKeyword(keyword);
-	}*/
+	}
 	
 	//전체 페이지의 갯수 구하기 (double.실수로 나눠야 소숫점의 실수로 나온다.)
 	int totalPageCount=(int)Math.ceil(totalRow/(double)PAGE_ROW_COUNT);
@@ -68,13 +68,13 @@
 	// 글 목록에서
 	List<HqBoardDto> list=null;
 	// 만약 keyword 가 없다면
-	/*if(StringUtils.isEmpty(keyword)){
+	if(StringUtils.isEmpty(keyword)){
 		list=HqBoardDao.getInstance().selectPage(dto);
 	}else{ // keyword 가 있다면 dto 에 keyword 담고 특정 키워드만 출력
 		dto.setKeyword(keyword);
 		list=HqBoardDao.getInstance().selectPageByKeyword(dto);
 		}
-	*/
+	
 %>
     
 <!DOCTYPE html>
