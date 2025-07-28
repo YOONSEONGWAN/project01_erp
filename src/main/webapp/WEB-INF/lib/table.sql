@@ -9,6 +9,15 @@ CREATE TABLE hqBoard (
 
 CREATE SEQUENCE hqboard_seq; -- 본사 게시판 시퀀스
 
+CREATE TABLE sales (
+sales_id NUMBER PRIMARY KEY,
+branch VARCHAR2(20),
+created_at DATE DEFAULT SYSDATE,
+totalamount NUMBER
+);
+
+CREATE SEQUENCE sales_seq;
+
 CREATE TABLE Inventory (
 	num NUMBER PRIMARY KEY,
     inventory_id NUMBER NOT NULL, -- 본사창고:1, 지점 창고: 2,3,...
@@ -41,6 +50,7 @@ Create table users2(
 num NUMBER PRIMARY KEY, --회원 고유 번호
 name VARCHAR2(20), -- 이름
 password VARCHAR2(100), -- 비밀번호
+
 branchLocation VARCHAR2(100), -- 지점 주소(ex) 역삼점)
 myLocation VARCHAR2(100), -- 개인 주소
 branchNum VARCHAR2(20), -- 지점 전화번호
