@@ -227,7 +227,7 @@ public class HqBoardDao {
 					(SELECT result1.*, ROWNUM AS rnum
 					FROM
 						(SELECT num, writer, title, content, viewCount, createdAt
-						FROM board
+						FROM hqboard
 						WHERE title LIKE '%'||?||'%' OR content LIKE '%'||?||'%' 
 						ORDER BY num DESC) result1)
 				WHERE rnum BETWEEN ? AND ?
@@ -330,7 +330,7 @@ public class HqBoardDao {
 			conn = new DbcpBean().getConn();
 			String sql = """
 				SELECT MAX(ROWNUM) AS count
-				FROM board
+				FROM hqboard
 			""";
 			pstmt = conn.prepareStatement(sql);
 			
@@ -376,7 +376,7 @@ public class HqBoardDao {
 						profileImage,
 						LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
 						LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
-					FROM board b
+					FROM hqboard b
 					INNER JOIN users u ON b.writer = u.userName) 
 				WHERE num=?
 			""";

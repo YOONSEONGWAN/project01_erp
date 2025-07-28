@@ -85,7 +85,7 @@
 </head>
 <body>
 	<div class="container">
-		<a class="" href="new-form.jsp">
+		<a class="" href="hq-new-form.jsp">
 			새 글 작성
 			<i class="bi bi-pencil-square"></i>
 		</a>
@@ -94,7 +94,7 @@
 		<div class="">
 			<div class="">
 				<!-- 검색어 입력 폼 -->
-				<form action="list.jsp" method="get">
+				<form action="hq-list.jsp" method="get">
 					<div class="input-group">
 						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword  %>"  type="text" name="keyword" class="form-control" placeholder="검색어 입력..." />
 						<button type="submit" class="">검색<i class="bi bi-search"></i></button>
@@ -114,26 +114,32 @@
 				</tr>
 			</thead>
 			<tbody>
-				<% for(HqBoardDto tmp:list){ %>
+			<% if(list != null && !list.isEmpty()) { %>
+				<% for(HqBoardDto tmp : list){ %>
 					<tr>
 						<td><%=tmp.getNum() %></td>
 						<td><%=tmp.getWriter() %></td>
 						<td>
-							<!-- 제목 클릭시 자세히보기 링크로 이동 -->
-							<a href="${pageContext.request.contextPath }/board/hq-view.jsp?num=<%=tmp.getNum() %>">
-							<%=tmp.getTitle() %></a>
+							<a href="${pageContext.request.contextPath }/hqboard/hq-view.jsp?num=<%=tmp.getNum() %>">
+								<%=tmp.getTitle() %>
+							</a>
 						</td>
 						<td><%=tmp.getViewCount() %></td>
 						<td><%=tmp.getCreatedAt() %></td>
 					</tr>
-				<%} %>
+				<% } %>
+			<% } else { %>
+				<tr>
+					<td colspan="5">등록된 글이 없습니다.</td>
+				</tr>
+			<% } %>
 			</tbody>
 		</table>
 		
 		<ul class=""><!-- 페이징 처리 부분 -->
 			<%if(startPageNum!=1){ %>
 				<li calss="">
-					<a class=page-link href="list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword %>">&lsaquo;</a><!-- 이전페이지 -->
+					<a class=page-link href="hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword %>">&lsaquo;</a><!-- 이전페이지 -->
 				</li>
 			<%}else{ %>
 				
@@ -141,12 +147,12 @@
 			
 			<% for(int i=startPageNum; i<=endPageNum; i++){%>
 				<li calss="page-item">
-					<a class="page-link <%=i==pageNum ? "active" : "" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword %>"><%=i %></a>
+					<a class="page-link <%=i==pageNum ? "active" : "" %>" href="hq-list.jsp?pageNum=<%=i %>&keyword=<%=keyword %>"><%=i %></a>
 				</li>
 			<%} %>
 			<%if(endPageNum < totalPageCount){ %>
 				<li calss="page-item">
-					<a class=page-link href="list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword %>">&rsaquo;</a><!-- 다음페이지 -->
+					<a class=page-link href="hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword %>">&rsaquo;</a><!-- 다음페이지 -->
 				</li>
 			<%}else{ %>
 				

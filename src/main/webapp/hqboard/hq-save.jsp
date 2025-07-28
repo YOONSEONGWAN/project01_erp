@@ -6,8 +6,8 @@
 	// 폼 전송되는 title 과 content
 	String title=request.getParameter("title");
 	String content=request.getParameter("content");
-	// 글 작성자는 세션 객체로부터 얻어낸다.
-	String writer=(String)session.getAttribute("writer");
+	// 글 작성자는 세션 객체로부터 얻어낸다. db에 로그인이 없어서 현재는 작성 불가
+	String writer=(String)session.getAttribute("userName");
 	// DB 에 저장하기
 	HqBoardDto dto=new HqBoardDto();
 	dto.setWriter(writer);
