@@ -22,6 +22,7 @@ private static UserDao dao;
 	}
 
 	
+	
 	public boolean insert(UserDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -31,22 +32,22 @@ private static UserDao dao;
 			conn = new DbcpBean().getConn();
 			String sql = """
 					  		INSERT INTO users2
-                            (num, name, password, branchLocation, myLocation,
-                            branchNum, phoneNum, grade, profileImage, registratedAt)
-                            VALUES(users2_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            (user_id, password, user_name, myLocation,
+                            phoneNum, grade, profileImage, registeredAt, updatedAt)
+                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
 							""";
 			pstmt = conn.prepareStatement(sql);
 			
 			// ? 에 순서대로 필요한 값 바인딩
-		     	pstmt.setString(1, dto.getName());
+		     	pstmt.setString(1, dto.getUserId());
 	            pstmt.setString(2, dto.getPassword());
-	            pstmt.setString(3, dto.getBranchLocation());
+	            pstmt.setString(3, dto.getUserName());
 	            pstmt.setString(4, dto.getMyLocation());
-	            pstmt.setString(5, dto.getBranchNum());
-	            pstmt.setString(6, dto.getPhoneNum());
-	            pstmt.setString(7, dto.getGrade());
-	            pstmt.setString(8, dto.getProfileImage()); // UserDto의 getProfileImage() 사용
-	            pstmt.setString(9, dto.getRegistratedAt());
+	            pstmt.setString(5, dto.getPhoneNum());
+	            pstmt.setString(6, dto.getGrade());
+	            pstmt.setString(7, dto.getProfileImage()); // UserDto의 getProfileImage() 사용
+	            pstmt.setString(8, dto.getRegisteredAt());
+	            pstmt.setString(9, dto.getUpdatedAt());
 			
 			// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
 			rowCount = pstmt.executeUpdate();
@@ -70,7 +71,7 @@ private static UserDao dao;
 		}
 	}
 	
-	public UserDto getByName(String name) {
+	public UserDto getByUserId(String name) {
 		//MemberDto 객체의 참조값을 담을 지역변수를 미리 만든다. 
 		UserDto dto=null;
 		
@@ -82,10 +83,10 @@ private static UserDao dao;
 			conn = new DbcpBean().getConn();
 			//실행할 sql문
 			String sql = """
-                SELECT num, name, password, branchLocation, myLocation,
-                        branchNum, phoneNum, grade, profileImage, updatedAt, registratedAt
+                SELECT user_id, password, user_name, myLocation,
+                       phoneNum, grade, profileImage, registeredAt, updatedAt
                 FROM users2
-                WHERE name=?
+                WHERE user_id=?
 			""";
 				pstmt = conn.prepareStatement(sql);
 			//? 에 값 바인딩
@@ -99,18 +100,15 @@ private static UserDao dao;
 				dto=new UserDto();
 				//회원 한명의 정보를 담는다
 				
-				dto.setNum(rs.getInt("num"));
-				dto.setName(rs.getString("name"));
+				dto.setUserId(rs.getString("user_id"));
+				dto.setUserName(rs.getString("user_name"));
 				dto.setPassword(rs.getString("password"));
-				dto.setBranchLocation(rs.getString("branchLocation"));
 				dto.setMyLocation(rs.getString("myLocation"));
-				dto.setBranchNum(rs.getString("branchNum"));
 				dto.setPhoneNum(rs.getString("phoneNum"));
 				dto.setGrade(rs.getString("grade"));
 				dto.setProfileImage(rs.getString("profileImage"));
 				dto.setUpdatedAt(rs.getString("updatedAt"));
-				dto.setRegistratedAt(rs.getString("registratedAt"));
-				
+				dto.setRegisteredAt(rs.getString("registeredAt"));
 				
 			}
 		} catch (Exception e) {

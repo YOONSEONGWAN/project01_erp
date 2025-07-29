@@ -21,8 +21,8 @@
 		<form action="headquaterLogin.jsp" method="post">
 			<input type="hidden" name="url" value="<%=url %>" />
 			<div>
-				<label for="name">이름</label>
-				<input type="text" name="name" id="name" />
+				<label for="userId">아이디</label>
+				<input type="text" name="userId" id="userId" />
 			</div>
 			<div>
 				<label for="password">비밀번호</label>
