@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/board/main.jsp</title>
+<title>/branch-admin/branch-management.jsp</title>
 </head>
 <body>
 	<div class="container">
