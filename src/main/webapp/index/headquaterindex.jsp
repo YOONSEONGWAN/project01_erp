@@ -14,6 +14,7 @@
     	<li><a href="${pageContext.request.contextPath }/index/board.jsp">게시판</a></li>
     	<li><a href="${pageContext.request.contextPath }/headquater/sales.jsp">매출/회계</a></li>
     	<li><a href="${pageContext.request.contextPath }/headquater/stock.jsp">재고</a></li>
+    	<li><a href="${pageContext.request.contextPath }/hqboard/hq-list.jsp">본사 내부 게시판</a></li>
 	</ul>
 	
 		<!-- 
