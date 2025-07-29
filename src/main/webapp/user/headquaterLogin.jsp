@@ -4,11 +4,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-    String name = request.getParameter("name");
+    String userId = request.getParameter("userId");
     String password = request.getParameter("password");
     String url = request.getParameter("url");
 
-    UserDto dto = UserDao.getInstance().getByName(name);
+    UserDto dto = UserDao.getInstance().getByUserId(userId);
 
     boolean hashedPassword = false;
 
@@ -17,10 +17,12 @@
         hashedPassword = BCrypt.checkpw(password, dto.getPassword());
 
         if (hashedPassword) {
-            session.setAttribute("name", name);
+            session.setAttribute("userId", userId);
             
         }
     }
+    session.setAttribute("userId", dto.getUserId());
+    session.setMaxInactiveInterval(60*60); 
 %>
 <!DOCTYPE html>
 <html>

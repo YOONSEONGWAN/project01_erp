@@ -1,3 +1,4 @@
+
 CREATE TABLE placeOrder_branch (
     order_id NUMBER PRIMARY KEY,
     order_date DATE DEFAULT SYSDATE,
@@ -41,6 +42,26 @@ CREATE TABLE placeOrder (
     approval_status VARCHAR2(10) DEFAULT '대기'  -- 승인 상태: 대기 / 승인 / 반려
 );
 
+CREATE TABLE hqBoard (
+    num NUMBER PRIMARY KEY,         -- 글 번호
+    writer VARCHAR2(100) NOT NULL,  -- 작성자
+    title VARCHAR2(200) NOT NULL,   -- 글 제목
+    content VARCHAR2(4000) NOT NULL,-- 글 내용
+    viewCount NUMBER DEFAULT 0 NOT NULL,      -- 조회수
+    createdAt VARCHAR2(50) DEFAULT SYSDATE NOT NULL -- 작성일자 (문자열로 저장)
+);
+
+CREATE SEQUENCE hqboard_seq; -- 본사 게시판 시퀀스
+
+CREATE TABLE sales (
+sales_id NUMBER PRIMARY KEY,
+branch VARCHAR2(20),
+created_at DATE DEFAULT SYSDATE,
+totalamount NUMBER
+);
+
+CREATE SEQUENCE sales_seq;
+
 CREATE TABLE Inventory (
 	num NUMBER PRIMARY KEY,
     inventory_id NUMBER NOT NULL, -- 본사창고:1, 지점 창고: 2,3,...
@@ -69,18 +90,41 @@ CREATE TABLE inandout (
 
 CREATE SEQUENCE inandout_seq;
 
-Create table users2(
-num NUMBER PRIMARY KEY, --회원 고유 번호
-name VARCHAR2(20), -- 이름
-password VARCHAR2(20), -- 비밀번호
-branchLocation VARCHAR2(20), -- 지점 주소(ex) 역삼점)
-myLocation VARCHAR2(20), -- 개인 주소
-branchNum VARCHAR2(20) -- 지점 전화번호
-phoneNum VARCHAR2(20), -- 개인 전화번호
-grade VARCHAR2(20), --계급
-profileImage VARCHAR2(100) -- 프로필 이미지
-updatedAt DATE Default sysdate, -- 수정 날짜
-registratedAt DATE -- 가입 날짜
+
+CREATE TABLE users2 (
+    user_id         VARCHAR2(20) PRIMARY KEY,  		-- 사용자 ID (실제 로그인용 ID)
+    user_name       VARCHAR2(20),              		-- 이름 (사람 이름)
+    password        VARCHAR2(100) NOT NULL,         -- 비밀번호
+    branch_id       NUMBER,              			-- 지점 ID (FK로 사용)
+    myLocation      VARCHAR2(100),             		-- 개인 주소
+    phoneNum        VARCHAR2(20),              		-- 개인 전화번호
+    grade           VARCHAR2(20) DEFAULT 'ROLE_USER' NOT NULL,  -- 계급 (ex: 본사, 지점장, 직원)
+    profileImage    VARCHAR2(100),             		-- 프로필 이미지 경로
+    updatedAt       DATE DEFAULT SYSDATE,     		-- 수정일
+    registeredAt   DATE DEFAULT SYSDATE,            -- 가입일
+    CONSTRAINT users2_branch_fk
+        FOREIGN KEY (branch_id)
+        REFERENCES branches (branch_id)
+        ON DELETE CASCADE
 );
 
-create sequence users2_seq;
+CREATE TABLE branches (
+    branch_id       NUMBER PRIMARY KEY,  -- 지점 ID
+	branch_name     VARCHAR2(50),        -- 지점명
+    branchLocation  VARCHAR2(100),       -- 지점 주소
+    branchPhone     VARCHAR2(20)         -- 지점 전화번호
+);
+
+CREATE SEQUENCE branches_seq;
+
+CREATE TABLE work_log (
+    id NUMBER PRIMARY KEY,                     -- 출퇴근 기록 고유번호
+    user_id VARCHAR2(20),                      -- users2.user_id 참조
+    work_date DATE DEFAULT SYSDATE NOT NULL,   -- 근무 날짜
+    start_time DATE,                           -- 출근 시간
+    end_time DATE,                             -- 퇴근 시간
+    FOREIGN KEY (user_id) REFERENCES users2(user_id)
+);
+
+CREATE SEQUENCE work_log_seq;
+
