@@ -21,6 +21,8 @@
             
         }
     }
+    session.setAttribute("userId", dto.getUserId());
+    session.setMaxInactiveInterval(60*60); 
 %>
 <!DOCTYPE html>
 <html>

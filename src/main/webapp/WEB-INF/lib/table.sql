@@ -1,3 +1,14 @@
+CREATE TABLE hqBoard (
+    num NUMBER PRIMARY KEY,         -- 글 번호
+    writer VARCHAR2(100) NOT NULL,  -- 작성자
+    title VARCHAR2(200) NOT NULL,   -- 글 제목
+    content VARCHAR2(4000) NOT NULL,-- 글 내용
+    viewCount NUMBER DEFAULT 0 NOT NULL,      -- 조회수
+    createdAt VARCHAR2(50) DEFAULT SYSDATE NOT NULL -- 작성일자 (문자열로 저장)
+);
+
+CREATE SEQUENCE hqboard_seq; -- 본사 게시판 시퀀스
+
 CREATE TABLE sales (
 sales_id NUMBER PRIMARY KEY,
 branch VARCHAR2(20),
@@ -34,6 +45,7 @@ CREATE TABLE inandout (
 
 
 CREATE SEQUENCE inandout_seq;
+
 
 CREATE TABLE users2 (
     user_id         VARCHAR2(20) PRIMARY KEY,  		-- 사용자 ID (실제 로그인용 ID)
