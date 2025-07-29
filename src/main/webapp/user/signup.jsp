@@ -4,20 +4,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	String name = request.getParameter("name");
+	String userId = request.getParameter("userId");
 	String password = request.getParameter("password");
-	String branchLocation = request.getParameter("branchLocation");
 	String myLocation = request.getParameter("myLocation");
 	String phoneNum = request.getParameter("phoneNum");
 	
 	String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 	
 	UserDto dto = new UserDto();
-	dto.setName(name);
+	dto.setUserId(userId);
 	dto.setPassword(hashedPassword);
-	dto.setBranchLocation(branchLocation);
 	dto.setMyLocation(myLocation);
 	dto.setPhoneNum(phoneNum);
+	dto.setGrade("ROLE_USER");
 	
 	boolean isSuccess = UserDao.getInstance().insert(dto);
 %>

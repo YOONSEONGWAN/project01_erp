@@ -3,13 +3,11 @@ package dto;
 public class BranchDto {
 	private int branchId;
 	private String branchName;
-	private String branchAddress;
+	private String branchLocation;
 	private String branchPhone;
-	private String managerName;
-	private String status;
-	private String createdAt;
+	private String userName;
+	private String registeredAt;
 	private String updatedAt;
-	private String memo;
 	//페이징 처리를 위한 필드
 	private int startRowNum;
 	private int endRowNum;
@@ -19,7 +17,6 @@ public class BranchDto {
 	//검색 키워드를 담기 위한 필드
 	private String keyword;
 	
-	//setter, getter
 	public int getBranchId() {
 		return branchId;
 	}
@@ -32,11 +29,11 @@ public class BranchDto {
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
 	}
-	public String getBranchAddress() {
-		return branchAddress;
+	public String getBranchLocation() {
+		return branchLocation;
 	}
-	public void setBranchAddress(String branchAddress) {
-		this.branchAddress = branchAddress;
+	public void setBranchLocation(String branchLocation) {
+		this.branchLocation = branchLocation;
 	}
 	public String getBranchPhone() {
 		return branchPhone;
@@ -44,35 +41,23 @@ public class BranchDto {
 	public void setBranchPhone(String branchPhone) {
 		this.branchPhone = branchPhone;
 	}
-	public String getManagerName() {
-		return managerName;
+	public String getUserName() {
+		return userName;
 	}
-	public void setManagerName(String managerName) {
-		this.managerName = managerName;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	public String getStatus() {
-		return status;
+	public String getRegisteredAt() {
+		return registeredAt;
 	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public String getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
+	public void setRegisteredAt(String registeredAt) {
+		this.registeredAt = registeredAt;
 	}
 	public String getUpdatedAt() {
 		return updatedAt;
 	}
 	public void setUpdatedAt(String updatedAt) {
 		this.updatedAt = updatedAt;
-	}
-	public String getMemo() {
-		return memo;
-	}
-	public void setMemo(String memo) {
-		this.memo = memo;
 	}
 	public int getStartRowNum() {
 		return startRowNum;
