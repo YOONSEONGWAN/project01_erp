@@ -41,7 +41,6 @@ if (userName != null) {
 		수정 테스트합니다
     디벨롭브랜치q2
 		디벨롭브랜치2  
-	</p> 
-develop
+	</p>
 </body>
 </html>
