@@ -10,8 +10,8 @@
     <h1>발주 관리 메뉴</h1>
 
     <ul>
-        <li><a href="placeOrder_head.jsp">본사 발주 관리</a></li>
-        <li><a href="placeOrder_branch.jsp">지점 발주 관리</a></li>
+        <li><a href="placeorder_head.jsp">본사 발주 관리</a></li>
+        <li><a href="placeorder_branch.jsp">지점 발주 관리</a></li>
     </ul>
 
     <br>

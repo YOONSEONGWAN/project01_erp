@@ -1,3 +1,46 @@
+CREATE TABLE placeOrder_branch (
+    order_id NUMBER PRIMARY KEY,
+    order_date DATE DEFAULT SYSDATE,
+    manager VARCHAR2(20)
+);
+
+CREATE TABLE placeOrder_branch_detail (
+    detail_id NUMBER PRIMARY KEY,
+    order_id NUMBER,
+    product VARCHAR2(100) NOT NULL,
+    current_quantity NUMBER NOT NULL,
+    request_quantity NUMBER NOT NULL,
+    approval_status VARCHAR2(10),
+    manager VARCHAR2(20)
+);
+
+CREATE TABLE placeOrder_head (
+    order_id NUMBER PRIMARY KEY,
+    order_date DATE DEFAULT SYSDATE,
+    manager VARCHAR2(20)
+);
+
+CREATE SEQUENCE placeOrder_head_seq;
+
+CREATE TABLE placeOrder_head_detail (
+    detail_id NUMBER PRIMARY KEY,
+   	order_id NUMBER,
+    product VARCHAR2(100) NOT NULL,
+    current_quantity NUMBER NOT NULL,
+    request_quantity NUMBER NOT NULL,
+    approval_status VARCHAR2(10), --승인 OR 반려
+    manager VARCHAR2(20)
+);
+
+CREATE TABLE placeOrder (
+    num NUMBER PRIMARY KEY,                      -- 고유 번호 (PK)
+    product VARCHAR2(100) NOT NULL,              -- 상품명
+    current_quantity NUMBER NOT NULL,            -- 현재 수량
+    expiration_date DATE,                        -- 유통기한
+    request_quantity NUMBER NOT NULL,            -- 신청 수량 
+    approval_status VARCHAR2(10) DEFAULT '대기'  -- 승인 상태: 대기 / 승인 / 반려
+);
+
 CREATE TABLE Inventory (
 	num NUMBER PRIMARY KEY,
     inventory_id NUMBER NOT NULL, -- 본사창고:1, 지점 창고: 2,3,...
