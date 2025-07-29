@@ -12,7 +12,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>stockList.jsp</title>
+<title>stocklist.jsp</title>
 <style>
     table {
         border-collapse: collapse;
@@ -85,5 +85,6 @@
         </form>
     </div>
     <a href="stock.jsp">돌아가기</a>
+    
 </body>
 </html>

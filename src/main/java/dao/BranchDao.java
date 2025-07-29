@@ -75,16 +75,14 @@ public class BranchDao {
 						FROM (
 							SELECT 
 								b.branch_id,
-								b.name AS branch_name,
-								b.address AS branch_address,
-								b.phone AS branch_phone,
-								u.name AS manager_name,
-								b.status,
-								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
-								TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at,
-								b.memo
+								b.branch_name,
+								b.branchLocation AS branch_location,
+								b.branchPhone AS branch_phone,
+								u.user_name,
+								TO_CHAR(u.registeredAt, 'YY"년" MM"월" DD"일" HH24:MI') AS registered_at,
+								TO_CHAR(u.updatedAt, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
 							FROM branches b
-							INNER JOIN users2 u ON b.manager_id = u.num
+							INNER JOIN users2 u ON b.branch_id = u.branch_id
 						) 
 						WHERE branch_id = ?
 					""";
@@ -98,13 +96,11 @@ public class BranchDao {
 				dto=new BranchDto();
 				dto.setBranchId(rs.getInt("branch_id"));
 				dto.setBranchName(rs.getString("branch_name"));
-				dto.setBranchAddress(rs.getString("branch_address"));
+				dto.setBranchLocation(rs.getString("branch_location"));
 				dto.setBranchPhone(rs.getString("branch_phone"));
-				dto.setManagerName(rs.getString("manager_name"));
-				dto.setStatus(rs.getString("status"));
-				dto.setCreatedAt(rs.getString("created_at"));
+				dto.setUserName(rs.getString("user_name"));
+				dto.setRegisteredAt(rs.getString("registered_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
-				dto.setMemo(rs.getString("memo"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -172,7 +168,7 @@ public class BranchDao {
 			String sql = """
 					SELECT COUNT(*) AS count
 					FROM branches
-					WHERE name LIKE '%'||?||'%'
+					WHERE banch_name LIKE '%'||?||'%'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -215,12 +211,16 @@ public class BranchDao {
 					FROM
 						(SELECT result1.*, ROWNUM AS rnum
 						FROM
-							(SELECT b.name AS branch_name, address, phone, 
-								u.name AS user_name, branch_id
+							(SELECT 
+								b.branch_id,
+								b.branch_name,
+								b.branchLocation AS branch_location,
+								b.branchPhone AS branch_phone,
+								u.user_name								
 							FROM branches b
 							INNER JOIN users2 u
-							ON b.manager_id = u.num
-							ORDER BY branch_id DESC) result1)
+							ON b.branch_id = u.branch_id
+							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
 			pstmt = conn.prepareStatement(sql);
@@ -233,9 +233,9 @@ public class BranchDao {
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
 				dto2.setBranchName(rs.getString("branch_name"));
-				dto2.setBranchAddress(rs.getString("address"));
-				dto2.setBranchPhone(rs.getString("phone"));
-				dto2.setManagerName(rs.getString("user_name"));
+				dto2.setBranchLocation(rs.getString("branch_location"));
+				dto2.setBranchPhone(rs.getString("branch_phone"));
+				dto2.setUserName(rs.getString("user_name"));
 				dto2.setBranchId(rs.getInt("branch_id"));
 				
 				list.add(dto2);
@@ -272,13 +272,17 @@ public class BranchDao {
 					FROM
 						(SELECT result1.*, ROWNUM AS rnum
 						FROM
-							(SELECT b.name AS branch_name, address, phone, 
-								u.name AS user_name, branch_id
+							(SELECT 
+								b.branch_id,
+								b.branch_name,
+								b.branchLocation AS branch_location,
+								b.branchPhone AS branch_phone,
+								u.user_name								
 							FROM branches b
 							INNER JOIN users2 u
-							ON b.manager_id = u.num
-							WHERE b.name LIKE '%'||?||'%'
-							ORDER BY branch_id DESC) result1)
+							ON b.branch_id = u.branch_id
+							WHERE b.branch_name LIKE '%'||?||'%'
+							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
 			pstmt = conn.prepareStatement(sql);
@@ -292,9 +296,9 @@ public class BranchDao {
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
 				dto2.setBranchName(rs.getString("branch_name"));
-				dto2.setBranchAddress(rs.getString("address"));
-				dto2.setBranchPhone(rs.getString("phone"));
-				dto2.setManagerName(rs.getString("user_name"));
+				dto2.setBranchLocation(rs.getString("branch_location"));
+				dto2.setBranchPhone(rs.getString("branch_phone"));
+				dto2.setUserName(rs.getString("user_name"));
 				dto2.setBranchId(rs.getInt("branch_id"));
 				
 				list.add(dto2);

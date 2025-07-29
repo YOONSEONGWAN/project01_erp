@@ -11,16 +11,12 @@
 	<h1>회원가입 양식</h1>
 	<form action="signup.jsp" method="post">
 		<div>
-			<label for="name">이름</label>
-			<input type="text" name="name" id="name" required />
+			<label for="userId">아이디</label>
+			<input type="text" name="userId" id="userId" required />
 		</div>
 		<div>
 			<label for="password">비밀번호</label>
 			<input type="password" name="password" id="password" required />
-		</div>
-		<div>
-			<label for="branchLocation">지점 주소</label>
-			<input type="text" name="branchLocation" id="branchLocation" placeholder="ex)역삼점" required />
 		</div>
 		<div>
 			<label for="myLocation">개인 주소</label>
