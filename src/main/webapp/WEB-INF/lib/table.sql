@@ -77,3 +77,14 @@ CONSTRAINT branches_manager_fk FOREIGN KEY (manager_id) REFERENCES users2(num)
 );
 
 CREATE SEQUENCE branches_seq;
+
+CREATE TABLE work_log (
+    id NUMBER PRIMARY KEY,                     -- 출퇴근 기록 고유번호
+    user_id VARCHAR2(20),                      -- users2.user_id 참조
+    work_date DATE DEFAULT SYSDATE NOT NULL,   -- 근무 날짜
+    start_time DATE,                           -- 출근 시간
+    end_time DATE,                             -- 퇴근 시간
+    FOREIGN KEY (user_id) REFERENCES users2(user_id)
+);
+
+CREATE SEQUENCE work_log_seq;
