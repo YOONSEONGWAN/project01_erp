@@ -30,7 +30,7 @@
 		</li>				
 		
 		<h1>전체 매출 목록</h1>
-		<table>
+		<table border = "1">
 			<tr>
 				<th>매출 번호</th>
 				<th>지점 이름</th>
