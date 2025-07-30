@@ -7,9 +7,6 @@
 	session.removeAttribute("userName");
 
 	//응답하기
-	
-
-
 %>
 
 

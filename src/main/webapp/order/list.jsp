@@ -8,9 +8,6 @@
 	// 해당 지점의 발주 요청 목록 불러오기
 	List<StockRequestDto> requestList = StockRequestDao.getInstance().selectByBranch(branchId);
 	
-	if (session.getAttribute("branchId") == null) {
-        session.setAttribute("branchId", "B001"); // 강제로 B001 지점 로그인한 것처럼
-    }
 %>
 
 

@@ -47,7 +47,7 @@ grade VARCHAR2(20), --계급
 profileImage VARCHAR2(100), -- 프로필 이미지
 updatedAt DATE Default sysdate, -- 수정 날짜
 registratedAt DATE -- 가입 날짜
-);
+);	
 
 create sequence users2_seq;
 
