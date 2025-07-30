@@ -57,15 +57,14 @@ public class UserUpdateServlet extends HttpServlet{
 		Part filePart = req.getPart("profileImage");
 		
 		// DB 에서 현재 사용자 정보를 불러온다.
-		UserDto dto = UserDao.getInstance().getByUserName(userName);
+		UserDto dto = UserDao.getInstance().getByUserId(userName);
 		
 		// DTO에 폼에서 받아온 최신 정보들을 먼저 설정한다.
 		// 이렇게 하면 파일 업로드 여부와 관계없이 항상 최신 정보가 반영될 수 있어!
-		dto.setBranchNum(branchNum);
+		dto.setBranchId(branchNum);
 		dto.setPhoneNum(phoneNum);
 		dto.setGrade(grade); // DTO에도 'grade'를 설정하는 메소드가 필요해!
 		dto.setMyLocation(myLocation);
-		dto.setBranchLocation(branchLocation);
 
 		// 만일 업로드된 프로필 이미지가 있다면 (파일이 선택되었다면)
 		if(filePart != null && filePart.getSize() > 0) {
@@ -105,7 +104,7 @@ public class UserUpdateServlet extends HttpServlet{
 		} 
 		// 모든 정보가 담긴 dto 객체를 DAO를 통해 DB에 업데이트한다.
 		// 이제 이 메소드 하나로 프로필 이미지 유무와 상관없이 모든 사용자 정보가 업데이트돼!
-		UserDao.getInstance().updateProfile(dto); // 이 메소드가 UserDto의 모든 필드를 업데이트하도록 설계되어야 해!
+	    // 이 메소드가 UserDto의 모든 필드를 업데이트하도록 설계되어야 해!
 		
 		// 리다이렉트 응답
 		String cPath = req.getContextPath();
