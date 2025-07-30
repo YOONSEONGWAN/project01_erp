@@ -79,12 +79,14 @@ CONSTRAINT branches_manager_fk FOREIGN KEY (manager_id) REFERENCES users2(num)
 CREATE SEQUENCE branches_seq;
 
 CREATE TABLE work_log (
-    id NUMBER PRIMARY KEY,                     -- 출퇴근 기록 고유번호
-    user_id VARCHAR2(20),                      -- users2.user_id 참조
-    work_date DATE DEFAULT SYSDATE NOT NULL,   -- 근무 날짜
-    start_time DATE,                           -- 출근 시간
-    end_time DATE,                             -- 퇴근 시간
-    FOREIGN KEY (user_id) REFERENCES users2(user_id)
+  log_id    NUMBER        NOT NULL PRIMARY KEY,
+  branch_id VARCHAR2(20)  NOT NULL,        -- FK: branches.branch_id
+  user_id   VARCHAR2(20)  NOT NULL,        -- FK: users_p.user_id
+  work_date DATE          NOT NULL,
+  start_time DATE         NOT NULL,
+  end_time   DATE,                         -- VARCHAR2(100)보단 DATE 권장!
+  -- FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
+  -- FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE SEQUENCE work_log_seq;
