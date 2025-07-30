@@ -22,6 +22,49 @@ public class BoardDao {
         return dao;
     }
     
+    // 작성된 글을 삭제하는 메소드 
+ 	public boolean deleteByNum(int num) {
+ 		Connection conn = null;
+ 		PreparedStatement pstmt = null;
+
+ 		// 변화된 row 의 갯수를 담을 변수 선언하고 0으로 초기화
+ 		int rowCount = 0;
+
+ 		try {
+ 			conn = new DbcpBean().getConn();
+ 			String sql = """
+ 					DELETE FROM board
+ 					WHERE num =?
+ 					""";
+ 			pstmt = conn.prepareStatement(sql);
+ 			// ? 에 순서대로 필요한 값 바인딩 
+ 			pstmt.setInt(1, num);
+ 			// pstmt.setInt(1, dto.getNum()); UPDATE할 때 사용할 참조값 
+ 			// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
+ 			rowCount = pstmt.executeUpdate();
+
+ 		} catch (Exception e) { // 예외가 발생시 표시한다 
+ 			e.printStackTrace();
+ 		} finally {
+ 			try {
+ 				// 메소드 호출하기 전에 null 인지 아닌지 체크, 아닌경우에만 호출하도록 
+ 				if (pstmt != null)
+ 					pstmt.close();
+ 				if (conn != null)
+ 					conn.close();
+ 			} catch (Exception e) {
+ 			}
+
+ 		}
+ 		// 변화된 rowCount 값을 조사해서 작업의 성공 여부를 알아 낼수 있다.
+ 		if (rowCount > 0) {
+ 			return true; // 작업 성공이라는 의미에서 true 리턴하기
+ 		}else {
+ 			return false; // 작업 실패라는 의미에서 false 리턴하기 
+ 		}
+ 	}
+    
+    // boardType 에 따라 공지사항, 문의사항 리스트를 가져오는 메소드
     public List<BoardDto> getListByType(String boardType){
     	List<BoardDto> list = new ArrayList<>();
     	Connection conn = null;

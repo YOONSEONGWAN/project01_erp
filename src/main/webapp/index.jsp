@@ -42,6 +42,6 @@ if (userName != null) {
     디벨롭브랜치q2
 		디벨롭브랜치2  
 	</p> 
-develop
+    <a href="${pageContext.request.contextPath}/board/list.jsp">게시판</a>
 </body>
 </html>

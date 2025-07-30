@@ -6,12 +6,17 @@
 <%@page import="java.util.List"%>
 <%
 	String boardType = request.getParameter("boardType");
-	if(boardType == null) boardType = "NOTICE"; // 기본값
+	if (boardType == null || boardType.trim().isEmpty()) {
+	    boardType = "QNA"; // 기본값
+	}
 
 	List<BoardDto> list = BoardDao.getInstance().getListByType(boardType);
 	
 %>
-
+<%
+    System.out.println("boardType 원본: [" + boardType + "]");
+    System.out.println("boardType 길이: " + boardType.length());
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,6 +28,7 @@
   <div class="container">
     <h2 class="mb-4">종복치킨 게시판</h2>
 	<p>현재 type 값: <%=boardType %></p>
+	<%= "조회된 글 수: " + list.size() %><br>
     <!-- 카테고리 탭 -->
     <ul class="nav nav-tabs mb-3">
       <li class="nav-item">
@@ -36,7 +42,7 @@
       </li>
     </ul>
 	<!-- 문의사항일 때만 새 글 작성 버튼 노출 -->
-    <% if ("qna".equalsIgnoreCase(boardType)) { %>
+    <% if ("QNA".equalsIgnoreCase(boardType)) { %>
   	<div class="mb-3 text-end">
     	<a href="new-form.jsp?boardType=QNA" class="btn btn-success">+ 새 글 작성</a>
   	</div>
@@ -52,26 +58,26 @@
         </tr>
       </thead>
       <tbody>
-  <%
-    if (list != null && !list.isEmpty()) {
-      for (BoardDto dto : list) {
-  %>
+	  <%
+	    if (list != null && !list.isEmpty()) {
+	      for (BoardDto dto : list) {
+	  %>
         <tr>
           <td><%= dto.getNum() %></td>
           <td><%= dto.getTitle() %></td>
           <td><%= dto.getWriter() %></td>
           <td><%= dto.getCreatedAt() %></td>
         </tr>
-  <%
-      }
-    } else {
-  %>
+	  <%
+	      }
+	    } else {
+	  %>
       <tr>
         <td colspan="4" class="text-center">등록된 게시글이 없습니다.</td>
       </tr>
-  <%
-    }
-  %>
+	  <%
+	    }
+	  %>
 </tbody>
     </table>
   </div>
