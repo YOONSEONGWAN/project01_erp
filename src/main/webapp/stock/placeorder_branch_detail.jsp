@@ -13,7 +13,7 @@
         return;
     }
 
-    List<PlaceOrderBranchDetailDto> list = PlaceOrderBranchDetailDao.getInstance().getDetailsByOrderId(orderId);
+    List<PlaceOrderBranchDetailDto> list = PlaceOrderBranchDetailDao.getInstance().getDetailListByOrderId(orderId);
 %>
 
 <!DOCTYPE html>
@@ -34,16 +34,16 @@
             <th>수정</th>
         </tr>
         <%
-            for (PlaceOrderBranchDetailDto dto : list) {
+            for (PlaceOrderBranchDetailDto tmp : list) {
         %>
         <tr>
-            <td><%= dto.getProduct() %></td>
-            <td><%= dto.getCurrent_quantity() %></td>
-            <td><%= dto.getRequest_quantity() %></td>
-            <td><%= dto.getApproval_status() %></td>
-            <td><%= dto.getManager() %></td>
+            <td><%= tmp.getProduct() %></td>
+            <td><%= tmp.getCurrent_quantity() %></td>
+            <td><%= tmp.getRequest_quantity() %></td>
+            <td><%= tmp.getApproval_status() %></td>
+            <td><%= tmp.getManager() %></td>
             <td>
-                <a href="placeorder_branch_editform.jsp?detail_id=<%= dto.getDetail_id() %>&order_id=<%= dto.getOrder_id() %>">수정</a>
+                <a href="placeorder_branch_editform.jsp?detail_id=<%= tmp.getDetail_id() %>&order_id=<%= tmp.getOrder_id() %>">수정</a>
             </td>
         </tr>
         <% } %>
@@ -51,4 +51,3 @@
     <br>
     <a href="placeorder_branch.jsp">돌아가기</a>
 </body>
-</html>
