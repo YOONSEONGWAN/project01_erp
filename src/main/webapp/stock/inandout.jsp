@@ -27,66 +27,6 @@
 <body>
 <div class="container">
 
-    <!-- 입고 승인 대기 목록 -->
-    <h2>입고 승인 대기 목록</h2>
-    <table>
-        <thead><tr><th>입고 ID</th><th>재고 ID</th><th>입고 날짜</th><th>담당자</th><th>승인 처리</th></tr></thead>
-        <tbody>
-        <% if (pendingInbounds.isEmpty()) { %>
-            <tr><td colspan="5">-</td></tr>
-        <% } else {
-            for (InboundOrdersDto dto : pendingInbounds) { %>
-                <tr>
-                    <td><%= dto.getOrder_id() %></td>
-                    <td><%= dto.getInventory_id() %></td>
-                    <td><%= dto.getIn_date() != null ? dto.getIn_date() : "-" %></td>
-                    <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
-                    <td>
-                        <form method="post" action="inandout_approval_update.jsp">
-                            <input type="hidden" name="type" value="inbound">
-                            <input type="hidden" name="order_id" value="<%= dto.getOrder_id() %>">
-                            <select name="approval">
-                                <option value="승인">승인</option>
-                                <option value="반려">반려</option>
-                            </select>
-                            <button type="submit">처리</button>
-                        </form>
-                    </td>
-                </tr>
-        <% } } %>
-        </tbody>
-    </table>
-
-    <!-- 출고 승인 대기 목록 -->
-    <h2>출고 승인 대기 목록</h2>
-    <table>
-        <thead><tr><th>출고 ID</th><th>재고 ID</th><th>출고 날짜</th><th>담당자</th><th>승인 처리</th></tr></thead>
-        <tbody>
-        <% if (pendingOutbounds.isEmpty()) { %>
-            <tr><td colspan="5">-</td></tr>
-        <% } else {
-            for (OutboundOrdersDto dto : pendingOutbounds) { %>
-                <tr>
-                    <td><%= dto.getOrder_id() %></td>
-                    <td><%= dto.getInventory_id() %></td>
-                    <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
-                    <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
-                    <td>
-                        <form method="post" action="inandout_approval_update.jsp">
-                            <input type="hidden" name="type" value="outbound">
-                            <input type="hidden" name="order_id" value="<%= dto.getOrder_id() %>">
-                            <select name="approval">
-                                <option value="승인">승인</option>
-                                <option value="반려">반려</option>
-                            </select>
-                            <button type="submit">처리</button>
-                        </form>
-                    </td>
-                </tr>
-        <% } } %>
-        </tbody>
-    </table>
-
     <!-- 입고 처리 내역 (최근 10건) -->
     <h2>입고 처리 내역 (최근 10건)</h2>
     <table>
