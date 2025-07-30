@@ -25,40 +25,36 @@ public class PlaceOrderBranchDetailDao {
 		return dao;
 	}
 	
-	public List<PlaceOrderBranchDetailDto> getDetailsByOrderId(int orderId) {
-        List<PlaceOrderBranchDetailDto> list = new ArrayList<>();
-        String sql = """
-            SELECT detail_id, order_id, product, current_quantity, request_quantity, approval_status, manager
-            FROM placeOrder_branch_detail
-            WHERE order_id = ?
-            
-        """;
+	public PlaceOrderBranchDetailDto getDetailById(int detailId) {
+	    PlaceOrderBranchDetailDto dto = null;
+	    String sql = """
+	        SELECT detail_id, order_id, product, current_quantity, request_quantity, approval_status, manager
+	        FROM placeOrder_branch_detail
+	        WHERE detail_id = ?
+	    """;
 
-        try (
-            Connection conn = new DbcpBean().getConn();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-        ) {
-            pstmt.setInt(1, orderId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    PlaceOrderBranchDetailDto dto = new PlaceOrderBranchDetailDto();
-                    dto.setDetail_id(rs.getInt("detail_id"));
-                    dto.setOrder_id(rs.getInt("order_id"));
-                    dto.setProduct(rs.getString("product"));
-                    dto.setCurrent_quantity(rs.getInt("current_quantity"));
-                    dto.setRequest_quantity(rs.getInt("request_quantity"));
-                    dto.setApproval_status(rs.getString("approval_status"));
-                    dto.setManager(rs.getString("manager"));
+	    try (
+	        Connection conn = new DbcpBean().getConn();
+	        PreparedStatement pstmt = conn.prepareStatement(sql)
+	    ) {
+	        pstmt.setInt(1, detailId);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                dto = new PlaceOrderBranchDetailDto();
+	                dto.setDetail_id(rs.getInt("detail_id"));
+	                dto.setOrder_id(rs.getInt("order_id"));
+	                dto.setProduct(rs.getString("product"));
+	                dto.setCurrent_quantity(rs.getInt("current_quantity"));
+	                dto.setRequest_quantity(rs.getInt("request_quantity"));
+	                dto.setApproval_status(rs.getString("approval_status"));
+	                dto.setManager(rs.getString("manager"));
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 
-                    list.add(dto);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
-	
+	    return dto;
+	}
 	
 }
