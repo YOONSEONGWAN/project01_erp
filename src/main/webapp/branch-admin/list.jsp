@@ -116,9 +116,9 @@
 					<td>
 						<a href="detail.jsp?num=<%=tmp.getBranchId() %>"><%=tmp.getBranchName() %></a>
 					</td> 
-					<td><%=tmp.getBranchAddress() %></td>
+					<td><%=tmp.getBranchLocation() %></td>
 					<td><%=tmp.getBranchPhone() %></td>
-					<td><%=tmp.getManagerName() %></td>
+					<td><%=tmp.getUserName() %></td>
 				</tr>
 			<%} %>	
 		</tbody>
