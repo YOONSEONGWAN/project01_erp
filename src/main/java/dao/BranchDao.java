@@ -122,10 +122,10 @@ public class BranchDao {
 								b.address,
 								b.phone,
 								u.user_name,
-								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS registered_at,
+								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
 								TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
 							FROM branches b
-							INNER JOIN users_p u ON b.branch_id = u.branch_id
+							LEFT OUTER JOIN users_p u ON b.branch_id = u.branch_id
 						) 
 						WHERE num = ?
 					""";
@@ -263,7 +263,7 @@ public class BranchDao {
 								b.phone,
 								u.user_name								
 							FROM branches b
-							INNER JOIN users_p u
+							LEFT OUTER JOIN users_p u
 							ON b.branch_id = u.branch_id
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
