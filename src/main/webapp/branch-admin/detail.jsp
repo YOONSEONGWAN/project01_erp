@@ -6,9 +6,7 @@
 	//get 방식 파라미터로 전달되는 지점번호 얻어내기
 	int num=Integer.parseInt(request.getParameter("num"));
 	//DB 에서 해당 지점의 자세한 정보를 얻어낸다.
-	BranchDto dto=BranchDao.getInstance().getByBranchId(num);
-
-	
+	BranchDto dto=BranchDao.getInstance().getByNum(num);
 
 %>
 <!DOCTYPE html>
@@ -27,15 +25,15 @@
 			</tr>
 			<tr>
 				<th>지점 이름</th>
-				<td><%=dto.getBranchName() %></td>
+				<td><%=dto.getName() %></td>
 			</tr>
 			<tr>
 				<th>주소</th>
-				<td><%=dto.getBranchLocation() %></td>
+				<td><%=dto.getAddress() %></td>
 			</tr>
 			<tr>
 				<th>지점 연락처</th>
-				<td><%=dto.getBranchPhone() %></td>
+				<td><%=dto.getPhone() %></td>
 			</tr>
 			<tr>
 				<th>지점장 이름</th>
@@ -43,7 +41,7 @@
 			</tr>
 			<tr>
 				<th>등록일</th>
-				<td><%=dto.getRegisteredAt() %></td>
+				<td><%=dto.getCreatedAt() %></td>
 			</tr>
 			<tr>
 				<th>수정일</th>
@@ -52,7 +50,7 @@
 		</table>
 	</div>
 	<div>
-	<a href="#" id="delete-btn" data-num="<%=dto.getBranchId()%>">삭제</a>
+	<a href="#" id="delete-btn" data-num="<%=dto.getNum()%>">삭제</a>
 	</div>
 	<script>
 		document.querySelector("#delete-btn").addEventListener("click", (e) => {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dto.BranchDto;
+
 import util.DbcpBean;
 
 public class BranchDao {
@@ -24,8 +25,49 @@ public class BranchDao {
 		return dao;
 	}
 	
+	//지점 정보를 저장하는 메소드
+	public boolean insert(BranchDto dto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		//변화된 row의 갯수를 담을 변수 선언하고 0으로 초기화
+		int rowCount = 0;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = """
+					INSERT INTO branches
+					(num, branch_id, name, address, phone, created_at)
+					VALUES(branches_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE)
+					""";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 순서대로 필요한 값 바인딩
+			pstmt.setString(1, dto.getBranchId());
+			pstmt.setString(2, dto.getName());
+			pstmt.setString(3, dto.getAddress());
+			pstmt.setString(4, dto.getPhone());
+			// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
+			rowCount = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (Exception e) {
+			}
+
+		}
+		// 변화된 rowCount 값을 조사해서 작업의 성공 여부를 알아낼 수 있다
+		if (rowCount > 0) {
+			return true; // 작업 성공이라는 의미에서 true 리턴하기
+		} else {
+			return false; // 작업 실패라는 의미에서 false 리턴하기
+		}
+	}
+	
 	//지점을 삭제하는 메소드
-	public boolean deleteByBranchId(int num) {
+	public boolean deleteByNum(int num) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		//변화된 row의 갯수를 담을 변수 선언하고 0으로 초기화
@@ -34,7 +76,7 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			String sql = """
 					DELETE FROM branches
-					WHERE branch_id=?
+					WHERE num=?
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
@@ -62,7 +104,7 @@ public class BranchDao {
 	}
 
 	//지점 하나의 정보를 리턴하는 메소드
-	public BranchDto getByBranchId(int num) {
+	public BranchDto getByNum(int num) {
 		BranchDto dto=null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -74,17 +116,18 @@ public class BranchDao {
 					SELECT *
 						FROM (
 							SELECT 
+								b.num,
 								b.branch_id,
-								b.branch_name,
-								b.branchLocation AS branch_location,
-								b.branchPhone AS branch_phone,
+								b.name,
+								b.address,
+								b.phone,
 								u.user_name,
-								TO_CHAR(u.registeredAt, 'YY"년" MM"월" DD"일" HH24:MI') AS registered_at,
-								TO_CHAR(u.updatedAt, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
+								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
+								TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
 							FROM branches b
-							INNER JOIN users2 u ON b.branch_id = u.branch_id
+							LEFT OUTER JOIN users_p u ON b.branch_id = u.branch_id
 						) 
-						WHERE branch_id = ?
+						WHERE num = ?
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -94,13 +137,14 @@ public class BranchDao {
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
 			if (rs.next()) {
 				dto=new BranchDto();
+        dto.setNum(rs.getInt("num"));
 				dto.setBranch_id(rs.getInt("branch_id"));
-				dto.setBranch_name(rs.getString("branch_name"));
+        dto.setName(rs.getString("name"));
 				dto.setAddress(rs.getString("address"));
 				dto.setPhone(rs.getString("phone"));
-				dto.setUser_name(rs.getString("user_name"));
-				dto.setRegisteredAt(rs.getString("registered_at"));
+        dto.setCreatedAt(rs.getString("created_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,7 +172,7 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			//실행할 sql문
 			String sql = """
-					SELECT COUNT(*) AS count
+					SELECT MAX(ROWNUM) AS count
 					FROM branches
 					""";
 			pstmt = conn.prepareStatement(sql);
@@ -166,9 +210,9 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			//실행할 sql문
 			String sql = """
-					SELECT COUNT(*) AS count
+					SELECT MAX(ROWNUM) AS count
 					FROM branches
-					WHERE banch_name LIKE '%'||?||'%'
+					WHERE name LIKE '%'||?||'%'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -212,13 +256,14 @@ public class BranchDao {
 						(SELECT result1.*, ROWNUM AS rnum
 						FROM
 							(SELECT 
+								b.num,
 								b.branch_id,
-								b.branch_name,
-								b.branchLocation AS branch_location,
-								b.branchPhone AS branch_phone,
+								b.name,
+								b.address,
+								b.phone,
 								u.user_name								
 							FROM branches b
-							INNER JOIN users2 u
+							LEFT OUTER JOIN users_p u
 							ON b.branch_id = u.branch_id
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
@@ -232,11 +277,12 @@ public class BranchDao {
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
-				dto2.setBranchName(rs.getString("branch_name"));
-				dto2.setBranchLocation(rs.getString("branch_location"));
-				dto2.setBranchPhone(rs.getString("branch_phone"));
+				dto2.setNum(rs.getInt("num"));
+				dto2.setBranchId(rs.getString("branch_id"));
+				dto2.setName(rs.getString("name"));
+				dto2.setAddress(rs.getString("address"));
+				dto2.setPhone(rs.getString("phone"));
 				dto2.setUserName(rs.getString("user_name"));
-				dto2.setBranchId(rs.getInt("branch_id"));
 				
 				list.add(dto2);
 			}
@@ -273,15 +319,16 @@ public class BranchDao {
 						(SELECT result1.*, ROWNUM AS rnum
 						FROM
 							(SELECT 
+								b.num,
 								b.branch_id,
-								b.branch_name,
-								b.branchLocation AS branch_location,
-								b.branchPhone AS branch_phone,
+								b.name,
+								b.address,
+								b.phone,
 								u.user_name								
 							FROM branches b
-							INNER JOIN users2 u
+							INNER JOIN users_p u
 							ON b.branch_id = u.branch_id
-							WHERE b.branch_name LIKE '%'||?||'%'
+							WHERE b.name LIKE '%'||?||'%'
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
@@ -295,11 +342,12 @@ public class BranchDao {
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
-				dto2.setBranchName(rs.getString("branch_name"));
-				dto2.setBranchLocation(rs.getString("branch_location"));
-				dto2.setBranchPhone(rs.getString("branch_phone"));
-				dto2.setUserName(rs.getString("user_name"));
-				dto2.setBranchId(rs.getInt("branch_id"));
+				dto2.setNum(rs.getInt("num"));
+				dto2.setBranchId(rs.getString("branch_id"));
+				dto2.setName(rs.getString("name"));
+				dto2.setAddress(rs.getString("address"));
+				dto2.setPhone(rs.getString("phone"));
+				dto2.setUserName(rs.getString("user_name"));				
 				
 				list.add(dto2);
 			}
