@@ -10,17 +10,17 @@
         int newRequestQty = Integer.parseInt(request.getParameter("request_quantity"));
         String newApprovalStatus = request.getParameter("approval_status");
 
-        // 1. 기존 데이터 불러오기
+        
         PlaceOrderHeadDetailDto oldDto = PlaceOrderHeadDetailDao.getInstance().getByDetailId(detailId);
         int oldRequestQty = oldDto.getRequest_quantity();
         String oldApprovalStatus = oldDto.getApproval_status();
         String product = oldDto.getProduct();
-        int currentQty = oldDto.getCurrent_quantity(); // ✅ 현재 수량 가져오기
+        int currentQty = oldDto.getCurrent_quantity(); //
 
-        // 2. Inventory 번호 가져오기
+       
         int productNum = InventoryDao.getInstance().getNumByProduct(product);
 
-        // 3. Inventory 테이블 업데이트 (수량 및 승인 상태)
+        
         boolean inventoryUpdated = InventoryDao.getInstance()
             .updateQuantityByApproval(productNum, oldRequestQty, newRequestQty, oldApprovalStatus, newApprovalStatus, currentQty); // ✅ currentQty 포함
 
@@ -34,7 +34,7 @@
             return;
         }
 
-        // 4. PlaceOrderHeadDetail 테이블 업데이트
+       
         boolean result = PlaceOrderHeadDetailDao.getInstance()
             .update(detailId, newRequestQty, newApprovalStatus);
 

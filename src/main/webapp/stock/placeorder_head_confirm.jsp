@@ -1,20 +1,20 @@
 <%@page import="dao.stock.InventoryDao"%>
 <%@page import="dao.stock.PlaceOrderHeadDao"%>
 <%@page import="dao.stock.PlaceOrderHeadDetailDao"%>
+<%@page import="dao.stock.InboundOrdersDao"%>
 <%@page import="dto.stock.PlaceOrderHeadDetailDto"%>
-<%@page import="java.time.LocalDate"%>
 <%@page import="java.util.Enumeration"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <%
-    LocalDate today = LocalDate.now();
-    LocalDate newExpirationDate = today.plusMonths(6);
     String manager = "admin";
 
     Enumeration<String> paramNames = request.getParameterNames();
     boolean hasApproval = false;
 
-    // 승인된 항목이 하나라도 있는지 체크
+    // 승인된 항목이 있는지 검사
     while (paramNames.hasMoreElements()) {
         String param = paramNames.nextElement();
         if (param.startsWith("approval_") && "YES".equals(request.getParameter(param))) {
@@ -25,18 +25,24 @@
 
     if (!hasApproval) {
 %>
-        <script>
-            alert("승인된 항목이 없습니다.");
-            location.href = "placeorder_head.jsp";
-        </script>
+    <script>
+        alert("승인된 항목이 없습니다.");
+        location.href = "placeorder_head.jsp";
+    </script>
 <%
         return;
     }
 
-    // 발주 헤더 insert (order_id 받기)
     int orderId = PlaceOrderHeadDao.getInstance().insert(manager);
 
-    paramNames = request.getParameterNames();
+    // placeOrder_head에서 order_date 조회 (예: orderId로 조회하는 메서드 필요)
+    String orderDate = PlaceOrderHeadDao.getInstance().getOrderDateByOrderId(orderId);
+
+    // orderDate를 문자열로 변환 (포맷: yyyy-MM-dd HH:mm:ss)
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String orderDateStr = orderDate;
+
+    paramNames = request.getParameterNames(); // 다시 초기화
 
     while (paramNames.hasMoreElements()) {
         String paramName = paramNames.nextElement();
@@ -54,36 +60,32 @@
                 int currentQty = InventoryDao.getInstance().getQuantityByNum(num);
 
                 if ("YES".equals(approval)) {
-                    // 승인 처리: 재고 수량 증가, 유통기한 갱신
+                    // 승인: 수량 증가
                     InventoryDao.getInstance().increaseQuantity(num, amount);
-                    InventoryDao.getInstance().updateExpirationDate(num, newExpirationDate);
-                    // 승인 상태 업데이트 + 발주 신청 해제
                     InventoryDao.getInstance().updateApproval(num, "승인");
-                    InventoryDao.getInstance().updatePlaceOrder(num, false);
-                    
-                    PlaceOrderHeadDetailDto dto = new PlaceOrderHeadDetailDto();
-                    dto.setOrder_id(orderId);
-                    dto.setProduct(product);
-                    dto.setCurrent_quantity(currentQty);
-                    dto.setRequest_quantity(amount);
-                    dto.setApproval_status("승인");
-                    dto.setManager(manager);
-                    PlaceOrderHeadDetailDao.getInstance().insert(dto);
-
                 } else {
-                    // 반려 처리: 상태만 반려로 변경 + 발주 신청 해제
+                    // 반려: 수량 유지
                     InventoryDao.getInstance().updateApproval(num, "반려");
-                    InventoryDao.getInstance().updatePlaceOrder(num, false);
-
-                    PlaceOrderHeadDetailDto dto = new PlaceOrderHeadDetailDto();
-                    dto.setOrder_id(orderId);
-                    dto.setProduct(product);
-                    dto.setCurrent_quantity(currentQty);
-                    dto.setRequest_quantity(amount);
-                    dto.setApproval_status("반려");
-                    dto.setManager(manager);
-                    PlaceOrderHeadDetailDao.getInstance().insert(dto);
                 }
+
+                // 승인 여부와 관계없이 발주 신청 해제
+                InventoryDao.getInstance().updatePlaceOrder(num, false);
+
+                // 발주 상세 기록
+                PlaceOrderHeadDetailDto dto = new PlaceOrderHeadDetailDto();
+                dto.setOrder_id(orderId);
+                dto.setProduct(product);
+                dto.setCurrent_quantity(currentQty);
+                dto.setRequest_quantity(amount);
+                dto.setApproval_status("YES".equals(approval) ? "승인" : "반려");
+                dto.setManager(manager);
+                PlaceOrderHeadDetailDao.getInstance().insert(dto);
+
+                // inbound_orders 테이블에도 insert
+                InboundOrdersDao.getInstance().insert(orderId, 1, dto.getApproval_status(), orderDateStr, manager);
+
+                InventoryDao.getInstance().updateApproval(num, "대기");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

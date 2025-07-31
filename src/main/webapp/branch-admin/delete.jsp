@@ -6,7 +6,7 @@
 	int num=Integer.parseInt(request.getParameter("num"));
 
 	//DB 에서 해당글을 삭제하고
-	BranchDao.getInstance().deleteByBranchId(num);
+	boolean isSuccess=BranchDao.getInstance().deleteByNum(num);
 	//응답한다
 %>
 <!DOCTYPE html>
@@ -17,8 +17,16 @@
 </head>
 <body>
 	<script>
-		alert("삭제 했습니다!");
-		location.href="${pageContext.request.contextPath }/branch-admin/list.jsp";
+		<%if(isSuccess){%>
+			alert("삭제 했습니다!");
+			location.href="${pageContext.request.contextPath }/branch-admin/list.jsp";
+		<%}else{%>
+			alert("삭제 실패했습니다!");
+			location.href="${pageContext.request.contextPath }/branch-admin/detail.jsp?num=<%=num%>";
+		<%}%>
+		
+		
+		
 	</script>
 </body>
 </html>
