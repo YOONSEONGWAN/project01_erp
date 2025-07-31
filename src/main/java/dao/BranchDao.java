@@ -40,7 +40,7 @@ public class BranchDao {
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
-			pstmt.setString(1, dto.getBranchId());
+			pstmt.setString(1, dto.getBranch_id());
 			pstmt.setString(2, dto.getName());
 			pstmt.setString(3, dto.getAddress());
 			pstmt.setString(4, dto.getPhone());
@@ -137,13 +137,13 @@ public class BranchDao {
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
 			if (rs.next()) {
 				dto=new BranchDto();
-        dto.setNum(rs.getInt("num"));
-				dto.setBranch_id(rs.getInt("branch_id"));
-        dto.setName(rs.getString("name"));
+				dto.setNum(rs.getInt("num"));
+				dto.setBranch_id(rs.getString("branch_id"));
+				dto.setName(rs.getString("name"));
 				dto.setAddress(rs.getString("address"));
 				dto.setPhone(rs.getString("phone"));
-        dto.setCreatedAt(rs.getString("created_at"));
-				dto.setUpdatedAt(rs.getString("updated_at"));
+				dto.setCreated_at(rs.getString("created_at"));
+				dto.setUpdated_at(rs.getString("updated_at"));
 				
 			}
 		} catch (Exception e) {
@@ -278,7 +278,7 @@ public class BranchDao {
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
 				dto2.setNum(rs.getInt("num"));
-				dto2.setBranchId(rs.getString("branch_id"));
+				dto2.setBranch_id(rs.getString("branch_id"));
 				dto2.setName(rs.getString("name"));
 				dto2.setAddress(rs.getString("address"));
 				dto2.setPhone(rs.getString("phone"));
