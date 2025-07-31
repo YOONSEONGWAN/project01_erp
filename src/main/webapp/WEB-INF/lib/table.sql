@@ -1,3 +1,35 @@
+CREATE TABLE branch_stock (
+    branch_id        VARCHAR2(20)   NOT NULL,
+    inventory_id     NUMBER         NOT NULL,
+    product          VARCHAR2(100)  NOT NULL,
+    current_quantity NUMBER         NOT NULL,
+    updatedat        DATE           NULL,
+    -- PK & FK 정의
+    CONSTRAINT pk_branch_stock PRIMARY KEY (branch_id, inventory_id)
+    -- branch_id, inventory_id 조합이 유일
+);
+CREATE SEQUENCE branch_stock_seq;
+
+CREATE TABLE stock_request (
+    order_id         NUMBER         NOT NULL PRIMARY KEY,
+    branch_id        VARCHAR2(20)   NOT NULL,
+    inventory_id     NUMBER         NOT NULL,
+    product          VARCHAR2(100)  NOT NULL,
+    current_quantity NUMBER         NOT NULL,
+    request_quantity NUMBER         NOT NULL,
+    status           VARCHAR2(20)   NULL,
+    requestedat      DATE           NULL,
+    updatedat        DATE           NULL,
+    isPlaceOrder     VARCHAR2(10)   NULL,
+    Field            VARCHAR2(1000) NULL,
+    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
+    FOREIGN KEY (branch_id, inventory_id) REFERENCES branch_stock(branch_id, inventory_id)
+);
+
+CREATE SEQUENCE stock_request_seq;
+
+
+
 CREATE TABLE hqBoard (
     num NUMBER PRIMARY KEY,         -- 글 번호
     writer VARCHAR2(100) NOT NULL,  -- 작성자
