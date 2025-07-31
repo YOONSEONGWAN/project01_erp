@@ -133,7 +133,7 @@ CREATE TABLE branches (
     name        VARCHAR2(50)   NOT NULL, 		-- 지점 이름
     address     VARCHAR2(100)  NOT NULL,		-- 지점 주소
     phone       VARCHAR2(20)   NOT NULL, 		-- 지점 연락처
-    created_at  DATE           NOT NULL, -- 등록일
+    created_at  DATE           NOT NULL, 		-- 등록일
     updated_at  DATE 							-- 수정일
 );
 
