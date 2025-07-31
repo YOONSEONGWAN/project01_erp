@@ -1,22 +1,29 @@
 package dto;
 
 public class SalesDto {
-	private int sales_id;         // 매출 고유 ID
-	private String branch_id;        // 지점 ID (외래키)
-	private String branch_name;   // 지점 이름 (JOIN해서 얻은 값)
-	private String created_at;    // 매출 발생 일자
-	private int totalamount;      // 매출 총액
+	private int sales_id;         
+	private String branch_id;      
+	private String branch_name;   
+	private String created_at;    
+	private int totalamount;      
 
-	// 통계용 필드들
-	private String period;              // "2025-W30" 또는 "2025-07" 형태
-	private int totalSales;             // 해당 기간의 총 매출
-	private int averageSales;           // 평균 매출
-	private String maxSalesDate;        // 최고 매출 발생일
+
+	private String period;              
+	private int totalSales;             
+	private int averageSales;           
+	private String maxSalesDate;        
 	private String minSalesDate;
-	private int maxSalesAmount;         // 최고 매출액
+	private int maxSalesAmount;        
 	private int minSalesAmount;
-	private int dayCount;               // 해당 기간 날짜 수
+	private int dayCount;               
 	private int averageSalesPerDay;
+	
+	private int rank;
+
+    private String topBranchName;
+    private int topBranchSales;
+    
+    
 	public int getSales_id() {
 		return sales_id;
 	}
@@ -101,8 +108,25 @@ public class SalesDto {
 	public void setAverageSalesPerDay(int averageSalesPerDay) {
 		this.averageSalesPerDay = averageSalesPerDay;
 	}
-	
-	
-	
+	public int getRank() {
+		return rank;
+	}
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+	public String getTopBranchName() {
+		return topBranchName;
+	}
+	public void setTopBranchName(String topBranchName) {
+		this.topBranchName = topBranchName;
+	}
+	public int getTopBranchSales() {
+		return topBranchSales;
+	}
+	public void setTopBranchSales(int topBranchSales) {
+		this.topBranchSales = topBranchSales;
+	}
+    
+    
 	
 }
