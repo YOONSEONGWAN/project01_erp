@@ -1,4 +1,4 @@
-package branch.servlet;
+package branchInfo.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,8 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import branch.dao.UserDao;
-import branch.dto.UserDto;
+import dao.BranchInfoDao;
+import dto.BranchInfoDto;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -19,7 +19,7 @@ import jakarta.servlet.http.Part;
 /*
  *  enctype="multipart/form-data" 형식의 폼이 전송되었을때 처리할 서블릿 만들기 
  */
-@WebServlet("/user2/update2")
+@WebServlet("/branchinfo/update")
 @MultipartConfig(
 	fileSizeThreshold = 1024*1024*10, //업로드 처리하기 위한 메모리 사이즈(10 Mega byte)
 	maxFileSize = 1024*1024*50, //업로드되는 최대 파일 사이즈(50 Mega byte)
@@ -57,7 +57,7 @@ public class UserUpdateServlet extends HttpServlet{
 		Part filePart = req.getPart("profileImage");
 		
 		// DB 에서 현재 사용자 정보를 불러온다.
-		UserDto dto = UserDao.getInstance().getByUserName(userName);
+		BranchInfoDto dto = BranchInfoDao.getInstance().getByUserName(userName);
 		
 		// DTO에 폼에서 받아온 최신 정보들을 먼저 설정한다.
 		// 이렇게 하면 파일 업로드 여부와 관계없이 항상 최신 정보가 반영될 수 있어!
@@ -109,6 +109,6 @@ public class UserUpdateServlet extends HttpServlet{
 		
 		// 리다이렉트 응답
 		String cPath = req.getContextPath();
-		resp.sendRedirect(cPath + "/user2/info2.jsp");
+		resp.sendRedirect(cPath + "/branchinfo/info2.jsp");
 	}
 }

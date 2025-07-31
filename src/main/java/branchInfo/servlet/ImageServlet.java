@@ -1,4 +1,4 @@
-package branch.servlet;
+package branchInfo.servlet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * 
  */
 
-@WebServlet("/upload2/*")
+@WebServlet("/upload/*")
 public class ImageServlet extends HttpServlet{
 
 	// 이미지 저장 경로 

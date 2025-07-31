@@ -2,9 +2,9 @@
     pageEncoding="UTF-8"%>
 <%
 
-	//세션에 저장된 갑ㄴㅅ을 삭제하면 로그 아웃이다.
+	//세션에 저장된 값을 삭제하면 로그 아웃이다.
 	//"userName" 이라는 키값으로 저장된 값을 삭제
-	session.removeAttribute("userName");
+	session.removeAttribute("user_name");
 
 	//응답하기
 	
@@ -17,7 +17,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/user/logout.jsp</title>
+<title>logout.jsp</title>
 </head>
 <body>
 	<script>

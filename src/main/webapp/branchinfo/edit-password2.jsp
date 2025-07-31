@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/user/edit-password.jsp</title>
+<title>edit-password.jsp</title>
 </head>
 <body>
 	<div class="container">
