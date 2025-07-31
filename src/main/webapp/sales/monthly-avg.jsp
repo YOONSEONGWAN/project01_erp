@@ -35,9 +35,10 @@
                 <tr>
                 	<td><%= index++ %></td>
                     <td><%= dto.getPeriod() %></td>
-                    <td><%= dto.getBranch() %></td>
+                    <td><%= dto.getBranch_name() %></td>
+                    <td><%= nf.format(dto.getAverageSales()) %></td>                    
                     <td><%= nf.format(dto.getTotalSales()) %></td>
-                    <td><%= nf.format(dto.getAverageSales()) %></td>
+
                 </tr>
             <% } %>
         </tbody>

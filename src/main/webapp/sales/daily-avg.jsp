@@ -20,6 +20,7 @@
     <table border="1">
         <thead>
             <tr>
+            	<th>번호</th>
                 <th>지점</th>
                 <th>총 매출</th>
                 <th>활동 일수</th>
@@ -27,9 +28,13 @@
             </tr>
         </thead>
         <tbody>
-            <% for (SalesDto dto : list) { %>
+            <%
+            	int index = 1;
+            	for (SalesDto dto : list)	
+            { %>
                 <tr>
-                    <td><%= dto.getBranch() %></td>
+                	<td><%=index++ %></td>
+                    <td><%= dto.getBranch_name() %></td>
                     <td><%= nf.format(dto.getTotalSales()) %></td>
                     <td><%= dto.getDayCount() %></td>
                     <td><%= nf.format(dto.getAverageSalesPerDay()) %></td>

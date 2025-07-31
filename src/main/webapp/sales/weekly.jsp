@@ -39,7 +39,7 @@
             <% for(SalesDto dto : list) { %>
                 <tr>
                     <td><%= dto.getPeriod() %></td>
-                    <td><%= dto.getBranch() %></td>
+                    <td><%= dto.getBranch_name() %></td>
                     <td><%= nf.format(dto.getTotalSales()) %></td>
                 </tr>
             <% } %>

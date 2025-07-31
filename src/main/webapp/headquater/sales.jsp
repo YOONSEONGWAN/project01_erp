@@ -28,7 +28,7 @@
 		</li>
 		<li>
 		
-			<a href="${pageContext.request.contextPath }/sales/annual.jsp">연간 총 매출</a>
+			<a href="${pageContext.request.contextPath }/sales/yearly.jsp">연간 총 매출</a>
 		</li>
 		
 		<br />
@@ -53,7 +53,15 @@
 		<li>
 		
 			<a href="${pageContext.request.contextPath }/sales/monthly-max.jsp">월간 최고 매출일</a>
-		</li>						
+		</li>
+		<li>
+		
+			<a href="${pageContext.request.contextPath }/sales/yearly-max.jsp">연간 최고 매출일</a>
+		</li>
+		<br />
+		<li>
+			<a href="${pageContext.request.contextPath }/sales/weekly-min.jsp">주간 최저 매출일</a>
+		</li>												
 				
 						
 		<h1>전체 매출 목록</h1>
@@ -68,7 +76,7 @@
 			 	<%for(SalesDto tmp:list) {%>
 			 		<tr>
 			 			<td><%=tmp.getSales_id() %></td>
-			 			<td><%=tmp.getBranch() %></td>
+			 			<td><%=tmp.getBranch_name() %></td>
 			 			<td><%=tmp.getCreated_at() %></td>
 			 			<td><%= nf.format(tmp.getTotalamount()) %></td>
 			 		</tr>

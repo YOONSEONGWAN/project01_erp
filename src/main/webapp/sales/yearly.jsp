@@ -20,7 +20,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/sales/annual.jsp</title>
+<title>/sales/yearly.jsp</title>
 </head>
 <body>
 	<h1>연간 매출 통계</h1>
@@ -38,7 +38,7 @@
 			<% for(SalesDto dto : list) { %>
 				<tr>
 					<td><%= dto.getPeriod() %></td>
-                    <td><%= dto.getBranch() %></td>
+                    <td><%= dto.getBranch_name() %></td>
                     <td><%= nf.format(dto.getTotalSales()) %></td>
 				</tr>
 			<% } %>	

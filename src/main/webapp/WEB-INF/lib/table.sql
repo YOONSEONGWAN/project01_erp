@@ -1,9 +1,14 @@
 CREATE TABLE sales (
-sales_id NUMBER PRIMARY KEY,
-branch VARCHAR2(20),
-created_at DATE DEFAULT SYSDATE,
-totalamount NUMBER
+    sales_id NUMBER PRIMARY KEY, -- 매출 고유 ID
+    branch_id VARCHAR2(20), -- 지점 이름 branches branch_id 외래키 참조 
+    created_at DATE DEFAULT SYSDATE, -- 매출 발생일 기본값 현재시간
+    totalamount NUMBER, -- 당일 매출 총 합계
+    CONSTRAINT fk_sales_branch
+        FOREIGN KEY (branch_id)
+        REFERENCES branches(branch_id)
+        ON DELETE CASCADE
 );
+
 
 CREATE SEQUENCE sales_seq;
 

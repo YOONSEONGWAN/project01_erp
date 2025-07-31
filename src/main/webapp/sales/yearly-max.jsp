@@ -4,20 +4,19 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
  <%
  	List<SalesDto> list = SalesDao.getInstance().getMonthlyMaxSalesDates();
  
  	NumberFormat nf = NumberFormat.getInstance();
- %>
+ %>     
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/sales/monthly-max.jsp</title>
+<title>/sales/yearly-max.jsp</title>
 </head>
 <body>
-	<h1>지점별 월간 최고 매출일</h1>
+		<h1>지점별 연간 최고 매출일</h1>
 	<table border = "1">
 		<tr>
 			<th>번호</th>
@@ -42,8 +41,3 @@
 	</table>
 </body>
 </html>
-
-
-
-
-
