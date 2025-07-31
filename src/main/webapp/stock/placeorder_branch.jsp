@@ -22,9 +22,12 @@
         <table border="1" cellpadding="5" cellspacing="0">
             <thead>
                 <tr>
+                	<th>주문번호</th>
+                	<th>지점명</th>
                     <th>상품명</th>
                     <th>현재 수량</th>
                     <th>발주 수량</th>
+                    <th>신청일</th>
                     <th>발주 상태</th>
                 </tr>
             </thead>

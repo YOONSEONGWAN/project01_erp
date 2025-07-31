@@ -18,13 +18,13 @@
         int currentQty = oldDto.getCurrent_quantity(); //
 
        
-        int productNum = //InventoryDao.getInstance().getNumByProduct(product);
+        int productNum = //BranchStockDao.getInstance().getNumByProduct(product);
 
         
-        boolean inventoryUpdated = //InventoryDao.getInstance()
+        boolean BranchStockUpdated = //BranchStock.getInstance()
             .updateQuantityByApproval(productNum, oldRequestQty, newRequestQty, oldApprovalStatus, newApprovalStatus, currentQty); 
 
-        if (!inventoryUpdated) {
+        if (!BranchStockUpdated) {
 %>
             <script>
                 alert("재고 업데이트 실패. 다시 시도해주세요.");
