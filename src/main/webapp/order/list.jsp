@@ -25,6 +25,7 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
 <table>
     <tr>
         <th>발주번호</th>
+        <th>branch_stock번호</th>   <%-- branch_num 추가, 관리용 --%>
         <th>상품명</th>
         <th>현재 재고</th>
         <th>요청 수량</th>
@@ -38,7 +39,7 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
 if (orderList == null || orderList.isEmpty()) {
 %>
     <tr>
-        <td colspan="9" style="text-align:center;">발주 내역이 없습니다.</td>
+        <td colspan="10" style="text-align:center;">발주 내역이 없습니다.</td>
     </tr>
 <%
 } else {
@@ -46,6 +47,7 @@ if (orderList == null || orderList.isEmpty()) {
 %>
     <tr>
         <td><%= dto.getOrderId() %></td>
+        <td><%= dto.getBranchNum() %></td>   <%-- branch_num 표시, 필요없으면 생략 --%>
         <td><%= dto.getProduct() %></td>
         <td><%= dto.getCurrentQuantity() %></td>
         <td><%= dto.getRequestQuantity() %></td>
@@ -59,12 +61,14 @@ if (orderList == null || orderList.isEmpty()) {
         <td>
             <form action="update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
+                <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-update">수정</button>
             </form>
         </td>
         <td>
             <form action="delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
+                <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-delete">삭제</button>
             </form>
         </td>

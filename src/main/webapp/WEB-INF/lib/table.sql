@@ -1,29 +1,32 @@
 CREATE TABLE branch_stock (
-    branch_id        VARCHAR2(20)   NOT NULL,
-    inventory_id     NUMBER         NOT NULL,
-    product          VARCHAR2(100)  NOT NULL,
-    current_quantity NUMBER         NOT NULL,
-    updatedat        DATE           NULL,
-    -- PK & FK 정의
-    CONSTRAINT pk_branch_stock PRIMARY KEY (branch_id, inventory_id)
-    -- branch_id, inventory_id 조합이 유일
+    branch_num   NUMBER          PRIMARY KEY,
+    branch_id         VARCHAR2(20)   NOT NULL,
+    inventory_id      NUMBER         NOT NULL,
+    product           VARCHAR2(100)  NOT NULL,
+    current_quantity  NUMBER         NOT NULL,
+    updatedat         DATE           NULL,
+    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
+    FOREIGN KEY (inventory_id) REFERENCES inventory(num)
 );
+
 CREATE SEQUENCE branch_stock_seq;
 
 CREATE TABLE stock_request (
-    order_id         NUMBER         NOT NULL PRIMARY KEY,
-    branch_id        VARCHAR2(20)   NOT NULL,
-    inventory_id     NUMBER         NOT NULL,
-    product          VARCHAR2(100)  NOT NULL,
-    current_quantity NUMBER         NOT NULL,
-    request_quantity NUMBER         NOT NULL,
-    status           VARCHAR2(20)   NULL,
-    requestedat      DATE           NULL,
-    updatedat        DATE           NULL,
-    isPlaceOrder     VARCHAR2(10)   NULL,
-    Field            VARCHAR2(1000) NULL,
+    order_id          NUMBER          PRIMARY KEY,
+    branch_num        NUMBER          NOT NULL, -- FK, branch_stock의 PK
+    branch_id         VARCHAR2(20)    NOT NULL,
+    inventory_id      NUMBER          NOT NULL,
+    product           VARCHAR2(100)   NOT NULL,
+    current_quantity  NUMBER          NOT NULL,
+    request_quantity  NUMBER          NOT NULL,
+    status            VARCHAR2(20)    NULL,
+    requestedat       DATE            NULL,
+    updatedat         DATE            NULL,
+    isPlaceOrder      VARCHAR2(10)    NULL,
+    Field             VARCHAR2(1000)  NULL,
+    FOREIGN KEY (branch_num) REFERENCES branch_stock(branch_num),
     FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
-    FOREIGN KEY (branch_id, inventory_id) REFERENCES branch_stock(branch_id, inventory_id)
+    FOREIGN KEY (inventory_id) REFERENCES inventory(num)
 );
 
 CREATE SEQUENCE stock_request_seq;
@@ -122,3 +125,14 @@ CREATE TABLE work_log (
 );
 
 CREATE SEQUENCE work_log_seq;
+
+
+
+
+CREATE TABLE branch_stock (
+    inventory_id     NUMBER         PRIMARY KEY REFERENCES inventory(num),  -- 재고 ID (PK & FK)
+    branch_id        VARCHAR2(20)   NOT NULL REFERENCES branches(branch_id), -- 지점 ID (FK)
+    product          VARCHAR2(100)  NOT NULL,                                -- 제품 이름
+    current_quantity NUMBER,                                                -- 현재 수량
+    updatedat        DATE                                                  -- 마지막 추가 날짜
+);

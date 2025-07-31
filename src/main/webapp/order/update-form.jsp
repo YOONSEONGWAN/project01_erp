@@ -29,6 +29,7 @@ if(dto == null) {
 <h3>발주 요청 수정</h3>
 <form action="update-request.jsp" method="post">
     <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
+    <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>"><!-- ★ 반드시 추가 -->
     <table>
         <tr>
             <th>상품명</th>

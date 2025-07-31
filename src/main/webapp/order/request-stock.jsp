@@ -3,13 +3,18 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
 request.setCharacterEncoding("UTF-8");
+int branchNum = Integer.parseInt(request.getParameter("branchNum"));   // ★ 추가!
 String branchId = request.getParameter("branchId");
 int inventoryId = Integer.parseInt(request.getParameter("inventoryId"));
 String product = request.getParameter("product");
 int currentQuantity = Integer.parseInt(request.getParameter("currentQuantity"));
 int requestQuantity = Integer.parseInt(request.getParameter("requestQuantity"));
 
+
+
 StockRequestDto dto = new StockRequestDto();
+dto.setBranchNum(branchNum); // ★ 반드시 추가!
+
 dto.setBranchId(branchId);
 dto.setInventoryId(inventoryId);
 dto.setProduct(product);

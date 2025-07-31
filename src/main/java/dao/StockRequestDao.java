@@ -17,19 +17,20 @@ public class StockRequestDao {
             conn = new DbcpBean().getConn();
             String sql = """
                 INSERT INTO stock_request 
-                (order_id, branch_id, inventory_id, product, current_quantity,
+                (order_id, branch_num, branch_id, inventory_id, product, current_quantity,
                  request_quantity, status, requestedat, updatedat, isPlaceOrder, Field)
-                VALUES (stock_request_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, SYSDATE, SYSDATE, ?, ?)
+                VALUES (stock_request_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, SYSDATE, SYSDATE, ?, ?)
             """;
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, dto.getBranchId());
-            pstmt.setInt(2, dto.getInventoryId());
-            pstmt.setString(3, dto.getProduct());
-            pstmt.setInt(4, dto.getCurrentQuantity());
-            pstmt.setInt(5, dto.getRequestQuantity());
-            pstmt.setString(6, dto.getStatus());
-            pstmt.setString(7, dto.getIsPlaceOrder());
-            pstmt.setString(8, dto.getField());
+            pstmt.setInt(1, dto.getBranchNum());           // FK (branch_stock의 PK)
+            pstmt.setString(2, dto.getBranchId());
+            pstmt.setInt(3, dto.getInventoryId());
+            pstmt.setString(4, dto.getProduct());
+            pstmt.setInt(5, dto.getCurrentQuantity());
+            pstmt.setInt(6, dto.getRequestQuantity());
+            pstmt.setString(7, dto.getStatus());
+            pstmt.setString(8, dto.getIsPlaceOrder());
+            pstmt.setString(9, dto.getField());
             rowCount = pstmt.executeUpdate();
         } catch(Exception e) { e.printStackTrace(); }
         finally {
@@ -54,6 +55,7 @@ public class StockRequestDao {
             if(rs.next()) {
                 dto = new StockRequestDto();
                 dto.setOrderId(rs.getInt("order_id"));
+                dto.setBranchNum(rs.getInt("branch_num"));
                 dto.setBranchId(rs.getString("branch_id"));
                 dto.setInventoryId(rs.getInt("inventory_id"));
                 dto.setProduct(rs.getString("product"));
@@ -93,6 +95,7 @@ public class StockRequestDao {
             while(rs.next()) {
                 StockRequestDto dto = new StockRequestDto();
                 dto.setOrderId(rs.getInt("order_id"));
+                dto.setBranchNum(rs.getInt("branch_num"));
                 dto.setBranchId(rs.getString("branch_id"));
                 dto.setInventoryId(rs.getInt("inventory_id"));
                 dto.setProduct(rs.getString("product"));
@@ -123,8 +126,8 @@ public class StockRequestDao {
             conn = new DbcpBean().getConn();
             String sql = """
                 UPDATE stock_request 
-                SET product=?, request_quantity=?, updatedat=SYSDATE 
-                WHERE order_id=?
+                   SET product=?, request_quantity=?, updatedat=SYSDATE 
+                 WHERE order_id=?
             """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, product);
