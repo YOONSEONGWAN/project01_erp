@@ -82,7 +82,7 @@ public class HqBoardDao {
 			conn = new DbcpBean().getConn();
 			String sql = """
 				UPDATE hqBoard
-				SET viewCount = viewCount+1
+				SET view_count = view_count+1
 				WHERE num=?
 			""";
 			pstmt = conn.prepareStatement(sql);
@@ -167,7 +167,7 @@ public class HqBoardDao {
 				FROM
 					(SELECT result1.*, ROWNUM AS rnum
 					FROM
-						(SELECT num, writer, title, content, viewCount, createdAt
+						(SELECT num, writer, title, content, view_count, created_at
 						FROM hqBoard
 						ORDER BY num DESC) result1)
 				WHERE rnum BETWEEN ? AND ?
@@ -184,8 +184,8 @@ public class HqBoardDao {
 				dto.setNum(rs.getInt("NUM"));
 				dto.setWriter(rs.getString("writer"));
 				dto.setTitle(rs.getString("title"));
-				dto.setViewCount(rs.getInt("viewCount"));
-				dto.setCreatedAt(rs.getString("createdAt"));
+				dto.setViewCount(rs.getInt("view_count"));
+				dto.setCreatedAt(rs.getString("created_at"));
 				list.add(dto);
 			}
 		}catch(Exception e) {
@@ -226,8 +226,8 @@ public class HqBoardDao {
 				FROM
 					(SELECT result1.*, ROWNUM AS rnum
 					FROM
-						(SELECT num, writer, title, content, viewCount, createdAt
-						FROM board
+						(SELECT num, writer, title, content, view_count, created_at
+						FROM hqboard
 						WHERE title LIKE '%'||?||'%' OR content LIKE '%'||?||'%' 
 						ORDER BY num DESC) result1)
 				WHERE rnum BETWEEN ? AND ?
@@ -246,8 +246,8 @@ public class HqBoardDao {
 				dto.setNum(rs.getInt("NUM"));
 				dto.setWriter(rs.getString("writer"));
 				dto.setTitle(rs.getString("title"));
-				dto.setViewCount(rs.getInt("viewCount"));
-				dto.setCreatedAt(rs.getString("createdAt"));
+				dto.setViewCount(rs.getInt("view_count"));
+				dto.setCreatedAt(rs.getString("created_at"));
 				list.add(dto);
 			}
 		}catch(Exception e) {
@@ -256,9 +256,9 @@ public class HqBoardDao {
 			try {
 				if (rs != null)
 					rs.close();
-				if (pstmt != null);
+				if (pstmt != null)
 				pstmt.close();
-				if(conn!=null);
+				if(conn!=null)
 				conn.close();
 				
 			}catch(Exception e) {
@@ -281,7 +281,7 @@ public class HqBoardDao {
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-				SELECT num, writer, title, viewCount, createdAt
+				SELECT num, writer, title, view_count, created_at
 				FROM hqBoard
 				ORDER BY NUM DESC
 			""";
@@ -294,8 +294,8 @@ public class HqBoardDao {
 				dto.setNum(rs.getInt("NUM"));
 				dto.setWriter(rs.getString("writer"));
 				dto.setTitle(rs.getString("title"));
-				dto.setViewCount(rs.getInt("viewCount"));
-				dto.setCreatedAt(rs.getString("createdAt"));
+				dto.setViewCount(rs.getInt("view_count"));
+				dto.setCreatedAt(rs.getString("created_at"));
 				list.add(dto);
 			}
 		}catch(Exception e) {
@@ -330,7 +330,7 @@ public class HqBoardDao {
 			conn = new DbcpBean().getConn();
 			String sql = """
 				SELECT MAX(ROWNUM) AS count
-				FROM board
+				FROM hqboard
 			""";
 			pstmt = conn.prepareStatement(sql);
 			
@@ -371,26 +371,30 @@ public class HqBoardDao {
 			String sql = """
 				SELECT *
 				FROM	
-					(SELECT b.num, writer, title, content, viewCount, 
-						TO_CHAR(b.createdAt, 'YY"년" MM"월" DD"일" HH24:MI') AS createdAt, 
+					(SELECT b.num, writer, title, content, view_count, 
+						TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at, 
 						profileImage,
 						LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
 						LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
-					FROM board b
-					INNER JOIN users u ON b.writer = u.userName) 
+					FROM hqboard b
+					INNER JOIN users2 u ON b.writer = u.name) 
 				WHERE num=?
 			""";
 			pstmt = conn.prepareStatement(sql);
 			// 바인딩 예시: pstmt.setInt(1, num);
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
-			while (rs.next()) { // 업데이트 요소 작성 
-				/*dto = new BookDto();
+			if (rs.next()) { // 업데이트 요소 작성 
+				dto=new HqBoardDto();
 				dto.setNum(num);
-				dto.setName(rs.getString("name"));
-				dto.setAuthor(rs.getString("author"));
-				dto.setPublisher(rs.getString("publisher"));*/
-
+				dto.setWriter(rs.getString("writer"));
+				dto.setTitle(rs.getString("title"));
+				dto.setContent(rs.getString("content"));
+				dto.setViewCount(rs.getInt("view_count"));
+				dto.setCreatedAt(rs.getString("created_at"));
+				dto.setProfileImage(rs.getString("profileImage"));
+				dto.setPrevNum(rs.getInt("prevNum"));
+				dto.setNextNum(rs.getInt("nextNum"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -501,7 +505,7 @@ public class HqBoardDao {
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-					INSERT INTO board
+					INSERT INTO hqboard
 					(num, writer, title, content)
 					VALUES(?, ?, ?, ?)
 					""";

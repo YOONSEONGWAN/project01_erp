@@ -9,11 +9,12 @@
 <body>
 	<h1>본사 인덱스 페이지</h1>
 	<ul>
-    	<li><a href="${pageContext.request.contextPath }/headquater/item.jsp">상품관리</a></li>
-   		<li><a href="${pageContext.request.contextPath }/branch-admin/branchManagement.jsp">지점관리</a></li>
-    	<li><a href="${pageContext.request.contextPath }/index/board.jsp">게시판</a></li>
+    	<li><a href="${pageContext.request.contextPath }/product/list.jsp">상품관리</a></li>
+   		<li><a href="${pageContext.request.contextPath }/branch-admin/list.jsp">지점관리</a></li>
+    	<li><a href="${pageContext.request.contextPath }/board/list.jsp">게시판</a></li>
     	<li><a href="${pageContext.request.contextPath }/headquater/sales.jsp">매출/회계</a></li>
     	<li><a href="${pageContext.request.contextPath }/headquater/stock.jsp">재고</a></li>
+    	<li><a href="${pageContext.request.contextPath }/hqboard/hq-list.jsp">본사 내부 게시판</a></li>
 	</ul>
 	
 		<!-- 

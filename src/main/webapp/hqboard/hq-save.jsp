@@ -6,18 +6,18 @@
 	// 폼 전송되는 title 과 content
 	String title=request.getParameter("title");
 	String content=request.getParameter("content");
-	// 글 작성자는 세션 객체로부터 얻어낸다.
+	// 글 작성자는 세션 객체로부터 얻어낸다. db에 로그인이 없어서 현재는 작성 불가
 	String writer=(String)session.getAttribute("userName");
-	// DB 에 저장하기
 	HqBoardDto dto=new HqBoardDto();
-	dto.setWriter(writer);
-	dto.setTitle(title);
-	dto.setContent(content);
 	// 글 번호를 미리 얻어낸다
 	int num=HqBoardDao.getInstance().getSequence();
 	// 글 번호도 dto 에 담음
 	dto.setNum(num);
+	// DB 에 저장하기
 	
+	dto.setWriter(writer);
+	dto.setTitle(title);
+	dto.setContent(content);
 	boolean isSuccess=HqBoardDao.getInstance().insert(dto);
 	// 응답하기
 	
