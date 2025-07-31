@@ -6,8 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import branch.dao.UserDao;
-import branch.dto.UserDto;
+import dao.UserDao;
+import dto.UserDto;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -46,26 +46,24 @@ public class UserUpdateServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 폼 전송되는 내용 추출
 		// JSP에서 넘어온 모든 파라미터들을 String 변수에 담아두자!
-		String userName = req.getParameter("userName");
-		String branchNum = req.getParameter("branchNum");
-		String phoneNum = req.getParameter("phoneNum");
-		String grade = req.getParameter("grade"); // 추가된 'grade' 파라미터
-		String myLocation = req.getParameter("myLocation");
-		String branchLocation = req.getParameter("branchLocation");
+		String user_name = req.getParameter("user_name");
+		String branch_id = req.getParameter("branch_id");
+		String phone = req.getParameter("phone");
+		String role = req.getParameter("role"); // 추가된 'grade' 파라미터
+		String location = req.getParameter("location");
 		
 		// 파일데이터 (<input type="file" name="profileImage">)
 		Part filePart = req.getPart("profileImage");
 		
 		// DB 에서 현재 사용자 정보를 불러온다.
-		UserDto dto = UserDao.getInstance().getByUserName(userName);
+		UserDto dto = UserDao.getInstance().getByUserName(user_name);
 		
 		// DTO에 폼에서 받아온 최신 정보들을 먼저 설정한다.
 		// 이렇게 하면 파일 업로드 여부와 관계없이 항상 최신 정보가 반영될 수 있어!
-		dto.setBranchNum(branchNum);
-		dto.setPhoneNum(phoneNum);
-		dto.setGrade(grade); // DTO에도 'grade'를 설정하는 메소드가 필요해!
-		dto.setMyLocation(myLocation);
-		dto.setBranchLocation(branchLocation);
+		dto.setBranch_id(branch_id);
+		dto.setPhone(phone);
+		dto.setRole(role); // DTO에도 'grade'를 설정하는 메소드가 필요해!
+		dto.setLocation(location);
 
 		// 만일 업로드된 프로필 이미지가 있다면 (파일이 선택되었다면)
 		if(filePart != null && filePart.getSize() > 0) {
@@ -91,24 +89,10 @@ public class UserUpdateServlet extends HttpServlet{
 			// 원하는 목적지 (filePath) 로 파일을 복사한다.
 			Files.copy(is,  Paths.get(filePath));
 			System.out.println("Saved: " + filePath);
-			
-			// 기존에 이미 저장된 프로필 사진이 있으면 파일 시스템에서 삭제하기 
-			if(dto.getProfileImage() != null) {
-				// 삭제할 파일의 전체 경로 
-				String deleteFilePath = fileLocation + "/" + dto.getProfileImage();
-				// Files 클래스의 delete() 메소드를 이용해서 삭제하기 
-				Files.deleteIfExists(Paths.get(deleteFilePath)); // 파일이 없어도 에러나지 않도록 `deleteIfExists` 사용
-			}
-			
-			// dto 에 저장된 파일명을 담는다. (이게 새 프로필 이미지 이름이 됨)
-			dto.setProfileImage(saveFileName);
-		} 
-		// 모든 정보가 담긴 dto 객체를 DAO를 통해 DB에 업데이트한다.
-		// 이제 이 메소드 하나로 프로필 이미지 유무와 상관없이 모든 사용자 정보가 업데이트돼!
-		UserDao.getInstance().updateProfile(dto); // 이 메소드가 UserDto의 모든 필드를 업데이트하도록 설계되어야 해!
 		
 		// 리다이렉트 응답
 		String cPath = req.getContextPath();
 		resp.sendRedirect(cPath + "/user2/info2.jsp");
+		}
 	}
 }

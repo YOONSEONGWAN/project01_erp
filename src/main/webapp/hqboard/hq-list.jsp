@@ -85,6 +85,7 @@
 </head>
 <body>
 	<div class="container">
+		<a href="${pageContext.request.contextPath }/index/headquaterindex.jsp"> 본사 메인 페이지로 이동</a>
 		<a class="" href="hq-new-form.jsp">
 			새 글 작성
 			<i class="bi bi-pencil-square"></i>
@@ -138,7 +139,7 @@
 		
 		<ul class=""><!-- 페이징 처리 부분 -->
 			<%if(startPageNum!=1){ %>
-				<li calss="">
+				<li class="">
 					<a class=page-link href="hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword %>">&lsaquo;</a><!-- 이전페이지 -->
 				</li>
 			<%}else{ %>
@@ -146,12 +147,12 @@
 			<%} %>
 			
 			<% for(int i=startPageNum; i<=endPageNum; i++){%>
-				<li calss="page-item">
+				<li class="page-item">
 					<a class="page-link <%=i==pageNum ? "active" : "" %>" href="hq-list.jsp?pageNum=<%=i %>&keyword=<%=keyword %>"><%=i %></a>
 				</li>
 			<%} %>
 			<%if(endPageNum < totalPageCount){ %>
-				<li calss="page-item">
+				<li class="page-item">
 					<a class=page-link href="hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword %>">&rsaquo;</a><!-- 다음페이지 -->
 				</li>
 			<%}else{ %>
