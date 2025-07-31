@@ -1,13 +1,17 @@
 package dto;
 
 public class BranchDto {
-	private int branchId;
-	private String branchName;
-	private String branchLocation;
-	private String branchPhone;
-	private String userName;
-	private String registeredAt;
-	private String updatedAt;
+	private int num;
+	private String branch_id;
+	private String address;
+	private String phone;
+	private String name;
+	private String registered_at;
+	private String updated_at;
+	private String created_at;
+	private String updated_at;
+	private String name;
+	
 	//페이징 처리를 위한 필드
 	private int startRowNum;
 	private int endRowNum;
@@ -16,48 +20,64 @@ public class BranchDto {
 	private int nextNum;
 	//검색 키워드를 담기 위한 필드
 	private String keyword;
+  
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
+	public String getBranch_id() {
+		return branch_id;
+	}
+	public void setBranch_id(String branch_id) {
+		this.branch_id = branch_id;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getRegistered_at() {
+		return registered_at;
+  }
+  public void setRegistered_at(String registered_at) {
+		this.registered_at = registered_at;
+	}
 	
-	public int getBranchId() {
-		return branchId;
+	public String getName() {
+		return name;
 	}
-	public void setBranchId(int branchId) {
-		this.branchId = branchId;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getBranchName() {
-		return branchName;
+  
+	public String getCreated_at() {
+		return created_at;
 	}
-	public void setBranchName(String branchName) {
-		this.branchName = branchName;
+	public void setCreated_at(String created_at) {
+		this.created_at = created_at;
+
 	}
-	public String getBranchLocation() {
-		return branchLocation;
+	
+	public String getUpdated_at() {
+		return updated_at;
 	}
-	public void setBranchLocation(String branchLocation) {
-		this.branchLocation = branchLocation;
-	}
-	public String getBranchPhone() {
-		return branchPhone;
-	}
-	public void setBranchPhone(String branchPhone) {
-		this.branchPhone = branchPhone;
-	}
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public String getRegisteredAt() {
-		return registeredAt;
-	}
-	public void setRegisteredAt(String registeredAt) {
-		this.registeredAt = registeredAt;
-	}
-	public String getUpdatedAt() {
-		return updatedAt;
-	}
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setUpdated_at(String updated_at) {
+		this.updated_at = updated_at;
 	}
 	public int getStartRowNum() {
 		return startRowNum;
@@ -88,7 +108,5 @@ public class BranchDto {
 	}
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
-	}
-	
-	
+  }
 }
