@@ -38,15 +38,6 @@
 	//하단 끝 페이지 번호
 	int endPageNum=startPageNum+PAGE_DISPLAY_COUNT-1;
 	
-	/*
-		StringUtils 클래스의 isEmpty() static 메소드를 이용하면 문자열이 비었는지 여부를 알수 있다
-		null 또는 "" 빈문자열은  비었다고 판정된다.
-		
-		StringUtils.isEmpty(keyword)
-		는
-		keyword == null or "".equals(keyword) 
-		를 대체할수 있다.
-	*/
 	//전체 글의 갯수 
 	int totalRow=0;
 	//만일 전달된 keyword 가 없다면 
@@ -88,7 +79,7 @@
 </head>
 <body>
 	<div class="container">
-		<a href="new-form.jsp">지점 등록</a>
+		<a href="insert-form.jsp">지점 등록</a>
 		<h1>지점 목록</h1>
 		<div class="row">
 			<div class="col">
@@ -114,14 +105,34 @@
 			<%for(BranchDto tmp:list){ %>
 				<tr>
 					<td>
-						<a href="detail.jsp?num=<%=tmp.getBranchId() %>"><%=tmp.getBranchName() %></a>
+						<a href="detail.jsp?num=<%=tmp.getNum() %>"><%=tmp.getName() %></a>
 					</td> 
-					<td><%=tmp.getBranchLocation() %></td>
-					<td><%=tmp.getBranchPhone() %></td>
+					<td><%=tmp.getAddress() %></td>
+					<td><%=tmp.getPhone() %></td>
 					<td><%=tmp.getUserName() %></td>
 				</tr>
 			<%} %>	
 		</tbody>
 	</table>
+	
+	<ul class="pagination">
+		<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
+		<%if(startPageNum != 1){ %>
+			<li class="page-item">
+				<a class="page-link" href="list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>">&lsaquo;</a>
+			</li>
+		<%} %>			
+		<%for(int i=startPageNum; i<=endPageNum ; i++){ %>
+			<li class="page-item">
+				<a class="page-link <%= i==pageNum ? "active":"" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>"><%=i %></a>
+			</li>
+		<%} %>
+		<%-- endPageNum 이 totalPageCount 보다 작을때 다음 page 가 있다 --%>		
+		<%if(endPageNum < totalPageCount){ %>
+			<li class="page-item">
+				<a class="page-link" href="list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>">&rsaquo;</a>
+			</li>
+		<%} %>	
+	</ul>
 </body>
 </html>

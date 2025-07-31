@@ -47,28 +47,31 @@ CREATE TABLE inandout (
 CREATE SEQUENCE inandout_seq;
 
 
-CREATE TABLE users2 (
-    user_id         VARCHAR2(20) PRIMARY KEY,  		-- 사용자 ID (실제 로그인용 ID)
-    user_name       VARCHAR2(20),              		-- 이름 (사람 이름)
-    password        VARCHAR2(100) NOT NULL,         -- 비밀번호
-    branch_id       NUMBER,              			-- 지점 ID (FK로 사용)
-    myLocation      VARCHAR2(100),             		-- 개인 주소
-    phoneNum        VARCHAR2(20),              		-- 개인 전화번호
-    grade           VARCHAR2(20) DEFAULT 'ROLE_USER' NOT NULL,  -- 계급 (ex: 본사, 지점장, 직원)
-    profileImage    VARCHAR2(100),             		-- 프로필 이미지 경로
-    updatedAt       DATE DEFAULT SYSDATE,     		-- 수정일
-    registeredAt   DATE DEFAULT SYSDATE,            -- 가입일
-    CONSTRAINT users2_branch_fk
-        FOREIGN KEY (branch_id)
-        REFERENCES branches (branch_id)
+CREATE TABLE users_p (
+    num         NUMBER         NOT NULL,
+    branch_id   VARCHAR2(20)   NOT NULL,
+    user_id     VARCHAR2(20)   NOT NULL UNIQUE,
+    password    VARCHAR2(100)  NOT NULL,
+    user_name   VARCHAR2(20)   NOT NULL,
+    location    VARCHAR2(100),
+    phone       VARCHAR2(50),
+    role        VARCHAR2(10),
+    updated_at  DATE,
+    created_at  DATE,
+    CONSTRAINT pk_users_p PRIMARY KEY (num),
+    CONSTRAINT fk_users_p_branch FOREIGN KEY (branch_id)
+        REFERENCES branches(branch_id)
         ON DELETE CASCADE
 );
 
 CREATE TABLE branches (
-    branch_id       NUMBER PRIMARY KEY,  -- 지점 ID
-	branch_name     VARCHAR2(50),        -- 지점명
-    branchLocation  VARCHAR2(100),       -- 지점 주소
-    branchPhone     VARCHAR2(20)         -- 지점 전화번호
+    num         NUMBER         PRIMARY KEY, 	-- 지점 고유 번호
+    branch_id   VARCHAR2(20)   NOT NULL UNIQUE, -- 지점 아이디
+    name        VARCHAR2(50)   NOT NULL, 		-- 지점 이름
+    address     VARCHAR2(100)  NOT NULL,		-- 지점 주소
+    phone       VARCHAR2(20)   NOT NULL, 		-- 지점 연락처
+    created_at  DATE           NOT NULL, -- 등록일
+    updated_at  DATE 							-- 수정일
 );
 
 CREATE SEQUENCE branches_seq;
