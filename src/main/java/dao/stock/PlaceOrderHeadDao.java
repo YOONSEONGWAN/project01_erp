@@ -84,7 +84,7 @@ public class PlaceOrderHeadDao {
             while (rs.next()) {
                 PlaceOrderHeadDto dto = new PlaceOrderHeadDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setDate(rs.getString("order_date"));
+                dto.setOrder_date(rs.getString("order_date"));
                 dto.setManager(rs.getString("manager"));
                 list.add(dto);
             }
@@ -106,7 +106,7 @@ public class PlaceOrderHeadDao {
             while (rs.next()) {
                 PlaceOrderHeadDto dto = new PlaceOrderHeadDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setDate(rs.getString("order_date"));
+                dto.setOrder_date(rs.getString("order_date"));
                 dto.setManager(rs.getString("manager"));
                 list.add(dto);
             }
@@ -117,9 +117,35 @@ public class PlaceOrderHeadDao {
     }
     
     
+    public String getOrderDateByOrderId(int orderId) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String orderDateStr = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = "SELECT TO_CHAR(order_date, 'YYYY-MM-DD HH24:MI:SS') AS order_date_str FROM placeOrder_head WHERE order_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                orderDateStr = rs.getString("order_date_str");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return orderDateStr;
+    }
+    
+    
 	
-	
-	}
+}
 	
 
 	

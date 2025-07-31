@@ -1,3 +1,5 @@
+<%@page import="dao.stock.OutboundOrdersDao"%>
+<%@page import="dto.stock.OutboundOrdersDto"%>
 <%@page import="java.util.List"%>
 <%@page import="dao.stock.InboundOrdersDao"%>
 <%@page import="dto.stock.InboundOrdersDto"%>
@@ -6,6 +8,7 @@
 
 <%
     List<InboundOrdersDto> list = InboundOrdersDao.getInstance().selectAll();
+    List<OutboundOrdersDto> list2 = OutboundOrdersDao.getInstance().selectAll();
 %>
 
 <!DOCTYPE html>
@@ -30,11 +33,10 @@
         <thead>
             <tr>
                 <th>입고 ID</th>
-                <th>재고 ID</th>
-                <th>승인 상태</th>
                 <th>입고 날짜</th>
                 <th>담당자</th>
-                <th>관리</th>
+                <th>상세보기</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -44,11 +46,11 @@
                 for (InboundOrdersDto dto : list) { %>
                     <tr>
                         <td><%= dto.getOrder_id() %></td>
-                        <td><%= dto.getInventory_id() %></td>
-                        <td><%= dto.getApproval() != null ? dto.getApproval() : "-" %></td>
                         <td><%= dto.getIn_date() != null ? dto.getIn_date() : "-" %></td>
                         <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
-                        <td><a href="inandout_in_edit.jsp?order_id=<%= dto.getOrder_id() %>">수정</a></td>
+                        <td>
+                    		<a href="inbound_detail.jsp?order_id=<%= dto.getOrder_id() %>">상세보기</a>
+                		</td>
                     </tr>
             <%  } } %>
         </tbody>

@@ -10,18 +10,20 @@ public class PlaceOrderHeadDto {
 	public void setOrder_id(int order_id) {
 		this.order_id = order_id;
 	}
-	public String getDate() {
-		return order_date;
-	}
-	public void setDate(String date) {
-		this.order_date = order_date;
-	}
+	
 	public String getManager() {
 		return manager;
 	}
 	public void setManager(String manager) {
 		this.manager = manager;
 	}
+	public String getOrder_date() {
+		return order_date;
+	}
+	public void setOrder_date(String order_date) {
+		this.order_date = order_date;
+	}
+	
 	
 	
 }

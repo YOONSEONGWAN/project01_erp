@@ -2,7 +2,7 @@ package dto.stock;
 
 public class InboundOrdersDto {
 	private int order_id;
-	private int inventory_id;
+	private int branch_id;
 	private String approval;
 	private String in_date;
 	private String manager;
@@ -12,12 +12,6 @@ public class InboundOrdersDto {
 	}
 	public void setOrder_id(int order_id) {
 		this.order_id = order_id;
-	}
-	public int getInventory_id() {
-		return inventory_id;
-	}
-	public void setInventory_id(int inventory_id) {
-		this.inventory_id = inventory_id;
 	}
 	public String getApproval() {
 		return approval;
@@ -36,6 +30,12 @@ public class InboundOrdersDto {
 	}
 	public void setManager(String manager) {
 		this.manager = manager;
+	}
+	public int getBranch_id() {
+		return branch_id;
+	}
+	public void setBranch_id(int branch_id) {
+		this.branch_id = branch_id;
 	}
 	
 	

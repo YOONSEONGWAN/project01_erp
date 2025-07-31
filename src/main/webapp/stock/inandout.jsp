@@ -30,7 +30,15 @@
     <!-- 입고 처리 내역 (최근 10건) -->
     <h2>입고 처리 내역 (최근 10건)</h2>
     <table>
-        <thead><tr><th>입고 ID</th><th>재고 ID</th><th>승인 상태</th><th>입고 날짜</th><th>담당자</th><th>관리</th></tr></thead>
+        <thead>
+        	<tr>
+        		<th>입고 ID</th> 
+        		<th>입고 날짜</th>
+        		<th>담당자</th>
+        		<th>상세보기</th>
+        		
+        	</tr>
+        </thead>
         <tbody>
         <% if (processedInbounds.isEmpty()) { %>
             <tr><td colspan="6">-</td></tr>
@@ -38,12 +46,12 @@
             for (InboundOrdersDto dto : processedInbounds) { %>
                 <tr>
                     <td><%= dto.getOrder_id() %></td>
-                    <td><%= dto.getInventory_id() %></td>
-                    <td><%= dto.getApproval() != null ? dto.getApproval() : "-" %></td>
                     <td><%= dto.getIn_date() != null ? dto.getIn_date() : "-" %></td>
                     <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
-                    <td><a href="inbound_edit.jsp?order_id=<%= dto.getOrder_id() %>">수정</a></td>
-                </tr>
+                    <td>
+                    	<a href="inbound_detail.jsp?order_id=<%= dto.getOrder_id() %>">상세보기</a>
+                	</td>
+                </tr> 
         <% } } %>
         </tbody>
     </table>
@@ -52,7 +60,14 @@
     <!-- 출고 처리 내역 (최근 10건) -->
     <h2>출고 처리 내역 (최근 10건)</h2>
     <table>
-        <thead><tr><th>출고 ID</th><th>재고 ID</th><th>승인 상태</th><th>출고 날짜</th><th>담당자</th><th>관리</th></tr></thead>
+        <thead>
+        	<tr>
+        		<th>출고 ID</th>
+        		<th>승인 상태</th>
+        		<th>출고 날짜</th>
+        		<th>담당자</th>
+        	</tr>
+        </thead>
         <tbody>
         <% if (processedOutbounds.isEmpty()) { %>
             <tr><td colspan="6">-</td></tr>
@@ -60,17 +75,15 @@
             for (OutboundOrdersDto dto : processedOutbounds) { %>
                 <tr>
                     <td><%= dto.getOrder_id() %></td>
-                    <td><%= dto.getInventory_id() %></td>
                     <td><%= dto.getApproval() != null ? dto.getApproval() : "-" %></td>
                     <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
                     <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
-                    <td><a href="outbound_edit.jsp?order_id=<%= dto.getOrder_id() %>">수정</a></td>
                 </tr>
         <% } } %>
         </tbody>
     </table>
     <a href="outbound_list.jsp" class="button-link">전체 출고 내역 보기</a>
-
+	
 </div>
 </body>
 </html>

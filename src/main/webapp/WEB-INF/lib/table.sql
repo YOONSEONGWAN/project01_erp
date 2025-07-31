@@ -75,19 +75,6 @@ CREATE TABLE Inventory (
 
 CREATE SEQUENCE inventory_seq;
 
-/*CREATE TABLE inandout (
-    order_id NUMBER PRIMARY KEY,          -- 주문 고유 ID
-    inventory_id NUMBER NOT NULL,         -- 재고위치 ID
-    is_in_order VARCHAR2(10),             -- 입고 여부 ('YES'/'NO' 등)
-    is_out_order VARCHAR2(10),            -- 출고 여부 ('YES'/'NO' 등)
-    in_Approval VARCHAR2(10),             -- 승인 상태 ('대기', '승인', '반려' 등)
-    out_Approval Varchar2(10),
-    in_date DATE,                         -- 입고 날짜
-    out_date DATE,                        -- 출고 날짜
-    manager VARCHAR2(100)                 -- 담당자
-);
-
-CREATE SEQUENCE inandout_seq;*/
 
 CREATE TABLE inbound_orders (
     in_order_id   NUMBER PRIMARY KEY,     -- 입고 고유 ID
