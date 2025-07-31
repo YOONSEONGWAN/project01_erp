@@ -1,45 +1,46 @@
 package dto;
 
 public class IngredientDto {
-	private int ingredientId;
-	private String name;
-	private String unit;
-	private double unitPrice;
-
-	public IngredientDto() {
+	
+	public IngredientDto() {}
+	
+	
+	private int inventoryId;      // 식재료(재고) 고유번호
+    private String product;       // 식재료명
+    private int currentQuantity;  // 현재 재고 수량
+    private String branchId;      // (필요시) 지점 아이디
+	public int getInventoryId() {
+		return inventoryId;
 	}
-
-	// getter, setter
-	public int getIngredientId() {
-		return ingredientId;
+	public void setInventoryId(int inventoryId) {
+		this.inventoryId = inventoryId;
 	}
-
-	public void setIngredientId(int ingredientId) {
-		this.ingredientId = ingredientId;
+	public String getProduct() {
+		return product;
 	}
-
-	public String getName() {
-		return name;
+	public void setProduct(String product) {
+		this.product = product;
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	public int getCurrentQuantity() {
+		return currentQuantity;
 	}
-
-	public String getUnit() {
-		return unit;
+	public void setCurrentQuantity(int currentQuantity) {
+		this.currentQuantity = currentQuantity;
 	}
-
-	public void setUnit(String unit) {
-		this.unit = unit;
+	public String getBranchId() {
+		return branchId;
 	}
-
-	public double getUnitPrice() {
-		return unitPrice;
+	public void setBranchId(String branchId) {
+		this.branchId = branchId;
 	}
-
-	public void setUnitPrice(double unitPrice) {
-		this.unitPrice = unitPrice;
-	}
-
+	    
+	    
+	
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 }
