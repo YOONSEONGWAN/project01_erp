@@ -4,10 +4,10 @@
 <%
 	int num = Integer.parseInt(request.getParameter("num"));
 	String writer = BoardDao.getInstance().getData(num).getWriter();
-	String userName = (String) session.getAttribute("userName");
+	String user_name = (String) session.getAttribute("user_name");
 
-	if (!writer.equals(userName)) {
-		response.sendError(HttpServletResponse.SC_FORBIDDEN, "남의 글 지우려고 하면 혼난다!");
+	if (!writer.equals(user_name)) {
+		response.sendError(HttpServletResponse.SC_FORBIDDEN, "다른 사용자의 글은 수정할 수 없습니다.");
 		return;
 	}
 

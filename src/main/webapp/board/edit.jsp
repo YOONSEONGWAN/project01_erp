@@ -29,7 +29,7 @@
       <input type="hidden" name="num" value="<%=dto.getNum()%>">
 
       <!-- boardType도 같이 전달 (hidden 처리) -->
-      <input type="hidden" name="boardType" value="<%=dto.getBoardType()%>">
+      <input type="hidden" name="board_type" value="<%=dto.getBoard_type()%>">
 
       <!-- 작성자 (수정 불가) -->
       <div class="mb-3">

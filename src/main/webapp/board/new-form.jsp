@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	// 세션에서 로그인된 사용자 아이디 얻어오기
-	String writer = (String)session.getAttribute("userName");
+	String writer = (String)session.getAttribute("user_name");
 %>
 <!DOCTYPE html>
 <html>

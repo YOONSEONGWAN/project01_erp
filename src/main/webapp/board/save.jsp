@@ -5,8 +5,8 @@
 <%
 	String title = request.getParameter("title");
 	String content = request.getParameter("content");
-	String writer = (String)session.getAttribute("userName");
-	String boardType = request.getParameter("boardType");
+	String writer = (String)session.getAttribute("user_name");
+	String board_type = request.getParameter("board_type");
 	
 	// 로그인 여부 확인
 		if (writer == null || writer.isEmpty()) {
@@ -23,7 +23,7 @@
 	dto.setWriter(writer);
 	dto.setTitle(title);
 	dto.setContent(content);
-	dto.setBoardType(boardType); 
+	dto.setBoard_type(board_type); 
 	
 	int num=BoardDao.getInstance().getSequence();
 	dto.setNum(num);
@@ -44,10 +44,7 @@
 			location.href="view.jsp?num=<%= dto.getNum() %>";
 		</script>
 	<%}else{%>
-		<p>
-			글 저장실패!
-			<a href="new-form.jsp">다시작성</a>
-		</p>
+		<p>글 저장실패! <a href="new-form.jsp">다시작성</a></p>
 	<%}%>
 </div>
 </body>

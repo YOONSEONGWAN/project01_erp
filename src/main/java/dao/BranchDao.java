@@ -82,7 +82,6 @@ public class BranchDao {
 								TO_CHAR(u.registeredAt, 'YY"년" MM"월" DD"일" HH24:MI') AS registered_at,
 								TO_CHAR(u.updatedAt, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
 							FROM branches b
-							INNER JOIN users2 u ON b.branch_id = u.branch_id
 						) 
 						WHERE branch_id = ?
 					""";
@@ -94,13 +93,12 @@ public class BranchDao {
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
 			if (rs.next()) {
 				dto=new BranchDto();
-				dto.setBranch_id(rs.getInt("branch_id"));
+				dto.setBranch_id(rs.getString("branch_id"));
 				dto.setBranch_name(rs.getString("branch_name"));
 				dto.setAddress(rs.getString("address"));
 				dto.setPhone(rs.getString("phone"));
-				dto.setUser_name(rs.getString("user_name"));
-				dto.setRegisteredAt(rs.getString("registered_at"));
-				dto.setUpdatedAt(rs.getString("updated_at"));
+				dto.setRegistered_at(rs.getString("registered_at"));
+				dto.setUpdated_at(rs.getString("updated_at"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

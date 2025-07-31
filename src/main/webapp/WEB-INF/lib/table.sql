@@ -1,3 +1,7 @@
+CREATE TABLE comment
+
+
+
 CREATE TABLE board_p (
     num             NUMBER         PRIMARY KEY,
     branch_id       VARCHAR2(20)   NOT NULL,

@@ -17,6 +17,8 @@ public class BranchDto {
 	private int nextNum;
 	//검색 키워드를 담기 위한 필드
 	private String keyword;
+	
+	
 	public int getNum() {
 		return num;
 	}
