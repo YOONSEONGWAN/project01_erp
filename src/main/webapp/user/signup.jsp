@@ -6,17 +6,14 @@
 <%
 	String userId = request.getParameter("userId");
 	String password = request.getParameter("password");
-	String myLocation = request.getParameter("myLocation");
-	String phoneNum = request.getParameter("phoneNum");
+	String user
 	
 	String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 	
 	UserDto dto = new UserDto();
 	dto.setUserId(userId);
 	dto.setPassword(hashedPassword);
-	dto.setMyLocation(myLocation);
-	dto.setPhoneNum(phoneNum);
-	dto.setGrade("ROLE_USER");
+
 	
 	boolean isSuccess = UserDao.getInstance().insert(dto);
 %>
@@ -34,8 +31,8 @@
 		</script>
 	<%}else{ %>
 		<script>
-			alert("다시 입력하세요")
-			location.href="signup-form.jsp"
+		alert("회원가입 되었습니다.")
+		location.href="${pageContext.request.contextPath }/"
 		</script>
 	<%} %>
 </body>

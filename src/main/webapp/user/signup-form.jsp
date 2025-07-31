@@ -18,14 +18,8 @@
 			<label for="password">비밀번호</label>
 			<input type="password" name="password" id="password" required />
 		</div>
-		<div>
-			<label for="myLocation">개인 주소</label>
-			<input type="text" name="myLocation" id="myLocation" required />
-		</div>
-		<div>
-			<label for="phoneNum">전화번호</label>
-			<input type="text" name="phoneNum" id="phoneNum" required />
-		</div>
+
+
 		<button type="submit">가입</button>
 	</form>
 </div>

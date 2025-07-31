@@ -31,7 +31,7 @@ private static UserDao dao;
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-					  		INSERT INTO users2
+					  		INSERT INTO users_p
                             (user_id, password, user_name, myLocation,
                             phoneNum, grade, profileImage, registeredAt, updatedAt)
                             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -85,7 +85,7 @@ private static UserDao dao;
 			String sql = """
                 SELECT user_id, password, user_name, myLocation,
                        phoneNum, grade, profileImage, registeredAt, updatedAt
-                FROM users2
+                FROM users_p
                 WHERE user_id=?
 			""";
 				pstmt = conn.prepareStatement(sql);
