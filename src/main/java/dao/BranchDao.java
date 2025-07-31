@@ -137,14 +137,14 @@ public class BranchDao {
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
 			if (rs.next()) {
 				dto=new BranchDto();
-				dto.setNum(rs.getInt("num"));
-				dto.setBranchId(rs.getString("branch_id"));
-				dto.setName(rs.getString("name"));
+        dto.setNum(rs.getInt("num"));
+				dto.setBranch_id(rs.getInt("branch_id"));
+        dto.setName(rs.getString("name"));
 				dto.setAddress(rs.getString("address"));
 				dto.setPhone(rs.getString("phone"));
-				dto.setUserName(rs.getString("user_name"));
-				dto.setCreatedAt(rs.getString("created_at"));
+        dto.setCreatedAt(rs.getString("created_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

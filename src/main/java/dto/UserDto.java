@@ -1,22 +1,35 @@
 package dto;
 
-public class UserDto {               
-	private String userId;
+public class UserDto {
+	private long num;
+	private String branch_id;
+	private String user_id;
 	private String password;
-	private String userName;
-	private String myLocation;
-	private String phoneNum;
-	private String grade;
-	private String profileImage;
-	private String registeredAt;
-	private String updatedAt;
+	private String user_name;
+	private String location;
+	private String phone;
+	private String role;
+	private String updated_at;
+	private String created_at;
 	
-	//setter, getter
-	public String getUserId() {
-		return userId;
+	// setter, getter
+	public long getNum() {
+		return num;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setNum(long num) {
+		this.num = num;
+	}
+	public String getBranch_id() {
+		return branch_id;
+	}
+	public void setBranch_id(String branch_id) {
+		this.branch_id = branch_id;
+	}
+	public String getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
 	public String getPassword() {
 		return password;
@@ -24,48 +37,42 @@ public class UserDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getUserName() {
-		return userName;
+	public String getUser_name() {
+		return user_name;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
-	public String getMyLocation() {
-		return myLocation;
+	public String getLocation() {
+		return location;
 	}
-	public void setMyLocation(String myLocation) {
-		this.myLocation = myLocation;
+	public void setLocation(String location) {
+		this.location = location;
 	}
-	public String getPhoneNum() {
-		return phoneNum;
+	public String getPhone() {
+		return phone;
 	}
-	public void setPhoneNum(String phoneNum) {
-		this.phoneNum = phoneNum;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
-	public String getGrade() {
-		return grade;
+	public String getRole() {
+		return role;
 	}
-	public void setGrade(String grade) {
-		this.grade = grade;
+	public void setRole(String role) {
+		this.role = role;
 	}
-	public String getProfileImage() {
-		return profileImage;
+	public String getUpdated_at() {
+		return updated_at;
 	}
-	public void setProfileImage(String profileImage) {
-		this.profileImage = profileImage;
+	public void setUpdated_at(String updated_at) {
+		this.updated_at = updated_at;
 	}
-	public String getRegisteredAt() {
-		return registeredAt;
+	public String getCreated_at() {
+		return created_at;
 	}
-	public void setRegisteredAt(String registeredAt) {
-		this.registeredAt = registeredAt;
+	public void setCreated_at(String created_at) {
+		this.created_at = created_at;
 	}
-	public String getUpdatedAt() {
-		return updatedAt;
-	}
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-
+	
+	
 }
