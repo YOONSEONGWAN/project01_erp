@@ -14,7 +14,7 @@
 		<h1>지점 등록 양식</h1>
 		<form action="insert.jsp" method="post">
 			<div>
-				<label for="branchId">아이디</label>
+				<label for="branchId">지점 아이디</label>
 				<input type="text" name="branchId" id="branchId" />
 			</div>
 			<div>
