@@ -14,12 +14,18 @@
             boolean disposal = "YES".equals(value);
 
             if (disposal) {
-                // 폐기여부 YES로 처리
-                InventoryDao.getInstance().updateDisposal(num, true);
-
-                // 수량 0, 유통기한 NULL로 업데이트
+                // 1. 수량 0으로 설정
                 InventoryDao.getInstance().setZeroQuantity(num);
+
+                // 2. 다시 확인: 수량이 0이면 폐기 여부 NO로 리셋
+                int quantity = InventoryDao.getInstance().getQuantityByNum(num);
+                if (quantity == 0) {
+                    InventoryDao.getInstance().updateDisposal(num, false); // 리셋
+                } else {
+                    InventoryDao.getInstance().updateDisposal(num, true); // YES 유지
+                }
             } else {
+                // 사용자가 NO 선택한 경우
                 InventoryDao.getInstance().updateDisposal(num, false);
             }
         } else if (paramName.startsWith("order_")) {
@@ -39,7 +45,7 @@
 <body>
 <script>
     alert("수정이 완료되었습니다.");
-    location.href = "stockList.jsp";
+    location.href = "stocklist.jsp";
 </script>
 </body>
 </html>
