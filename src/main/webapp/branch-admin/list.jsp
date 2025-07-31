@@ -85,8 +85,14 @@
 			<div class="col">
 				<form action="list.jsp" method="get">
 					<div>
+						<select name="status" id="status">
+							<option value="on">운영중</option>
+							<option value="off">폐업</option>
+							<option value="paused">휴업</option>
+						</select>
 						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="지점 이름 입력..." />
 						<button type="submit">검색</button>
+						<a href="list.jsp">초기화</a>
 					</div>
 				</form>
 			</div>
@@ -99,6 +105,7 @@
 				<th>주소</th>
 				<th>전화번호</th>
 				<th>담당자</th>
+				<th>운영 상태</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -110,6 +117,7 @@
 					<td><%=tmp.getAddress() %></td>
 					<td><%=tmp.getPhone() %></td>
 					<td><%=tmp.getUserName() %></td>
+					<td><%=tmp.getStatus() %></td>
 				</tr>
 			<%} %>	
 		</tbody>

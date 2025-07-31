@@ -35,12 +35,12 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			String sql = """
 					INSERT INTO branches
-					(num, branch_id, name, address, phone, created_at)
-					VALUES(branches_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE)
+					(num, branch_id, name, address, phone, created_at, status)
+					VALUES(branches_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, '운영중')
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
-			pstmt.setString(1, dto.getBranchId());
+			pstmt.setString(1, dto.getBranch_id());
 			pstmt.setString(2, dto.getName());
 			pstmt.setString(3, dto.getAddress());
 			pstmt.setString(4, dto.getPhone());
@@ -122,10 +122,13 @@ public class BranchDao {
 								b.address,
 								b.phone,
 								u.user_name,
+								b.status,
 								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
 								TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
 							FROM branches b
-							LEFT OUTER JOIN users_p u ON b.branch_id = u.branch_id
+							LEFT OUTER JOIN  (
+								SELECT * FROM users_p WHERE role = 'manager'
+							) u ON b.branch_id = u.branch_id
 						) 
 						WHERE num = ?
 					""";
@@ -137,14 +140,15 @@ public class BranchDao {
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
 			if (rs.next()) {
 				dto=new BranchDto();
-        dto.setNum(rs.getInt("num"));
-				dto.setBranch_id(rs.getInt("branch_id"));
-        dto.setName(rs.getString("name"));
+				dto.setNum(rs.getInt("num"));
+				dto.setBranch_id(rs.getString("branch_id"));
+				dto.setName(rs.getString("name"));
 				dto.setAddress(rs.getString("address"));
 				dto.setPhone(rs.getString("phone"));
-        dto.setCreatedAt(rs.getString("created_at"));
+				dto.setCreatedAt(rs.getString("created_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
-				
+				dto.setStatus(rs.getString("status"));
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -212,7 +216,7 @@ public class BranchDao {
 			String sql = """
 					SELECT MAX(ROWNUM) AS count
 					FROM branches
-					WHERE name LIKE '%'||?||'%'
+					WHERE name LIKE '%'||?||'%' or b.num LIKE '%'||?||'%'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -261,10 +265,12 @@ public class BranchDao {
 								b.name,
 								b.address,
 								b.phone,
+								b.status,
 								u.user_name								
 							FROM branches b
-							LEFT OUTER JOIN users_p u
-							ON b.branch_id = u.branch_id
+							LEFT OUTER JOIN  (
+								SELECT * FROM users_p WHERE role = 'manager'
+							) u ON b.branch_id = u.branch_id
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
@@ -278,11 +284,12 @@ public class BranchDao {
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
 				dto2.setNum(rs.getInt("num"));
-				dto2.setBranchId(rs.getString("branch_id"));
+				dto2.setBranch_id(rs.getString("branch_id"));
 				dto2.setName(rs.getString("name"));
 				dto2.setAddress(rs.getString("address"));
 				dto2.setPhone(rs.getString("phone"));
 				dto2.setUserName(rs.getString("user_name"));
+				dto2.setStatus(rs.getString("status"));
 				
 				list.add(dto2);
 			}
@@ -324,11 +331,13 @@ public class BranchDao {
 								b.name,
 								b.address,
 								b.phone,
+								b.status,
 								u.user_name								
 							FROM branches b
-							INNER JOIN users_p u
-							ON b.branch_id = u.branch_id
-							WHERE b.name LIKE '%'||?||'%'
+							LEFT OUTER JOIN  (
+								SELECT * FROM users_p WHERE role = 'manager'
+							) u ON b.branch_id = u.branch_id
+							WHERE b.name LIKE '%'||?||'%' or b.num LIKE '%'||?||'%'
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
@@ -343,11 +352,12 @@ public class BranchDao {
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
 				dto2.setNum(rs.getInt("num"));
-				dto2.setBranchId(rs.getString("branch_id"));
+				dto2.setBranch_id(rs.getString("branch_id"));
 				dto2.setName(rs.getString("name"));
 				dto2.setAddress(rs.getString("address"));
 				dto2.setPhone(rs.getString("phone"));
-				dto2.setUserName(rs.getString("user_name"));				
+				dto2.setUserName(rs.getString("user_name"));
+				dto2.setStatus(rs.getString("status"));
 				
 				list.add(dto2);
 			}
