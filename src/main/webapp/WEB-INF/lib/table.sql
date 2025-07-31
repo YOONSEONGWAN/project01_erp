@@ -1,3 +1,47 @@
+
+CREATE TABLE placeOrder_branch (
+    order_id NUMBER PRIMARY KEY,
+    order_date DATE DEFAULT SYSDATE,
+    manager VARCHAR2(20)
+);
+
+CREATE TABLE placeOrder_branch_detail (
+    detail_id NUMBER PRIMARY KEY,
+    order_id NUMBER,
+    product VARCHAR2(100) NOT NULL,
+    current_quantity NUMBER NOT NULL,
+    request_quantity NUMBER NOT NULL,
+    approval_status VARCHAR2(10),
+    manager VARCHAR2(20)
+);
+
+CREATE TABLE placeOrder_head (
+    order_id NUMBER PRIMARY KEY,
+    order_date DATE DEFAULT SYSDATE,
+    manager VARCHAR2(20)
+);
+
+CREATE SEQUENCE placeOrder_head_seq;
+
+CREATE TABLE placeOrder_head_detail (
+    detail_id NUMBER PRIMARY KEY,
+   	order_id NUMBER,
+    product VARCHAR2(100) NOT NULL,
+    current_quantity NUMBER NOT NULL,
+    request_quantity NUMBER NOT NULL,
+    approval_status VARCHAR2(10), --승인 OR 반려
+    manager VARCHAR2(20)
+);
+
+CREATE TABLE placeOrder (
+    num NUMBER PRIMARY KEY,                      -- 고유 번호 (PK)
+    product VARCHAR2(100) NOT NULL,              -- 상품명
+    current_quantity NUMBER NOT NULL,            -- 현재 수량
+    expiration_date DATE,                        -- 유통기한
+    request_quantity NUMBER NOT NULL,            -- 신청 수량 
+    approval_status VARCHAR2(10) DEFAULT '대기'  -- 승인 상태: 대기 / 승인 / 반려
+);
+
 CREATE TABLE hqBoard (
     num NUMBER PRIMARY KEY,         -- 글 번호
     writer VARCHAR2(100) NOT NULL,  -- 작성자
@@ -31,7 +75,7 @@ CREATE TABLE Inventory (
 
 CREATE SEQUENCE inventory_seq;
 
-CREATE TABLE inandout (
+/*CREATE TABLE inandout (
     order_id NUMBER PRIMARY KEY,          -- 주문 고유 ID
     inventory_id NUMBER NOT NULL,         -- 재고위치 ID
     is_in_order VARCHAR2(10),             -- 입고 여부 ('YES'/'NO' 등)
@@ -43,8 +87,27 @@ CREATE TABLE inandout (
     manager VARCHAR2(100)                 -- 담당자
 );
 
+CREATE SEQUENCE inandout_seq;*/
 
-CREATE SEQUENCE inandout_seq;
+CREATE TABLE inbound_orders (
+    in_order_id   NUMBER PRIMARY KEY,     -- 입고 고유 ID
+    inventory_id  NUMBER NOT NULL,        -- 입고 위치 ID
+    approval      VARCHAR2(10),           -- 승인 상태 ('대기', '승인', '반려' 등)
+    in_date       DATE,                   -- 입고 날짜
+    manager       VARCHAR2(100)           -- 담당자
+);
+
+create sequence inbound_seq;
+
+CREATE TABLE outbound_orders (
+    out_order_id  NUMBER PRIMARY KEY,     -- 출고 고유 ID
+    inventory_id  NUMBER NOT NULL,        -- 출고 위치 ID
+    approval      VARCHAR2(10),           -- 승인 상태 ('대기', '승인', '반려' 등)
+    out_date      DATE,                   -- 출고 날짜
+    manager       VARCHAR2(100)           -- 담당자
+);
+
+create sequence outbound_sequence;
 
 
 CREATE TABLE users_p (
@@ -75,3 +138,15 @@ CREATE TABLE branches (
 );
 
 CREATE SEQUENCE branches_seq;
+
+CREATE TABLE work_log (
+    id NUMBER PRIMARY KEY,                     -- 출퇴근 기록 고유번호
+    user_id VARCHAR2(20),                      -- users2.user_id 참조
+    work_date DATE DEFAULT SYSDATE NOT NULL,   -- 근무 날짜
+    start_time DATE,                           -- 출근 시간
+    end_time DATE,                             -- 퇴근 시간
+    FOREIGN KEY (user_id) REFERENCES users2(user_id)
+);
+
+CREATE SEQUENCE work_log_seq;
+
