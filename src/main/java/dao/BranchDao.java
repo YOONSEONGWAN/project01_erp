@@ -40,7 +40,7 @@ public class BranchDao {
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
-			pstmt.setString(1, dto.getBranchId());
+			pstmt.setString(1, dto.getBranch_id());
 			pstmt.setString(2, dto.getName());
 			pstmt.setString(3, dto.getAddress());
 			pstmt.setString(4, dto.getPhone());
@@ -141,14 +141,14 @@ public class BranchDao {
 			if (rs.next()) {
 				dto=new BranchDto();
 				dto.setNum(rs.getInt("num"));
-				dto.setBranchId(rs.getString("branch_id"));
+				dto.setBranch_id(rs.getString("branch_id"));
 				dto.setName(rs.getString("name"));
 				dto.setAddress(rs.getString("address"));
 				dto.setPhone(rs.getString("phone"));
-				dto.setUserName(rs.getString("user_name"));
 				dto.setCreatedAt(rs.getString("created_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
 				dto.setStatus(rs.getString("status"));
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -284,7 +284,7 @@ public class BranchDao {
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
 				dto2.setNum(rs.getInt("num"));
-				dto2.setBranchId(rs.getString("branch_id"));
+				dto2.setBranch_id(rs.getString("branch_id"));
 				dto2.setName(rs.getString("name"));
 				dto2.setAddress(rs.getString("address"));
 				dto2.setPhone(rs.getString("phone"));
@@ -352,7 +352,7 @@ public class BranchDao {
 			while (rs.next()) {
 				BranchDto dto2=new BranchDto();
 				dto2.setNum(rs.getInt("num"));
-				dto2.setBranchId(rs.getString("branch_id"));
+				dto2.setBranch_id(rs.getString("branch_id"));
 				dto2.setName(rs.getString("name"));
 				dto2.setAddress(rs.getString("address"));
 				dto2.setPhone(rs.getString("phone"));

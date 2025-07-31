@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 CREATE TABLE placeOrder_branch (
     order_id NUMBER PRIMARY KEY,
@@ -151,3 +152,5 @@ CREATE TABLE work_log (
 
 CREATE SEQUENCE work_log_seq;
 
+=======
+>>>>>>> main

@@ -11,7 +11,7 @@
 	
 	//dto 에 담아서
 	BranchDto dto=new BranchDto();
-	dto.setBranchId(branchId);
+	dto.setBranch_id(branchId);
 	dto.setName(name);
 	dto.setAddress(address);
 	dto.setPhone(phone);

@@ -16,17 +16,7 @@
 				<th>등급</th>
 			</tr>
 			<tr>
-				<%for(UserDto tmp:list){ %>
-				<tr>
-					<td>
-						<a href="detail.jsp?num=<%=tmp.getNum() %>"><%=tmp.getName() %></a>
-					</td> 
-					<td><%=tmp.getAddress() %></td>
-					<td><%=tmp.getPhone() %></td>
-					<td><%=tmp.getUserName() %></td>
-					<td><%=tmp.getStatus() %></td>
-				</tr>
-			<%} %>
+				
 			</tr>
 		</table>
 	</div>

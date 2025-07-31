@@ -21,7 +21,7 @@
 		<table>
 			<tr>
 				<th>지점 고유 번호</th>
-				<td><%=dto.getBranchId() %></td>
+				<td><%=dto.getBranch_id() %></td>
 			</tr>
 			<tr>
 				<th>지점 이름</th>

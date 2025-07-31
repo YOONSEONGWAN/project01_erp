@@ -2,7 +2,7 @@ package dto;
 
 public class BranchDto {
 	private int num;
-	private String branchId;
+	private String branch_id;
 	private String name;
 	private String address;
 	private String phone;
@@ -10,6 +10,7 @@ public class BranchDto {
 	private String updatedAt;
 	private String userName;
 	private String status;
+
 	//페이징 처리를 위한 필드
 	private int startRowNum;
 	private int endRowNum;
@@ -18,18 +19,17 @@ public class BranchDto {
 	private int nextNum;
 	//검색 키워드를 담기 위한 필드
 	private String keyword;
-	
 	public int getNum() {
 		return num;
 	}
 	public void setNum(int num) {
 		this.num = num;
 	}
-	public String getBranchId() {
-		return branchId;
+	public String getBranch_id() {
+		return branch_id;
 	}
-	public void setBranchId(String branchId) {
-		this.branchId = branchId;
+	public void setBranch_id(String branch_id) {
+		this.branch_id = branch_id;
 	}
 	public String getName() {
 		return name;

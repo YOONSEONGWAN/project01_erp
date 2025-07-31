@@ -1,6 +1,6 @@
 <%@ page import="dao.stock.InventoryDao" %>
-<%@ page import="dao.stock.PlaceOrderHeadDetailDao" %>
-<%@ page import="dto.stock.PlaceOrderHeadDetailDto" %>
+<%@ page import="dao.stock.PlaceOrderBranchDetailDao" %>
+<%@ page import="dto.stock.PlaceOrderBranchDetailDto" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%
@@ -11,18 +11,18 @@
         String newApprovalStatus = request.getParameter("approval_status");
 
         
-        PlaceOrderHeadDetailDto oldDto = PlaceOrderHeadDetailDao.getInstance().getByDetailId(detailId);
+        PlaceOrderBranchDetailDto oldDto = PlaceOrderBranchDetailDao.getInstance().getByDetailId(detailId);
         int oldRequestQty = oldDto.getRequest_quantity();
         String oldApprovalStatus = oldDto.getApproval_status();
         String product = oldDto.getProduct();
         int currentQty = oldDto.getCurrent_quantity(); //
 
        
-        int productNum = InventoryDao.getInstance().getNumByProduct(product);
+        int productNum = //InventoryDao.getInstance().getNumByProduct(product);
 
         
-        boolean inventoryUpdated = InventoryDao.getInstance()
-            .updateQuantityByApproval(productNum, oldRequestQty, newRequestQty, oldApprovalStatus, newApprovalStatus, currentQty); // ✅ currentQty 포함
+        boolean inventoryUpdated = //InventoryDao.getInstance()
+            .updateQuantityByApproval(productNum, oldRequestQty, newRequestQty, oldApprovalStatus, newApprovalStatus, currentQty); 
 
         if (!inventoryUpdated) {
 %>
@@ -35,14 +35,14 @@
         }
 
        
-        boolean result = PlaceOrderHeadDetailDao.getInstance()
+        boolean result = PlaceOrderBranchDetailDao.getInstance()
             .update(detailId, newRequestQty, newApprovalStatus);
 
         if (result) {
 %>
             <script>
                 alert("수정이 완료되었습니다.");
-                location.href = "placeorder_head_detail.jsp?order_id=<%= orderId %>";
+                location.href = "placeorder_branch_detail.jsp?order_id=<%= orderId %>";
             </script>
 <%
         } else {
