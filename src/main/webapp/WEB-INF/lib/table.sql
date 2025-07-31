@@ -134,7 +134,8 @@ CREATE TABLE branches (
     address     VARCHAR2(100)  NOT NULL,		-- 지점 주소
     phone       VARCHAR2(20)   NOT NULL, 		-- 지점 연락처
     created_at  DATE           NOT NULL, 		-- 등록일
-    updated_at  DATE 							-- 수정일
+    updated_at  DATE, 							-- 수정일
+    status		VARCHAR2(20)   NOT NULL			-- 운영 상태(운영중 | 휴업 | 폐업)
 );
 
 CREATE SEQUENCE branches_seq;

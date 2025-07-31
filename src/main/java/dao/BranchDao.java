@@ -35,8 +35,8 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			String sql = """
 					INSERT INTO branches
-					(num, branch_id, name, address, phone, created_at)
-					VALUES(branches_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE)
+					(num, branch_id, name, address, phone, created_at, status)
+					VALUES(branches_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, '운영중')
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
@@ -122,10 +122,13 @@ public class BranchDao {
 								b.address,
 								b.phone,
 								u.user_name,
+								b.status,
 								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
 								TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
 							FROM branches b
-							LEFT OUTER JOIN users_p u ON b.branch_id = u.branch_id
+							LEFT OUTER JOIN  (
+								SELECT * FROM users_p WHERE role = 'manager'
+							) u ON b.branch_id = u.branch_id
 						) 
 						WHERE num = ?
 					""";
@@ -145,6 +148,7 @@ public class BranchDao {
 				dto.setUserName(rs.getString("user_name"));
 				dto.setCreatedAt(rs.getString("created_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
+				dto.setStatus(rs.getString("status"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -212,7 +216,7 @@ public class BranchDao {
 			String sql = """
 					SELECT MAX(ROWNUM) AS count
 					FROM branches
-					WHERE name LIKE '%'||?||'%'
+					WHERE name LIKE '%'||?||'%' or b.num LIKE '%'||?||'%'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -261,10 +265,12 @@ public class BranchDao {
 								b.name,
 								b.address,
 								b.phone,
+								b.status,
 								u.user_name								
 							FROM branches b
-							LEFT OUTER JOIN users_p u
-							ON b.branch_id = u.branch_id
+							LEFT OUTER JOIN  (
+								SELECT * FROM users_p WHERE role = 'manager'
+							) u ON b.branch_id = u.branch_id
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
@@ -283,6 +289,7 @@ public class BranchDao {
 				dto2.setAddress(rs.getString("address"));
 				dto2.setPhone(rs.getString("phone"));
 				dto2.setUserName(rs.getString("user_name"));
+				dto2.setStatus(rs.getString("status"));
 				
 				list.add(dto2);
 			}
@@ -324,11 +331,13 @@ public class BranchDao {
 								b.name,
 								b.address,
 								b.phone,
+								b.status,
 								u.user_name								
 							FROM branches b
-							INNER JOIN users_p u
-							ON b.branch_id = u.branch_id
-							WHERE b.name LIKE '%'||?||'%'
+							LEFT OUTER JOIN  (
+								SELECT * FROM users_p WHERE role = 'manager'
+							) u ON b.branch_id = u.branch_id
+							WHERE b.name LIKE '%'||?||'%' or b.num LIKE '%'||?||'%'
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
@@ -347,7 +356,8 @@ public class BranchDao {
 				dto2.setName(rs.getString("name"));
 				dto2.setAddress(rs.getString("address"));
 				dto2.setPhone(rs.getString("phone"));
-				dto2.setUserName(rs.getString("user_name"));				
+				dto2.setUserName(rs.getString("user_name"));
+				dto2.setStatus(rs.getString("status"));
 				
 				list.add(dto2);
 			}

@@ -47,6 +47,10 @@
 				<th>수정일</th>
 				<td><%=dto.getUpdatedAt() %></td>
 			</tr>
+			<tr>
+				<th>운영 상태</th>
+				<td><%=dto.getStatus() %></td>
+			</tr>
 		</table>
 	</div>
 	<div>
