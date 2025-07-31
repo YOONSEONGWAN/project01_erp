@@ -1,8 +1,11 @@
+<%@page import="dao.stock.OutboundOrdersDao"%>
+<%@page import="dao.stock.PlaceOrderBranchDetailDao"%>
+<%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
+<%@page import="dao.stock.PlaceOrderBranchDao"%>
 <%@page import="dao.stock.InventoryDao"%>
-<%@page import="dao.stock.PlaceOrderHeadDao"%>
-<%@page import="dao.stock.PlaceOrderHeadDetailDao"%>
-<%@page import="dao.stock.InboundOrdersDao"%>
-<%@page import="dto.stock.PlaceOrderHeadDetailDto"%>
+
+
+
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -27,16 +30,16 @@
 %>
     <script>
         alert("승인된 항목이 없습니다.");
-        location.href = "placeorder_head.jsp";
+        location.href = "placeorder_branch.jsp";
     </script>
 <%
         return;
     }
 
-    int orderId = PlaceOrderHeadDao.getInstance().insert(manager);
+    int orderId = PlaceOrderBranchDao.getInstance().insert(manager);
 
-    // placeOrder_head에서 order_date 조회 (예: orderId로 조회하는 메서드 필요)
-    String orderDate = PlaceOrderHeadDao.getInstance().getOrderDateByOrderId(orderId);
+    // placeOrder_branch에서 order_date 조회 (예: orderId로 조회하는 메서드 필요)
+    String orderDate = PlaceOrderBranchDao.getInstance().getOrderDateByOrderId(orderId);
 
     // orderDate를 문자열로 변환 (포맷: yyyy-MM-dd HH:mm:ss)
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -72,17 +75,17 @@
                 InventoryDao.getInstance().updatePlaceOrder(num, false);
 
                 // 발주 상세 기록
-                PlaceOrderHeadDetailDto dto = new PlaceOrderHeadDetailDto();
+                PlaceOrderBranchDetailDto dto = new PlaceOrderBranchDetailDto();
                 dto.setOrder_id(orderId);
                 dto.setProduct(product);
                 dto.setCurrent_quantity(currentQty);
                 dto.setRequest_quantity(amount);
                 dto.setApproval_status("YES".equals(approval) ? "승인" : "반려");
                 dto.setManager(manager);
-                PlaceOrderHeadDetailDao.getInstance().insert(dto);
+                PlaceOrderBranchDetailDao.getInstance().insert(dto);
 
-                // inbound_orders 테이블에도 insert
-                InboundOrdersDao.getInstance().insert(orderId, 1, dto.getApproval_status(), orderDateStr, manager);
+                // outbound_orders 테이블에도 insert
+               	OutboundOrdersDao.getInstance().insert(orderId, , dto.getApproval_status(), orderDateStr, manager);
 
                 InventoryDao.getInstance().updateApproval(num, "대기");
 
@@ -95,5 +98,5 @@
 
 <script>
     alert("발주 내역이 정상적으로 처리되었습니다.");
-    location.href = "placeorder_head.jsp";
+    location.href = "placeorder_branch.jsp";
 </script>

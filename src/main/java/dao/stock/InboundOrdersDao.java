@@ -32,13 +32,13 @@ public class InboundOrdersDao {
         ResultSet rs = null;
         try {
             conn = new DbcpBean().getConn();
-            String sql = "SELECT order_id, inventory_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC";
+            String sql = "SELECT order_id, branch_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 InboundOrdersDto dto = new InboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getInt("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setIn_date(rs.getString("in_date"));
                 dto.setManager(rs.getString("manager"));
@@ -64,14 +64,14 @@ public class InboundOrdersDao {
         ResultSet rs = null;
         try {
             conn = new DbcpBean().getConn();
-            String sql = "SELECT * FROM (SELECT order_id, inventory_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC) WHERE ROWNUM <= ?";
+            String sql = "SELECT * FROM (SELECT order_id, branch_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC) WHERE ROWNUM <= ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, limit);
             rs = pstmt.executeQuery();
             while(rs.next()) {
                 InboundOrdersDto dto = new InboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getInt("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setIn_date(rs.getString("in_date"));
                 dto.setManager(rs.getString("manager"));
@@ -103,7 +103,7 @@ public class InboundOrdersDao {
             while (rs.next()) {
                 InboundOrdersDto dto = new InboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getInt("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setIn_date(rs.getString("in_date"));
                 dto.setManager(rs.getString("manager"));
@@ -131,7 +131,7 @@ public class InboundOrdersDao {
             while (rs.next()) {
                 InboundOrdersDto dto = new InboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getInt("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setIn_date(rs.getString("in_date"));
                 dto.setManager(rs.getString("manager"));
@@ -166,7 +166,7 @@ public class InboundOrdersDao {
             while (rs.next()) {
                 InboundOrdersDto dto = new InboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getInt("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setIn_date(rs.getString("in_date"));
                 dto.setManager(rs.getString("manager"));
@@ -219,7 +219,7 @@ public class InboundOrdersDao {
             if (rs.next()) {
                 dto = new InboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getInt("branch_id"));
                 dto.setIn_date(rs.getString("in_date"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setManager(rs.getString("manager"));
@@ -233,5 +233,30 @@ public class InboundOrdersDao {
         }
         return dto;
     }
+    
+    public void insert(int orderId, int branchId, String approval, String inDate, String manager) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = "INSERT INTO inbound_orders (order_id, branch_id, approval, in_date, manager) VALUES (?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            pstmt.setInt(2, branchId);
+            pstmt.setString(3, approval);
+            pstmt.setString(4, inDate);
+            pstmt.setString(5, manager);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(pstmt != null) pstmt.close();
+                if(conn != null) conn.close();
+            } catch(Exception e) {}
+        }
+    
+    }
+
 
 }
