@@ -3,9 +3,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	//get 방식 파라미터로 전달되는 글번호 얻어내기
+	//get 방식 파라미터로 전달되는 지점번호 얻어내기
 	int num=Integer.parseInt(request.getParameter("num"));
-	//DB 에서 해당글의 자세한 정보를 얻어낸다.
+	//DB 에서 해당 지점의 자세한 정보를 얻어낸다.
 	BranchDto dto=BranchDao.getInstance().getByBranchId(num);
 
 	
@@ -31,7 +31,7 @@
 			</tr>
 			<tr>
 				<th>주소</th>
-				<td><%=dto.getBranchAddress() %></td>
+				<td><%=dto.getBranchLocation() %></td>
 			</tr>
 			<tr>
 				<th>지점 연락처</th>
@@ -39,19 +39,11 @@
 			</tr>
 			<tr>
 				<th>지점장 이름</th>
-				<td><%=dto.getManagerName() %></td>
-			</tr>
-			<tr>
-				<th>운영 상태</th>
-				<td><%=dto.getStatus() %></td>
-			</tr>
-			<tr>
-				<th>기타 특이사항</th>
-				<td><%=dto.getMemo() %></td>
+				<td><%=dto.getUserName() %></td>
 			</tr>
 			<tr>
 				<th>등록일</th>
-				<td><%=dto.getCreatedAt() %></td>
+				<td><%=dto.getRegisteredAt() %></td>
 			</tr>
 			<tr>
 				<th>수정일</th>

@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-
 import dto.BoardDto;
 import util.DbcpBean;
 
@@ -22,50 +21,7 @@ public class BoardDao {
         return dao;
     }
     
-    // 작성된 글을 삭제하는 메소드 
- 	public boolean deleteByNum(int num) {
- 		Connection conn = null;
- 		PreparedStatement pstmt = null;
-
- 		// 변화된 row 의 갯수를 담을 변수 선언하고 0으로 초기화
- 		int rowCount = 0;
-
- 		try {
- 			conn = new DbcpBean().getConn();
- 			String sql = """
- 					DELETE FROM board
- 					WHERE num =?
- 					""";
- 			pstmt = conn.prepareStatement(sql);
- 			// ? 에 순서대로 필요한 값 바인딩 
- 			pstmt.setInt(1, num);
- 			// pstmt.setInt(1, dto.getNum()); UPDATE할 때 사용할 참조값 
- 			// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
- 			rowCount = pstmt.executeUpdate();
-
- 		} catch (Exception e) { // 예외가 발생시 표시한다 
- 			e.printStackTrace();
- 		} finally {
- 			try {
- 				// 메소드 호출하기 전에 null 인지 아닌지 체크, 아닌경우에만 호출하도록 
- 				if (pstmt != null)
- 					pstmt.close();
- 				if (conn != null)
- 					conn.close();
- 			} catch (Exception e) {
- 			}
-
- 		}
- 		// 변화된 rowCount 값을 조사해서 작업의 성공 여부를 알아 낼수 있다.
- 		if (rowCount > 0) {
- 			return true; // 작업 성공이라는 의미에서 true 리턴하기
- 		}else {
- 			return false; // 작업 실패라는 의미에서 false 리턴하기 
- 		}
- 	}
-    
-    // boardType 에 따라 공지사항, 문의사항 리스트를 가져오는 메소드
-    public List<BoardDto> getListByType(String boardType){
+    public List<BoardDto> getListByType(String board_type){
     	List<BoardDto> list = new ArrayList<>();
     	Connection conn = null;
     	PreparedStatement pstmt = null;
@@ -73,28 +29,35 @@ public class BoardDao {
 
     	try {
     		conn = new DbcpBean().getConn();
-    		String sql = "SELECT * FROM board2 WHERE LOWER(boardType) = LOWER(?) ORDER BY num DESC";
+    		String sql = """
+    			    SELECT num, title, writer, board_type, created_at, user_id
+    			    FROM board_p
+    			    WHERE LOWER(board_type) = LOWER(?)
+    			    ORDER BY num DESC
+    			""";
+    		
     		pstmt = conn.prepareStatement(sql);
-    		pstmt.setString(1, boardType);
+    		pstmt.setString(1, board_type);
     		
     		rs = pstmt.executeQuery();
     		while(rs.next()) {
     			BoardDto dto = new BoardDto();
-    			dto.setNum(rs.getInt("num"));
-    			dto.setTitle(rs.getString("title"));
-    			dto.setWriter(rs.getString("writer"));
-    			dto.setCreatedAt(rs.getString("createdAt"));
+    			dto.setNum(rs.getInt("NUM"));
+    			dto.setTitle(rs.getString("TITLE"));
+    			dto.setWriter(rs.getString("WRITER"));
+    			dto.setCreated_at(rs.getTimestamp("CREATED_AT").toString());
+    			dto.setBoard_type(rs.getString("BOARD_TYPE"));  
+                dto.setUser_id(rs.getString("USER_ID"));        
     			list.add(dto);
     		}
     	} catch(Exception e){
-    		e.printStackTrace();
+    	    System.out.println("❌ SQL 실행 중 예외 발생: " + e.getMessage());
+    	    e.printStackTrace();
     	} finally {
-    		try {
-    			if(rs != null) rs.close();
-    			if(pstmt != null) pstmt.close();
-    			if(conn != null) conn.close();
-    		} catch(Exception e){}
-    	}
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
     	return list;
     }
     
@@ -107,16 +70,16 @@ public class BoardDao {
         try {
             conn = new DbcpBean().getConn();
             String sql = """
-                INSERT INTO board2
-                (num, writer, title, content, boardType, viewCount, createdAt)
+                INSERT INTO board_p
+                (num, writer, title, content, board_type, view_count, created_at)
                 VALUES
-                (board2_seq.NEXTVAL, ?, ?, ?, ?, 0, SYSDATE)
+                (board_p_seq.NEXTVAL, ?, ?, ?, ?, 0, SYSDATE)
             """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, dto.getWriter());
             pstmt.setString(2, dto.getTitle());
             pstmt.setString(3, dto.getContent());
-            pstmt.setString(4, dto.getBoardType()); // ✅ boardType 바인딩
+            pstmt.setString(4, dto.getBoard_type()); // ✅ boardType 바인딩
 
             rowCount = pstmt.executeUpdate();
         } catch (Exception e) {
@@ -136,7 +99,7 @@ public class BoardDao {
         ResultSet rs = null;
         try {
             conn = new DbcpBean().getConn();
-            String sql = "SELECT board2_seq.NEXTVAL AS num FROM DUAL";
+            String sql = "SELECT board_p_seq.NEXTVAL AS num FROM DUAL";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -163,8 +126,8 @@ public class BoardDao {
         try {
             conn = new DbcpBean().getConn();
             String sql = """
-                SELECT num, writer, title, content, viewCount, createdAt, boardType
-                FROM board2
+                SELECT num, writer, title, content, view_count, created_at, board_type
+                FROM board_p
                 WHERE num = ?
             """;
             pstmt = conn.prepareStatement(sql);
@@ -177,9 +140,9 @@ public class BoardDao {
                 dto.setWriter(rs.getString("writer"));
                 dto.setTitle(rs.getString("title"));
                 dto.setContent(rs.getString("content"));
-                dto.setViewCount(rs.getInt("viewCount"));
-                dto.setCreatedAt(rs.getString("createdAt"));
-                dto.setBoardType(rs.getString("boardType")); // ✅ boardType 포함
+                dto.setView_count(rs.getInt("view_count"));
+                dto.setCreated_at(rs.getString("created_at"));
+                dto.setBoard_type(rs.getString("board_type")); // ✅ boardType 포함
             }
         } catch (Exception e) {
             e.printStackTrace();

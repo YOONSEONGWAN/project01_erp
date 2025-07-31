@@ -1,3 +1,4 @@
+<%@page import="java.text.NumberFormat"%>
 <%@page import="dao.SalesDao"%>
 <%@page import="dto.SalesDto"%>
 <%@page import="java.util.List"%>
@@ -7,6 +8,8 @@
 	//월간 매출 통계 데이터 가져오기
 	List<SalesDto> list = SalesDao.getInstance().getYearlyStats();
 
+	NumberFormat nf = NumberFormat.getInstance();
+	
 	//총합 계산
 	int totalSum = 0;
 	for(SalesDto dto : list) {
@@ -21,7 +24,7 @@
 </head>
 <body>
 	<h1>연간 매출 통계</h1>
-		<p>총 매출 합계 <%= totalSum %> 원</p>
+		<p>총 매출 합계 <%= nf.format(totalSum) %> 원</p>
 		
 	<table border = "1">
 		<thead>
@@ -36,7 +39,7 @@
 				<tr>
 					<td><%= dto.getPeriod() %></td>
                     <td><%= dto.getBranch() %></td>
-                    <td><%= dto.getTotalSales() %></td>
+                    <td><%= nf.format(dto.getTotalSales()) %></td>
 				</tr>
 			<% } %>	
 		</tbody>
