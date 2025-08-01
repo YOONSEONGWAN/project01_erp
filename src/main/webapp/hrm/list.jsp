@@ -5,19 +5,24 @@
     pageEncoding="UTF-8"%>
 
 <%
-    HrmDao dao = new HrmDao();
-    List<HrmDto> hqList = dao.selectHeadOffice();  // 본사 직원 리스트
-    List<HrmDto> branchList = dao.selectBranch();  // 지점 직원 리스트
-%>
-
-<%
     String from = request.getParameter("from");
-    String backUrl = "admin.jsp"; // 기본값: 본사 목록
+    String hqKeyword = request.getParameter("hqKeyword");
+    String branchKeyword = request.getParameter("branchKeyword");
 
-    if ("branch".equals(from)) {
-        backUrl = "branch.jsp";
-    }
+    if (hqKeyword == null) hqKeyword = "";
+    if (branchKeyword == null) branchKeyword = "";
+
+    HrmDao dao = new HrmDao();
+
+    // 검색어 기반으로 필터링
+    List<HrmDto> hqList = dao.selectHeadOfficeByKeyword(hqKeyword);
+    List<HrmDto> branchList = dao.selectBranchByKeyword(branchKeyword);
+
+    String backUrl = "admin.jsp";
+    if ("branch".equals(from)) backUrl = "branch.jsp";
 %>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -56,6 +61,13 @@
 
     <div class="tab-content active" id="hq">
         <h2>본사 직원 목록</h2>
+		        <!-- 본사 직원 검색 폼 -->
+		<form method="get" action="list.jsp">
+		    <input type="hidden" name="from" value="admin">
+		    <input type="text" name="hqKeyword" placeholder="이름 또는 직급 검색" value="<%= request.getParameter("hqKeyword") == null ? "" : request.getParameter("hqKeyword") %>">
+		    <button type="submit">검색</button>
+		</form>
+        
         <table>
             <tr><th>번호</th><th>이름</th><th>직급</th><th>상세 보기</th><th>삭제</th></tr>
             <% for(HrmDto dto : hqList){ %>
@@ -74,6 +86,12 @@
 
     <div class="tab-content" id="branch">
         <h2>지점 직원 목록</h2>
+		        <!-- 지점 직원 검색 폼 -->
+		<form method="get" action="list.jsp">
+		    <input type="hidden" name="from" value="branch">
+		    <input type="text" name="branchKeyword" placeholder="이름 또는 지점 검색" value="<%= request.getParameter("branchKeyword") == null ? "" : request.getParameter("branchKeyword") %>">
+		    <button type="submit">검색</button>
+		</form>
         <table>
             <tr><th>번호</th><th>이름</th><th>직급</th><th>지점</th><th>상세 페이지</th><th>삭제</th></tr>
             <% for(HrmDto dto : branchList){ %>
