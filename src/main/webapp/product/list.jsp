@@ -48,6 +48,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
 <title>상품 검색 및 목록</title>
 <style>
     table { border-collapse: collapse; width: 100%; }
@@ -65,22 +66,27 @@
         background-color: #666; color: white;
         font-weight: bold;
     }
+    .btn-register {
+        margin-bottom: 20px;
+    }
 </style>
 </head>
 <body>
 
-<form action="<%=request.getContextPath()%>/product/insertform.jsp" method="get" style="margin-bottom:20px;">
+<!-- 상품 등록 버튼 -->
+<form action="<%=request.getContextPath()%>/product/insertform.jsp" method="get" class="btn-register">
     <input type="submit" value="상품 등록" />
 </form>
 
-
 <h2>상품 검색 및 목록</h2>
 
+<!-- 검색 폼 -->
 <form action="<%=request.getContextPath()%>/product/list.jsp" method="get">
     <input type="text" name="keyword" placeholder="상품명 또는 설명 검색" value="<%= keyword %>" />
     <input type="submit" value="검색" />
 </form>
 
+<!-- 상품 테이블 -->
 <table>
     <thead>
         <tr>
@@ -114,6 +120,7 @@
     </tbody>
 </table>
 
+<!-- 페이지 네비게이션 -->
 <div class="pagination">
     <% if(pageNum > 1) { %>
         <a href="<%=request.getContextPath()%>/product/list.jsp?pageNum=<%= pageNum - 1 %>&keyword=<%= encodedKeyword %>">이전</a>
