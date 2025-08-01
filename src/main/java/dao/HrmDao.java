@@ -11,6 +11,8 @@ import util.DbcpBean;
 
 public class HrmDao {
 	
+	
+	
 	// 본사 직원 리스트
 	public List<HrmDto> selectHeadOffice() {
 	    List<HrmDto> list = new ArrayList<>();
@@ -141,7 +143,8 @@ public class HrmDao {
 
 	    return list;
 	}
-
+	
+			
 
 	// 직원 정보 삭제
 			public boolean deleteByNum(int num) {
