@@ -5,7 +5,7 @@
     pageEncoding="UTF-8"%>
 <%
     List<InventoryDto> list = InventoryDao.getInstance().selectByInventoryId();
-%> 
+%>
 <!DOCTYPE html>
 <html>
 <head>
