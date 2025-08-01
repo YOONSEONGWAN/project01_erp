@@ -1,6 +1,8 @@
-<%@page import="java.util.List"%>
-<%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
 <%@page import="dao.stock.PlaceOrderBranchDetailDao"%>
+<%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
+<%@page import="java.util.List"%>
+<%@page import="dto.stock.PlaceOrderHeadDetailDto"%>
+<%@page import="dao.stock.PlaceOrderHeadDetailDao"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%
@@ -13,18 +15,17 @@
         return;
     }
 
-    // order_id 기준으로 상세 리스트 조회
-    List<PlaceOrderBranchDetailDto> list = PlaceOrderBranchDetailDao.getInstance().getDetailListByOrderId(orderId);
+    List<PlaceOrderBranchDetailDto> list = PlaceOrderBranchDetailDao.getInstance().getDetailsByOrderId(orderId);
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>지점 발주 상세 내역</title>
+    <title>입고 상세 내역</title>
 </head>
 <body>
-    <h2>지점 발주 상세 내역 (Order ID: <%= orderId %>)</h2>
+    <h2>입고 상세 내역 (Order ID: <%= orderId %>)</h2>
     <table border="1" cellpadding="5" cellspacing="0">
         <tr>
             <th>상세ID</th>
@@ -53,7 +54,8 @@
         </tr>
         <% } %>
     </table>
+    </table>
     <br>
-    <a href="placeorder_branch.jsp">돌아가기</a>
+    <a href="inandout.jsp">돌아가기</a>
 </body>
 </html>
