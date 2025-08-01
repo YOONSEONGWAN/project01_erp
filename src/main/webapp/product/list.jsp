@@ -89,7 +89,7 @@
 
         <% if(pageNum < totalPageCount) { %>
             <a href="list.jsp?pageNum=<%= pageNum + 1 %>">다음</a>
-        <% } %>
+        <% } %> <!-- 주석 -->
     </div>
 </div>
 </body>
