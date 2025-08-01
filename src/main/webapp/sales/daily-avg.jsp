@@ -5,9 +5,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-    List<SalesDto> list = SalesDao.getInstance().getDailyAvgSales();
+    request.setCharacterEncoding("utf-8");
 
-	NumberFormat nf = NumberFormat.getInstance();
+    String start = request.getParameter("start");
+    String end = request.getParameter("end");
+
+    List<SalesDto> list;
+    if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
+        list = SalesDao.getInstance().getDailyAvgSalesBetween(start, end);
+    } else {
+        list = SalesDao.getInstance().getDailyAvgSales();
+    }
+
+    NumberFormat nf = NumberFormat.getInstance();
 %>
 <!DOCTYPE html>
 <html>
@@ -17,10 +27,20 @@
 </head>
 <body>
     <h1>일 평균 매출 (지점별)</h1>
+
+    <!-- 
+    <form method="get" action="<%=request.getContextPath()%>/sales/daily-avg.jsp">
+        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
+        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
+        <button type="submit">조회</button>
+    </form> 날짜 필터 -->
+
+    <br />
+
     <table border="1">
         <thead>
             <tr>
-            	<th>번호</th>
+                <th>번호</th>
                 <th>지점</th>
                 <th>총 매출</th>
                 <th>활동 일수</th>
@@ -29,15 +49,15 @@
         </thead>
         <tbody>
             <%
-            	int index = 1;
-            	for (SalesDto dto : list)	
-            { %>
+                int index = 1;
+                for (SalesDto dto : list) {
+            %>
                 <tr>
-                	<td><%=index++ %></td>
+                    <td><%= index++ %></td>
                     <td><%= dto.getBranch_name() %></td>
-                    <td><%= nf.format(dto.getTotalSales()) %></td>
-                    <td><%= dto.getDayCount() %></td>
-                    <td><%= nf.format(dto.getAverageSalesPerDay()) %></td>
+                    <td><%= nf.format(dto.getTotalSales()) %> 원</td>
+                    <td><%= dto.getDayCount() %> 일</td>
+                    <td><%= nf.format(dto.getAverageSalesPerDay()) %> 원</td>
                 </tr>
             <% } %>
         </tbody>

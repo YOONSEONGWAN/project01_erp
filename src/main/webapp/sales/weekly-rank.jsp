@@ -5,7 +5,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-    List<SalesDto> list = SalesDao.getInstance().getWeeklySalesRanking(); 
+    request.setCharacterEncoding("utf-8");
+
+    String start = request.getParameter("start");
+    String end = request.getParameter("end");
+
+    List<SalesDto> list;
+    if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
+        list = SalesDao.getInstance().getWeeklySalesRankingBetween(start, end);
+    } else {
+        list = SalesDao.getInstance().getWeeklySalesRanking();
+    }
+
     NumberFormat nf = NumberFormat.getInstance();
 %>
 <!DOCTYPE html>
@@ -15,24 +26,39 @@
 <title>/sales/weekly-rank.jsp</title>
 </head>
 <body>
-	    <h1>지점별 주간 매출 순위</h1>
-	 <table border="1">
-	        <tr>
-	            <th>순위</th>
-	            <th>주차</th>
-	            <th>지점명</th>
-	            <th>총 매출액</th>
-	        </tr>
-	        <%
-	            for (SalesDto dto : list) {
-	        %>
-	        <tr>
-	            <td><%=dto.getRank()%></td>
-	            <td><%=dto.getPeriod()%></td>
-	            <td><%=dto.getBranch_name()%></td>
-	            <td><%=nf.format(dto.getTotalSales())%></td>
-	        </tr>
-	        <% } %>
+    <h1>지점별 주간 매출 순위</h1>
+
+    <!-- 날짜 필터 
+    <form method="get" action="<%=request.getContextPath()%>/sales/weekly-rank.jsp">
+        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
+        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
+        <button type="submit">조회</button>
+    </form>
+    -->
+
+    <br/>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>주차</th>
+                <th>지점명</th>
+                <th>총 매출액</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                for (SalesDto dto : list) {
+            %>
+            <tr>
+                <td><%=dto.getRank()%></td>
+                <td><%=dto.getPeriod()%></td>
+                <td><%=dto.getBranch_name()%></td>
+                <td><%=nf.format(dto.getTotalSales())%> 원</td>
+            </tr>
+            <% } %>
+        </tbody>
     </table>
 </body>
 </html>

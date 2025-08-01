@@ -97,8 +97,69 @@ private static SalesDao dao;
 
 
 	
-	// 지점별 연간 매출 순위
+	// 지점별 연간 매출 순위 (날짜 범위 필터 적용)
+	public List<SalesDto> getYearlySalesRankingBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT *
+	            FROM (
+	                SELECT 
+	                    TO_CHAR(s.created_at, 'YYYY') AS period,
+	                    b.name AS branch_name,
+	                    SUM(s.totalamount) AS total_sales,
+	                    ROW_NUMBER() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'YYYY')
+	                        ORDER BY SUM(s.totalamount) DESC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	                GROUP BY TO_CHAR(s.created_at, 'YYYY'), b.name
+	            )
+	            ORDER BY period DESC, rnk
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setTotalSales(rs.getInt("total_sales"));
+	            dto.setRank(rs.getInt("rnk"));
+	            list.add(dto);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return list;
+	}
+
+	// 전체 조회
 	public List<SalesDto> getYearlySalesRanking() {
+	    return getYearlySalesRankingBetween("2000-01-01", "2099-12-31");
+	}
+
+	
+	// 지점별 월간 매출 순위 (날짜 범위 필터 적용)
+	public List<SalesDto> getMonthlySalesRankingBetween(String start, String end) {
 	    List<SalesDto> list = new ArrayList<>();
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
@@ -107,20 +168,27 @@ private static SalesDao dao;
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
-				SELECT 
-				    TO_CHAR(s.created_at, 'YYYY') AS period,
-				    b.name AS branch_name,
-				    SUM(s.totalamount) AS total_sales,
-				    ROW_NUMBER() OVER (
-				        PARTITION BY TO_CHAR(s.created_at, 'YYYY')
-				        ORDER BY SUM(s.totalamount) DESC
-				    ) AS rnk
-				FROM sales s
-				JOIN branches b ON s.branch_id = b.branch_id
-				GROUP BY TO_CHAR(s.created_at, 'YYYY'), b.name
+	            SELECT *
+	            FROM (
+	                SELECT 
+	                    TO_CHAR(s.created_at, 'YYYY-MM') AS period,
+	                    b.name AS branch_name,
+	                    SUM(s.totalamount) AS total_sales,
+	                    ROW_NUMBER() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'YYYY-MM')
+	                        ORDER BY SUM(s.totalamount) DESC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	                GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), b.name
+	            )
+	            ORDER BY period DESC, rnk
 	        """;
 
 	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
 	        rs = pstmt.executeQuery();
 
 	        while (rs.next()) {
@@ -131,6 +199,7 @@ private static SalesDao dao;
 	            dto.setRank(rs.getInt("rnk"));
 	            list.add(dto);
 	        }
+
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
@@ -143,9 +212,15 @@ private static SalesDao dao;
 
 	    return list;
 	}
-	// 지점별 월간 매출 순위
 	
+	// 전체 조회
 	public List<SalesDto> getMonthlySalesRanking() {
+	    return getMonthlySalesRankingBetween("2000-01-01", "2099-12-31");
+	}
+
+	
+	// 지점별 월간 최고 매출일 (날짜 범위 필터 적용)
+	public List<SalesDto> getMonthlyMaxSalesDatesBetween(String start, String end) {
 	    List<SalesDto> list = new ArrayList<>();
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
@@ -154,20 +229,83 @@ private static SalesDao dao;
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
-				SELECT 
-				    TO_CHAR(s.created_at, 'YYYY-MM') AS period,
-				    b.name AS branch_name,
-				    SUM(s.totalamount) AS total_sales,
-				    ROW_NUMBER() OVER (
-				        PARTITION BY TO_CHAR(s.created_at, 'YYYY-MM')
-				        ORDER BY SUM(s.totalamount) DESC
-				    ) AS rnk
-				FROM sales s
-				JOIN branches b ON s.branch_id = b.branch_id
-				GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), b.name
+	            SELECT *
+	            FROM (
+	                SELECT
+	                    TO_CHAR(s.created_at, 'YYYY-MM') AS period,
+	                    b.name AS branch_name,
+	                    TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
+	                    s.totalamount,
+	                    RANK() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'YYYY-MM'), b.name
+	                        ORDER BY s.totalamount DESC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            )
+	            WHERE rnk = 1
+	            ORDER BY period DESC, branch_name
 	        """;
 
 	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setMaxSalesDate(rs.getString("sales_date"));
+	            dto.setTotalSales(rs.getInt("totalamount"));
+	            list.add(dto);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return list;
+	}
+
+	// 지점별 주간 매출 순위 (날짜 범위 필터 적용)
+	public List<SalesDto> getWeeklySalesRankingBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT *
+	            FROM (
+	                SELECT 
+	                    TO_CHAR(s.created_at, 'IYYY-"W"IW') AS period,
+	                    b.name AS branch_name,
+	                    SUM(s.totalamount) AS total_sales,
+	                    ROW_NUMBER() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'IYYY-"W"IW')
+	                        ORDER BY SUM(s.totalamount) DESC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	                GROUP BY TO_CHAR(s.created_at, 'IYYY-"W"IW'), b.name
+	            )
+	            ORDER BY period DESC, rnk
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
 	        rs = pstmt.executeQuery();
 
 	        while (rs.next()) {
@@ -190,9 +328,16 @@ private static SalesDao dao;
 
 	    return list;
 	}
-	
-	// 지점별 주간 매출 랭킹
+
+	// 기존 메서드 유지 + 전체 조회
 	public List<SalesDto> getWeeklySalesRanking() {
+	    return getWeeklySalesRankingBetween("2000-01-01", "2099-12-31");
+	}
+	
+	
+
+	// 지점별 연간 최저 매출일 (날짜 범위 필터 적용)
+	public List<SalesDto> getYearlyMinSalesDatesBetween(String start, String end) {
 	    List<SalesDto> list = new ArrayList<>();
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
@@ -201,30 +346,46 @@ private static SalesDao dao;
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
-				SELECT 
-				    TO_CHAR(s.created_at, 'IYYY-"W"IW') AS period,
-				    b.name AS branch_name,
-				    SUM(s.totalamount) AS total_sales,
-				    ROW_NUMBER() OVER (
-				        PARTITION BY TO_CHAR(s.created_at, 'IYYY-"W"IW')
-				        ORDER BY SUM(s.totalamount) DESC
-				    ) AS rnk
-				FROM sales s
-				JOIN branches b ON s.branch_id = b.branch_id
-				GROUP BY TO_CHAR(s.created_at, 'IYYY-"W"IW'), b.name
+	            SELECT *
+	            FROM (
+	                SELECT
+	                    TO_CHAR(day_group, 'YYYY') AS period,
+	                    branch_name,
+	                    TO_CHAR(day_group, 'YYYY-MM-DD') AS sales_date,
+	                    total_sales,
+	                    RANK() OVER (
+	                        PARTITION BY TO_CHAR(day_group, 'YYYY'), branch_name
+	                        ORDER BY total_sales ASC
+	                    ) AS rnk
+	                FROM (
+	                    SELECT
+	                        TRUNC(s.created_at) AS day_group,
+	                        b.name AS branch_name,
+	                        SUM(s.totalamount) AS total_sales
+	                    FROM sales s
+	                    JOIN branches b ON s.branch_id = b.branch_id
+	                    WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	                    GROUP BY TRUNC(s.created_at), b.name
+	                )
+	            )
+	            WHERE rnk = 1
+	            ORDER BY period DESC, branch_name
 	        """;
 
 	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
 	        rs = pstmt.executeQuery();
 
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
 	            dto.setPeriod(rs.getString("period"));
 	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setMaxSalesDate(rs.getString("sales_date")); // 최고 매출일에도 이 필드 재사용
 	            dto.setTotalSales(rs.getInt("total_sales"));
-	            dto.setRank(rs.getInt("rnk"));
 	            list.add(dto);
 	        }
+
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
@@ -239,104 +400,133 @@ private static SalesDao dao;
 	}
 
 	
-	// 연간 최저 매출일
+	// 지점별 연간 최저 매출일 (전체 조회)
 	public List<SalesDto> getYearlyMinSalesDates() {
-		List<SalesDto> list = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = new DbcpBean().getConn();
-			String sql = """
-						SELECT *
-						FROM (
-						    SELECT 
-						        TO_CHAR(s.created_at, 'YYYY') AS period, -- 월 단위
-						        b.name AS branch_name,
-						        TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
-						        s.totalamount,
-						        RANK() OVER (
-						            PARTITION BY TO_CHAR(s.created_at, 'YYYY'), b.name
-						            ORDER BY s.totalamount ASC
-						        ) AS rnk
-						    FROM sales s
-						    JOIN branches b ON s.branch_id = b.branch_id
-						)
-						WHERE rnk = 1
-						ORDER BY period DESC, branch_name
-			""";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				SalesDto dto = new SalesDto();
-				dto.setPeriod(rs.getString("period"));
-				dto.setBranch_name(rs.getString("branch_name"));
-				dto.setMinSalesDate(rs.getString("sales_date"));
-				dto.setTotalSales(rs.getInt("totalamount"));
-				list.add(dto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) rs.close();
-				if (pstmt != null) pstmt.close();
-				if (conn != null) conn.close();
-			} catch (Exception e) {}
-		}
-		return list;
-	}		
+	    return getYearlyMinSalesDatesBetween("2000-01-01", "2099-12-31");
+	}
+
 	
+	// 지점별 월간 최저 매출일 (날짜 범위 필터 적용)
+	public List<SalesDto> getMonthlyMinSalesDatesBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT *
+	            FROM (
+	                SELECT
+	                    TO_CHAR(s.created_at, 'YYYY-MM') AS period,
+	                    b.name AS branch_name,
+	                    TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
+	                    s.totalamount,
+	                    RANK() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'YYYY-MM'), b.name
+	                        ORDER BY s.totalamount ASC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            )
+	            WHERE rnk = 1
+	            ORDER BY period DESC, branch_name
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setMaxSalesDate(rs.getString("sales_date"));
+	            dto.setTotalSales(rs.getInt("totalamount"));
+	            list.add(dto);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return list;
+	}
 	
-	// 월간 최저 매출일
-	
+	// 지점별 월간 최저 매출일 (전체 조회)
 	public List<SalesDto> getMonthlyMinSalesDates() {
-		List<SalesDto> list = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = new DbcpBean().getConn();
-			String sql = """
-						SELECT *
-						FROM (
-						    SELECT 
-						        TO_CHAR(s.created_at, 'YYYY-MM') AS period, -- 월 단위
-						        b.name AS branch_name,
-						        TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
-						        s.totalamount,
-						        RANK() OVER (
-						            PARTITION BY TO_CHAR(s.created_at, 'YYYY-MM'), b.name
-						            ORDER BY s.totalamount ASC
-						        ) AS rnk
-						    FROM sales s
-						    JOIN branches b ON s.branch_id = b.branch_id
-						)
-						WHERE rnk = 1
-						ORDER BY period DESC, branch_name
-			""";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				SalesDto dto = new SalesDto();
-				dto.setPeriod(rs.getString("period"));
-				dto.setBranch_name(rs.getString("branch_name"));
-				dto.setMinSalesDate(rs.getString("sales_date"));
-				dto.setTotalSales(rs.getInt("totalamount"));
-				list.add(dto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) rs.close();
-				if (pstmt != null) pstmt.close();
-				if (conn != null) conn.close();
-			} catch (Exception e) {}
-		}
-		return list;
-	}	
+	    return getMonthlyMinSalesDatesBetween("2000-01-01", "2099-12-31");
+	}
+
 	
+	// 지점별 주간 최저 매출일 (날짜 필터 적용)
+	public List<SalesDto> getWeeklyMinSalesDatesBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT *
+	            FROM (
+	                SELECT
+	                    TO_CHAR(s.created_at, 'IYYY') || '-W' || TO_CHAR(s.created_at, 'IW') AS period,  -- 주차
+	                    b.name AS branch_name,
+	                    TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
+	                    s.totalamount,
+	                    RANK() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'IYYY-IW'), b.name
+	                        ORDER BY s.totalamount ASC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            )
+	            WHERE rnk = 1
+	            ORDER BY period DESC, branch_name
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period")); // 주차
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setMaxSalesDate(rs.getString("sales_date")); // 실제 매출일
+	            dto.setTotalSales(rs.getInt("totalamount")); // 매출액
+	            list.add(dto);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return list;
+	}
+
+	// 지점별 주간 최저 매출일 (전체 조회)
+	public List<SalesDto> getWeeklyMinSalesDates() {
+	    return getWeeklyMinSalesDatesBetween("2000-01-01", "2099-12-31");
+	}
+
 	
 	// 주간 최저 매출일
 	
@@ -387,68 +577,67 @@ private static SalesDao dao;
 		return list;
 	}
 
-	
-	// 연간 최고 매출일
-	
-	public List<SalesDto> getYearlyMaxSalesDates() {
-		List<SalesDto> list = new ArrayList<>();
-		
-		//필요한 객체를 담을 지역변수를 미리 만든다 
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = new DbcpBean().getConn();
-			//실행할 sql문
-			String sql = """
-				SELECT *
-				FROM (
-					SELECT 
-						TO_CHAR(s.created_at, 'YYYY') AS period,
-						b.name AS branch_name,
-						TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
-						s.totalamount,
-						RANK() OVER (
-							PARTITION BY TO_CHAR(s.created_at, 'YYYY'), b.name
-							ORDER BY s.totalamount DESC
-						) AS rnk
-					FROM sales s
-					JOIN branches b ON s.branch_id = b.branch_id
-				)
-				WHERE rnk = 1
-				ORDER BY period DESC, branch_name
-					""";
-			pstmt = conn.prepareStatement(sql);
-			//? 에 값 바인딩
+	// 지점별 연간 최고 매출일 (날짜 필터 적용)
+	public List<SalesDto> getYearlyMaxSalesDatesBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
 
-			// select 문 실행하고 결과를 ResultSet 으로 받아온다
-			rs = pstmt.executeQuery();
-			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
-			while (rs.next()) {
-				SalesDto dto = new SalesDto();
-				dto.setPeriod(rs.getString("period"));
-				dto.setBranch_name(rs.getString("branch_name"));
-				dto.setMaxSalesDate(rs.getString("sales_date"));
-				dto.setTotalSales(rs.getInt("totalamount"));
-				
-				list.add(dto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT *
+	            FROM (
+	                SELECT 
+	                    TO_CHAR(s.created_at, 'YYYY') AS period,
+	                    b.name AS branch_name,
+	                    TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
+	                    s.totalamount,
+	                    RANK() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'YYYY'), b.name
+	                        ORDER BY s.totalamount DESC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            )
+	            WHERE rnk = 1
+	            ORDER BY period DESC, branch_name
+	        """;
 
-			}
-		}
-		return list;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setMaxSalesDate(rs.getString("sales_date"));
+	            dto.setTotalSales(rs.getInt("totalamount"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return list;
 	}
+
+	// 전체 연간 최고 매출일 조회용 기본 메서드
+	public List<SalesDto> getYearlyMaxSalesDates() {
+	    return getYearlyMaxSalesDatesBetween("2000-01-01", "2099-12-31");
+	}
+
+	
+
 	
 	// 지점별 월간 최고 매출일
 	public List<SalesDto> getMonthlyMaxSalesDates() {
@@ -498,55 +687,167 @@ private static SalesDao dao;
 		return list;
 	}
 
+	// 지점별 주간 최고 매출일 (날짜 필터 적용)
+	public List<SalesDto> getWeeklyMaxSalesDatesBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT *
+	            FROM (
+	                SELECT
+	                    TO_CHAR(s.created_at, 'IYYY') || '-W' || TO_CHAR(s.created_at, 'IW') AS period,
+	                    b.name AS branch_name,
+	                    TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
+	                    s.totalamount,
+	                    RANK() OVER (
+	                        PARTITION BY TO_CHAR(s.created_at, 'IYYY-IW'), b.name
+	                        ORDER BY s.totalamount DESC
+	                    ) AS rnk
+	                FROM sales s
+	                JOIN branches b ON s.branch_id = b.branch_id
+	                WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            )
+	            WHERE rnk = 1
+	            ORDER BY period DESC, branch_name
+	        """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setMaxSalesDate(rs.getString("sales_date"));
+	            dto.setTotalSales(rs.getInt("totalamount"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return list;
+	}
 	
-	// 지점별 주간 최고 매출일
-	public List<SalesDto> getWeeklyMaxSalesDates(){
-		List<SalesDto> list = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = new DbcpBean().getConn();
-			String sql = """
-				SELECT *
-				FROM (
-				    SELECT
-				        TO_CHAR(s.created_at, 'IYYY') || '-W' || TO_CHAR(s.created_at, 'IW') AS period,
-				        b.name AS branch_name,
-				        TO_CHAR(s.created_at, 'YYYY-MM-DD') AS sales_date,
-				        s.totalamount,
-				        RANK() OVER (
-				            PARTITION BY TO_CHAR(s.created_at, 'IYYY-IW'), b.name
-				            ORDER BY s.totalamount DESC
-				        ) AS rnk
-				    FROM sales s
-				    JOIN branches b ON s.branch_id = b.branch_id
-				)
-				WHERE rnk = 1
-				ORDER BY period DESC, branch_name
-			""";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				SalesDto dto = new SalesDto();
-				dto.setPeriod(rs.getString("period"));
-				dto.setBranch_name(rs.getString("branch_name"));
-				dto.setMaxSalesDate(rs.getString("sales_date"));
-				dto.setTotalSales(rs.getInt("totalamount"));
-				list.add(dto);	
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null) rs.close();
-				if (pstmt != null) pstmt.close();
-				if (conn != null) conn.close();
-			} catch (Exception e) {}
-		}
-		return list;
+	// 지점별 주간 최고 매출일 (전체 조회)
+	public List<SalesDto> getWeeklyMaxSalesDates() {
+	    return getWeeklyMaxSalesDatesBetween("2000-01-01", "2099-12-31");
 	}
 
+
+	// 지점별 일 평균 매출 구하기 (날짜 필터 적용)
+	public List<SalesDto> getDailyAvgSalesBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT 
+	                s.branch_id,
+	                b.name AS branch_name,
+	                SUM(s.totalamount) AS total_sales,
+	                COUNT(DISTINCT TRUNC(s.created_at)) AS day_count,
+	                ROUND(SUM(s.totalamount) / COUNT(DISTINCT TRUNC(s.created_at))) AS avg_per_day
+	            FROM sales s
+	            JOIN branches b ON s.branch_id = b.branch_id
+	            WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            GROUP BY s.branch_id, b.name
+	            ORDER BY avg_per_day DESC
+	        """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setTotalSales(rs.getInt("total_sales"));
+	            dto.setDayCount(rs.getInt("day_count"));
+	            dto.setAverageSalesPerDay(rs.getInt("avg_per_day"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return list;
+	}
+
+	// 월간 평균 매출 (날짜 범위 필터 적용)
+	public List<SalesDto> getMonthlyAvgStatsBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT 
+	                TO_CHAR(s.created_at, 'YYYY-MM') AS period,
+	                s.branch_id,
+	                b.name AS branch_name,
+	                SUM(s.totalamount) AS total_sales,
+	                ROUND(AVG(s.totalamount)) AS avg_sales
+	            FROM sales s
+	            JOIN branches b ON s.branch_id = b.branch_id
+	            WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), s.branch_id, b.name
+	            ORDER BY period DESC
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setTotalSales(rs.getInt("total_sales"));
+	            dto.setAverageSales(rs.getInt("avg_sales"));
+	            list.add(dto);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return list;
+	}
+	
+	// 월간 평균 매출 (전체 범위)
+	public List<SalesDto> getMonthlyAvgStats() {
+	    return getMonthlyAvgStatsBetween("2000-01-01", "2099-12-31");
+	}
 
 
 	
@@ -671,7 +972,7 @@ private static SalesDao dao;
 			while (rs.next()) {
 				SalesDto dto = new SalesDto();
 				dto.setPeriod(rs.getString("period"));
-				dto.setBranch_id(rs.getString("branch_id")); // 또는 dto.setBranch_name() 가능
+				dto.setBranch_id(rs.getInt("branch_id")); // 또는 dto.setBranch_name() 가능
 				dto.setBranch_name(rs.getString("branch_name"));
 				dto.setTotalSales(rs.getInt("total_sales"));
 				dto.setAverageSales(rs.getInt("average_sales"));
@@ -692,12 +993,13 @@ private static SalesDao dao;
 	}
 
 	
-	// 주간별 매출 통계 (지점 이름 포함)
-	public List<SalesDto> getWeeklyStats() {
+	// ✅ 최종: 날짜 범위 필터용 메서드 (하나만 유지)
+	public List<SalesDto> getWeeklyStatsBetween(String start, String end) {
 	    List<SalesDto> list = new ArrayList<>();
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
+
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
@@ -708,20 +1010,80 @@ private static SalesDao dao;
 	                SUM(s.totalamount) AS total_sales
 	            FROM sales s
 	            JOIN branches b ON s.branch_id = b.branch_id
+	            WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
 	            GROUP BY 
 	                TO_CHAR(s.created_at, 'IYYY') || '-W' || TO_CHAR(s.created_at, 'IW'),
 	                s.branch_id,
 	                b.name
 	            ORDER BY period DESC
 	        """;
+
 	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
 	        rs = pstmt.executeQuery();
+
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
-	            dto.setPeriod(rs.getString("period"));                 
-	            dto.setBranch_id(rs.getString("branch_id"));              
-	            dto.setBranch_name(rs.getString("branch_name"));       
-	            dto.setTotalSales(rs.getInt("total_sales"));           
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setTotalSales(rs.getInt("total_sales"));
+	            list.add(dto);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return list;
+	}
+
+
+	// ✅ 전체 주간 매출 조회
+	public List<SalesDto> getWeeklyStats() {
+	    return getWeeklyStatsBetween("2000-01-01", "2099-12-31");
+	}
+
+	// 월간 매출 합계 (날짜 범위 필터 적용)
+	public List<SalesDto> getMonthlyStatsBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT 
+	                TO_CHAR(s.created_at, 'YYYY-MM') AS period,
+	                s.branch_id,
+	                b.name AS branch_name,
+	                SUM(s.totalamount) AS total_sales
+	            FROM sales s
+	            JOIN branches b ON s.branch_id = b.branch_id
+	            WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), s.branch_id, b.name
+	            ORDER BY period DESC
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setTotalSales(rs.getInt("total_sales"));
 	            list.add(dto);
 	        }
 	    } catch (Exception e) {
@@ -733,6 +1095,7 @@ private static SalesDao dao;
 	            if (conn != null) conn.close();
 	        } catch (Exception e) {}
 	    }
+
 	    return list;
 	}
 
@@ -822,6 +1185,54 @@ private static SalesDao dao;
 	    return list;
 	}
 
+	// 연간 매출 합계 (날짜 범위 필터 적용)
+	public List<SalesDto> getYearlyStatsBetween(String start, String end) {
+	    List<SalesDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT 
+	                TO_CHAR(s.created_at, 'YYYY') AS period,
+	                s.branch_id,
+	                b.name AS branch_name,
+	                SUM(s.totalamount) AS total_sales
+	            FROM sales s
+	            JOIN branches b ON s.branch_id = b.branch_id
+	            WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+	            GROUP BY TO_CHAR(s.created_at, 'YYYY'), s.branch_id, b.name
+	            ORDER BY period DESC
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, start);
+	        pstmt.setString(2, end);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            SalesDto dto = new SalesDto();
+	            dto.setPeriod(rs.getString("period"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_name(rs.getString("branch_name"));
+	            dto.setTotalSales(rs.getInt("total_sales"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return list;
+	}
+
 
 	
 	// 일일 마감 매출 데이터를 sales 테이블에 삽입하는 메소드 (이전에 작성된 insert 메소드)
@@ -852,7 +1263,7 @@ private static SalesDao dao;
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
 	            dto.setSales_id(rs.getInt("sales_id"));
-	            dto.setBranch_id(rs.getString("branch_id")); 
+	            dto.setBranch_id(rs.getInt("branch_id")); 
 	            dto.setBranch_name(rs.getString("branch_name")); 
 	            dto.setCreated_at(rs.getString("created_at"));
 	            dto.setTotalamount(rs.getInt("totalamount"));
