@@ -12,6 +12,7 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
 <head>
     <meta charset="UTF-8">
     <title>발주 현황</title>
+    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
     <style>
         table { border-collapse: collapse; width: 850px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
@@ -21,6 +22,9 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
     </style>
 </head>
 <body>
+<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+	<jsp:param value="order" name="thisPage"/>
+</jsp:include>
 <h3>발주 현황</h3>
 <table>
     <tr>

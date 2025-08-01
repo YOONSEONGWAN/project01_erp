@@ -148,7 +148,6 @@ public class BranchDao {
 				dto.setCreatedAt(rs.getString("created_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
 				dto.setStatus(rs.getString("status"));
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
