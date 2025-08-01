@@ -30,12 +30,12 @@
 <body>
 	<div class="container">
 		<h1>게시글 상세보기</h1>
-		<div class="btn group mb-2">
-			<a class=" <%=dto.getPrevNum()==0 ? "disabled":"" %>" href="view.jsp?num=<%=dto.getPrevNum() %>">
+		<div class="btn group mb-2"> <!-- disabled 는 css에서 적용 -->
+			<a class=" <%=dto.getPrevNum()==0 ? "disabled":"" %>" href="hq-view.jsp?num=<%=dto.getPrevNum() %>">
 				<i class="bi bi-arrow-left"></i>
 				Prev
 			</a>
-			<a class=" <%=dto.getNextNum()==0 ? "disabled":"" %>" href="view.jsp?num=<%=dto.getNextNum() %>">
+			<a class=" <%=dto.getNextNum()==0 ? "disabled":"" %>" href="hq-view.jsp?num=<%=dto.getNextNum() %>">
 				Next
 				<i class="bi bi-arrow-right"></i>
 			</a>
@@ -78,9 +78,14 @@
 		    <%=dto.getContent() %>
 		  </div>
 		</div>
+		<div>
+			<a class="" href="hq-list.jsp"><i class=""></i>목록으로</a>
+		</div>
 		<%if(dto.getWriter().equals(userName)){ %>
-			<div class="text-end pt-2">
-				<a class="btn btn-warning mt-2 ms-1 " href="edit.jsp?num=<%=dto.getNum() %>"><i class="fas fa-pen"></i>수정하기</a>
+			<div class="">
+				<a class="" href="hq-edit.jsp?num=<%=dto.getNum() %>"><i class="fas fa-pen"></i>수정하기</a>
+				<a class="" href="hq-delete.jsp?num=<%=dto.getNum() %>" onclick="return confirm('정말 삭제하시겠습니까?');">
+					<i class="fas fa-trash"></i>삭제하기</a>
 			</div>
 		<%} %>
 	</div>
