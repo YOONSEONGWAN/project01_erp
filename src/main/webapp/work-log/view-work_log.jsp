@@ -20,12 +20,16 @@ List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
 <head>
 <meta charset="UTF-8">
 <title>지점별 출퇴근 현황</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
 .big-table th, .big-table td { padding:8px; }
 select { font-size: 1.05em; padding: 4px 8px; }
 </style>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+		<jsp:param value="work" name="thisPage"/>
+	</jsp:include>
 <h3>지점별 직원 출퇴근 현황</h3>
 
 <!-- 셀렉트박스 form -->
