@@ -136,3 +136,7 @@ CREATE TABLE branch_stock (
     current_quantity NUMBER,                                                -- 현재 수량
     updatedat        DATE                                                  -- 마지막 추가 날짜
 );
+
+
+
+
