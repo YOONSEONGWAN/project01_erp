@@ -12,6 +12,83 @@ import util.DbcpBean;
 
 public class ProductDao {
 	
+	// 전체 게시글 수 리턴
+	public int getCount() {
+	    int count = 0;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = "SELECT COUNT(*) AS cnt FROM product";
+	        pstmt = conn.prepareStatement(sql);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            count = rs.getInt("cnt");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    
+	    return count;
+	}
+
+	//페이지 처리
+	public List<ProductDto> selectByPage(int startRowNum, int endRowNum) {
+	    List<ProductDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT * FROM (
+	                SELECT a.*, ROWNUM rnum FROM (
+	                    SELECT * FROM product ORDER BY num DESC
+	                ) a WHERE ROWNUM <= ?
+	            ) WHERE rnum >= ?
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, endRowNum);  // <= 먼저
+	        pstmt.setInt(2, startRowNum); // >= 다음
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            ProductDto dto = new ProductDto();
+	            dto.setNum(rs.getInt("num"));
+	            dto.setName(rs.getString("name"));
+	            dto.setDescription(rs.getString("description"));
+	            dto.setPrice(rs.getInt("price"));
+	            dto.setStatus(rs.getString("status"));
+	            list.add(dto);
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return list;
+	}
+
+
+
+
+
+	
 	//이미지 업로드
 	public int insert1(ProductDto dto) {
 	    Connection conn = null;
