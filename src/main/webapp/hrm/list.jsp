@@ -14,7 +14,7 @@
 
     HrmDao dao = new HrmDao();
 
-    // 검색어 기반으로 필터링
+    // 검색어 기반으로 필터링 
     List<HrmDto> hqList = dao.selectHeadOfficeByKeyword(hqKeyword);
     List<HrmDto> branchList = dao.selectBranchByKeyword(branchKeyword);
 
