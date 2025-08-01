@@ -15,8 +15,12 @@
 <head>
 <meta charset="UTF-8">
 <title>/headquater/sales.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+		<jsp:param value="sales" name="thisPage"/>
+	</jsp:include>
 	<h1>매출 통계조회</h1>
 	<div class="container">
 		<li>

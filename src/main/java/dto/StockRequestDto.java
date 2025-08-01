@@ -1,80 +1,116 @@
 package dto;
 
+import java.sql.Date;
+
 public class StockRequestDto {
-	private int requestId;
-	private String branchId;
-	private int ingredientId;
-	private String ingredientName; // JOIN 된 재고명
-	private int quantity;
-	private String status;
-	private String requestedAt;
-	private String updatedAt;
+	  	private int orderId;            // 발주 고유번호 (PK)
+	    private int branchNum;          // branch_stock PK (FK)
+	    private String branchId;        // 지점 아이디
+	    private int inventoryId;        // 식재료 고유번호
+	    private String product;         // 식재료명
+	    private int currentQuantity;    // 현재 재고
+	    private int requestQuantity;    // 발주 요청 수량
+	    private String status;          // 상태 (ex: 대기, 승인 등)
+	    private Date requestedAt;       // 신청일
+	    private Date updatedAt;         // 수정일
+	    private String isPlaceOrder;    // 요청 상태 (승인/거절 등)
+	    
 
-	public StockRequestDto() {}
+	    // 기본 생성자
+	    public StockRequestDto() {}
 
-	// getter, setter
-	public int getRequestId() {
-		return requestId;
-	}
+		public int getOrderId() {
+			return orderId;
+		}
 
-	public void setRequestId(int requestId) {
-		this.requestId = requestId;
-	}
+		public void setOrderId(int orderId) {
+			this.orderId = orderId;
+		}
 
-	public String getBranchId() {
-		return branchId;
-	}
+		public int getBranchNum() {
+			return branchNum;
+		}
 
-	public void setBranchId(String branchId) {
-		this.branchId = branchId;
-	}
+		public void setBranchNum(int branchNum) {
+			this.branchNum = branchNum;
+		}
 
-	public int getIngredientId() {
-		return ingredientId;
-	}
+		public String getBranchId() {
+			return branchId;
+		}
 
-	public void setIngredientId(int ingredientId) {
-		this.ingredientId = ingredientId;
-	}
+		public void setBranchId(String branchId) {
+			this.branchId = branchId;
+		}
 
-	public String getIngredientName() {
-		return ingredientName;
-	}
+		public int getInventoryId() {
+			return inventoryId;
+		}
 
-	public void setIngredientName(String ingredientName) {
-		this.ingredientName = ingredientName;
-	}
+		public void setInventoryId(int inventoryId) {
+			this.inventoryId = inventoryId;
+		}
 
-	public int getQuantity() {
-		return quantity;
-	}
+		public String getProduct() {
+			return product;
+		}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+		public void setProduct(String product) {
+			this.product = product;
+		}
 
-	public String getStatus() {
-		return status;
-	}
+		public int getCurrentQuantity() {
+			return currentQuantity;
+		}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+		public void setCurrentQuantity(int currentQuantity) {
+			this.currentQuantity = currentQuantity;
+		}
 
-	public String getRequestedAt() {
-		return requestedAt;
-	}
+		public int getRequestQuantity() {
+			return requestQuantity;
+		}
 
-	public void setRequestedAt(String requestedAt) {
-		this.requestedAt = requestedAt;
-	}
+		public void setRequestQuantity(int requestQuantity) {
+			this.requestQuantity = requestQuantity;
+		}
 
-	public String getUpdatedAt() {
-		return updatedAt;
-	}
+		public String getStatus() {
+			return status;
+		}
 
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+		public void setStatus(String status) {
+			this.status = status;
+		}
 
+		public Date getRequestedAt() {
+			return requestedAt;
+		}
+
+		public void setRequestedAt(Date requestedAt) {
+			this.requestedAt = requestedAt;
+		}
+
+		public Date getUpdatedAt() {
+			return updatedAt;
+		}
+
+		public void setUpdatedAt(Date updatedAt) {
+			this.updatedAt = updatedAt;
+		}
+
+		public String getIsPlaceOrder() {
+			return isPlaceOrder;
+		}
+
+		public void setIsPlaceOrder(String isPlaceOrder) {
+			this.isPlaceOrder = isPlaceOrder;
+		}
+
+	
+
+		
+	    
+	    
+	    
 }

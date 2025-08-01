@@ -21,7 +21,7 @@
 		<table>
 			<tr>
 				<th>지점 고유 번호</th>
-				<td><%=dto.getBranchId() %></td>
+				<td><%=dto.getBranch_id() %></td>
 			</tr>
 			<tr>
 				<th>지점 이름</th>
@@ -46,6 +46,10 @@
 			<tr>
 				<th>수정일</th>
 				<td><%=dto.getUpdatedAt() %></td>
+			</tr>
+			<tr>
+				<th>운영 상태</th>
+				<td><%=dto.getStatus() %></td>
 			</tr>
 		</table>
 	</div>
