@@ -39,10 +39,10 @@ public class InventoryDao {
 	        conn = new DbcpBean().getConn();
 
 	        String sql = """
-	            SELECT num ,inventory_id, product, quantity, expirationDate,
+	            SELECT num ,branch_id, product, quantity,
 	                   isDisposal, isPlaceOrder, is_approval
 	            FROM Inventory
-	            ORDER BY inventory_id ASC, product ASC
+	            ORDER BY branch_id ASC, product ASC
 	        """;
 
 	        pstmt = conn.prepareStatement(sql);
@@ -52,10 +52,9 @@ public class InventoryDao {
 	            InventoryDto dto = new InventoryDto();
 	            
 	            dto.setNum(rs.getInt("num"));
-	            dto.setInventory_id(rs.getInt("inventory_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
 	            dto.setProduct(rs.getString("product"));
 	            dto.setQuantity(rs.getInt("quantity"));
-	            dto.setExpirationDate(rs.getString("expirationDate"));
 	            dto.setDisposal(rs.getBoolean("isDisposal"));
 	            dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
 	            dto.setIsApproval(rs.getString("is_approval"));
@@ -90,10 +89,10 @@ public class InventoryDao {
 	        conn = new DbcpBean().getConn();
 
 	        String sql = """
-	            SELECT num ,inventory_id, product, quantity, TO_CHAR(expirationDate, 'YYYY-MM-DD') AS expirationDate, 
+	            SELECT num ,branch_id, product, quantity,
 	                   isDisposal, isPlaceOrder, is_approval
 	            FROM Inventory
-	            WHERE inventory_id = 1
+	            WHERE branch_id = 1
 	            ORDER BY product ASC
 	        """;
 
@@ -104,10 +103,9 @@ public class InventoryDao {
 	            InventoryDto dto = new InventoryDto();
 	            
 	            dto.setNum(rs.getInt("num"));
-	            dto.setInventory_id(rs.getInt("inventory_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
 	            dto.setProduct(rs.getString("product"));
 	            dto.setQuantity(rs.getInt("quantity"));
-	            dto.setExpirationDate(rs.getString("expirationDate"));
 	            dto.setDisposal(rs.getBoolean("isDisposal"));
 	            dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
 	            dto.setIsApproval(rs.getString("is_approval"));
@@ -217,19 +215,6 @@ public class InventoryDao {
 
 
     
-    public boolean updateExpirationDate(int num, LocalDate newDate) {
-        String sql = "UPDATE Inventory SET expirationDate = ? WHERE num = ?";
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, Date.valueOf(newDate));
-            pstmt.setInt(2, num);
-            int count = pstmt.executeUpdate();
-            return count > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 	
 	public void setZeroQuantity(int num) {
 	    Connection conn = null;
@@ -266,7 +251,7 @@ public class InventoryDao {
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
-	            SELECT num, inventory_id, product, quantity, expirationDate, isDisposal, isPlaceOrder, is_approval
+	            SELECT num, branch_id, product, quantity, isDisposal, isPlaceOrder, is_approval
 				FROM inventory
 				WHERE isPlaceOrder = '1'
 				AND is_approval = '대기'
@@ -278,10 +263,9 @@ public class InventoryDao {
 	        while (rs.next()) {
 	            InventoryDto dto = new InventoryDto();
 	            dto.setNum(rs.getInt("num"));
-	            dto.setInventory_id(rs.getInt("inventory_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
 	            dto.setProduct(rs.getString("product"));
 	            dto.setQuantity(rs.getInt("quantity"));
-	            dto.setExpirationDate(rs.getString("expirationDate"));
 	            dto.setDisposal(rs.getBoolean("isDisposal"));
 	            dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
 	            dto.setIsApproval(rs.getString("is_approval"));
@@ -315,7 +299,7 @@ public class InventoryDao {
 	        conn = new DbcpBean().getConn();
 	        // 실행할 SQL문
 	        String sql = """
-	            SELECT num, product, quantity, expirationDate
+	            SELECT num, product, quantity
 	            FROM Inventory
 	            WHERE num = ?
 	        """;
@@ -332,7 +316,7 @@ public class InventoryDao {
 	            dto.setNum(num); // 번호는 매개변수에서 그대로 사용
 	            dto.setProduct(rs.getString("product"));
 	            dto.setQuantity(rs.getInt("quantity"));
-	            dto.setExpirationDate(rs.getString("expirationDate"));
+	            
 	        }
 
 	    } catch (Exception e) {
@@ -421,72 +405,72 @@ public class InventoryDao {
 	
 	
 	public boolean updateQuantityByApproval(int num, int oldRequestQty, int newRequestQty, 
-			String oldApprovalStatus, String newApprovalStatus,
-            int currentQuantity) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-			
-		try {
-			conn = new DbcpBean().getConn();
-			conn.setAutoCommit(false);  // 트랜잭션 처리 시작
-			
-			// 1. 현재 재고 수량 조회
-			String selectSql = "SELECT quantity FROM Inventory WHERE num = ?";
-			pstmt = conn.prepareStatement(selectSql);
-			pstmt.setInt(1, num);
-			rs = pstmt.executeQuery();
-			
-			int currentQty = 0;
-		if (rs.next()) {
-			currentQty = rs.getInt("quantity");
-		}
-		rs.close();
-		pstmt.close();
-			
-		int adjustedQty = currentQty;
-			
-		// 2. 승인 상태에 따라 재고 수량 계산
-		if ("승인".equals(oldApprovalStatus) && "반려".equals(newApprovalStatus)) {
-		// 승인 → 반려: quantity를 placeorder_head_detail.current_quantity 로 무조건 맞춤
-			adjustedQty = currentQuantity;
-		} else if ("승인".equals(oldApprovalStatus)) {
-		// 기존 승인 상태였으므로 변경 수량만큼 차감하거나 증가
-			adjustedQty = currentQty + (newRequestQty - oldRequestQty);
-		} else if ("승인".equals(newApprovalStatus) && !"승인".equals(oldApprovalStatus)) {
-		// 반려 → 승인: 새 요청 수량 만큼 증가
-			adjustedQty = currentQty + newRequestQty;
-		}
-		if (adjustedQty < 0) adjustedQty = 0; // 음수 재고 방지
-			
-		// 3. 재고, 승인 상태, 발주 신청 상태 모두 업데이트
-		String updateSql = "UPDATE Inventory SET quantity = ?, is_approval = ?, isPlaceOrder = ? WHERE num = ?";
-		pstmt = conn.prepareStatement(updateSql);
-		pstmt.setInt(1, adjustedQty);
-		pstmt.setString(2, newApprovalStatus);
-		pstmt.setInt(3, 0); // 승인/반려 후 발주신청 해제
-		pstmt.setInt(4, num);
-			
-		int updateCount = pstmt.executeUpdate();
-			
-		if (updateCount == 1) {
-			conn.commit();
-			return true;
-		} else {
-			conn.rollback();
-			return false;
-		}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			try { if (conn != null) conn.rollback(); } catch (Exception ignored) {}
-			return false;
-		} finally {
-		try {
-			if (rs != null) rs.close();
-			if (pstmt != null) pstmt.close();
-			if (conn != null) conn.close();
-		} catch (Exception ignored) {}
-			}
-		}
+	        String oldApprovalStatus, String newApprovalStatus,
+	        int currentQuantity) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        conn.setAutoCommit(false);  // 트랜잭션 처리 시작
+
+	        // 1. 현재 재고 수량 조회
+	        String selectSql = "SELECT quantity FROM Inventory WHERE num = ?";
+	        pstmt = conn.prepareStatement(selectSql);
+	        pstmt.setInt(1, num);
+	        rs = pstmt.executeQuery();
+
+	        int currentQty = 0;
+	        if (rs.next()) {
+	            currentQty = rs.getInt("quantity");
+	        }
+	        rs.close();
+	        pstmt.close();
+
+	        int adjustedQty = currentQty;
+
+	        // 2. 승인 상태에 따라 재고 수량 계산
+	        if ("승인".equals(oldApprovalStatus) && "반려".equals(newApprovalStatus)) {
+	            // 승인 → 반려: quantity를 placeorder_head_detail.current_quantity 로 무조건 맞춤
+	            adjustedQty = currentQuantity;
+	        } else if ("승인".equals(oldApprovalStatus)) {
+	            // 기존 승인 상태였으므로 변경 수량만큼 차감하거나 증가
+	            adjustedQty = currentQty + (newRequestQty - oldRequestQty);
+	        } else if ("승인".equals(newApprovalStatus) && !"승인".equals(oldApprovalStatus)) {
+	            // 반려 → 승인: 새 요청 수량 만큼 증가
+	            adjustedQty = currentQty + newRequestQty;
+	        }
+	        if (adjustedQty < 0) adjustedQty = 0; // 음수 재고 방지
+
+	        // 3. 재고, 승인 상태, 발주 신청 상태 모두 업데이트
+	        String updateSql = "UPDATE Inventory SET quantity = ?, is_approval = ?, isPlaceOrder = ? WHERE num = ?";
+	        pstmt = conn.prepareStatement(updateSql);
+	        pstmt.setInt(1, adjustedQty);
+	        pstmt.setString(2, "대기");  // 여기서 무조건 '대기'로 설정
+	        pstmt.setInt(3, 0); // 발주 신청 해제
+	        pstmt.setInt(4, num);
+
+	        int updateCount = pstmt.executeUpdate();
+
+	        if (updateCount == 1) {
+	            conn.commit();
+	            return true;
+	        } else {
+	            conn.rollback();
+	            return false;
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        try { if (conn != null) conn.rollback(); } catch (Exception ignored) {}
+	        return false;
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception ignored) {}
+	    }
+	}
 }

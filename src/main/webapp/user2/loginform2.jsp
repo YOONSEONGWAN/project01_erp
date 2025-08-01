@@ -7,15 +7,7 @@
 		url = request.getContextPath() + "/index.jsp"; // 기본 이동 경로
 	}
 		
-
-
 %>
-
-
-
-
-
-
 <!DOCTYPE html>
 <html>
 <head>

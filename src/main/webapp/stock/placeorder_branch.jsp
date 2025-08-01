@@ -3,6 +3,13 @@
 <%@ page import="dao.stock.PlaceOrderBranchDao" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
+<%
+
+	List<StockRequestDto> list2 = StockRequestDao.getInstance().selectAll();
+    // DAO에서 최근 10건 발주 내역 불러오기
+    List<PlaceOrderBranchDto> list = PlaceOrderBranchDao.getInstance().getRecentOrders();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,11 +17,47 @@
     <title>발주 내역 보기</title>
 </head>
 <body>
+<h2>발주 신청 내역</h2>
+    <form action="placeorder_branch_confirm.jsp" method="post">
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>상품명</th>
+                    <th>현재 수량</th>
+                    <th>발주 수량</th>
+                    <th>발주 상태</th>
+                </tr>
+            </thead>
+            <tbody>
+             <%
+                    for (StockRequstDto dto : list2) {
+                        if (!dto.isPlaceOrder()) {
+                            continue;
+                        }
+              %>
+               <tr>
+                    <td><%= dto.getProduct() %></td>
+                    <td><%= dto.getQuantity() %></td>
+                    <td>
+                        <input type="number" name="amount_<%= dto.getNum() %>" min="1" value="1" required>
+                    </td>
+                    <td>
+                        <select name="approval_<%= dto.getNum() %>">
+                            <option value="NO">반려</option>
+                            <option value="YES">승인</option>
+                        </select>
+                    </td>
+                </tr>
+                <% } %>
+               
+            </tbody>
+        </table>
+        <br>
+        <input type="submit" value="발주 확정">
+    </form>
 
-<%
-    // DAO에서 최근 10건 발주 내역 불러오기
-    List<PlaceOrderBranchDto> list = PlaceOrderBranchDao.getInstance().getRecentOrders();
-%>
+    <hr>
+
 
 <h2>최근 10건 발주 내역</h2>
 <table border="1" cellpadding="5" cellspacing="0">
