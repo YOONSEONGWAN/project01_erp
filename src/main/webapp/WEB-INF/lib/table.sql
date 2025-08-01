@@ -1,38 +1,3 @@
-CREATE TABLE branch_stock (
-    branch_num   NUMBER          PRIMARY KEY,
-    branch_id         VARCHAR2(20)   NOT NULL,
-    inventory_id      NUMBER         NOT NULL,
-    product           VARCHAR2(100)  NOT NULL,
-    current_quantity  NUMBER         NOT NULL,
-    updatedat         DATE           NULL,
-    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
-    FOREIGN KEY (inventory_id) REFERENCES inventory(num)
-);
-
-CREATE SEQUENCE branch_stock_seq;
-
-CREATE TABLE stock_request (
-    order_id          NUMBER          PRIMARY KEY,
-    branch_num        NUMBER          NOT NULL, -- FK, branch_stock의 PK
-    branch_id         VARCHAR2(20)    NOT NULL,
-    inventory_id      NUMBER          NOT NULL,
-    product           VARCHAR2(100)   NOT NULL,
-    current_quantity  NUMBER          NOT NULL,
-    request_quantity  NUMBER          NOT NULL,
-    status            VARCHAR2(20)    NULL,
-    requestedat       DATE            NULL,
-    updatedat         DATE            NULL,
-    isPlaceOrder      VARCHAR2(10)    NULL,
-    Field             VARCHAR2(1000)  NULL,
-    FOREIGN KEY (branch_num) REFERENCES branch_stock(branch_num),
-    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
-    FOREIGN KEY (inventory_id) REFERENCES inventory(num)
-);
-
-CREATE SEQUENCE stock_request_seq;
-
-
-
 CREATE TABLE hqBoard (
     num NUMBER PRIMARY KEY,         -- 글 번호
     writer VARCHAR2(100) NOT NULL,  -- 작성자
@@ -112,31 +77,3 @@ CONSTRAINT branches_manager_fk FOREIGN KEY (manager_id) REFERENCES users2(num)
 );
 
 CREATE SEQUENCE branches_seq;
-
-CREATE TABLE work_log (
-  log_id    NUMBER        NOT NULL PRIMARY KEY,
-  branch_id VARCHAR2(20)  NOT NULL,        -- FK: branches.branch_id
-  user_id   VARCHAR2(20)  NOT NULL,        -- FK: users_p.user_id
-  work_date DATE          NOT NULL,
-  start_time DATE         NOT NULL,
-  end_time   DATE,                         -- VARCHAR2(100)보단 DATE 권장!
-  -- FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
-  -- FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
-CREATE SEQUENCE work_log_seq;
-
-
-
-
-CREATE TABLE branch_stock (
-    inventory_id     NUMBER         PRIMARY KEY REFERENCES inventory(num),  -- 재고 ID (PK & FK)
-    branch_id        VARCHAR2(20)   NOT NULL REFERENCES branches(branch_id), -- 지점 ID (FK)
-    product          VARCHAR2(100)  NOT NULL,                                -- 제품 이름
-    current_quantity NUMBER,                                                -- 현재 수량
-    updatedat        DATE                                                  -- 마지막 추가 날짜
-);
-
-
-
-
