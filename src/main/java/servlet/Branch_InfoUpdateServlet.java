@@ -1,4 +1,4 @@
-package branchInfo.servlet;
+package servlet;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 	maxFileSize = 1024 * 1024 * 50,
 	maxRequestSize = 1024 * 1024 * 60
 )
-public class UserUpdateServlet extends HttpServlet {
+public class Branch_InfoUpdateServlet extends HttpServlet {
 
 	String fileLocation;
 
