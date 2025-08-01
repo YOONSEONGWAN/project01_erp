@@ -11,18 +11,71 @@ import util.DbcpBean;
 
 
 public class ProductDao {
-	
-	// 전체 게시글 수 리턴
-	public int getCount() {
+	// 검색어로 필터링 + 페이징 처리 메서드
+	public List<ProductDto> selectByPageAndKeyword(int startRowNum, int endRowNum, String keyword) {
+	    List<ProductDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+
+	        String sql = """
+	            SELECT * FROM (
+	                SELECT a.*, ROWNUM rnum FROM (
+	                    SELECT * FROM product
+	                    WHERE (name LIKE ? OR description LIKE ?)
+	                    ORDER BY num DESC
+	                ) a WHERE ROWNUM <= ?
+	            ) WHERE rnum >= ?
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        String likeKeyword = "%" + keyword + "%";
+	        pstmt.setString(1, likeKeyword);
+	        pstmt.setString(2, likeKeyword);
+	        pstmt.setInt(3, endRowNum);
+	        pstmt.setInt(4, startRowNum);
+
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            ProductDto dto = new ProductDto();
+	            dto.setNum(rs.getInt("num"));
+	            dto.setName(rs.getString("name"));
+	            dto.setDescription(rs.getString("description"));
+	            dto.setPrice(rs.getInt("price"));
+	            dto.setStatus(rs.getString("status"));
+	            dto.setImagePath(rs.getString("imagepath"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return list;
+	}
+
+	// 검색어 포함된 게시글 개수 리턴
+	public int getCountByKeyword(String keyword) {
 	    int count = 0;
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
-	    
+
 	    try {
 	        conn = new DbcpBean().getConn();
-	        String sql = "SELECT COUNT(*) AS cnt FROM product";
+	        String sql = "SELECT COUNT(*) AS cnt FROM product WHERE name LIKE ? OR description LIKE ?";
 	        pstmt = conn.prepareStatement(sql);
+	        String likeKeyword = "%" + keyword + "%";
+	        pstmt.setString(1, likeKeyword);
+	        pstmt.setString(2, likeKeyword);
 	        rs = pstmt.executeQuery();
 	        if (rs.next()) {
 	            count = rs.getInt("cnt");
@@ -36,52 +89,7 @@ public class ProductDao {
 	            if (conn != null) conn.close();
 	        } catch (Exception e) {}
 	    }
-	    
 	    return count;
-	}
-
-	//페이지 처리
-	public List<ProductDto> selectByPage(int startRowNum, int endRowNum) {
-	    List<ProductDto> list = new ArrayList<>();
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-	            SELECT * FROM (
-	                SELECT a.*, ROWNUM rnum FROM (
-	                    SELECT * FROM product ORDER BY num DESC
-	                ) a WHERE ROWNUM <= ?
-	            ) WHERE rnum >= ?
-	        """;
-
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setInt(1, endRowNum);  // <= 먼저
-	        pstmt.setInt(2, startRowNum); // >= 다음
-	        rs = pstmt.executeQuery();
-
-	        while (rs.next()) {
-	            ProductDto dto = new ProductDto();
-	            dto.setNum(rs.getInt("num"));
-	            dto.setName(rs.getString("name"));
-	            dto.setDescription(rs.getString("description"));
-	            dto.setPrice(rs.getInt("price"));
-	            dto.setStatus(rs.getString("status"));
-	            list.add(dto);
-	        }
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
-	    }
-	    return list;
 	}
 
 
