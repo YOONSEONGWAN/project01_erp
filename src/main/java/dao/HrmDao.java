@@ -11,6 +11,62 @@ import util.DbcpBean;
 
 public class HrmDao {
 	
+	// 본사 직원 검색
+	public List<HrmDto> selectHeadOfficeByKeyword(String keyword) {
+	    List<HrmDto> list = new ArrayList<>();
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(
+	             "SELECT * FROM users_p WHERE role IN ('king', 'admin') AND (user_name LIKE ? OR role LIKE ?) ORDER BY role DESC")) {
+	        String like = "%" + keyword + "%";
+	        pstmt.setString(1, like);
+	        pstmt.setString(2, like);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                HrmDto dto = new HrmDto();
+	                dto.setNum(rs.getInt("num"));
+	                dto.setName(rs.getString("user_name"));
+	                dto.setRole(rs.getString("role"));
+	                list.add(dto);
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return list;
+	}
+
+
+	// 지점 직원 검색
+	public List<HrmDto> selectBranchByKeyword(String keyword) {
+	    List<HrmDto> list = new ArrayList<>();
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(
+	             "SELECT users_p.num, users_p.user_name, users_p.role, branches.name AS branch_name " +
+	             "FROM users_p " +
+	             "JOIN branches ON users_p.branch_id = branches.branch_id " +
+	             "WHERE users_p.role IN ('manager', 'clerk') AND (users_p.user_name LIKE ? OR branches.name LIKE ?) " +
+	             "ORDER BY users_p.role DESC")) {
+	        String like = "%" + keyword + "%";
+	        pstmt.setString(1, like);
+	        pstmt.setString(2, like);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                HrmDto dto = new HrmDto();
+	                dto.setNum(rs.getInt("num"));
+	                dto.setName(rs.getString("user_name"));
+	                dto.setRole(rs.getString("role"));
+	                dto.setBranchName(rs.getString("branch_name"));
+	                list.add(dto);
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return list;
+	}
+
+
+	
 	// 본사 직원 리스트
 	public List<HrmDto> selectHeadOffice() {
 	    List<HrmDto> list = new ArrayList<>();
@@ -141,7 +197,8 @@ public class HrmDao {
 
 	    return list;
 	}
-
+	
+			
 
 	// 직원 정보 삭제
 			public boolean deleteByNum(int num) {
