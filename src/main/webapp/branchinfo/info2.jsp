@@ -1,14 +1,16 @@
 <%@page import="dao.BranchInfoDao"%>
 <%@page import="dto.BranchInfoDto"%>
+<%@page import="dao.UserDao"%>
+<%@page import="dto.UserDto"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
 	//세션에 저장된 userName 을 읽어온다. (이미 로그인된 상태이기 때문에)
-	 String userName=(String)session.getAttribute("user_name");
+	 String userId=(String)session.getAttribute("userId");
 	
 	//DB 에서 사용자 정보를 읽어온다.
-	BranchInfoDto dto=BranchInfoDao.getInstance().getByUserName(userName);
+	BranchInfoDto dto=BranchInfoDao.getInstance().getByUserId(userId);
 %> 
 
 
@@ -57,7 +59,7 @@
 			</tr>
 			<tr>
 				<th>직급</th>
-				<td><%=dto.getUser_role() %></td>
+				<td><%=(dto.getUser_role() != null && !dto.getUser_role().isEmpty()) ? dto.getUser_role() : "직급 정보 없음" %></td>
 				
 			</tr>
 			
@@ -65,11 +67,20 @@
 		</table>
 		
 	</div>
-	<div class="container">
-		<a href="${pageContext.request.contextPath }/user/logout.jsp">로그아웃</a>
-	</div>             
+	
+	<div class="grid text-center" style="--bs-columns: 18; --bs-gap: .5rem;">
+ 		 <div style="grid-column: span 14;">
+ 		 	<a class="g-col-6 g-col-md-4" href="edit2.jsp">개인 정보 수정</a>
+ 		 </div>
+  		 <div class="g-col-4">
+  		 	<a class="mt-2" href="${pageContext.request.contextPath }/branchinfo/logout2.jsp">로그아웃</a>
+  		 </div>
+	</div>
+	
+	             
+	                    
 	                     
-	                      
+	                   
 	                
 	
 </body>

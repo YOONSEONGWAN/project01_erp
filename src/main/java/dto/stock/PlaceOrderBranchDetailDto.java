@@ -3,6 +3,8 @@ package dto.stock;
 public class PlaceOrderBranchDetailDto {
 	private int detail_id;
 	private int order_id;
+	private String branch_id;
+	private int inventory_id;
 	private String product;
 	private int current_quantity;
 	private int request_quantity;
@@ -12,6 +14,18 @@ public class PlaceOrderBranchDetailDto {
 	
 	
 	
+	public String getBranch_id() {
+		return branch_id;
+	}
+	public void setBranch_id(String branch_id) {
+		this.branch_id = branch_id;
+	}
+	public int getInventory_id() {
+		return inventory_id;
+	}
+	public void setInventory_id(int inventory_id) {
+		this.inventory_id = inventory_id;
+	}
 	public int getOrder_id() {
 		return order_id;
 	}

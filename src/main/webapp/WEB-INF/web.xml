@@ -3,7 +3,7 @@
 	xmlns="https://jakarta.ee/xml/ns/jakartaee" 
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" 
 	version="6.0">
-  <display-name>Step02DataBase</display-name>
+  <display-name>Project01_Erp</display-name>
   <welcome-file-list>
     
     <welcome-file>index.jsp</welcome-file>

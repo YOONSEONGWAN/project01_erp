@@ -18,7 +18,7 @@
 			<!-- 작성자 (자동 입력, 수정 불가) -->
 			<div class="mb-3">
 				<label class="form-label">작성자</label>
-				<input type="text" name="writer" class="form-control" value="<%=writer%>" readonly>
+				<input type="text" name="writer" class="form-control" value="<%=writer%>">
 			</div>
 
 			<!-- 제목 -->

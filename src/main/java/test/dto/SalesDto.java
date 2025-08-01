@@ -1,50 +1,36 @@
 package test.dto;
 
 public class SalesDto {
-    private int salesId;
-    private String branch;
-    private String createdAt; // 문자열로 처리
-    private int totalAmount;
-
-    public SalesDto() {
-    }
-
-    public SalesDto(int salesId, String branch, String createdAt, int totalAmount) {
-        this.salesId = salesId;
-        this.branch = branch;
-        this.createdAt = createdAt;
-        this.totalAmount = totalAmount;
-    }
-
+    private int salesId;         // 매출 고유 번호
+    private String branchId;     // 지점 아이디
+    private String createdAt;    // 매출 발생일 (문자열 타입)
+    private int totalAmount;     // 해당일 전체 매출
+	
+    
     public int getSalesId() {
-        return salesId;
-    }
+		return salesId;
+	}
+	public void setSalesId(int salesId) {
+		this.salesId = salesId;
+	}
+	public String getBranchId() {
+		return branchId;
+	}
+	public void setBranchId(String branchId) {
+		this.branchId = branchId;
+	}
+	public String getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+	public int getTotalAmount() {
+		return totalAmount;
+	}
+	public void setTotalAmount(int totalAmount) {
+		this.totalAmount = totalAmount;
+	}
 
-    public void setSalesId(int salesId) {
-        this.salesId = salesId;
-    }
-
-    public String getBranch() {
-        return branch;
-    }
-
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public int getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(int totalAmount) {
-        this.totalAmount = totalAmount;
-    }
+    
 }

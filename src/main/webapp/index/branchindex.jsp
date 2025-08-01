@@ -1,17 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <%
-	//navbar.jsp 페이지가 어떤 페이지에 include 되었는지 파라미터 읽어오기
-	String thisPage=request.getParameter("thisPage");// "index" or "member" or "book"
-	//로그인된 userName 이 있는지 읽어와 본다
-	String userName=(String)session.getAttribute("userName");
-	
-	
+	String thisPage=request.getParameter("thisPage");
+	String userId=(String)session.getAttribute("userId");
+	String branchId=(String)session.getAttribute("branchId");
 %>
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,20 +27,14 @@
 				
 	            <!-- 오른쪽 사용자 메뉴 -->
 	            <ul class="navbar-nav">
-                <%if (userName == null) {%>
-	                <li class="nav-item">
-	                    <a class="btn btn-outline-light btn-sm me-2"
-	                       href="${pageContext.request.contextPath }/user2/loginform2.jsp">로그인</a>
-	                </li>
-	                <li class="nav-item">
-	                    <a class="btn btn-warning btn-sm"
-	                       href="${pageContext.request.contextPath }/user/signup-form.jsp">회원가입</a>
-	                </li>
+                <%if (userId == null) {%>
+	              
+	               
                 <%}else {%>
 	                <li class="nav-item  me-2">
 					    <a class="nav-link  p-0"
-					       href="${pageContext.request.contextPath}/user2/info2.jsp">
-					        <strong><%= userName %></strong>
+					       href="${pageContext.request.contextPath}/branchinfo/info2.jsp">
+					        <strong><%= userId %></strong>
 					    </a>
 					</li>
 	                <li class="nav-item me-2">
@@ -55,16 +42,12 @@
 	                </li>
 	                <li class="nav-item">
 	                    <a class="btn btn-danger btn-sm"
-	                       href="${pageContext.request.contextPath }/user2/logout2.jsp">로그아웃</a>
+	                       href="${pageContext.request.contextPath }/branchinfo/logout2.jsp">로그아웃</a>
 	                </li>
                 <%}%>
                 </ul>
 			</div>
-		</div>
 	</nav>
 	<a href="${pageContext.request.contextPath }/order/list.jsp">발주 관리 페이지</a>
-	<p>develop 으로 바꾸자</p>
-	<p>추가</p>
-
 </body>
 </html>

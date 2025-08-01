@@ -14,8 +14,7 @@
         return;
     }
 
-    PlaceOrderBranchDetailDto dto = PlaceOrderBranchDetailDao.getInstance().getByDetailId(detailId);
-
+    PlaceOrderBranchDetailDto dto = PlaceOrderBranchDetailDao.getInstance().getDetailById(detailId);
     if(dto == null) {
         out.println("<script>alert('해당 발주 상세 내역이 존재하지 않습니다.'); history.back();</script>");
         return;
