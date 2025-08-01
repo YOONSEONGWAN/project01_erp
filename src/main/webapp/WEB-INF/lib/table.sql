@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 -- 1. users_p (부모: FK 참조 대상 없음)
 CREATE TABLE users_p (
   num           NUMBER          NOT NULL,
@@ -395,3 +396,5 @@ CREATE TABLE hqboard (
   CONSTRAINT PK_HQBOARD PRIMARY KEY (num)
 );
 
+=======
+>>>>>>> ce3a8d500080f9e50220e70fdf9e985960ab9f3b

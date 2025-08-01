@@ -85,9 +85,23 @@ public class StockRequestDao {
         try {
             conn = new DbcpBean().getConn();
             String sql = """
-                SELECT * FROM stock_request
-                WHERE branch_id = ?
-                ORDER BY requestedat DESC
+                SELECT 
+                    r.order_id,
+                    r.branch_num,
+                    r.branch_id,
+                    r.inventory_id,
+                    b.product,                 
+                    b.current_quantity,        
+                    r.request_quantity,
+                    r.status,
+                    r.requestedat,
+                    r.updatedat,
+                    r.isPlaceOrder,
+                    r.field
+                FROM stock_request r
+                JOIN branch_stock b ON r.branch_num = b.branch_num
+                WHERE r.branch_id = ?
+                ORDER BY r.requestedat DESC
             """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, branchId);
@@ -98,8 +112,8 @@ public class StockRequestDao {
                 dto.setBranchNum(rs.getInt("branch_num"));
                 dto.setBranchId(rs.getString("branch_id"));
                 dto.setInventoryId(rs.getInt("inventory_id"));
-                dto.setProduct(rs.getString("product"));
-                dto.setCurrentQuantity(rs.getInt("current_quantity"));
+                dto.setProduct(rs.getString("product")); // branch_stock 기준!
+                dto.setCurrentQuantity(rs.getInt("current_quantity")); // branch_stock 기준!
                 dto.setRequestQuantity(rs.getInt("request_quantity"));
                 dto.setStatus(rs.getString("status"));
                 dto.setRequestedAt(rs.getDate("requestedat"));
@@ -116,6 +130,7 @@ public class StockRequestDao {
         }
         return list;
     }
+
 
     // 4. UPDATE (주로 요청수량, 상품명만 바꿈. 필요시 파라미터/필드 더 추가 가능)
     public boolean updateRequest(int orderId, String product, int requestQuantity) {
@@ -161,6 +176,7 @@ public class StockRequestDao {
         return rowCount > 0;
     }
     
+
     public List<StockRequestDto> selectAll() {
         List<StockRequestDto> list = new ArrayList<>();
         Connection conn = null;
