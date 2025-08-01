@@ -27,13 +27,29 @@ List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
 <head>
 <meta charset="UTF-8">
 <title><%= branchName %> 출퇴근 현황</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
 .big-table th, .big-table td { padding:8px; }
 select { font-size: 1.05em; padding: 4px 8px; }
 </style>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+		<jsp:param value="work" name="thisPage"/>
+	</jsp:include>
 <h3><%= branchName %> 출퇴근 현황</h3>
+
+<!-- 셀렉트박스 form -->
+<form method="get" style="margin-bottom:16px;">
+    <label>지점 선택:
+        <select name="branchId" onchange="this.form.submit()">
+            <% for(String b : branchList) { %>
+                <option value="<%= b %>" <%= b.equals(branchId) ? "selected" : "" %>><%= b %></option>
+            <% } %>
+        </select>
+    </label>
+</form>
+
 
 <table border="1" class="big-table" style="width:100%;">
     <tr>

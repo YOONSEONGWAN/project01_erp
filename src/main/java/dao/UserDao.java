@@ -21,6 +21,52 @@ private static UserDao dao;
 		return dao;
 	}
 	
+	// branch_id와 user_id가 모두 일치하는 사용자 정보 조회
+	public UserDto getByBIandUI(String branch_id, String user_id) {
+	    UserDto dto = null;
+	    Connection conn = null;
+	    PreparedStatement psmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT num, branch_id, password, user_name, location, phone, profile_image, role, updated_at, created_at
+	            FROM users_p
+	            WHERE branch_id = ? AND user_id = ?
+	        """;
+	        psmt = conn.prepareStatement(sql);
+	        psmt.setString(1, branch_id);
+	        psmt.setString(2, user_id);
+	        rs = psmt.executeQuery();
+	        if (rs.next()) {
+	            dto = new UserDto();
+	            dto.setNum(rs.getLong("num"));
+	            dto.setUser_id(user_id);
+	            dto.setBranch_id(branch_id);
+	            dto.setPassword(rs.getString("password"));
+	            dto.setUser_name(rs.getString("user_name"));
+	            dto.setLocation(rs.getString("location"));
+	            dto.setPhone(rs.getString("phone"));
+	            dto.setProfile_image(rs.getString("profile_image"));
+	            dto.setRole(rs.getString("role"));
+	            dto.setUpdated_at(rs.getString("updated_at"));
+	            dto.setCreated_at(rs.getString("created_at"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (psmt != null) psmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return dto;
+	}
+	
 	// user_id 를 이용해서 정보 불러오기
 	public UserDto getByUserId(String user_id) {
 		UserDto dto = null;

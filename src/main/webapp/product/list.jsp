@@ -39,9 +39,12 @@
 <head>
 <meta charset="UTF-8">
 <title>상품 목록</title>
-
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+	<jsp:param value="product" name="thisPage"/>
+</jsp:include>
 <div class="container">
     <a href="insertform.jsp">상품 등록</a>
     <h1>상품 목록</h1>
