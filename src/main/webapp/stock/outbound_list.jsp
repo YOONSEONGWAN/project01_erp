@@ -44,7 +44,7 @@
                 for (OutboundOrdersDto dto : list) { %>
                     <tr>
                         <td><%= dto.getOrder_id() %></td>
-                        <td><%= dto.getInventory_id() %></td>
+                        <td><%= dto.getBranch_id() %></td>
                         <td><%= dto.getApproval() != null ? dto.getApproval() : "-" %></td>
                         <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
                         <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>

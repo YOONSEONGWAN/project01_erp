@@ -24,7 +24,7 @@ List<WorkLogDto> logs = dao.getLogsByUser(userId);
 <html>
 <head>
 <meta charset="UTF-8">
-<title>출퇴근 현황</title>
+<title>출퇴근 하기</title>
 <style>
 .button-bar {
     width: 100%;
@@ -96,7 +96,7 @@ List<WorkLogDto> logs = dao.getLogsByUser(userId);
 </table>
 <div style="margin-top: 18px; text-align: right;">
     <a href="view-work_log.jsp?branchId=<%= branchId %>" style="font-size:1.05em; font-weight:bold; color:#1565c0;">
-        ▶ 지점별 출퇴근 현황 보기
+        ▶ 전직원 출퇴근 현황 보기
     </a>
 </div>
 </body>

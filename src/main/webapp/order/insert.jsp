@@ -44,11 +44,11 @@ List<IngredientDto> stockList = dao.selectAll(branchId);
         <tr>
             <td>
                 <%= dto.getProduct() %>
-            <input type="hidden" name="items[<%=i%>].branchNum" value="<%= dto.getBranchNum() %>">
-       		<input type="hidden" name="items[<%=i%>].inventoryId" value="<%= dto.getInventoryId() %>">
-        	<input type="hidden" name="items[<%=i%>].product" value="<%= dto.getProduct() %>">
-        	<input type="hidden" name="items[<%=i%>].branchId" value="<%= dto.getBranchId() %>">
-        	<input type="hidden" name="items[<%=i%>].currentQuantity" value="<%= dto.getCurrentQuantity() %>">
+                <input type="hidden" name="items[<%=i%>].branchNum" value="<%= dto.getBranchNum() %>">
+                <input type="hidden" name="items[<%=i%>].inventoryId" value="<%= dto.getInventoryId() %>">
+                <input type="hidden" name="items[<%=i%>].product" value="<%= dto.getProduct() %>">
+                <input type="hidden" name="items[<%=i%>].branchId" value="<%= dto.getBranchId() %>">
+                <input type="hidden" name="items[<%=i%>].currentQuantity" value="<%= dto.getCurrentQuantity() %>">
             </td>
             <td><%= dto.getCurrentQuantity() %></td>
             <td>

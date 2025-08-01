@@ -29,13 +29,13 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
 <table>
     <tr>
         <th>발주번호</th>
-        <th>branch_stock번호</th>   <%-- branch_num 추가, 관리용 --%>
+     <%--   <th>branch_stock번호</th>    branch_num 추가, 관리용 --%>
         <th>상품명</th>
         <th>현재 재고</th>
         <th>요청 수량</th>
+        <th>승인여부</th>
         <th>상태</th>
         <th>신청일</th>
-        <th>비고</th>
         <th>수정</th>
         <th>삭제</th>
     </tr>
@@ -51,17 +51,20 @@ if (orderList == null || orderList.isEmpty()) {
 %>
     <tr>
         <td><%= dto.getOrderId() %></td>
-        <td><%= dto.getBranchNum() %></td>   <%-- branch_num 표시, 필요없으면 생략 --%>
+        <%-- <td><%= dto.getBranchNum() %></td>   branch_num 표시, 필요없으면 생략 --%>
         <td><%= dto.getProduct() %></td>
         <td><%= dto.getCurrentQuantity() %></td>
         <td><%= dto.getRequestQuantity() %></td>
+        <td>
+  			<%= dto.getIsPlaceOrder() == null ? "대기중" :
+      		dto.getIsPlaceOrder().equals("YES") ? "승인" : "거절" %>
+		</td>
         <td><%= dto.getStatus() %></td>
         <td>
             <% if (dto.getRequestedAt() != null) { %>
                 <%= dto.getRequestedAt() %>
             <% } %>
         </td>
-        <td><%= dto.getField() == null ? "" : dto.getField() %></td>
         <td>
             <form action="update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">

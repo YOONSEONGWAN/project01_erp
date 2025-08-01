@@ -3,7 +3,7 @@ package dto;
 import java.sql.Date;
 
 public class StockRequestDto {
-	  private int orderId;            // 발주 고유번호 (PK)
+	  	private int orderId;            // 발주 고유번호 (PK)
 	    private int branchNum;          // branch_stock PK (FK)
 	    private String branchId;        // 지점 아이디
 	    private int inventoryId;        // 식재료 고유번호
@@ -14,7 +14,7 @@ public class StockRequestDto {
 	    private Date requestedAt;       // 신청일
 	    private Date updatedAt;         // 수정일
 	    private String isPlaceOrder;    // 요청 상태 (승인/거절 등)
-	    private String field;           // 비고/메모(필요시)
+	    
 
 	    // 기본 생성자
 	    public StockRequestDto() {}
@@ -107,13 +107,7 @@ public class StockRequestDto {
 			this.isPlaceOrder = isPlaceOrder;
 		}
 
-		public String getField() {
-			return field;
-		}
-
-		public void setField(String field) {
-			this.field = field;
-		}
+	
 
 		
 	    

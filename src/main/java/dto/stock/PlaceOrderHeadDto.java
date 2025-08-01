@@ -2,8 +2,17 @@ package dto.stock;
 
 public class PlaceOrderHeadDto {
 	private int order_id;
+	private int inventory_num;
 	private String order_date;
 	private String manager;
+	
+	
+	public int getInventory_num() {
+		return inventory_num;
+	}
+	public void setInventory_num(int inventory_num) {
+		this.inventory_num = inventory_num;
+	}
 	public int getOrder_id() {
 		return order_id;
 	}

@@ -473,4 +473,29 @@ public class InventoryDao {
 	        } catch (Exception ignored) {}
 	    }
 	}
+	public boolean decreaseQuantity(int inventoryId, int amount) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = """
+            UPDATE inventory
+            SET quantity = quantity - ?
+            WHERE num = ? AND quantity >= ?
+        """;
+        try {
+            conn = new DbcpBean().getConn();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, inventoryId);
+            pstmt.setInt(3, amount);
+            int updated = pstmt.executeUpdate();
+            return updated > 0; // 성공적으로 감소됐으면 true
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
+            try { if(conn != null) conn.close(); } catch(Exception e) {}
+        }
+    }
+	
 }

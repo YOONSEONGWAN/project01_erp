@@ -20,18 +20,21 @@
             <th>Order ID</th>
             <th>발주일</th>
             <th>담당자</th>
+            <th>상세 보기</th>
         </tr>
-        <%
-            for (PlaceOrderHeadDto dto : list) {
-        %>
-        <tr>
-            <td><a href="placeorder_head_detail.jsp?order_id=<%= dto.getOrder_id() %>">
-                <%= dto.getOrder_id() %>
-            </a></td>
-            <td><%= dto.getDate() %></td>
-            <td><%= dto.getManager() %></td>
-        </tr>
-        <% } %>
+        <tbody>
+            <%
+                for (PlaceOrderHeadDto order : list) {
+            %>
+            <tr>
+                <td><%= order.getOrder_id() %></td>
+                <td><%= order.getOrder_date() %></td>
+                <td><%= order.getManager() %></td>
+                <td>
+                    <a href="placeorder_head_detail.jsp?order_id=<%= order.getOrder_id() %>">상세 보기</a>
+                </td>
+            </tr>
+            <% } %>
     </table>
     <br>
     <a href="placeorder_head.jsp">돌아가기</a>
