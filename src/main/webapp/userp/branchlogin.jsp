@@ -1,3 +1,4 @@
+<%@page import="java.net.URLEncoder"%>
 <%@page import="org.mindrot.jbcrypt.BCrypt"%>
 <%@page import="dao.UserDao"%>
 <%@page import="dto.UserDto"%>
@@ -10,7 +11,7 @@
 	
 	
 	boolean isValid = false;
-	UserDto dto = UserDao.getInstance().getByUserId(userId);
+	UserDto dto = UserDao.getInstance().getByBIandUI(branchId, userId);
 	if(dto != null) {
 		isValid = BCrypt.checkpw(password, dto.getPassword());
 	}
@@ -19,7 +20,9 @@
 		session.setAttribute("userId", userId);
 		session.setAttribute("branchId", branchId);
 		session.setMaxInactiveInterval(60*60);
-	}
+		// 로그인 성공 -> /index/branchindex.jsp 로 이동
+		response.sendRedirect(request.getContextPath()+ "/index/branchindex.jsp");
+	} else{
 %>
 <!DOCTYPE html>
 <html>
@@ -28,18 +31,10 @@
 <title>/userp/branchlogin.jsp</title>
 </head>
 <body>
-	<div class="container">
-		<%if(isValid) {%>
-			<div>
-				<strong><%=branchId %> 점 <%=userId %> 님 로그인에 성공했습니다.</strong>
-				<a href="${pageContext.request.contextPath }/index/branchindex.jsp">이동</a>
-			</div>
-		<%} else{ %>
-			<div>
-				아이디 혹은 비밀번호가 잘못되었습니다. <br>
-				<a href="loginform.jsp"></a>
-			</div>
-		<%} %>
-	</div>
+	<script>
+		alert("아이디 혹은 비밀번호가 잘못되었습니다.");
+		location.href="${pageContext.request.contextPath }/userp/branchlogin-form.jsp"
+	</script>
+	<%} %>
 </body>
 </html>

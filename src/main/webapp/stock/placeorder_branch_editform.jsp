@@ -1,6 +1,5 @@
-
 <%@page import="dao.stock.PlaceOrderBranchDetailDao"%>
-<%@ page import="dto.stock.PlaceOrderBranchDetailDto" %>
+<%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%
@@ -52,7 +51,8 @@
             <tr>
                 <th>승인 상태</th>
                 <td>
-                    <select name="approval_status">
+                    <select name="approval_status" required>
+                        <option value="">--선택--</option>
                         <option value="승인" <%= "승인".equals(dto.getApproval_status()) ? "selected" : "" %>>승인</option>
                         <option value="반려" <%= "반려".equals(dto.getApproval_status()) ? "selected" : "" %>>반려</option>
                     </select>

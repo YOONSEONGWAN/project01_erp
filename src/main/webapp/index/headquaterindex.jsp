@@ -5,8 +5,12 @@
 <head>
 <meta charset="UTF-8">
 <title>/index/headquater.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+		<jsp:param value="index" name="thisPage"/>
+	</jsp:include>
 	<h1>본사 인덱스 페이지</h1>
 	<ul>
     	<li><a href="${pageContext.request.contextPath }/product/list.jsp">상품관리</a></li>
