@@ -5,8 +5,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%
+String branchId = (String)session.getAttribute("branchId");
 WorkLogDao dao = new WorkLogDao();
-// work_log 테이블에서 출근 기록 있는 지점만 셀렉트박스용으로 가져옴
+String branchName = dao.getBranchName(branchId); // 지점명 받아오기
+List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
+
+
+/*WorkLogDao dao = new WorkLogDao();
+
 List<String> branchList = dao.getBranchIdListFromLog();
 
 String branchId = request.getParameter("branchId");
@@ -14,30 +20,20 @@ if(branchId == null && branchList.size() > 0) {
     branchId = branchList.get(0); // 기본값(첫 번째 지점)
 }
 List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
+*/
 %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>지점별 출퇴근 현황</title>
+<title><%= branchName %> 출퇴근 현황</title>
 <style>
 .big-table th, .big-table td { padding:8px; }
 select { font-size: 1.05em; padding: 4px 8px; }
 </style>
 </head>
 <body>
-<h3>지점별 직원 출퇴근 현황</h3>
-
-<!-- 셀렉트박스 form -->
-<form method="get" style="margin-bottom:16px;">
-    <label>지점 선택:
-        <select name="branchId" onchange="this.form.submit()">
-            <% for(String b : branchList) { %>
-                <option value="<%= b %>" <%= b.equals(branchId) ? "selected" : "" %>><%= b %></option>
-            <% } %>
-        </select>
-    </label>
-</form>
+<h3><%= branchName %> 출퇴근 현황</h3>
 
 <table border="1" class="big-table" style="width:100%;">
     <tr>
@@ -67,5 +63,12 @@ select { font-size: 1.05em; padding: 4px 8px; }
     </tr>
 <% } %>
 </table>
+<div style="margin-top: 18px; text-align: right;">
+    <a href="work_log.jsp">
+        <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#695cff; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
+            출퇴근 하러가기
+        </button>
+    </a>
+</div>
 </body>
 </html>
