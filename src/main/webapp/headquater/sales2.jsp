@@ -25,8 +25,12 @@
 <head>
     <meta charset="UTF-8">
     <title>매출 통계 통합 페이지</title>
+    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/resource.jsp">
+		<jsp:param value="sa" name=""/>
+	</jsp:include>
     <h1>매출 통계 통합 페이지</h1>
 
     <form method="get" action="<%=request.getContextPath()%>/headquater/sales.jsp">

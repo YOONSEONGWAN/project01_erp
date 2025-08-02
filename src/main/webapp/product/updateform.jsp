@@ -63,10 +63,18 @@
 		
 		
             <div>
-                <label for="imagePath">이미지 파일 선택</label>
-                <input type="file" name="imagePath" id="imagePath" accept="image/*">
-            </div>
+   			 <label>기존 이미지:</label><br/>
+   				 <% if (dto.getImagePath() != null && !dto.getImagePath().isEmpty()) { %>
+     			   <img src="<%= request.getContextPath() + "/image?name=" + dto.getImagePath() %>" alt="기존 이미지" style="max-width:200px; max-height:200px;">
+   				 <% } else { %>
+   				   <p>이미지가 없습니다.</p>
+    			 <% } %>
+			</div>
 
+			<div>
+			    <label for="imagePath">이미지 파일 선택</label>
+			    <input type="file" name="imagePath" id="imagePath" accept="image/*">
+			</div>
             <button type="submit">수정 확인</button>
 			<button type="button" onclick="location.href='<%= request.getContextPath() %>/product/list.jsp'">취소</button>
 

@@ -23,7 +23,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>/sales/monthly-avg.jsp</title>
+    <title>/headquater-sales/monthly-avg.jsp</title>
 </head>
 <body>
     <h1>월 평균 매출 통계</h1>

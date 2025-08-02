@@ -250,6 +250,27 @@ public class WorkLogDao{
 	    }
 	    return list;
 	}
-	
+	public String getBranchName(String branchId) {
+	    String name = "";
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = "SELECT name FROM branches WHERE branch_id = ?";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, branchId);
+	        rs = pstmt.executeQuery();
+	        if(rs.next()) {
+	            name = rs.getString("name");
+	        }
+	    } catch(Exception e) { e.printStackTrace(); }
+	    finally {
+	        try { if(rs!=null) rs.close(); } catch(Exception e){}
+	        try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
+	        try { if(conn!=null) conn.close(); } catch(Exception e){}
+	    }
+	    return name;
+	}
 }
 
