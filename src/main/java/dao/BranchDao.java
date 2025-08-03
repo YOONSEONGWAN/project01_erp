@@ -3,11 +3,12 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import dto.BranchDto;
-
+import dto.UserDtoAdmin;
 import util.DbcpBean;
 
 public class BranchDao {
@@ -24,6 +25,91 @@ public class BranchDao {
 	public static BranchDao getInstance() {
 		return dao;
 	}
+	
+	// 직원 목록 반환
+    public List<UserDtoAdmin> getListWithRole(String branch_id) {
+        List<UserDtoAdmin> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+       
+
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                    SELECT num, user_name, role
+                    FROM users_p
+                    WHERE (role='clerk' or role='unapproved')
+            		    AND branch_id=?
+                    ORDER BY created_at ASC
+                """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, branch_id);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+            	UserDtoAdmin dto=new UserDtoAdmin();
+                dto.setNum(rs.getLong("num"));
+            	dto.setUser_name(rs.getString("user_name"));
+                dto.setRole(rs.getString("role"));
+            	
+                list.add(dto);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+
+        return list;
+    }
+	
+	//매니저 목록 반환
+    public List<UserDtoAdmin> getManagerListByBranchId(String branch_id) {
+        List<UserDtoAdmin> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+       
+
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                    SELECT num, user_name, role
+                    FROM users_p
+                    WHERE role='manager' AND branch_id=?
+                    ORDER BY created_at ASC
+                """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, branch_id);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+            	UserDtoAdmin dto = new UserDtoAdmin();
+            	dto.setNum(rs.getLong("num"));
+            	dto.setUser_name(rs.getString("user_name"));
+            	dto.setRole(rs.getString("role"));
+            	
+                list.add(dto);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+
+        return list;
+    }
 	
 	//지점 정보를 저장하는 메소드
 	public boolean insert(BranchDto dto) {
@@ -122,6 +208,7 @@ public class BranchDao {
 								b.address,
 								b.phone,
 								u.user_name,
+								u.num AS user_num,
 								b.status,
 								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
 								TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
@@ -143,11 +230,13 @@ public class BranchDao {
 				dto.setNum(rs.getInt("num"));
 				dto.setBranch_id(rs.getString("branch_id"));
 				dto.setName(rs.getString("name"));
+				dto.setUserName(rs.getString("user_name"));
 				dto.setAddress(rs.getString("address"));
 				dto.setPhone(rs.getString("phone"));
 				dto.setCreatedAt(rs.getString("created_at"));
 				dto.setUpdatedAt(rs.getString("updated_at"));
 				dto.setStatus(rs.getString("status"));
+				dto.setUser_num(rs.getLong("user_num"));
 
 			}
 		} catch (Exception e) {
@@ -166,7 +255,7 @@ public class BranchDao {
 		return dto;
 	}
 	
-	//전체 글의 갯수를 리턴하는 메소드
+	//전체 지점의 갯수를 리턴하는 메소드
 	public int getCount() {
 		int count=0;
 		Connection conn = null;
@@ -216,11 +305,12 @@ public class BranchDao {
 			String sql = """
 					SELECT MAX(ROWNUM) AS count
 					FROM branches
-					WHERE name LIKE '%'||?||'%' or b.num LIKE '%'||?||'%'
+					WHERE name LIKE '%'||?||'%' or b.branch_id LIKE '%'||?||'%'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
 			pstmt.setString(1, keyword);
+			pstmt.setString(2, keyword);
 			// select 문 실행하고 결과를 ResultSet 으로 받아온다
 			rs = pstmt.executeQuery();
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
@@ -244,7 +334,7 @@ public class BranchDao {
 	}
 	
 	// 특정 page 에 해당하는 row 만 select 해서 리턴하는 메소드
-	// BoardDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
+	// BranchDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
 	public List<BranchDto> selectPage(BranchDto dto){
 		List<BranchDto> list=new ArrayList<>();
 		
@@ -266,11 +356,12 @@ public class BranchDao {
 								b.address,
 								b.phone,
 								b.status,
-								u.user_name								
+								MAX(u.user_name) AS user_name
 							FROM branches b
 							LEFT OUTER JOIN  (
 								SELECT * FROM users_p WHERE role = 'manager'
 							) u ON b.branch_id = u.branch_id
+							GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
@@ -310,7 +401,7 @@ public class BranchDao {
 	}
 	
 	// 특정 page 와 keyword 에 해당하는 row 만 select 해서 리턴하는 메소드
-	// BoardDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
+	// BranchDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
 	public List<BranchDto> selectPageByKeyword(BranchDto dto){
 		List<BranchDto> list=new ArrayList<>();
 		
@@ -332,20 +423,22 @@ public class BranchDao {
 								b.address,
 								b.phone,
 								b.status,
-								u.user_name								
+								MAX(u.user_name) AS user_name
 							FROM branches b
 							LEFT OUTER JOIN  (
 								SELECT * FROM users_p WHERE role = 'manager'
 							) u ON b.branch_id = u.branch_id
-							WHERE b.name LIKE '%'||?||'%' or b.num LIKE '%'||?||'%'
+							WHERE b.name LIKE '%'||?||'%' or b.branch_id LIKE '%'||?||'%'
+							GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
 			pstmt.setString(1, dto.getKeyword());
-			pstmt.setInt(2, dto.getStartRowNum());
-			pstmt.setInt(3, dto.getEndRowNum());
+			pstmt.setString(2, dto.getKeyword());
+			pstmt.setInt(3, dto.getStartRowNum());
+			pstmt.setInt(4, dto.getEndRowNum());
 			// select 문 실행하고 결과를 ResultSet 으로 받아온다
 			rs = pstmt.executeQuery();
 			//반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
@@ -376,4 +469,186 @@ public class BranchDao {
 		}
 		return list;
 	}
+	
+	// 상태(status)에 맞는 글의 갯수를 리턴
+    public int getCountByStatus(String status) {
+        int count=0;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                    SELECT COUNT(*) AS count
+                    FROM branches
+                    WHERE status=?
+                    """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, status);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count=rs.getInt("count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return count;
+    }
+
+    // 상태(status)와 키워드에 맞는 글의 갯수를 리턴
+    public int getCountByKeywordAndStatus(String keyword, String status) {
+        int count=0;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                    SELECT COUNT(*) AS count
+                    FROM branches
+                    WHERE (name LIKE '%'||?||'%' OR branch_id LIKE '%'||?||'%') AND status=?
+                    """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, keyword);
+            pstmt.setString(2, keyword);
+            pstmt.setString(3, status);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count=rs.getInt("count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return count;
+    }
+
+    // 상태(status)에 맞는 페이지 정보를 리턴
+    public List<BranchDto> selectPageByStatus(BranchDto dto, String status){
+        List<BranchDto> list=new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                    SELECT *
+                    FROM
+                        (SELECT result1.*, ROWNUM AS rnum
+                        FROM
+                            (SELECT
+                                b.num,
+                                b.branch_id,
+                                b.name,
+                                b.address,
+                                b.phone,
+                                b.status,
+                                MAX(u.user_name) AS user_name
+                            FROM branches b
+                            LEFT OUTER JOIN  (
+                                SELECT * FROM users_p WHERE role = 'manager'
+                            ) u ON b.branch_id = u.branch_id
+                            WHERE b.status = ?
+                            GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
+                            ORDER BY b.branch_id DESC) result1)
+                    WHERE rnum BETWEEN ? AND ?
+                    """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, status);
+            pstmt.setInt(2, dto.getStartRowNum());
+            pstmt.setInt(3, dto.getEndRowNum());
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                BranchDto dto2=new BranchDto();
+                dto2.setNum(rs.getInt("num"));
+                dto2.setBranch_id(rs.getString("branch_id"));
+                dto2.setName(rs.getString("name"));
+                dto2.setAddress(rs.getString("address"));
+                dto2.setPhone(rs.getString("phone"));
+                dto2.setUserName(rs.getString("user_name"));
+                dto2.setStatus(rs.getString("status"));
+                list.add(dto2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return list;
+    }
+
+    // 상태(status)와 키워드에 맞는 페이지 정보를 리턴
+    public List<BranchDto> selectPageByKeywordAndStatus(BranchDto dto, String status){
+        List<BranchDto> list=new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                    SELECT *
+                    FROM
+                        (SELECT result1.*, ROWNUM AS rnum
+                        FROM
+                            (SELECT
+                                b.num,
+                                b.branch_id,
+                                b.name,
+                                b.address,
+                                b.phone,
+                                b.status,
+                                MAX(u.user_name) AS user_name
+                            FROM branches b
+                            LEFT OUTER JOIN  (
+                                SELECT * FROM users_p WHERE role = 'manager'
+                            ) u ON b.branch_id = u.branch_id
+                            WHERE (b.name LIKE '%'||?||'%' OR b.branch_id LIKE '%'||?||'%') AND b.status = ?
+                            GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
+                            ORDER BY b.branch_id DESC) result1)
+                    WHERE rnum BETWEEN ? AND ?
+                    """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, dto.getKeyword());
+            pstmt.setString(2, dto.getKeyword());
+            pstmt.setString(3, status);
+            pstmt.setInt(4, dto.getStartRowNum());
+            pstmt.setInt(5, dto.getEndRowNum());
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                BranchDto dto2=new BranchDto();
+                dto2.setNum(rs.getInt("num"));
+                dto2.setBranch_id(rs.getString("branch_id"));
+                dto2.setName(rs.getString("name"));
+                dto2.setAddress(rs.getString("address"));
+                dto2.setPhone(rs.getString("phone"));
+                dto2.setUserName(rs.getString("user_name"));
+                dto2.setStatus(rs.getString("status"));
+                list.add(dto2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return list;
+    }
 }
