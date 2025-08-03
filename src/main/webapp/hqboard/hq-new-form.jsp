@@ -69,32 +69,31 @@
 </style>    
 </head>
 <body>
-	<div class="container">
-		<h1>게시글 작성 양식</h1>
-		<form action="hq-save.jsp" method="post" id="saveForm" enctype="multipart/form-data">
-			<div class="">
-				<label class="" for="title">제목</label>
-				<input class="" type="text" name="title" id="title" />
-			</div>
-			<div class="">
-				<label class="" for="editor">내용</label>
-				<!-- Editor UI 가 출력될 div -->
-				<div id="editor"></div>
-				<textarea class="form-control" name="content" id="hiddencontent"  style="display:none;"></textarea>
-			</div>
-			
-			<div class="mb-3">
-            <label class="form-label">이미지&파일 업로드</label>
-            <div class="drop-zone" id="dropZone">
-                이곳에 이미지, 파일을 끌어다 놓거나 클릭하여 선택하세요.
-                <input type="file" name="myFile" id="fileInput" multiple hidden>
-            </div> <!-- 이미지 등록 -->
-            <div class="preview d-flex flex-wrap mt-3" id="preview"></div>
-        	</div> <!-- 이미지 미리보기 -->
-        	
-			<button class="" type="submit">저장</button>
-			<a class="" href="${pageContext.request.contextPath }/hqboard/hq-list.jsp">취소</a>
-		</form><!-- 제목 및 내용 작성 폼 -->
+	<div class="container my-5">
+	    <h1 class="h3 mb-4">게시글 작성</h1>
+	    <form action="hq-save.jsp" method="post" id="saveForm" enctype="multipart/form-data">
+	        <div class="mb-3">
+	            <label for="title" class="form-label">제목</label>
+	            <input class="form-control" type="text" name="title" id="title" required />
+	        </div>
+	        <div class="mb-3">
+	            <label for="editor" class="form-label">내용</label>
+	            <div id="editor"></div>
+	            <textarea class="form-control" name="content" id="hiddencontent" style="display:none;"></textarea>
+	        </div>
+	        <div class="mb-3">
+	            <label class="form-label">이미지 & 파일 업로드</label>
+	            <div class="drop-zone" id="dropZone">
+	                파일을 끌어다 놓거나 클릭하세요.
+	                <input type="file" name="myFile" id="fileInput" multiple hidden>
+	            </div>
+	            <div class="preview d-flex flex-wrap mt-3" id="preview"></div>
+	        </div>
+	        <div class="d-flex gap-2">
+	            <button class="btn btn-success" type="submit">저장</button>
+	            <a class="btn btn-secondary" href="hq-list.jsp">취소</a>
+	        </div>
+	    </form>
 	</div>
 	<script>
 	// 텍스트 편집기 에디터 생성 메소드 

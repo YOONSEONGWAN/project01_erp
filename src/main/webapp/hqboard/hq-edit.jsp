@@ -22,85 +22,51 @@
 <script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.js"></script>
 </head>
 <body>
-    <div class="container">
-        <nav>
-         <ol class="breadcrumb">
-           <li class="breadcrumb-item">
-            <a href="${pageContext.request.contextPath }/">Home</a>
-           </li>
-           <li class="breadcrumb-item">
-            <a href="${pageContext.request.contextPath }/hqboard/hq-list.jsp">Board</a>
-           </li>
-           <li class="breadcrumb-item active" >Edit</li>
-         </ol>
-        </nav>
-        <h1>글 수정 페이지</h1>
-        <form action="hq-update.jsp" method="post" id="editForm" enctype="multipart/form-data"> <!-- !!! 파일첨부 위해 multipart -->
-            <div>
-                <label for="num" class="">글 번호</label>
-                <input type="text" class="" name="num" id="num"
-                 value="<%=dto.getNum() %>" readonly/>
-            </div>
-            <div>
-                <label for="writer" class="">작성자</label>
-                <input type="text" class="" name="writer" id="writer"
-                 value="<%=dto.getWriter() %>" readonly/>
-            </div>
-            <div>
-                <label for="title" class="">제목</label>
-                <input type="text" class="" name="title" id="title"
-                    value="<%=dto.getTitle() %>" />
-            </div>
-            <div>
-                <label for="editor" class="">내용</label>
-                <div id="editor"></div>
-                <textarea class="" name="content" id="hiddencontent" style="display:none;"><%=dto.getContent() %></textarea>
-            </div>
-
-            <!-- 첨부파일 영역 -->
-            <% if (fileList != null && !fileList.isEmpty()) { %>
-                <div>
-                    <strong>첨부파일:</strong>
-                    <ul>
-                    <% for (HqBoardFileDto file : fileList) { %>
-                        <li>
-                            <a href="${pageContext.request.contextPath }/test/download?orgFileName=<%=file.getOrgFileName()%>&saveFileName=<%=file.getSaveFileName()%>&fileSize=<%=file.getFileSize()%>">
-                                <%=file.getOrgFileName()%>
-                            </a>
-                            <!-- 삭제 링크 추가 (삭제 기능 구현 필요) -->
-                            <a href="hq-file-delete.jsp?fileNum=<%=file.getNum()%>&boardNum=<%=dto.getNum()%>" onclick="return confirm('이 파일을 삭제할까요?');">[삭제]</a>
-                        </li>
-                    <% } %>
-                    </ul>
-                </div>
-            <% } %>
-            <!-- 새 파일 첨부 -->
-            <div>
-                <label>파일 추가</label>
-                <input type="file" name="myFile" multiple>
-                <small>(새로운 파일 첨부, 여러 개 가능)</small>
-            </div>
-
-            <button class="">수정 확인</button>
-            <button type="reset" class="">리셋</button>
-        </form>
-    </div>
-    <script>
-        const editor = new toastui.Editor({
-            el: document.querySelector('#editor'),
-            height: '500px',
-            initialEditType: 'wysiwyg',
-            previewStyle: 'vertical',
-            language: 'ko',
-            initialValue: `<%=dto.getContent().replace("`", "\\`") %>` // 작은 따옴표 문제 예방
-        });
-
-        document.querySelector("#editForm").addEventListener("submit", (e)=>{
-            // Editor 로 작성된 문자열 읽어오기
-            const content = editor.getHTML();
-            // 폼 전송용 textarea에 입력
-            document.querySelector("#hiddencontent").value = content;
-        });
-    </script>
+	<div class="container my-5">
+	    <h1 class="h3 mb-4">글 수정</h1>
+	    <form action="hq-update.jsp" method="post" id="editForm" enctype="multipart/form-data">
+	        <div class="mb-3">
+	            <label for="num" class="form-label">글 번호</label>
+	            <input type="text" class="form-control" name="num" id="num" value="<%=dto.getNum() %>" readonly/>
+	        </div>
+	        <div class="mb-3">
+	            <label for="writer" class="form-label">작성자</label>
+	            <input type="text" class="form-control" name="writer" id="writer" value="<%=dto.getWriter() %>" readonly/>
+	        </div>
+	        <div class="mb-3">
+	            <label for="title" class="form-label">제목</label>
+	            <input type="text" class="form-control" name="title" id="title" value="<%=dto.getTitle() %>" />
+	        </div>
+	        <div class="mb-3">
+	            <label for="editor" class="form-label">내용</label>
+	            <div id="editor"></div>
+	            <textarea class="form-control" name="content" id="hiddencontent" style="display:none;"><%=dto.getContent() %></textarea>
+	        </div>
+	        <% if (fileList != null && !fileList.isEmpty()) { %>
+	        <div class="mb-3">
+	            <strong>첨부파일:</strong>
+	            <ul class="list-unstyled">
+	                <% for (HqBoardFileDto file : fileList) { %>
+	                    <li>
+	                        <a href="${pageContext.request.contextPath }/test/download?orgFileName=<%=file.getOrgFileName()%>&saveFileName=<%=file.getSaveFileName()%>&fileSize=<%=file.getFileSize()%>">
+	                            <%=file.getOrgFileName()%>
+	                        </a>
+	                        <a class="text-danger ms-2" href="hq-file-delete.jsp?fileNum=<%=file.getNum()%>&boardNum=<%=dto.getNum()%>" onclick="return confirm('이 파일을 삭제할까요?');">[삭제]</a>
+	                    </li>
+	                <% } %>
+	            </ul>
+	        </div>
+	        <% } %>
+	        <div class="mb-3">
+	            <label class="form-label">파일 추가</label>
+	            <input type="file" class="form-control" name="myFile" multiple>
+	            <small class="text-muted">새로운 파일 첨부, 여러 개 가능</small>
+	        </div>
+	        <div class="d-flex gap-2">
+	            <button class="btn btn-primary" type="submit">수정 확인</button>
+	            <button type="reset" class="btn btn-outline-secondary">리셋</button>
+	        </div>
+	    </form>
+	</div>
 </body>
 </html>
