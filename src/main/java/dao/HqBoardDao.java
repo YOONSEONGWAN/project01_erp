@@ -8,6 +8,7 @@ import java.util.List;
 
 import dao.HqBoardDao;
 import dto.HqBoardDto;
+import dto.HqBoardFileDto;
 import util.DbcpBean;
 
 public class HqBoardDao {
@@ -361,56 +362,83 @@ public class HqBoardDao {
 	// 글 하나의 정보를 리턴 	
 	//public BoardDto getByNum(int num) {}
 	public HqBoardDto getByNum(int num) {
-		HqBoardDto dto = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = new DbcpBean().getConn();
-			// 실행 할 sql 
-			String sql = """
-				SELECT *
-				FROM	
-					(SELECT b.num, writer, title, content, view_count, 
-						TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at, 
-						profileImage,
-						LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
-						LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
-					FROM hqboard b
-					INNER JOIN users2 u ON b.writer = u.name) 
-				WHERE num=?
-			""";
-			pstmt = conn.prepareStatement(sql);
-			// 바인딩 예시: pstmt.setInt(1, num);
-			pstmt.setInt(1, num);
-			rs = pstmt.executeQuery();
-			if (rs.next()) { // 업데이트 요소 작성 
-				dto=new HqBoardDto();
-				dto.setNum(num);
-				dto.setWriter(rs.getString("writer"));
-				dto.setTitle(rs.getString("title"));
-				dto.setContent(rs.getString("content"));
-				dto.setViewCount(rs.getInt("view_count"));
-				dto.setCreatedAt(rs.getString("created_at"));
-				dto.setProfileImage(rs.getString("profileImage"));
-				dto.setPrevNum(rs.getInt("prevNum"));
-				dto.setNextNum(rs.getInt("nextNum"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return dto;
+	    HqBoardDto dto = null;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        // 실행할 sql
+	        String sql = """
+	            SELECT *
+	            FROM	
+	                (SELECT b.num, writer, title, content, view_count, 
+	                    TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at, 
+	                    profileImage,
+	                    LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
+	                    LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
+	                FROM hqboard b
+	                INNER JOIN users2 u ON b.writer = u.name) 
+	            WHERE num=?
+	        """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, num);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            dto = new HqBoardDto();
+	            dto.setNum(num);
+	            dto.setWriter(rs.getString("writer"));
+	            dto.setTitle(rs.getString("title"));
+	            dto.setContent(rs.getString("content"));
+	            dto.setViewCount(rs.getInt("view_count"));
+	            dto.setCreatedAt(rs.getString("created_at"));
+	            dto.setProfileImage(rs.getString("profileImage"));
+	            dto.setPrevNum(rs.getInt("prevNum"));
+	            dto.setNextNum(rs.getInt("nextNum"));
+
+	            // === 첨부파일 리스트 추가 ===
+	            PreparedStatement fpstmt = null;
+	            ResultSet frs = null;
+	            try {
+	                String fsql = "SELECT * FROM hqboard_file WHERE board_num=? ORDER BY num";
+	                fpstmt = conn.prepareStatement(fsql);
+	                fpstmt.setInt(1, num);
+	                frs = fpstmt.executeQuery();
+	                java.util.List<HqBoardFileDto> fileList = new java.util.ArrayList<>();
+	                while (frs.next()) {
+	                    HqBoardFileDto fileDto = new HqBoardFileDto();
+	                    fileDto.setNum(frs.getInt("num"));
+	                    fileDto.setBoardNum(frs.getInt("board_num"));
+	                    fileDto.setOrgFileName(frs.getString("org_file_name"));
+	                    fileDto.setSaveFileName(frs.getString("save_file_name"));
+	                    fileDto.setFileSize(frs.getLong("file_size"));
+	                    fileDto.setCreatedAt(frs.getString("created_at"));
+	                    fileList.add(fileDto);
+	                }
+	                dto.setFileList(fileList);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            } finally {
+	                try {
+	                    if (frs != null) frs.close();
+	                    if (fpstmt != null) fpstmt.close();
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return dto;
 	}
 
 	

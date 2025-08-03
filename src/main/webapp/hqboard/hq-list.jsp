@@ -37,14 +37,7 @@
 	int startPageNum = 1 + ((pageNum-1)/PAGE_DISPLAY_COUNT)*PAGE_DISPLAY_COUNT;
 	//하단 끝 페이지 번호
 	int endPageNum=startPageNum+PAGE_DISPLAY_COUNT-1;
-		
-	/*
-		StringUtils 클래스의 isEmpty() static 메소드를 이용하면 문자열이 비어있는지 여부를 알 수 있다.
-		null 또는 "" 의 빈 문자열은 비었다고 판단
-		
-		StringUtils.isEmpty(keyword)
-		는
-		keyword == null or "".equals(keyword)*/
+
 	
 	// 전체 글의 갯수 
 	int totalRow= 0; // 기본값 설정
