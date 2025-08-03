@@ -14,7 +14,7 @@
 	// 상태(status) 파라미터 읽어오기
 	String status = request.getParameter("status");
 	if (status == null || "all".equals(status) || status.isEmpty()) {
-	    status = "all"; // "all" or null means no status filter
+	    status = "all"; 
 	}
 	
 	//기본 페이지 번호는 1 로 설정하고 
@@ -94,8 +94,12 @@
 <head>
 <meta charset="UTF-8">
 <title>/board/list.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+	<jsp:param value="branch-admin" name="thisPage"/>
+</jsp:include>
 	<div class="container">
 		<a href="insert-form.jsp">지점 등록</a>
 		<a href="user-list.jsp">직원 목록 보기</a>

@@ -11,6 +11,91 @@ import util.DbcpBean;
 
 
 public class ProductDao {
+	// 검색어로 필터링 + 페이징 처리 메서드
+	public List<ProductDto> selectByPageAndKeyword(int startRowNum, int endRowNum, String keyword) {
+	    List<ProductDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+
+	        String sql = """
+	            SELECT * FROM (
+	                SELECT a.*, ROWNUM rnum FROM (
+	                    SELECT * FROM product
+	                    WHERE (name LIKE ? OR description LIKE ?)
+	                    ORDER BY num DESC
+	                ) a WHERE ROWNUM <= ?
+	            ) WHERE rnum >= ?
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        String likeKeyword = "%" + keyword + "%";
+	        pstmt.setString(1, likeKeyword);
+	        pstmt.setString(2, likeKeyword);
+	        pstmt.setInt(3, endRowNum);
+	        pstmt.setInt(4, startRowNum);
+
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            ProductDto dto = new ProductDto();
+	            dto.setNum(rs.getInt("num"));
+	            dto.setName(rs.getString("name"));
+	            dto.setDescription(rs.getString("description"));
+	            dto.setPrice(rs.getInt("price"));
+	            dto.setStatus(rs.getString("status"));
+	            dto.setImagePath(rs.getString("imagepath"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return list;
+	}
+
+	// 검색어 포함된 게시글 개수 리턴
+	public int getCountByKeyword(String keyword) {
+	    int count = 0;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = "SELECT COUNT(*) AS cnt FROM product WHERE name LIKE ? OR description LIKE ?";
+	        pstmt = conn.prepareStatement(sql);
+	        String likeKeyword = "%" + keyword + "%";
+	        pstmt.setString(1, likeKeyword);
+	        pstmt.setString(2, likeKeyword);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            count = rs.getInt("cnt");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return count;
+	}
+
+
+
+
+
 	
 	//이미지 업로드
 	public int insert1(ProductDto dto) {
