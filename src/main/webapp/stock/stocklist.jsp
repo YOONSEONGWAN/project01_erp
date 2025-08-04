@@ -9,8 +9,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>stocklist.jsp</title>
+<meta charset="UTF-8">
+<title>stocklist.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"/>
     <style>
         table {
             border-collapse: collapse;
