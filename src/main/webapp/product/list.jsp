@@ -1,56 +1,88 @@
-<%@page import="dto.ProductDto"%>
-<%@page import="dao.ProductDao"%>
-<%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="dto.ProductDto" %>
+<%@ page import="dao.ProductDao" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 
 <%
-    // 페이지 번호 읽기 (기본 1)
-    int pageNum = 1;
+    String keyword = request.getParameter("keyword");
+    if (keyword == null) keyword = "";
+
     String strPageNum = request.getParameter("pageNum");
-    if(strPageNum != null) {
-        try {
-            pageNum = Integer.parseInt(strPageNum);
-        } catch (Exception e) {
-            pageNum = 1;
-        }
-    }
+    int pageNum = 1;
+    try {
+        pageNum = Integer.parseInt(strPageNum);
+        if(pageNum < 1) pageNum = 1;
+    } catch (Exception e) {}
 
-    final int PAGE_ROW_COUNT = 5;   // 한 페이지에 표시할 행 수
-    final int PAGE_DISPLAY_COUNT = 3; // 페이지 링크 몇 개 보여줄지
-
-    int startRowNum = 1 + (pageNum - 1) * PAGE_ROW_COUNT;
-    int endRowNum = pageNum * PAGE_ROW_COUNT;
+    int pageSize = 10;
+    int startRowNum = (pageNum - 1) * pageSize + 1;
+    int endRowNum = pageNum * pageSize;
 
     ProductDao dao = new ProductDao();
-    int totalRow = dao.getCount();  // 전체 게시물 수
+    int totalCount = dao.getCountByKeyword(keyword);
+    int totalPage = (int)Math.ceil(totalCount / (double) pageSize);
+    if (pageNum > totalPage) pageNum = totalPage == 0 ? 1 : totalPage;
 
-    List<ProductDto> list = dao.selectByPage(startRowNum, endRowNum);
+    List<ProductDto> productList = dao.selectByPageAndKeyword(startRowNum, endRowNum, keyword);
 
-    // 페이지 링크 계산
-    int startPageNum = 1 + ((pageNum - 1) / PAGE_DISPLAY_COUNT) * PAGE_DISPLAY_COUNT;
-    int endPageNum = startPageNum + PAGE_DISPLAY_COUNT - 1;
-
-    int totalPageCount = (int)Math.ceil(totalRow / (double)PAGE_ROW_COUNT);
-    if(endPageNum > totalPageCount) endPageNum = totalPageCount;
+    String encodedKeyword = "";
+    try {
+        encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8");
+    } catch (Exception e) {
+        encodedKeyword = keyword;
+    }
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>상품 목록</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+    <meta charset="UTF-8">
+    <title>상품 검색 및 목록</title>
+    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        input[type="text"] { width: 300px; padding: 6px; }
+        input[type="submit"] { padding: 6px 12px; }
+        .pagination { margin-top: 20px; text-align: center; }
+        .pagination a, .pagination span {
+            margin: 0 5px; padding: 5px 10px;
+            border: 1px solid #ccc; text-decoration: none;
+            color: #333;
+        }
+        .pagination .current {
+            background-color: #666; color: white;
+            font-weight: bold;
+        }
+        .btn-register {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
-	<jsp:param value="product" name="thisPage"/>
-</jsp:include>
-<div class="container">
-    <a href="insertform.jsp">상품 등록</a>
-    <h1>상품 목록</h1>
+	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+		<jsp:param value="branch-sales" name="thisPage"/>
+	</jsp:include>
+<!-- 상품 등록 버튼 -->
+<form action="<%=request.getContextPath()%>/product/insertform.jsp" method="get" class="btn-register">
+    <input type="submit" value="상품 등록" />
+</form>
+
+<h2>상품 검색 및 목록</h2>
+
+<!-- 검색 폼 -->
+<form action="<%=request.getContextPath()%>/product/list.jsp" method="get">
+    <input type="text" name="keyword" placeholder="상품명 또는 설명 검색" value="<%= keyword %>" />
+    <input type="submit" value="검색" />
+</form>
+
+<!-- 상품 테이블 -->
+<form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
     <table>
         <thead>
             <tr>
+                <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
                 <th>번호</th>
                 <th>상품명</th>
                 <th>설명</th>
@@ -61,39 +93,66 @@
             </tr>
         </thead>
         <tbody>
-            <% for(ProductDto dto : list) { %>
+        <%
+            if(productList == null || productList.isEmpty()) {
+        %>
+            <tr><td colspan="8">검색 결과가 없습니다.</td></tr>
+        <%
+            } else {
+                int listSize = productList.size();
+                for(int i = 0; i < listSize; i++) {
+                    ProductDto dto = productList.get(i);
+                    int number = totalCount - ((pageNum - 1) * pageSize + i);
+        %>
             <tr>
-                <td><%= dto.getNum() %></td>
+                <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
+                <td><%= number %></td>
                 <td><a href="detail.jsp?num=<%= dto.getNum() %>"><%= dto.getName() %></a></td>
                 <td><%= dto.getDescription() %></td>
-                <td><%= dto.getPrice() %></td>
+                <td><%= dto.getPrice() %>원</td>
                 <td><%= dto.getStatus() %></td>
                 <td><a href="updateform.jsp?num=<%= dto.getNum() %>">수정</a></td>
                 <td>
                     <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
                 </td>
             </tr>
-            <% } %>
+        <%
+                }
+            }
+        %>
         </tbody>
     </table>
+    <input type="submit" value="선택 삭제" />
+</form>
 
-    <div class="pagination">
-        <% if(pageNum > 1) { %>
-            <a href="list.jsp?pageNum=<%= pageNum - 1 %>">이전</a>
-        <% } %>
+<!-- 페이지 네비게이션 -->
+<div class="pagination">
+    <% if(pageNum > 1) { %>
+        <a href="list.jsp?pageNum=<%= pageNum - 1 %>&keyword=<%= encodedKeyword %>">이전</a>
+    <% } else { %>
+        <span>이전</span>
+    <% } %>
 
-        <% for(int i = startPageNum; i <= endPageNum; i++) { %>
-            <% if(i == pageNum) { %>
-                <span class="current"><%= i %></span>
-            <% } else { %>
-                <a href="list.jsp?pageNum=<%= i %>"><%= i %></a>
-            <% } %>
-        <% } %>
+    <% for(int i = 1; i <= totalPage; i++) {
+        if(i == pageNum) { %>
+            <span class="current"><%= i %></span>
+        <% } else { %>
+            <a href="list.jsp?pageNum=<%= i %>&keyword=<%= encodedKeyword %>"><%= i %></a>
+        <% }
+    } %>
 
-        <% if(pageNum < totalPageCount) { %>
-            <a href="list.jsp?pageNum=<%= pageNum + 1 %>">다음</a>
-        <% } %> <!-- 주석 -->
-    </div>
+    <% if(pageNum < totalPage) { %>
+        <a href="list.jsp?pageNum=<%= pageNum + 1 %>&keyword=<%= encodedKeyword %>">다음</a>
+    <% } else { %>
+        <span>다음</span>
+    <% } %>
 </div>
+<script>
+	function toggleAll(source) {
+	    const checkboxes = document.querySelectorAll('input[name="productNums"]');
+	    checkboxes.forEach(cb => cb.checked = source.checked);
+	}
+</script>
+
 </body>
 </html>

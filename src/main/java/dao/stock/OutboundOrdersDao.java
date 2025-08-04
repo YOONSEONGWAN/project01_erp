@@ -235,33 +235,112 @@ public class OutboundOrdersDao {
         }
         return dto;
     }
-    public boolean insert(int orderId, String branchId, String approvalStatus, String orderDate, String manager) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+    public List<OutboundOrdersDto> selectProcessedWithKeyword(int limit) {
+        List<OutboundOrdersDto> list = new ArrayList<>();
         String sql = """
-            INSERT INTO outbound_orders
-            (order_id, branch_id, approval, out_date, manager)
-            VALUES (?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)
+            SELECT * FROM (
+                SELECT order_id, branch_id, approval, TO_CHAR(out_date, 'YYYY-MM-DD') AS out_date, manager
+                FROM outbound_orders
+                WHERE approval IN ('승인', '완료')
+                ORDER BY out_date DESC
+            )
+            WHERE ROWNUM <= ?
         """;
 
-        try {
-            conn = new DbcpBean().getConn();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, orderId);
-            pstmt.setString(2, branchId); // 주의: 이 컬럼이 실제 테이블에서 number 또는 varchar2 인지 확인
-            pstmt.setString(3, approvalStatus);
-            pstmt.setString(4, orderDate);
-            pstmt.setString(5, manager);
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            int inserted = pstmt.executeUpdate();
-            return inserted > 0;
-        } catch (SQLException e) {
+            pstmt.setInt(1, limit);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    OutboundOrdersDto dto = new OutboundOrdersDto();
+                    dto.setOrder_id(rs.getInt("order_id"));
+                    dto.setBranch_id(rs.getString("branch_id"));
+                    dto.setApproval(rs.getString("approval"));
+                    dto.setOut_date(rs.getString("out_date"));
+                    dto.setManager(rs.getString("manager"));
+                    list.add(dto);
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;
-        } finally {
-            try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
-            try { if(conn != null) conn.close(); } catch(Exception e) {}
         }
+
+        return list;
+    }
+    
+    public List<OutboundOrdersDto> selectByManagerWithPaging(String managerKeyword, int currentPage, int pageSize) {
+        List<OutboundOrdersDto> list = new ArrayList<>();
+
+        int start = (currentPage - 1) * pageSize + 1; // 시작 rownum
+        int end = currentPage * pageSize;             // 끝 rownum
+
+        String sql = """
+            SELECT * FROM (
+                SELECT inner_query.*, ROWNUM rnum FROM (
+                    SELECT order_id, branch_id, approval, out_date, manager
+                    FROM outbound_orders
+                    WHERE manager LIKE ?
+                    ORDER BY out_date DESC
+                ) inner_query
+                WHERE ROWNUM <= ?
+            )
+            WHERE rnum >= ?
+            """;
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + managerKeyword + "%");
+            pstmt.setInt(2, end);   // ROWNUM <= ?
+            pstmt.setInt(3, start); // rnum >= ?
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                OutboundOrdersDto dto = new OutboundOrdersDto();
+                dto.setOrder_id(rs.getInt("order_id"));
+                dto.setBranch_id(rs.getString("branch_id"));
+                dto.setApproval(rs.getString("approval"));
+                dto.setOut_date(rs.getString("out_date"));
+                dto.setManager(rs.getString("manager"));
+
+                list.add(dto);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+    
+    public int countByManager(String managerKeyword) {
+        int count = 0;
+
+        String sql = """
+            SELECT COUNT(*)
+            FROM outbound_orders
+            WHERE manager LIKE ?
+            """;
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + managerKeyword + "%");
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
 }
 
