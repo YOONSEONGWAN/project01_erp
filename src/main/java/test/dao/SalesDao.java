@@ -26,7 +26,7 @@ public class SalesDao {
             conn = new DbcpBean().getConn();
             String sql = """
                 INSERT INTO sales
-                (sales_id, branch_id, createdAt, totalamount)
+                (sales_id, branch_id, created_at, totalamount)
                 VALUES (sales_seq.NEXTVAL, ?, SYSDATE, ?)
             """;
             pstmt = conn.prepareStatement(sql);
@@ -44,7 +44,7 @@ public class SalesDao {
     }
 
     // 전체 매출 목록 조회
-    public List<SalesDto> getList() {
+    public List<SalesDto> getList(String branchId) {
         List<SalesDto> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -53,12 +53,14 @@ public class SalesDao {
             conn = new DbcpBean().getConn();
             String sql = """
                 SELECT sales_id, branch_id,
-                       TO_CHAR(createdAt, 'YYYY-MM-DD') AS createdAt,
+                       TO_CHAR(created_at, 'YYYY-MM-DD') AS createdAt,
                        totalamount
                 FROM sales
+                WHERE branch_id = ?
                 ORDER BY sales_id DESC
             """;
             pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, branchId);
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 SalesDto dto = new SalesDto();

@@ -88,9 +88,12 @@
 <head>
   <meta charset="UTF-8">
   <title>게시판 목록</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body class="p-4">
+	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+		<jsp:param value="board" name="thisPage"/>
+	</jsp:include>
   <div class="container">
     <h2 class="mb-4">종복치킨 게시판</h2>
 	

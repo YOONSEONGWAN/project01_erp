@@ -9,9 +9,6 @@
     <h2>매출 등록</h2>
     <form action="${pageContext.request.contextPath}/branch-sales/insert.jsp" method="post">
         <p>
-            <label>지점 ID: <input type="text" name="branchId" required></label>
-        </p>
-        <p>
             <label>매출 금액: <input type="number" name="totalAmount" required></label>
         </p>
         <p>

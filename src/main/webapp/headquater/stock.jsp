@@ -5,8 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <title>메인 페이지</title>
+    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+		<jsp:param value="stock" name="thisPage"/>
+	</jsp:include>
     <h1>재고 관리 시스템</h1>
 
     <ul>

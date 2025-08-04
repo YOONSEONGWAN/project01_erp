@@ -63,9 +63,9 @@
         <thead>
         	<tr>
         		<th>출고 ID</th>
-        		<th>승인 상태</th>
         		<th>출고 날짜</th>
         		<th>담당자</th>
+        		<th>상세보기</th>        		
         	</tr>
         </thead>
         <tbody>
@@ -75,9 +75,11 @@
             for (OutboundOrdersDto dto : processedOutbounds) { %>
                 <tr>
                     <td><%= dto.getOrder_id() %></td>
-                    <td><%= dto.getApproval() != null ? dto.getApproval() : "-" %></td>
                     <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
                     <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
+                    <td>
+                    	<a href="outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>">상세보기</a>
+                	</td>
                 </tr>
         <% } } %>
         </tbody>

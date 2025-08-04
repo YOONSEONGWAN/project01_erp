@@ -3,6 +3,7 @@ package dao.stock;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +33,13 @@ public class OutboundOrdersDao {
         ResultSet rs = null;
         try {
             conn = new DbcpBean().getConn();
-            String sql = "SELECT order_id, inventory_id, approval, out_date, manager FROM outbound_orders ORDER BY out_date DESC";
+            String sql = "SELECT order_id, branch_id, approval, out_date, manager FROM outbound_orders ORDER BY out_date DESC";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
             while(rs.next()) {
                 OutboundOrdersDto dto = new OutboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getString("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setOut_date(rs.getString("out_date"));
                 dto.setManager(rs.getString("manager"));
@@ -64,14 +65,14 @@ public class OutboundOrdersDao {
         ResultSet rs = null;
         try {
             conn = new DbcpBean().getConn();
-            String sql = "SELECT * FROM (SELECT order_id, inventory_id, approval, out_date, manager FROM outbound_orders ORDER BY out_date DESC) WHERE ROWNUM <= ?";
+            String sql = "SELECT * FROM (SELECT order_id, branch_id, approval, out_date, manager FROM outbound_orders ORDER BY out_date DESC) WHERE ROWNUM <= ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, limit);
             rs = pstmt.executeQuery();
             while(rs.next()) {
                 OutboundOrdersDto dto = new OutboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getString("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setOut_date(rs.getString("out_date"));
                 dto.setManager(rs.getString("manager"));
@@ -103,7 +104,7 @@ public class OutboundOrdersDao {
             while (rs.next()) {
                 OutboundOrdersDto dto = new OutboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getString("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setOut_date(rs.getString("out_date"));
                 dto.setManager(rs.getString("manager"));
@@ -131,7 +132,7 @@ public class OutboundOrdersDao {
             while (rs.next()) {
                 OutboundOrdersDto dto = new OutboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getString("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setOut_date(rs.getString("out_date"));
                 dto.setManager(rs.getString("manager"));
@@ -167,7 +168,7 @@ public class OutboundOrdersDao {
             while (rs.next()) {
                 OutboundOrdersDto dto = new OutboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getString("branch_id"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setOut_date(rs.getString("out_date"));
                 dto.setManager(rs.getString("manager"));
@@ -191,7 +192,7 @@ public class OutboundOrdersDao {
         int flag = 0;
         try {
             conn = new DbcpBean().getConn();
-            String sql = "UPDATE outbound_orders SET approval = ? WHERE order_id = ?";
+            String sql = "UPDATE outbound_orders SET approval = ? WHERE branch_id = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, approval);
             pstmt.setInt(2, orderId);
@@ -213,14 +214,14 @@ public class OutboundOrdersDao {
         ResultSet rs = null;
         try {
             conn = new DbcpBean().getConn();
-            String sql = "SELECT * FROM outbound_orders WHERE order_id = ?";
+            String sql = "SELECT * FROM outbound_orders WHERE branch_id = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, orderId);
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 dto = new OutboundOrdersDto();
                 dto.setOrder_id(rs.getInt("order_id"));
-                dto.setInventory_id(rs.getInt("inventory_id"));
+                dto.setBranch_id(rs.getString("branch_id"));
                 dto.setOut_date(rs.getString("out_date"));
                 dto.setApproval(rs.getString("approval"));
                 dto.setManager(rs.getString("manager"));
@@ -234,4 +235,33 @@ public class OutboundOrdersDao {
         }
         return dto;
     }
+    public boolean insert(int orderId, String branchId, String approvalStatus, String orderDate, String manager) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = """
+            INSERT INTO outbound_orders
+            (order_id, branch_id, approval, out_date, manager)
+            VALUES (?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)
+        """;
+
+        try {
+            conn = new DbcpBean().getConn();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            pstmt.setString(2, branchId); // 주의: 이 컬럼이 실제 테이블에서 number 또는 varchar2 인지 확인
+            pstmt.setString(3, approvalStatus);
+            pstmt.setString(4, orderDate);
+            pstmt.setString(5, manager);
+
+            int inserted = pstmt.executeUpdate();
+            return inserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
+            try { if(conn != null) conn.close(); } catch(Exception e) {}
+        }
+    }
 }
+

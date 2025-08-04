@@ -1,3 +1,4 @@
+
 CREATE TABLE comments_p(
 	num NUMBER PRIMARY KEY, -- 댓글 고유 번호 (시퀀스 사용)
 	board_num NUMBER NOT NULL, -- 원글 번호(board_p 테이블의 num 참조)
@@ -27,5 +28,6 @@ CREATE TABLE board_p (
     CONSTRAINT fk_board_p_target_user FOREIGN KEY (target_user_id) REFERENCES users_p(user_id),
     CONSTRAINT fk_board_p_parent FOREIGN KEY (parent_num) REFERENCES board_p(num)
 );
+
 
 

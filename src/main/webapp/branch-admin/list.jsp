@@ -76,8 +76,12 @@
 <head>
 <meta charset="UTF-8">
 <title>/board/list.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+	<jsp:param value="branch-admin" name="thisPage"/>
+</jsp:include>
 	<div class="container">
 		<a href="insert-form.jsp">지점 등록</a>
 		<h1>지점 목록</h1>
