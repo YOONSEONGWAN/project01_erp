@@ -9,18 +9,6 @@ String branchId = (String)session.getAttribute("branchId");
 WorkLogDao dao = new WorkLogDao();
 String branchName = dao.getBranchName(branchId); // 지점명 받아오기
 List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
-
-
-/*WorkLogDao dao = new WorkLogDao();
-
-List<String> branchList = dao.getBranchIdListFromLog();
-
-String branchId = request.getParameter("branchId");
-if(branchId == null && branchList.size() > 0) {
-    branchId = branchList.get(0); // 기본값(첫 번째 지점)
-}
-List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
-*/
 %>
 <!DOCTYPE html>
 <html>
@@ -38,18 +26,6 @@ select { font-size: 1.05em; padding: 4px 8px; }
 		<jsp:param value="work" name="thisPage"/>
 	</jsp:include>
 <h3><%= branchName %> 출퇴근 현황</h3>
-
-<!-- 셀렉트박스 form -->
-<form method="get" style="margin-bottom:16px;">
-    <label>지점 선택:
-        <select name="branchId" onchange="this.form.submit()">
-            <% for(String b : branchList) { %>
-                <option value="<%= b %>" <%= b.equals(branchId) ? "selected" : "" %>><%= b %></option>
-            <% } %>
-        </select>
-    </label>
-</form>
-
 
 <table border="1" class="big-table" style="width:100%;">
     <tr>
