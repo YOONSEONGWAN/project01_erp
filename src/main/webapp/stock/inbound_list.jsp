@@ -1,14 +1,34 @@
-<%@page import="dao.stock.OutboundOrdersDao"%>
-<%@page import="dto.stock.OutboundOrdersDto"%>
-<%@page import="java.util.List"%>
 <%@page import="dao.stock.InboundOrdersDao"%>
 <%@page import="dto.stock.InboundOrdersDto"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%
-    List<InboundOrdersDto> list = InboundOrdersDao.getInstance().selectAll();
-    List<OutboundOrdersDto> list2 = OutboundOrdersDao.getInstance().selectAll();
+    // 페이지 번호, 기본값 1
+    int currentPage = 1;
+    String pageParam = request.getParameter("page");
+    if (pageParam != null) {
+        try {
+            currentPage = Integer.parseInt(pageParam);
+            if (currentPage < 1) currentPage = 1;
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+    }
+
+    // 담당자 검색어
+    String managerKeyword = request.getParameter("managerKeyword");
+    if (managerKeyword == null) managerKeyword = "";
+
+    int pageSize = 10;  // 한 페이지에 보여줄 데이터 개수
+
+    // DAO에서 해당 페이지, 검색어 기준 데이터 조회
+    List<InboundOrdersDto> list = InboundOrdersDao.getInstance().selectByManagerWithPaging(managerKeyword, currentPage, pageSize);
+
+    // 전체 데이터 수 조회 (페이징 계산용)
+    int totalCount = InboundOrdersDao.getInstance().countByManager(managerKeyword);
+
+    int totalPages = (int) Math.ceil(totalCount / (double) pageSize);
 %>
 
 <!DOCTYPE html>
@@ -16,47 +36,110 @@
 <head>
     <meta charset="UTF-8">
     <title>전체 입고 내역</title>
+
+    <!-- Bootstrap CSS CDN (필요시 버전 변경) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background-color: #f2f2f2; }
-        .container { width: 90%; margin: auto; }
-        h2 { margin-top: 40px; }
-        a.button-link { margin-top: 20px; display: inline-block; text-decoration: none; color: blue; }
+        /* 테이블 헤더 파란색 배경 */
+        table thead th {
+            background-color: #007bff !important;
+            color: white !important;
+        }
+
+        /* 페이징 버튼 스타일 (Bootstrap 기본 스타일 활용하므로 필요없을 수 있음) */
+        .paging a, .paging span {
+            margin: 0 5px;
+        }
+
+        /* 검색 폼 input 너비 조정 */
+        .search-form input[type="text"] {
+            width: 200px;
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>전체 입고 내역</h2>
+<div class="container my-5">
 
-    <table>
+    <!-- 제목 가운데 정렬 -->
+    <h2 class="text-center mb-4">전체 입고 내역</h2>
+
+    <!-- 검색창을 테이블 우측 상단에 배치 -->
+    <div class="d-flex justify-content-end mb-3">
+        <form class="d-flex justify-content-end mb-3" method="get" action="inbound_list.jsp" role="search" style="gap: 5px;">
+  			<input type="text" name="managerKeyword" placeholder="상품명 검색" value="<%= managerKeyword %>"
+         		class="form-control form-control-sm" style="width: 200px; height: 32px;">
+  			<button type="submit" class="btn btn-primary btn-sm" style="height: 32px;">검색</button>
+		</form>
+    </div>
+
+    <table class="table table-bordered text-center align-middle">
         <thead>
             <tr>
                 <th>입고 ID</th>
                 <th>입고 날짜</th>
                 <th>담당자</th>
                 <th>상세보기</th>
-                
             </tr>
         </thead>
         <tbody>
-            <% if (list.isEmpty()) { %>
-                <tr><td colspan="6">입고 내역이 없습니다.</td></tr>
-            <% } else {
-                for (InboundOrdersDto dto : list) { %>
-                    <tr>
-                        <td><%= dto.getOrder_id() %></td>
-                        <td><%= dto.getIn_date() != null ? dto.getIn_date() : "-" %></td>
-                        <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
-                        <td>
-                    		<a href="inbound_detail.jsp?order_id=<%= dto.getOrder_id() %>">상세보기</a>
-                		</td>
-                    </tr>
-            <%  } } %>
+        <% if (list == null || list.isEmpty()) { %>
+            <tr><td colspan="4">입고 내역이 없습니다.</td></tr>
+        <% } else {
+            for (InboundOrdersDto dto : list) { %>
+                <tr>
+                    <td><%= dto.getOrder_id() %></td>
+                    <td><%= dto.getIn_date() != null ? dto.getIn_date() : "-" %></td>
+                    <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
+                    <td><a href="inbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a></td>
+                </tr>
+        <%  } } %>
         </tbody>
     </table>
 
-    <a href="inandout.jsp" class="button-link">돌아가기</a>
+    <!-- 페이징 -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <% if (currentPage > 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="inbound_list.jsp?page=<%= currentPage - 1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
+                </li>
+            <% } else { %>
+                <li class="page-item disabled">
+                    <span class="page-link">이전</span>
+                </li>
+            <% } %>
+
+            <% for (int i = 1; i <= totalPages; i++) {
+                if (i == currentPage) { %>
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link"><%= i %></span>
+                    </li>
+                <% } else { %>
+                    <li class="page-item">
+                        <a class="page-link" href="inbound_list.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
+                    </li>
+            <% }} %>
+
+            <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="inbound_list.jsp?page=<%= currentPage + 1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
+                </li>
+            <% } else { %>
+                <li class="page-item disabled">
+                    <span class="page-link">다음</span>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+
+    <div class="text-center mt-4">
+        <a href="inandout.jsp" class="btn btn-outline-secondary">돌아가기</a>
+    </div>
 </div>
+
+<!-- Bootstrap JS (필요시) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

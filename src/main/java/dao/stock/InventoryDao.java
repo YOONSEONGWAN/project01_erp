@@ -473,4 +473,115 @@ public class InventoryDao {
 	        } catch (Exception ignored) {}
 	    }
 	}
+	public boolean decreaseQuantity(int inventoryId, int amount) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = """
+            UPDATE inventory
+            SET quantity = quantity - ?
+            WHERE num = ? AND quantity >= ?
+        """;
+        try {
+            conn = new DbcpBean().getConn();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, inventoryId);
+            pstmt.setInt(3, amount);
+            int updated = pstmt.executeUpdate();
+            return updated > 0; // 성공적으로 감소됐으면 true
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
+            try { if(conn != null) conn.close(); } catch(Exception e) {}
+        }
+    }
+	public int getCountByKeyword(String keyword) {
+	    int count = 0;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT COUNT(*) AS count
+	            FROM Inventory
+	            WHERE product LIKE ?
+	            """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, "%" + keyword + "%");
+	        rs = pstmt.executeQuery();
+	        if(rs.next()) {
+	            count = rs.getInt("count");
+	        }
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if(rs != null) rs.close();
+	            if(pstmt != null) pstmt.close();
+	            if(conn != null) conn.close();
+	        } catch(Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return count;
+	}
+	public List<InventoryDto> selectByKeywordWithPaging(String keyword, int startRow, int itemsPerPage) {
+	    List<InventoryDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT * FROM (
+	                SELECT a.*, ROWNUM rnum FROM (
+	                    SELECT num, branch_id, product, quantity, isDisposal, isPlaceOrder, is_approval
+	                    FROM Inventory
+	                    WHERE product LIKE ?
+	                    ORDER BY num
+	                ) a
+	                WHERE ROWNUM <= ?
+	            )
+	            WHERE rnum >= ?
+	            """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, "%" + keyword + "%");
+	        pstmt.setInt(2, startRow + itemsPerPage - 1);  // endRow
+	        pstmt.setInt(3, startRow);
+
+	        rs = pstmt.executeQuery();
+	        while(rs.next()) {
+	            InventoryDto dto = new InventoryDto();
+	            dto.setNum(rs.getInt("num"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setProduct(rs.getString("product"));
+	            dto.setQuantity(rs.getInt("quantity"));
+	            
+	            // 문자열 값을 boolean으로 변환
+	            String disposalStr = rs.getString("isDisposal");
+	            dto.setDisposal("YES".equalsIgnoreCase(disposalStr));
+	            
+	            String placeOrderStr = rs.getString("isPlaceOrder");
+	            dto.setPlaceOrder("YES".equalsIgnoreCase(placeOrderStr));
+	            
+	            dto.setIsApproval(rs.getString("is_approval"));
+
+	            list.add(dto);
+	        }
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if(rs != null) rs.close();
+	            if(pstmt != null) pstmt.close();
+	            if(conn != null) conn.close();
+	        } catch(Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return list;
+	}
 }

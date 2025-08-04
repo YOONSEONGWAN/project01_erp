@@ -257,6 +257,110 @@ public class InboundOrdersDao {
         }
     
     }
+    
+    public List<InboundOrdersDto> selectProcessedWithKeyword(int limit) {
+        List<InboundOrdersDto> list = new ArrayList<>();
+        String sql = """
+            SELECT * FROM (
+                SELECT order_id, branch_id, approval, TO_CHAR(in_date, 'YYYY-MM-DD') AS in_date, manager
+                FROM inbound_orders
+                WHERE approval IN ('승인', '완료')
+                ORDER BY in_date DESC
+            )
+            WHERE ROWNUM <= ?
+        """;
 
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, limit);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    InboundOrdersDto dto = new InboundOrdersDto();
+                    dto.setOrder_id(rs.getInt("order_id"));
+                    dto.setBranch_id(rs.getInt("branch_id"));
+                    dto.setApproval(rs.getString("approval"));
+                    dto.setIn_date(rs.getString("in_date"));
+                    dto.setManager(rs.getString("manager"));
+                    list.add(dto);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+    
+    public List<InboundOrdersDto> selectByManagerWithPaging(String managerKeyword, int page, int pageSize) {
+        List<InboundOrdersDto> list = new ArrayList<>();
+
+        String sql = """
+            SELECT * FROM (
+                SELECT ROWNUM AS rnum, tmp.* FROM (
+                    SELECT order_id, branch_id, approval, TO_CHAR(in_date, 'YYYY-MM-DD') AS in_date, manager
+                    FROM inbound_orders
+                    WHERE approval IN ('승인', '완료')
+                    AND manager LIKE ?
+                    ORDER BY in_date DESC
+                ) tmp
+                WHERE ROWNUM <= ?
+            )
+            WHERE rnum >= ?
+        """;
+
+        int end = page * pageSize;
+        int start = end - pageSize + 1;
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + managerKeyword + "%");
+            pstmt.setInt(2, end);
+            pstmt.setInt(3, start);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    InboundOrdersDto dto = new InboundOrdersDto();
+                    dto.setOrder_id(rs.getInt("order_id"));
+                    dto.setBranch_id(rs.getInt("branch_id"));
+                    dto.setApproval(rs.getString("approval"));
+                    dto.setIn_date(rs.getString("in_date"));
+                    dto.setManager(rs.getString("manager"));
+                    list.add(dto);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+    public int countByManager(String managerKeyword) {
+        int count = 0;
+
+        String sql = "SELECT COUNT(*) FROM inbound_orders WHERE approval IN ('승인', '완료') AND manager LIKE ?";
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, "%" + managerKeyword + "%");
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+    
+    
 
 }

@@ -21,17 +21,32 @@
 <head>
     <meta charset="UTF-8">
     <title>입고 상세 내역</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 0 auto;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <h2>입고 상세 내역 (Order ID: <%= orderId %>)</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
+    <table>
         <tr>
             <th>상품명</th>
             <th>현재 수량</th>
             <th>신청 수량</th>
             <th>승인 여부</th>
             <th>담당자</th>
-            
         </tr>
         <%
             for (PlaceOrderHeadDetailDto dto : list) {
@@ -42,7 +57,6 @@
             <td><%= dto.getRequest_quantity() %></td>
             <td><%= dto.getApproval_status() %></td>
             <td><%= dto.getManager() %></td>
-            
         </tr>
         <% } %>
     </table>
