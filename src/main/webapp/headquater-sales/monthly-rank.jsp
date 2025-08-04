@@ -1,0 +1,64 @@
+<%@page import="java.text.NumberFormat"%>
+<%@page import="dao.SalesDao"%>
+<%@page import="dto.SalesDto"%>
+<%@page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+    request.setCharacterEncoding("utf-8");
+
+    String start = request.getParameter("start");
+    String end = request.getParameter("end");
+
+    List<SalesDto> list;
+    if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
+        list = SalesDao.getInstance().getMonthlySalesRankingBetween(start, end);
+    } else {
+        list = SalesDao.getInstance().getMonthlySalesRanking();
+    }
+
+    NumberFormat nf = NumberFormat.getInstance();
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>/sales/monthly-rank.jsp</title>
+</head>
+<body>
+    <h1>지점별 월간 매출 순위</h1>
+
+    <!-- 날짜 필터 
+    <form method="get" action="<%=request.getContextPath()%>/sales/monthly-rank.jsp">
+        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
+        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
+        <button type="submit">조회</button>
+    </form>
+    -->
+
+    <br />
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>순위</th>
+                <th>월</th>
+                <th>지점명</th>
+                <th>총 매출액</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                for (SalesDto dto : list) {
+            %>
+            <tr>
+                <td><%=dto.getRank()%></td>
+                <td><%=dto.getPeriod()%></td>
+                <td><%=dto.getBranch_name()%></td>
+                <td><%=nf.format(dto.getTotalSales())%> 원</td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+</html>
