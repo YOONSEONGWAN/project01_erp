@@ -48,8 +48,10 @@ if(dto == null) {
             </td>
         </tr>
     </table>
-    <button type="submit">수정 완료</button>
-    <a href="list.jsp"><button type="button">목록으로</button></a>
+     <div style="text-align:right; margin-top:18px;">
+        <button type="submit" class="btn btn-primary" style="margin-right:10px;">수정 완료</button>
+        <a href="list.jsp" class="btn btn-secondary">목록으로</a>
+    </div>
 </form>
 </body>
 </html>

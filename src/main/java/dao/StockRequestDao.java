@@ -8,6 +8,51 @@ import dto.StockRequestDto;
 import util.DbcpBean;
 
 public class StockRequestDao {
+	//추가됨
+	public boolean batchInsertRequest(List<StockRequestDto> requests) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    boolean isSuccess = true;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        conn.setAutoCommit(false);
+	        String sql = """
+	            INSERT INTO stock_request 
+	            (order_id, branch_num, branch_id, inventory_id, product, current_quantity,
+	             request_quantity, status, requestedat, updatedat, isPlaceOrder)
+	            VALUES (stock_request_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, SYSDATE, SYSDATE, ?)
+	        """;
+	        pstmt = conn.prepareStatement(sql);
+	        for(StockRequestDto dto : requests) {
+	            pstmt.setInt(1, dto.getBranchNum());
+	            pstmt.setString(2, dto.getBranchId());
+	            pstmt.setInt(3, dto.getInventoryId());
+	            pstmt.setString(4, dto.getProduct());
+	            pstmt.setInt(5, dto.getCurrentQuantity());
+	            pstmt.setInt(6, dto.getRequestQuantity());
+	            pstmt.setString(7, dto.getStatus());
+	            pstmt.setString(8, dto.getIsPlaceOrder());
+	            int result = pstmt.executeUpdate();
+	            if(result == 0) {
+	                isSuccess = false;
+	                break;
+	            }
+	        }
+	        if(isSuccess) conn.commit();
+	        else conn.rollback();
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	        isSuccess = false;
+	        try { if(conn!=null) conn.rollback(); } catch(Exception ex) {}
+	    } finally {
+	        try { if(pstmt!=null) pstmt.close(); } catch(Exception e) {}
+	        try { if(conn!=null) conn.close(); } catch(Exception e) {}
+	    }
+	    return isSuccess;
+	}
+	
+	
+	
     // 1. INSERT
     public boolean insertRequest(StockRequestDto dto) {
         Connection conn = null;

@@ -7,6 +7,42 @@ import dto.StockRequestDto;
 import util.DbcpBean;
 
 public class IngredientDao {
+	//추가됨
+	
+	
+	
+	
+	
+	public List<IngredientDto> selectAllProducts() {
+	    List<IngredientDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = "SELECT DISTINCT product, branch_num, branch_id, inventory_id, current_quantity FROM branch_stock ORDER BY product";
+	        pstmt = conn.prepareStatement(sql);
+	        rs = pstmt.executeQuery();
+	        while(rs.next()) {
+	            IngredientDto dto = new IngredientDto();
+	            dto.setProduct(rs.getString("product"));
+	            dto.setBranchNum(rs.getInt("branch_num"));
+	            dto.setBranchId(rs.getString("branch_id"));
+	            dto.setInventoryId(rs.getInt("inventory_id"));
+	            dto.setCurrentQuantity(rs.getInt("current_quantity"));
+	            list.add(dto);
+	        }
+	    } catch(Exception e) { e.printStackTrace(); }
+	    finally {
+	        try { if(rs!=null) rs.close(); } catch(Exception e){}
+	        try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
+	        try { if(conn!=null) conn.close(); } catch(Exception e){}
+	    }
+	    return list;
+	}
+	
+	
+	
 	
 	//추가됨 
 	  // 여러건 한번에 발주 요청 등록 (트랜잭션 적용)
