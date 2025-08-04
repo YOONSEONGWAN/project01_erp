@@ -26,7 +26,7 @@
   <title>게시판 목록</title>
   <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
-<body class="p-4">
+<body>
 	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
 		<jsp:param value="board" name="thisPage"/>
 	</jsp:include>

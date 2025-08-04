@@ -12,13 +12,14 @@ CREATE TABLE users_p (
   role          VARCHAR2(10),
   updated_at    DATE,
   created_at    DATE,
-  CONSTRAINT PK_USERS_P PRIMARY KEY (num, branch_id)
+  CONSTRAINT PK_USERS_P PRIMARY KEY (num),
+  CONSTRAINT fk_users_p_branch FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
 );
 
 -- 2. branches (부모: users_p)
 CREATE TABLE branches (
   num        NUMBER        NOT NULL,
-  branch_id  VARCHAR2(20)  NOT NULL UNIQUE, -- PK로 바꿔야함
+  branch_id  VARCHAR2(20)  NOT NULL UNIQUE,
   name       VARCHAR2(50)  NOT NULL,
   address    VARCHAR2(100) NOT NULL,
   phone      VARCHAR2(20)  NOT NULL,
@@ -26,7 +27,6 @@ CREATE TABLE branches (
   created_at DATE          DEFAULT SYSDATE,
   updated_at DATE,
   CONSTRAINT PK_BRANCHES      PRIMARY KEY (num),
-  CONSTRAINT FK_BRANCHES_USER FOREIGN KEY (branch_id) REFERENCES users_p(branch_id)
 );
 
 -- 3. Inventory (부모: 없음 or 나중에 stock_request 에서 참조)
