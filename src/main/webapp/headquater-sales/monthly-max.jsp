@@ -39,7 +39,7 @@
 
     <br />
 
-    <table border="1">
+    <table class="table table-bordered">
         <tr>
             <th>번호</th>
             <th>월간</th>

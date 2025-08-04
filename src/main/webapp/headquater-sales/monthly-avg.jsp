@@ -28,16 +28,17 @@
 <body>
     <h1>월 평균 매출 통계</h1>
 
-    <!-- 날짜 필터 -->
+    <!-- 날짜 필터
     <form method="get" action="<%=request.getContextPath()%>/sales/monthly-avg.jsp">
         시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
         종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
         <button type="submit">조회</button>
+         -->
     </form>
 
     <br />
 
-    <table border="1">
+	<table class="table table-bordered">
         <thead>
             <tr>
                 <th>번호</th>

@@ -1,16 +1,15 @@
-<%@page import="test.dao.SalesDao"%>
-<%@page import="test.dto.SalesDto"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="test.dao.SalesDao" %>
+<%@ page import="test.dto.SalesDto" %>
 <%
     request.setCharacterEncoding("UTF-8");
 
-    // GET 방식 접근 차단
-    if (!request.getMethod().equals("POST")) {
-        response.sendRedirect("insert-form.jsp");
+    String branchId = (String)session.getAttribute("branchId");
+    if(branchId == null){
+        response.sendRedirect(request.getContextPath()+"/userp/branchlogin-form.jsp");
         return;
     }
 
-    String branchId = (String)session.getAttribute("branchId");
     int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
 
     SalesDto dto = new SalesDto();
@@ -19,17 +18,7 @@
 
     boolean isSuccess = SalesDao.getInstance().insert(dto);
 %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>/branch-sales/insert.jsp</title>
-</head>
-<body>
-    <script>
-        const cpath = "<%= request.getContextPath() %>";
-        alert("<%= isSuccess ? "등록 성공!" : "등록 실패!" %>");
-        location.href = cpath + "/branch-sales/list.jsp";
-    </script>
-</body>
-</html>
+<script>
+    alert("<%= isSuccess ? "등록 성공" : "등록 실패" %>");
+    location.href = "list.jsp";
+</script>

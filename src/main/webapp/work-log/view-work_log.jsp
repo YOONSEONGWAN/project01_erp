@@ -9,6 +9,20 @@ String branchId = (String)session.getAttribute("branchId");
 WorkLogDao dao = new WorkLogDao();
 String branchName = dao.getBranchName(branchId); // 지점명 받아오기
 List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
+List<String> branchList = dao.getBranchIdListFromLog();
+
+/*WorkLogDao dao = new WorkLogDao();
+
+List<String> branchList = dao.getBranchIdListFromLog();
+
+String branchId = request.getParameter("branchId");
+if(branchId == null && branchList.size() > 0) {
+    branchId = branchList.get(0); // 기본값(첫 번째 지점)
+}
+List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
+*/
+
+
 %>
 <!DOCTYPE html>
 <html>

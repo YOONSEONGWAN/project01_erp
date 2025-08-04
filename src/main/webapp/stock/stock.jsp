@@ -37,6 +37,7 @@
 
     .bg-gray { background-color: #6c757d; }   /* Bootstrap 'secondary' 색상 */
     .bg-blue { background-color: #007bff; }   /* Bootstrap 'primary' 색상 */
+    .bg-green { background-color: #28a745; }  /* Bootstrap 'success' 색상 */
 
 </style>
 </head>
@@ -52,6 +53,9 @@
             </a>
             <a href="inandout.jsp" class="menu-card bg-blue">
                 입고 / 출고
+            </a>
+            <a href="placeorder.jsp" class="menu-card bg-green">
+            	발주
             </a>
         </div>
     </div>
