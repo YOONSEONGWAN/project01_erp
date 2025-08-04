@@ -24,6 +24,9 @@
 					<li class="nav-item">
 						<a class="nav-link <%=thisPage.equals("work") ? "active":""%>" href="${pageContext.request.contextPath }/work-log/view-work_log.jsp">출퇴근</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link <%=thisPage.equals("branch-sales") ? "active":""%>" href="${pageContext.request.contextPath }/branch-sales/list.jsp">매출</a>
+					</li>
 				</ul>
 	            <!-- 오른쪽 사용자 메뉴 -->
 	            <ul class="navbar-nav">
