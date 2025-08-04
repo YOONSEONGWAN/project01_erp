@@ -37,14 +37,7 @@
 	int startPageNum = 1 + ((pageNum-1)/PAGE_DISPLAY_COUNT)*PAGE_DISPLAY_COUNT;
 	//하단 끝 페이지 번호
 	int endPageNum=startPageNum+PAGE_DISPLAY_COUNT-1;
-		
-	/*
-		StringUtils 클래스의 isEmpty() static 메소드를 이용하면 문자열이 비어있는지 여부를 알 수 있다.
-		null 또는 "" 의 빈 문자열은 비었다고 판단
-		
-		StringUtils.isEmpty(keyword)
-		는
-		keyword == null or "".equals(keyword)*/
+
 	
 	// 전체 글의 갯수 
 	int totalRow= 0; // 기본값 설정
@@ -84,83 +77,71 @@
 <title>/hqboard/hq-list</title>
 </head>
 <body>
-	<div class="container">
-		<a href="${pageContext.request.contextPath }/index/headquaterindex.jsp"> 본사 메인 페이지로 이동</a>
-		<a class="" href="hq-new-form.jsp">
-			새 글 작성
-			<i class="bi bi-pencil-square"></i>
-		</a>
-		<h1>게시글 목록입니다.</h1>
-		<!-- 행 만들기 -->
-		<div class="">
-			<div class="">
-				<!-- 검색어 입력 폼 -->
-				<form action="hq-list.jsp" method="get">
-					<div class="input-group">
-						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword  %>"  type="text" name="keyword" class="form-control" placeholder="검색어 입력..." />
-						<button type="submit" class="">검색<i class="bi bi-search"></i></button>
-					</div>
-				</form><!-- 검색어 입력 폼 -->
-				
-			</div>
-		</div>
-		<table class=""><!-- 게시판 보드 THead, TBody -->
-			<thead>
-				<tr>
-					<th>글 번호</th>
-					<th>작성자</th>
-					<th>제목</th>
-					<th>조회수</th>
-					<th>작성일</th>
-				</tr>
-			</thead>
-			<tbody>
-			<% if(list != null && !list.isEmpty()) { %>
-				<% for(HqBoardDto tmp : list){ %>
-					<tr>
-						<td><%=tmp.getNum() %></td>
-						<td><%=tmp.getWriter() %></td>
-						<td>
-							<a href="${pageContext.request.contextPath }/hqboard/hq-view.jsp?num=<%=tmp.getNum() %>">
-								<%=tmp.getTitle() %>
-							</a>
-						</td>
-						<td><%=tmp.getViewCount() %></td>
-						<td><%=tmp.getCreatedAt() %></td>
-					</tr>
-				<% } %>
-			<% } else { %>
-				<tr>
-					<td colspan="5">등록된 글이 없습니다.</td>
-				</tr>
-			<% } %>
-			</tbody>
-		</table>
-		
-		<ul class=""><!-- 페이징 처리 부분 -->
-			<%if(startPageNum!=1){ %>
-				<li class="">
-					<a class=page-link href="hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword %>">&lsaquo;</a><!-- 이전페이지 -->
-				</li>
-			<%}else{ %>
-				
-			<%} %>
-			
-			<% for(int i=startPageNum; i<=endPageNum; i++){%>
-				<li class="page-item">
-					<a class="page-link <%=i==pageNum ? "active" : "" %>" href="hq-list.jsp?pageNum=<%=i %>&keyword=<%=keyword %>"><%=i %></a>
-				</li>
-			<%} %>
-			<%if(endPageNum < totalPageCount){ %>
-				<li class="page-item">
-					<a class=page-link href="hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword %>">&rsaquo;</a><!-- 다음페이지 -->
-				</li>
-			<%}else{ %>
-				
-			<%} %>
-			
-		</ul>
-		
-	</div>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">게시글 목록</h1>
+        <a class="btn btn-primary" href="hq-new-form.jsp">
+            <i class="bi bi-pencil-square"></i> 새 글 작성
+        </a>
+    </div>
+    <form action="hq-list.jsp" method="get" class="mb-4">
+        <div class="input-group">
+            <input value="<%=keyword%>" type="text" name="keyword" class="form-control" placeholder="검색어 입력..."/>
+            <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i> 검색</button>
+        </div>
+    </form>
+    <table class="table table-hover align-middle text-center">
+        <thead class="table-light">
+            <tr>
+                <th>글 번호</th>
+                <th>작성자</th>
+                <th>제목</th>
+                <th>조회수</th>
+                <th>작성일</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% if(list != null && !list.isEmpty()) { %>
+            <% for(HqBoardDto tmp : list){ %>
+                <tr>
+                    <td><%=tmp.getNum()%></td>
+                    <td><%=tmp.getWriter()%></td>
+                    <td class="text-start">
+                        <a class="link-dark" href="hq-view.jsp?num=<%=tmp.getNum()%>">
+                            <%=tmp.getTitle()%>
+                        </a>
+                    </td>
+                    <td><%=tmp.getViewCount()%></td>
+                    <td><%=tmp.getCreatedAt()%></td>
+                </tr>
+            <% } %>
+        <% } else { %>
+            <tr>
+                <td colspan="5" class="text-secondary">등록된 글이 없습니다.</td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination justify-content-center">
+        <% if(startPageNum != 1) { %>
+            <li class="page-item">
+                <a class="page-link" href="hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">&lsaquo;</a>
+            </li>
+        <% } %>
+        <% for(int i=startPageNum; i<=endPageNum; i++){ %>
+            <li class="page-item <%=i==pageNum ? "active" : ""%>">
+                <a class="page-link" href="hq-list.jsp?pageNum=<%=i%>&keyword=<%=keyword%>"><%=i%></a>
+            </li>
+        <% } %>
+        <% if(endPageNum < totalPageCount) { %>
+            <li class="page-item">
+                <a class="page-link" href="hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">&rsaquo;</a>
+            </li>
+        <% } %>
+        </ul>
+    </nav>
+</div>
 </body>
+
 </html>
