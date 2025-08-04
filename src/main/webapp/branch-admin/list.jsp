@@ -97,32 +97,27 @@
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
-	<jsp:param value="branch-admin" name="thisPage"/>
-</jsp:include>
-	<div class="container">
-		<a href="insert-form.jsp">지점 등록</a>
-		<a href="user-list.jsp">직원 목록 보기</a>
-		<h1>지점 목록</h1>
+
+	<div class="container pt-1">
+		<a class="btn btn-outline-primary" href="insert-form.jsp">지점 등록</a>
+		<a class="btn btn-outline-primary" href="user-list.jsp">직원 목록 보기</a>
+		<h1 class="text-center">지점 목록</h1>
 		<div class="row">
-			<div class="col">
-				<form action="list.jsp" method="get">
-					<div>
-						<select name="status">
-			                <option value="all" <%= "all".equals(status) ? "selected" : "" %>>전체</option>
-			                <option value="운영중" <%= "운영중".equals(status) ? "selected" : "" %>>운영중</option>
-			                <option value="휴업" <%= "휴업".equals(status) ? "selected" : "" %>>휴업</option>
-			                <option value="폐업" <%= "폐업".equals(status) ? "selected" : "" %>>폐업</option>
-			            </select>
-						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="지점 이름 or 아이디 입력..." />
-						<button type="submit">검색</button>
-						<a href="list.jsp">초기화</a>
-					</div>
+			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end">
+				<form action="list.jsp" method="get">					
+					<select name="status">
+		                <option value="all" <%= "all".equals(status) ? "selected" : "" %>>전체</option>
+		                <option value="운영중" <%= "운영중".equals(status) ? "selected" : "" %>>운영중</option>
+		                <option value="휴업" <%= "휴업".equals(status) ? "selected" : "" %>>휴업</option>
+		                <option value="폐업" <%= "폐업".equals(status) ? "selected" : "" %>>폐업</option>
+		            </select>
+					<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="지점 이름 or 아이디 입력..." />
+					<button class="btn btn-outline-primary btn-sm" type="submit">검색</button>
+					<a class="btn btn-outline-primary btn-sm" href="list.jsp">초기화</a>					
 				</form>
 			</div>
-		</div>		
-	</div>
-	<table>
+		</div>
+		<table class="table table-bordered w-75 mx-auto">
 		<thead>
 			<tr>
 				<th>지점명</th>
@@ -145,9 +140,8 @@
 				</tr>
 			<%} %>	
 		</tbody>
-	</table>
-	
-	<ul class="pagination">
+	</table>	
+	<ul class="pagination d-flex justify-content-center">
 		<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
 		<%if(startPageNum != 1){ %>
 			<li class="page-item">
@@ -165,6 +159,7 @@
 				<a class="page-link" href="list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>&status=<%=status%>">&rsaquo;</a>
 			</li>
 		<%} %>	
-	</ul>
+	</ul>	
+	</div>	
 </body>
 </html>

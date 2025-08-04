@@ -127,6 +127,8 @@ CREATE TABLE users_p (
         ON DELETE CASCADE
 );
 
+CREATE SEQUENCE users_p_seq;
+
 CREATE TABLE branches (
     num         NUMBER         PRIMARY KEY, 	-- 지점 고유 번호
     branch_id   VARCHAR2(20)   NOT NULL UNIQUE, -- 지점 아이디
