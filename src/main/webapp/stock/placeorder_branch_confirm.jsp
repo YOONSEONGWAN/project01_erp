@@ -85,7 +85,7 @@
                 PlaceOrderBranchDetailDao.getInstance().insert(dto);
 
                 // outbound_orders 테이블에도 insert
-               	OutboundOrdersDao.getInstance().insert(orderId, , dto.getApproval_status(), orderDateStr, manager);
+               	OutboundOrdersDao.getInstance().insert(orderId, dto.getApproval_status(), orderDateStr, manager);
 
                 InventoryDao.getInstance().updateApproval(num, "대기");
 

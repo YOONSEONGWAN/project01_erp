@@ -21,6 +21,45 @@ private static UserDao dao;
 		return dao;
 	}
 	
+	// 지점코드와 일치하는 사용자인지 확인하는 메소드
+	public UserDto getByCredentials(String user_id, String password) {
+	    UserDto dto = null;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn(); // 커넥션 풀에서 연결 가져오기
+
+	        String sql = """
+	            SELECT user_id, user_name, branch_id, role
+	            FROM users_p
+	            WHERE user_id = ? AND password = ?
+	        """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, user_id);
+	        pstmt.setString(2, password);
+
+	        rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            dto = new UserDto();
+	            dto.setUser_id(rs.getString("user_id"));
+	            dto.setUser_name(rs.getString("user_name"));
+	            dto.setBranch_id(rs.getString("branch_id")); // 지점 여부
+	            dto.setRole(rs.getString("role")); // 선택적: "branch", "hq" 등
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(conn, pstmt, rs);
+	    }
+
+	    return dto;
+	}
+	
+	
 	// user_id 를 이용해서 정보 불러오기
 	public UserDto getByUserId(String user_id) {
 		UserDto dto = null;

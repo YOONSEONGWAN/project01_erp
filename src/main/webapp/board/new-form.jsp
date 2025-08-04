@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	// 세션에서 로그인된 사용자 아이디 얻어오기
-	String writer = (String)session.getAttribute("user_name");
+	String writer = (String)session.getAttribute("userId");
 %>
 <!DOCTYPE html>
 <html>
@@ -15,10 +15,11 @@
 		<h3 class="mb-4">새 글 작성</h3>
 		
 		<form action="${pageContext.request.contextPath}/board/save.jsp" method="post">
+			<input type="hidden" name="board_type" value="QNA" />
 			<!-- 작성자 (자동 입력, 수정 불가) -->
 			<div class="mb-3">
-				<label class="form-label">작성자</label>
-				<input type="text" name="writer" class="form-control" value="<%=writer%>">
+			    <label class="form-label">작성자</label>
+			    <input type="text" name="writer" class="form-control" value="<%=writer%>" readonly>
 			</div>
 
 			<!-- 제목 -->

@@ -54,6 +54,12 @@
                 </ul>
 			</div>
 	</nav>
-	<a href="${pageContext.request.contextPath }/order/list.jsp">발주 관리 페이지</a>
+	<ul>
+	<li><a href="${pageContext.request.contextPath }/order/list.jsp">발주 관리 페이지</a></li>
+	<li><a href="${pageContext.request.contextPath}/board/list.jsp">통합게시판</a></li>
+	</ul>
+	
+	
+	
 </body>
 </html>

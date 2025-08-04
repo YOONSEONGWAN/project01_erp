@@ -25,7 +25,18 @@ public class BoardDto {
  	
  	// 검색 키워드를 담기 위한 필드
  	private String keyword;
+ 	
+ 	// 지점 회원코드를 공유하기 위한 필드
+ 	private String branch_id;
+ 	
+ 	public String getBranch_id() {
+ 	    return branch_id;
+ 	}
 
+ 	public void setBranch_id(String branch_id) {
+ 	    this.branch_id = branch_id;
+ 	}
+ 	
 	public int getNum() {
 		return num;
 	}

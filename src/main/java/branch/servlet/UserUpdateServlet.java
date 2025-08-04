@@ -56,7 +56,7 @@ public class UserUpdateServlet extends HttpServlet{
 		Part filePart = req.getPart("profileImage");
 		
 		// DB 에서 현재 사용자 정보를 불러온다.
-		UserDto dto = UserDao.getInstance().getByUserName(user_name);
+		UserDto dto = UserDao.getInstance().getByUserId(user_name);
 		
 		// DTO에 폼에서 받아온 최신 정보들을 먼저 설정한다.
 		// 이렇게 하면 파일 업로드 여부와 관계없이 항상 최신 정보가 반영될 수 있어!

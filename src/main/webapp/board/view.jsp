@@ -5,15 +5,31 @@
 <%@ page import="dto.BoardDto" %>
 
 <%
+	
     int num = Integer.parseInt(request.getParameter("num"));
-
+	String board_type = request.getParameter("board_type");
+	
+	// board_type이 null이면 기본값으로 "QNA" 넣기
+    if (board_type == null || board_type.trim().isEmpty()) {
+        board_type = "QNA"; // 게시판 타입 중 기본값으로 사용
+    }
+	
     // 글 상세정보 가져오기
-    BoardDto dto = BoardDao.getInstance().getData(num);
+    BoardDto dto = BoardDao.getInstance().getData(num, board_type);
+    if (dto == null) {
+    %>
+	   	<script>
+	    	alert("존재하지 않는 글입니다.");
+	    	history.back();
+	    </script>
+    <%
+    	return;
+    }
     
  	// 로그인된 userName(null 일 가능성이 있음), session 영역에 userName 이 있는지 읽어와서
- 	String user_name=(String)session.getAttribute("user_name");
+ 	String user_name=(String)session.getAttribute("userId");
  	// 만일 본인 글 자세히 보기가 아니면 조회수 1을 증가시킨다
- 	if(!dto.getWriter().equals(user_name)){
+ 	if(dto.getWriter() != null && !dto.getWriter().equals(user_name)) {
  		BoardDao.getInstance().addViewCount(num);
  	}
  	// 댓글 목록을 DB 에서 읽어오기
@@ -23,9 +39,8 @@
  	boolean isLogin = user_name == null ? false: true;
 %>
 <%
-    String loginUserId = (String) session.getAttribute("user_id");
-    String board_type = dto.getBoard_type();
-    String writer = dto.getUser_id(); // 또는 dto.getWriter() – 실제 로그인 ID가 저장된 필드를 확인하세요
+    String loginUserId = (String) session.getAttribute("userId");
+    String writerId = dto.getUser_id(); // 또는 dto.getWriter() – 실제 로그인 ID가 저장된 필드를 확인하세요
 %>
 
 <!DOCTYPE html>
@@ -70,12 +85,16 @@
 		
     <div class="text-end">
         <a href="list.jsp?boardType=<%= dto.getBoard_type() %>" class="btn btn-secondary">목록</a>
-
+		
+		<% if (loginUserId != null && loginUserId.equals(writerId)) { %>
+		    <a href="update.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>" class="btn btn-warning">수정</a>
+		<% } %>
+		
         <%-- boardType이 "문의사항"이면서 작성자가 일치할때만 삭제 버튼 노출 --%>
-        <% if ("QNA".equalsIgnoreCase(board_type) && loginUserId != null && loginUserId.equals(writer)) { %>
-		    <a href="delete.jsp?num=<%= dto.getNum() %>"
-		       onclick="return confirm('정말 삭제하시겠습니까?');"
-		       class="btn btn-danger">삭제</a>
+        <% if ("QNA".equalsIgnoreCase(board_type) && loginUserId != null && loginUserId.equals(writerId)) { %>
+		    <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
+			   onclick="return confirm('정말 삭제하시겠습니까?');"
+			   class="btn btn-danger">삭제</a>
 		<% } %>
     </div>
 </div>
