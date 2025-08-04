@@ -38,6 +38,7 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 검색 및 목록</title>
+    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
     <style>
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
@@ -60,7 +61,9 @@
     </style>
 </head>
 <body>
-
+	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+		<jsp:param value="branch-sales" name="thisPage"/>
+	</jsp:include>
 <!-- 상품 등록 버튼 -->
 <form action="<%=request.getContextPath()%>/product/insertform.jsp" method="get" class="btn-register">
     <input type="submit" value="상품 등록" />
@@ -75,23 +78,25 @@
 </form>
 
 <!-- 상품 테이블 -->
-<table>
-    <thead>
-        <tr>
-            <th>번호</th>
-            <th>상품명</th>
-            <th>설명</th>
-            <th>가격</th>
-            <th>상태</th>
-            <th>수정</th>
-            <th>삭제</th>
-        </tr>
-    </thead>
-    <tbody>
+<form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
+    <table>
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
+                <th>번호</th>
+                <th>상품명</th>
+                <th>설명</th>
+                <th>가격</th>
+                <th>상태</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>
         <%
             if(productList == null || productList.isEmpty()) {
         %>
-            <tr><td colspan="7">검색 결과가 없습니다.</td></tr>
+            <tr><td colspan="8">검색 결과가 없습니다.</td></tr>
         <%
             } else {
                 int listSize = productList.size();
@@ -100,6 +105,7 @@
                     int number = totalCount - ((pageNum - 1) * pageSize + i);
         %>
             <tr>
+                <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
                 <td><%= number %></td>
                 <td><a href="detail.jsp?num=<%= dto.getNum() %>"><%= dto.getName() %></a></td>
                 <td><%= dto.getDescription() %></td>
@@ -114,8 +120,10 @@
                 }
             }
         %>
-    </tbody>
-</table>
+        </tbody>
+    </table>
+    <input type="submit" value="선택 삭제" />
+</form>
 
 <!-- 페이지 네비게이션 -->
 <div class="pagination">
@@ -139,6 +147,12 @@
         <span>다음</span>
     <% } %>
 </div>
-<!-- 주석 -->
+<script>
+	function toggleAll(source) {
+	    const checkboxes = document.querySelectorAll('input[name="productNums"]');
+	    checkboxes.forEach(cb => cb.checked = source.checked);
+	}
+</script>
+
 </body>
 </html>
