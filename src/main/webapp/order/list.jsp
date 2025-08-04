@@ -41,7 +41,7 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
         <th>상품명</th>
         <th>현재 재고</th>
         <th>요청 수량</th>
-        <th>승인여부</th>
+        <th>요청상태</th>
         <th>상태</th>
         <th>신청일</th>
         <th>수정</th>
@@ -63,10 +63,20 @@ if (orderList == null || orderList.isEmpty()) {
         <td><%= dto.getProduct() %></td>
         <td><%= dto.getCurrentQuantity() %></td>
         <td><%= dto.getRequestQuantity() %></td>
-        <td>
-  			<%= dto.getIsPlaceOrder() == null ? "대기중" :
-      		dto.getIsPlaceOrder().equals("YES") ? "승인" : "거절" %>
-		</td>
+<td>
+    <%
+        String isPlaceOrder = dto.getIsPlaceOrder();
+        String label;
+        if ("YES".equals(isPlaceOrder)) {
+            label = "승인";
+        } else if ("NO".equals(isPlaceOrder)) {
+            label = "거절";
+        } else {
+            label = "요청";
+        }
+    %>
+    <%= label %>
+</td>
         <td><%= dto.getStatus() %></td>
         <td>
             <% if (dto.getRequestedAt() != null) { %>
