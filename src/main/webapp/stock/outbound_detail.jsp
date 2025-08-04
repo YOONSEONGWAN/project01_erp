@@ -23,10 +23,26 @@
 <head>
     <meta charset="UTF-8">
     <title>입고 상세 내역</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 90%;       /* 원하는 너비로 조절 가능 */
+            margin: 0 auto;   /* 테이블 가로 중앙 정렬 */
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;  /* 파란색 헤더 배경 */
+            color: white;               /* 흰색 글씨 */
+        }
+    </style>
 </head>
 <body>
-    <h2>입고 상세 내역 (Order ID: <%= orderId %>)</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
+    <h2 style="text-align:center;">입고 상세 내역 (Order ID: <%= orderId %>)</h2>
+    <table>
         <tr>
             <th>상세ID</th>
             <th>지점ID</th>
@@ -54,8 +70,9 @@
         </tr>
         <% } %>
     </table>
-    </table>
     <br>
-    <a href="inandout.jsp">돌아가기</a>
+    <div style="text-align:center;">
+        <a href="inandout.jsp">돌아가기</a>
+    </div>
 </body>
 </html>
