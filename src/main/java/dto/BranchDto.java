@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.List;
+
 public class BranchDto {
 	private int num;
 	private String branch_id;
@@ -10,6 +12,9 @@ public class BranchDto {
 	private String updatedAt;
 	private String userName;
 	private String status;
+	private List<String> clerkList;
+	private Long user_num;
+	private String role;
 
 	private int startRowNum;
 	private int endRowNum;
@@ -79,7 +84,24 @@ public class BranchDto {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	public List<String> getClerkList() {
+		return clerkList;
+	}
+	public void setClerkList(List<String> clerkList) {
+		this.clerkList = clerkList;
+	}
+	public Long getUser_num() {
+		return user_num;
+	}
+	public void setUser_num(Long user_num) {
+		this.user_num = user_num;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	public int getStartRowNum() {
 		return startRowNum;
 	}
