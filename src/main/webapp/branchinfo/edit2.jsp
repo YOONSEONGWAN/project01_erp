@@ -20,49 +20,58 @@
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-	<div class="container">
-		<h1>가입정보 수정 양식</h1>
-		<%-- 
-			input type="file" 이 있는 form 의 전송 방식은 다르다
-			따라서 enctype="multipart/form-data" 속성을 form 에 추가해준다.
-			서버에서 해당 요청을 처리하는 방법도 다르기 때문에 jsp 가 아닌 서블릿에서 처리를 하자 
-		--%>
-			<form action="${pageContext.request.contextPath }/branchinfo/update" method="post" 
-					enctype="multipart/form-data">
-	
-			<input type="hidden" name="userId" value="<%=userId %>" />
-			<div>
-				<label for="branchName">지점 이름</label>
-				<input type="text" name="branchName" value="<%=dto.getBranch_name() %>" readonly/>
-			</div>
-			
-			<div>
-				<label for="userName">지점장 이름</label>
-				<input type="text" name="userName" value="<%=dto.getUser_name() %>" readonly/>
-			</div>
-			
-			<div>
-				<label for="branchAddress">지점 주소</label>
-				<input type="text" name="branchAddress" value="<%=dto.getBranch_address() %>" />
-			</div>
-			
-			<div>
-				<label for="branchPhone">지점 연락처</label>
-				<input type="text" name="branchPhone" value="<%=dto.getBranch_phone() %>" />
-			</div>
-			
-			<div>
-				<label for="userRole">직급</label>
-				<input type="text" name="userRole" value="<%=dto.getUser_role() %>" />
-			</div>
-			
-			
-			
-			<button type="submit">수정확인</button>
-			<button type="reset">취소</button>
-		</form>
-	</div>
-	
+	 <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">가입정보 수정 양식</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="${pageContext.request.contextPath }/branchinfo/update" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="userId" value="<%=userId %>" />
+
+                            <div class="mb-3">
+							    <label for="branchName" class="form-label">지점 이름</label>
+							    <input type="text" class="form-control bg-light border-0" name="branchName"
+							           value="<%=dto.getBranch_name() %>" readonly style="pointer-events: none;" />
+							</div>
+
+                            <div class="mb-3">
+							    <label for="userName" class="form-label">지점장 이름</label>
+							    <input type="text" class="form-control bg-light border-0" name="userName"
+							           value="<%=dto.getUser_name() %>" readonly style="pointer-events: none;" />
+							</div>
+
+                            <div class="mb-3">
+                                <label for="branchAddress" class="form-label">지점 주소</label>
+                                <input type="text" class="form-control" name="branchAddress" value="<%=dto.getBranch_address() %>" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="branchPhone" class="form-label">지점 연락처</label>
+                                <input type="text" class="form-control" name="branchPhone" value="<%=dto.getBranch_phone() %>" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="userRole" class="form-label">직급</label>
+                                <input type="text" class="form-control" name="userRole" value="<%=dto.getUser_role() %>" />
+                            </div>
+
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> 수정확인
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> 취소
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 

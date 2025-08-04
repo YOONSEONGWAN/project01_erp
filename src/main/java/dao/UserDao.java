@@ -21,6 +21,49 @@ private static UserDao dao;
 		return dao;
 	}
 	
+	
+	  //프로필을 수정하는 메소드
+		public boolean updateProfile(UserDto dto) {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			//변화된 row 의 갯수를 담을 변수 선언하고 0으로 초기화
+			int rowCount = 0;
+			try {
+				conn = new DbcpBean().getConn();
+				String sql = """
+					UPDATE users_p
+					SET location=?, profile_image=?, phone=?, role=?, updated_at=SYSDATE
+					WHERE user_name=?
+				""";
+				pstmt = conn.prepareStatement(sql);
+				// ? 에 순서대로 필요한 값 바인딩
+				pstmt.setString(1, dto.getLocation());
+				pstmt.setString(2, dto.getProfile_image());
+				pstmt.setString(3, dto.getPhone());
+				pstmt.setString(4, dto.getRole());
+				pstmt.setString(5, dto.getUser_name());
+				// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
+				rowCount = pstmt.executeUpdate();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (pstmt != null)
+						pstmt.close();
+					if (conn != null)
+						conn.close();
+				} catch (Exception e) {
+				}
+			}
+
+			//변화된 rowCount 값을 조사해서 작업의 성공 여부를 알아 낼수 있다.
+			if (rowCount > 0) {
+				return true; //작업 성공이라는 의미에서 true 리턴하기
+			} else {
+				return false; //작업 실패라는 의미에서 false 리턴하기
+			}
+		}
+	
 	// branch_id와 user_id가 모두 일치하는 사용자 정보 조회
 	public UserDto getByBIandUI(String branch_id, String user_id) {
 	    UserDto dto = null;

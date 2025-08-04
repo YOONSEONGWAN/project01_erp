@@ -44,9 +44,12 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//폼 전송되는 내용 추출
+		
+		
 		String userName=req.getParameter("userName");
 		String userLocation=req.getParameter("userLocation");
 		String userPhone=req.getParameter("userPhone");
+		String userRole=req.getParameter("userRole");
 		
 		
 		
@@ -84,20 +87,26 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 			}
 			
 			//dto 에 저장된 파일명을 담는다.
-			dto.setEmail(email);
+			dto.setLocation(userLocation);
+			dto.setPhone(userPhone);
+			dto.setRole(userRole);
+			dto.setProfile_image(saveFileName);
 			
-			//dao 의 email 과 profile 을 수정하는 메소드를 이용해서 수정반영
-			UserDao.getInstance().updateEmailProfile(dto);
-		}else { //업로드된 프로필 이미지가 없으면 (이메일만 수정)
-			//dto 에 이메일만 담는다.
-			dto.setEmail(email);
-			//dao 의 email 만 수정하는 메소드를 이용해서 수정 반영
-			UserDao.getInstance().updateEmail(dto);
+			//dao 의 profile 을 수정하는 메소드를 이용해서 수정반영
+			UserDao.getInstance().updateProfile(dto);
+			
+		}else { //업로드된 프로필 이미지가 없으면 ( 수정)
+			//dto 에 담는다.
+			dto.setLocation(userLocation);
+			dto.setPhone(userPhone);
+			dto.setRole(userRole);
+			//dao 의  이용해서 수정 반영
+			UserDao.getInstance().updateProfile(dto);
 		}
 		
 		//리다일렉트 응답
 		String cPath=req.getContextPath();
-		resp.sendRedirect(cPath+"/user/info.jsp");
+		resp.sendRedirect(cPath+"/userp/userpinfo.jsp");
 	}
 }
 
