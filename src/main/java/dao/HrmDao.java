@@ -18,7 +18,7 @@ public class HrmDao {
                      "  SELECT a.*, ROWNUM rnum FROM ( " +
                      "    SELECT num, user_name, role FROM users_p " +
                      "    WHERE role IN ('king', 'admin') AND (user_name LIKE ? OR role LIKE ?) " +
-                     "    ORDER BY num DESC " +
+                     "    ORDER BY role DESC, num ASC " +
                      "  ) a WHERE ROWNUM <= ? " +
                      ") WHERE rnum > ?";
         try (Connection conn = new DbcpBean().getConn();
@@ -74,7 +74,7 @@ public class HrmDao {
                      "    SELECT u.num, u.user_name, u.role, b.name AS branch_name " +
                      "    FROM users_p u JOIN branches b ON u.branch_id = b.branch_id " +
                      "    WHERE u.role IN ('manager', 'clerk') AND (u.user_name LIKE ? OR b.name LIKE ?) " +
-                     "    ORDER BY u.num DESC " +
+                     "    ORDER BY branch_name ASC, u.role DESC, u.num ASC " +
                      "  ) a WHERE ROWNUM <= ? " +
                      ") WHERE rnum > ?";
         try (Connection conn = new DbcpBean().getConn();
@@ -166,4 +166,33 @@ public class HrmDao {
         }
         return dto;
     }
+
+
+//이미지 업로드 전용 메서드
+	public boolean updateProfileImage(int num, String profileImage) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    int rowCount = 0;
+	    
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = "UPDATE users_p SET profile_image=? WHERE num=?";
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, profileImage);
+	        pstmt.setInt(2, num);
+
+	        rowCount = pstmt.executeUpdate();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+
+	    return rowCount > 0;
+	}
+	
 }
