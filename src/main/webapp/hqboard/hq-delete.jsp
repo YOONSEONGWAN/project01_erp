@@ -7,19 +7,17 @@
 	// GET 방식 파라미터로 전달되는 글 번호를 읽어와서
 	int num=Integer.parseInt(request.getParameter("num"));
 	
-	// 글 작성자와 로그인 된 userName 이 동일한지 비교해서 동일하지 않으면 에러를 응답한다.
+	// 글 작성자와 로그인 된 userName 이 동일한지 비교해서 동일하지 않으면 에러를 응답
 	String writer=HqBoardDao.getInstance().getByNum(num).getWriter(); // 삭제할 글 작성자
 	String userName=(String)session.getAttribute("userName");
-	// 만일 작성자와 userName 로그인 된 userName 하고 같이 않으면
 	if(!writer.equals(userName)){
 		// 에러 페이지 응답
 		response.sendError(HttpServletResponse.SC_FORBIDDEN, " 남의 글 지우지 말아주세요!");
-		return;//메소드를 여기서 종료
+		return;
 	}
 	
-	// DB 에서 해당글을 삭제하고
+	// DB 에서 해당글을 삭제하고 응답한다.
 	HqBoardDao.getInstance().deleteByNum(num);
-	// 응답한다.
 
 %>
 
