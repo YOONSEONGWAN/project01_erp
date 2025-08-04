@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.List;
+
 public class HqBoardDto {
 	private int num;
 	private String writer;
@@ -17,6 +19,10 @@ public class HqBoardDto {
 	private int nextNum;
 	// 검색 키워드를 담기 위한 필드
 	private String keyword;
+	// 첨부파일 리스트를 담은 필드
+	private List<HqBoardFileDto> fileList;
+	
+	
 	public int getNum() {
 		return num;
 	}
@@ -89,6 +95,13 @@ public class HqBoardDto {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
+	public List<HqBoardFileDto> getFileList() {
+		return fileList;
+	}
+	public void setFileList(List<HqBoardFileDto> fileList) {
+		this.fileList = fileList;
+	}
+	
 	
 	
 }
