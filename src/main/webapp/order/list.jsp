@@ -3,9 +3,17 @@
 <%@ page import="dao.StockRequestDao" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-String branchId = (String)session.getAttribute("branchId"); // 세션에서 branchId 가져옴
+//String branchId = (String)session.getAttribute("branchId");
+
+String branchId = (String)session.getAttribute("branchId");
+
+
 StockRequestDao dao = new StockRequestDao();
 List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내역 리스트
+
+
+
+
 %>
 <!DOCTYPE html>
 <html>
@@ -36,7 +44,6 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
         <th>승인여부</th>
         <th>상태</th>
         <th>신청일</th>
-        <th>비고</th>
         <th>수정</th>
         <th>삭제</th>
     </tr>
@@ -91,5 +98,6 @@ if (orderList == null || orderList.isEmpty()) {
         <button class="btn btn-update" type="button">새 발주 요청</button>
     </a>
 </div>
+<h3>branchId: <%= branchId %></h3>
 </body>
 </html>

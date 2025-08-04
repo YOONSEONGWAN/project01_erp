@@ -3,9 +3,100 @@ package dao;
 import java.sql.*;
 import java.util.*;
 import dto.IngredientDto;
+import dto.StockRequestDto;
 import util.DbcpBean;
 
 public class IngredientDao {
+	//추가됨
+	
+	
+	
+	
+	
+	public List<IngredientDto> selectAllProducts() {
+	    List<IngredientDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = "SELECT DISTINCT product, branch_num, branch_id, inventory_id, current_quantity FROM branch_stock ORDER BY product";
+	        pstmt = conn.prepareStatement(sql);
+	        rs = pstmt.executeQuery();
+	        while(rs.next()) {
+	            IngredientDto dto = new IngredientDto();
+	            dto.setProduct(rs.getString("product"));
+	            dto.setBranchNum(rs.getInt("branch_num"));
+	            dto.setBranchId(rs.getString("branch_id"));
+	            dto.setInventoryId(rs.getInt("inventory_id"));
+	            dto.setCurrentQuantity(rs.getInt("current_quantity"));
+	            list.add(dto);
+	        }
+	    } catch(Exception e) { e.printStackTrace(); }
+	    finally {
+	        try { if(rs!=null) rs.close(); } catch(Exception e){}
+	        try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
+	        try { if(conn!=null) conn.close(); } catch(Exception e){}
+	    }
+	    return list;
+	}
+	
+	
+	
+	
+	//추가됨 
+	  // 여러건 한번에 발주 요청 등록 (트랜잭션 적용)
+    public boolean requestStock(List<StockRequestDto> requests) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        boolean isSuccess = true;
+        try {
+            conn = new DbcpBean().getConn();
+            conn.setAutoCommit(false); // 트랜잭션 시작
+
+            String sql = """
+                INSERT INTO stock_request 
+                (order_id, branch_num, branch_id, inventory_id, product, current_quantity,
+                 request_quantity, status, requestedat, updatedat, isPlaceOrder)
+                VALUES (stock_request_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, SYSDATE, SYSDATE, ?)
+            """;
+            pstmt = conn.prepareStatement(sql);
+
+            for(StockRequestDto dto : requests) {
+                pstmt.setInt(1, dto.getBranchNum());
+                pstmt.setString(2, dto.getBranchId());
+                pstmt.setInt(3, dto.getInventoryId());
+                pstmt.setString(4, dto.getProduct());
+                pstmt.setInt(5, dto.getCurrentQuantity());
+                pstmt.setInt(6, dto.getRequestQuantity());
+                pstmt.setString(7, dto.getStatus());
+                pstmt.setString(8, dto.getIsPlaceOrder());
+
+                int result = pstmt.executeUpdate();
+                if(result == 0) {
+                    isSuccess = false;
+                    break;
+                }
+            }
+
+            if(isSuccess) {
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            isSuccess = false;
+            try { if(conn != null) conn.rollback(); } catch(Exception ex) {}
+        } finally {
+            try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
+            try { if(conn != null) conn.close(); } catch(Exception e) {}
+        }
+        return isSuccess;
+    }
+
+	
+	
     public List<IngredientDto> selectAll(String branchId) {
         List<IngredientDto> list = new ArrayList<>();
         Connection conn = null;

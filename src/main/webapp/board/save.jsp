@@ -35,7 +35,7 @@ System.out.println("✅ 세션 branchId: " + session.getAttribute("branchId"));
 	dto.setBoard_type(board_type); 
 	dto.setBranch_id(branchId);
 	dto.setUser_id(writer);
-	
+
 	int num = BoardDao.getInstance().getSequence(board_type); // 시퀀스 호출
 	dto.setNum(num); // 글 번호 설정
 	boolean isSuccess=BoardDao.getInstance().insert(dto);

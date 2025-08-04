@@ -11,6 +11,45 @@ import util.DbcpBean;
 
 
 public class ProductDao {
+	// 선택된 상품 여러 개 삭제하는 메서드
+	public int deleteMultiple(List<Integer> nums) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    int deletedCount = 0;
+
+	    if (nums == null || nums.isEmpty()) return deletedCount;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        StringBuilder sqlBuilder = new StringBuilder("DELETE FROM product WHERE num IN (");
+	        for (int i = 0; i < nums.size(); i++) {
+	            sqlBuilder.append("?");
+	            if (i < nums.size() - 1) {
+	                sqlBuilder.append(", ");
+	            }
+	        }
+	        sqlBuilder.append(")");
+
+	        pstmt = conn.prepareStatement(sqlBuilder.toString());
+	        for (int i = 0; i < nums.size(); i++) {
+	            pstmt.setInt(i + 1, nums.get(i));
+	        }
+
+	        deletedCount = pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return deletedCount;
+	}
+
+
+	
 	// 검색어로 필터링 + 페이징 처리 메서드
 	public List<ProductDto> selectByPageAndKeyword(int startRowNum, int endRowNum, String keyword) {
 	    List<ProductDto> list = new ArrayList<>();

@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div class="container">
-		<h1>본사 로그인 양식</h1>
+		<h1>본사 로그인</h1>
 		<form action="hqlogin.jsp" method="post">
 			<div>
 				<label for="branchId" class="form-label">본사 코드</label>
