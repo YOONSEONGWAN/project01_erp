@@ -73,7 +73,6 @@ if (orderList == null || orderList.isEmpty()) {
                 <%= dto.getRequestedAt() %>
             <% } %>
         </td>
-
         <td>
             <form action="update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
