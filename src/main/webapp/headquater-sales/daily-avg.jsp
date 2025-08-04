@@ -2,8 +2,7 @@
 <%@page import="dao.SalesDao"%>
 <%@page import="dto.SalesDto"%>
 <%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
     request.setCharacterEncoding("utf-8");
 
@@ -19,25 +18,26 @@
 
     NumberFormat nf = NumberFormat.getInstance();
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>/sales/daily-avg.jsp</title>
+    <title>일 평균 매출 (지점별)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>일 평균 매출 (지점별)</h1>
+<body class="container mt-4">
 
-    <!-- 
-    <form method="get" action="<%=request.getContextPath()%>/sales/daily-avg.jsp">
-        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
-        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
-        <button type="submit">조회</button>
-    </form> 날짜 필터 -->
+    <h2 class="mb-4">일 평균 매출 (지점별)</h2>
 
-    <br />
+    <!-- ✅ 카드 대신 테이블로 조회 정보 표시 -->
+    <table class="table table-bordered w-50 mb-4">
+        <tr>
 
-    <table border="1">
+        </tr>
+    </table>
+
+    <table class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>번호</th>
@@ -62,5 +62,6 @@
             <% } %>
         </tbody>
     </table>
+
 </body>
 </html>
