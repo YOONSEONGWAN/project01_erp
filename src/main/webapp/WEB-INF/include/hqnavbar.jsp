@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%-- /WEB-INF/include/navbar.jsp --%>
-<%
+<%-- /WEB-INF/include/branchnavbar.jsp --%>
+<% 
 	String thisPage = request.getParameter("thisPage");
-	if (thisPage == null) thisPage = "";
-	String userName = (String)session.getAttribute("userName");
+	String userId = (String)session.getAttribute("userId");
 %>
 	<nav class="navbar navbar-expand-md bg-success" data-bs-theme="dark">
 		<div class="container">
-			<a class="navbar-brand" href="${pageContext.request.contextPath }/">Acorn</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath }/index/headquaterindex.jsp">종복치킨</a>
 			<button class="navbar-toggler" type="button"
 				data-bs-toggle="collapse" data-bs-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
@@ -16,46 +15,36 @@
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("member") ? "active":""%>" href="${pageContext.request.contextPath }/member/list.jsp">Member</a>
+						<a class="nav-link <%=thisPage.equals("product") ? "active":""%>" href="${pageContext.request.contextPath }/product/list.jsp">상품관리</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("book") ? "active":""%>" href="${pageContext.request.contextPath }/book/list.jsp">Book</a>
+						<a class="nav-link <%=thisPage.equals("sales") ? "active":""%>" href="${pageContext.request.contextPath }/headquater/sales.jsp">매출/회계</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("board") ? "active":""%>" href="${pageContext.request.contextPath }/board/list.jsp">Board</a>
+						<a class="nav-link <%=thisPage.equals("stock") ? "active":""%>" href="${pageContext.request.contextPath }/headquater/stock.jsp">재고</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("gallery") ? "active":""%>" href="${pageContext.request.contextPath }/gallery/list.jsp">Gallery</a>
-					</li>					
+						<a class="nav-link <%=thisPage.equals("branch-admin") ? "active":""%>" href="${pageContext.request.contextPath }/branch-admin/list.jsp">지점관리</a>
+					</li>
 				</ul>
 	            <!-- 오른쪽 사용자 메뉴 -->
 	            <ul class="navbar-nav">
-                <%if (userName == null) {%>
-	                <li class="nav-item">
-	                    <a class="btn btn-outline-light btn-sm me-2"
-	                       href="${pageContext.request.contextPath }/user/loginform.jsp">로그인</a>
-	                </li>
-	                <li class="nav-item">
-	                    <a class="btn btn-warning btn-sm"
-	                       href="${pageContext.request.contextPath }/user/signup-form.jsp">회원가입</a>
-	                </li>
-                <%}else {%>
+                <%if (userId != null) {%>	                
 	                <li class="nav-item  me-2">
 					    <a class="nav-link  p-0"
-					       href="${pageContext.request.contextPath}/user/info.jsp">
-					        <strong><%= userName %></strong>
+					       href="${pageContext.request.contextPath}/userp/userinfo.jsp">
+					        <strong><%=userId %></strong>
 					    </a>
 					</li>
 	                <li class="nav-item me-2">
-	                    <span class="navbar-text">Signed in</span>
+	                    <span class="navbar-text">님</span>
 	                </li>
 	                <li class="nav-item">
 	                    <a class="btn btn-danger btn-sm"
-	                       href="${pageContext.request.contextPath }/user/logout.jsp">로그아웃</a>
+	                       href="${pageContext.request.contextPath }/userp/logout.jsp">로그아웃</a>
 	                </li>
                 <%}%>
                 </ul>
 			</div>
 		</div>
 	</nav>
-	

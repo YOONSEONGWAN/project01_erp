@@ -36,7 +36,6 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
         <th>승인여부</th>
         <th>상태</th>
         <th>신청일</th>
-        <th>비고</th>
         <th>수정</th>
         <th>삭제</th>
     </tr>
@@ -66,7 +65,6 @@ if (orderList == null || orderList.isEmpty()) {
                 <%= dto.getRequestedAt() %>
             <% } %>
         </td>
-        <td><%= dto.getField() == null ? "" : dto.getField() %></td>
         <td>
             <form action="update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">

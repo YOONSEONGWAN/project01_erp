@@ -2,7 +2,7 @@ package dto;
 
 public class SalesDto {
 	private int sales_id;         
-	private int branch_id;      
+	private String branch_id;      
 	private String branch_name;   
 	private String created_at;    
 	private int totalamount;      
@@ -22,16 +22,17 @@ public class SalesDto {
 
     private String topBranchName;
     private int topBranchSales;
+    
 	public int getSales_id() {
 		return sales_id;
 	}
 	public void setSales_id(int sales_id) {
 		this.sales_id = sales_id;
 	}
-	public int getBranch_id() {
+	public String getBranch_id() {
 		return branch_id;
 	}
-	public void setBranch_id(int branch_id) {
+	public void setBranch_id(String branch_id) {
 		this.branch_id = branch_id;
 	}
 	public String getBranch_name() {

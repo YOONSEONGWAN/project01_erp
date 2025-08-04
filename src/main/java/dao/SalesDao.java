@@ -152,7 +152,7 @@ private static SalesDao dao;
 	    return list;
 	}
 
-	// 전체 조회
+	// 지점별 연간 매출 순위 전체 조회
 	public List<SalesDto> getYearlySalesRanking() {
 	    return getYearlySalesRankingBetween("2000-01-01", "2099-12-31");
 	}
@@ -213,7 +213,7 @@ private static SalesDao dao;
 	    return list;
 	}
 	
-	// 전체 조회
+	// 지점별 월간 매출 순위 전체 조회
 	public List<SalesDto> getMonthlySalesRanking() {
 	    return getMonthlySalesRankingBetween("2000-01-01", "2099-12-31");
 	}
@@ -329,7 +329,7 @@ private static SalesDao dao;
 	    return list;
 	}
 
-	// 기존 메서드 유지 + 전체 조회
+	// 지점별 주간 매출 순위 전체 조회
 	public List<SalesDto> getWeeklySalesRanking() {
 	    return getWeeklySalesRankingBetween("2000-01-01", "2099-12-31");
 	}
@@ -773,7 +773,7 @@ private static SalesDao dao;
 
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
-	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_id(rs.getString("branch_id"));
 	            dto.setBranch_name(rs.getString("branch_name"));
 	            dto.setTotalSales(rs.getInt("total_sales"));
 	            dto.setDayCount(rs.getInt("day_count"));
@@ -824,7 +824,7 @@ private static SalesDao dao;
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
 	            dto.setPeriod(rs.getString("period"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_id(rs.getString("branch_id"));
 	            dto.setBranch_name(rs.getString("branch_name"));
 	            dto.setTotalSales(rs.getInt("total_sales"));
 	            dto.setAverageSales(rs.getInt("avg_sales"));
@@ -972,7 +972,7 @@ private static SalesDao dao;
 			while (rs.next()) {
 				SalesDto dto = new SalesDto();
 				dto.setPeriod(rs.getString("period"));
-				dto.setBranch_id(rs.getInt("branch_id")); // 또는 dto.setBranch_name() 가능
+				dto.setBranch_id(rs.getString("branch_id")); // 또는 dto.setBranch_name() 가능
 				dto.setBranch_name(rs.getString("branch_name"));
 				dto.setTotalSales(rs.getInt("total_sales"));
 				dto.setAverageSales(rs.getInt("average_sales"));
@@ -1026,7 +1026,7 @@ private static SalesDao dao;
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
 	            dto.setPeriod(rs.getString("period"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_id(rs.getString("branch_id"));
 	            dto.setBranch_name(rs.getString("branch_name"));
 	            dto.setTotalSales(rs.getInt("total_sales"));
 	            list.add(dto);
@@ -1081,7 +1081,7 @@ private static SalesDao dao;
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
 	            dto.setPeriod(rs.getString("period"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_id(rs.getString("branch_id"));
 	            dto.setBranch_name(rs.getString("branch_name"));
 	            dto.setTotalSales(rs.getInt("total_sales"));
 	            list.add(dto);
@@ -1215,7 +1215,7 @@ private static SalesDao dao;
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
 	            dto.setPeriod(rs.getString("period"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setBranch_id(rs.getString("branch_id"));
 	            dto.setBranch_name(rs.getString("branch_name"));
 	            dto.setTotalSales(rs.getInt("total_sales"));
 	            list.add(dto);
@@ -1263,7 +1263,7 @@ private static SalesDao dao;
 	        while (rs.next()) {
 	            SalesDto dto = new SalesDto();
 	            dto.setSales_id(rs.getInt("sales_id"));
-	            dto.setBranch_id(rs.getInt("branch_id")); 
+	            dto.setBranch_id(rs.getString("branch_id")); 
 	            dto.setBranch_name(rs.getString("branch_name")); 
 	            dto.setCreated_at(rs.getString("created_at"));
 	            dto.setTotalamount(rs.getInt("totalamount"));
