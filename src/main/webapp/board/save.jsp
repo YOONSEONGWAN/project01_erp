@@ -6,7 +6,7 @@
 	String title = request.getParameter("title");
 	String content = request.getParameter("content");
 	String writer = (String)session.getAttribute("userName");
-	String boardType = request.getParameter("boardType");
+	String board_type = request.getParameter("boardType");
 	
 	// 로그인 여부 확인
 		if (writer == null || writer.isEmpty()) {
@@ -23,7 +23,7 @@
 	dto.setWriter(writer);
 	dto.setTitle(title);
 	dto.setContent(content);
-	dto.setBoardType(boardType); 
+	dto.setBoard_type(board_type); 
 	
 	int num=BoardDao.getInstance().getSequence();
 	dto.setNum(num);
