@@ -22,7 +22,7 @@ dto.setCurrentQuantity(currentQuantity);
 dto.setRequestQuantity(requestQuantity);
 dto.setStatus("대기중");
 dto.setIsPlaceOrder("요청");
-dto.setField(""); // 필요시 메모
+
 
 StockRequestDao dao = new StockRequestDao();
 boolean isSuccess = dao.insertRequest(dto);

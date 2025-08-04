@@ -2,13 +2,20 @@
 <%@page import="test.dto.SalesDto"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+	String branchId = (String)session.getAttribute("branchId");
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>/branch-sales/list.jsp</title>
+    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+		<jsp:param value="branch-sales" name="thisPage"/>
+	</jsp:include>
     <h2>매출 목록</h2>
 
     <form action="${pageContext.request.contextPath}/branch-sales/insert-form.jsp" method="get">
@@ -30,7 +37,7 @@
             <th>상세보기</th>
         </tr>
         <%
-            List<SalesDto> list = SalesDao.getInstance().getList();
+            List<SalesDto> list = SalesDao.getInstance().getList(branchId);
             for (SalesDto dto : list) {
         %>
         <tr>
