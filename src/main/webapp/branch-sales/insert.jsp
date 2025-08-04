@@ -10,7 +10,7 @@
         return;
     }
 
-    String branchId = request.getParameter("branchId");
+    String branchId = (String)session.getAttribute("branchId");
     int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
 
     SalesDto dto = new SalesDto();
