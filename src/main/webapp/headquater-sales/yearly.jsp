@@ -23,8 +23,7 @@
     }
 %>
 <h2>연간 매출 통계</h2>
-<p>총 매출 합계: <%= nf.format(totalSum) %> 원</p>
-<table border="1">
+<table class="table table-bordered">
     <tr><th>연도</th><th>지점</th><th>매출 합계</th></tr>
     <% for (SalesDto dto : list) { %>
         <tr>
