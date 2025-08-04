@@ -18,7 +18,7 @@
 	
 	if(isValid) {
 		session.setAttribute("userId", userId);
-		session.setAttribute("branchId", branchId);
+		session.setAttribute("branch_id", branchId);
 		session.setMaxInactiveInterval(60*60);
 		// 로그인 성공 -> /index/branchindex.jsp 로 이동
 		response.sendRedirect(request.getContextPath()+ "/index/branchindex.jsp");

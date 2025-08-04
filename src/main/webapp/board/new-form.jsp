@@ -2,6 +2,24 @@
 <%
 	// 세션에서 로그인된 사용자 아이디 얻어오기
 	String writer = (String)session.getAttribute("userId");
+	String branchId = (String) session.getAttribute("branch_id");	
+
+	// URL 로 직접접근 막기
+	String boardType = request.getParameter("board_type");
+	if (boardType == null || boardType.trim().isEmpty()) {
+	    boardType = "NOTICE"; // 기본값
+	}
+	
+	// 공지사항을 클릭했을때 본사 회원이 아니라면 접근 차단
+	if ("NOTICE".equalsIgnoreCase(boardType) && !"HQ".equalsIgnoreCase(branchId)) {
+	%>
+	  <script>
+	    alert("공지사항은 본사 회원만 작성할 수 있습니다.");
+	    history.back();
+	  </script>
+	<%
+	    return;
+	}
 %>
 <!DOCTYPE html>
 <html>
@@ -15,7 +33,10 @@
 		<h3 class="mb-4">새 글 작성</h3>
 		
 		<form action="${pageContext.request.contextPath}/board/save.jsp" method="post">
-			<input type="hidden" name="board_type" value="QNA" />
+			<input type="hidden" name="board_type" value="<%=boardType %>" />
+			<input type="hidden" name="branch_id" value="<%=branchId %>" />
+    		<input type="hidden" name="user_id" value="<%=writer %>" />
+    		
 			<!-- 작성자 (자동 입력, 수정 불가) -->
 			<div class="mb-3">
 			    <label class="form-label">작성자</label>

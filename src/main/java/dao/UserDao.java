@@ -158,49 +158,63 @@ private static UserDao dao;
 		return dto;
 	}
 	
-	// userp 정보 추가
 	public boolean insert(UserDto dto) {
-		Connection conn = null;
-		PreparedStatement psmt = null;
-		int rowCount = 0;
-		try {
-			conn = new DbcpBean().getConn();
-			String sql = """
-					INSERT INTO users_p
-					(num, branch_id, user_id, password, user_name, updated_at, created_at)
-					VALUES(user_p_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, SYSDATE)
-					""";
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, dto.getBranch_id());
-			psmt.setString(2, dto.getUser_id());
-			psmt.setString(3, dto.getPassword());
-			psmt.setString(4, dto.getUser_name());
-			rowCount = psmt.executeUpdate();
+	    Connection conn = null;
+	    PreparedStatement psmt = null;
+	    int rowCount = 0;
+	    try {
+	        System.out.println("▶ insert() 진입");
 
-		} catch (SQLException e) {
-			// FK 위반(존재하지 않는 branch_id)
-	        if (e.getErrorCode() == 2291) { // ORA-02291
-	            System.out.println("존재하지 않는 지점번호 입력하셨습니다.");
-	        } else if (e.getErrorCode() == 1) { // ORA-00001: Unique 위반 등
-	            System.out.println("아이디 중복입니다");
+	        System.out.println("▶ getConn() 호출 전");
+	        conn = new DbcpBean().getConn();
+	        System.out.println("▶ getConn() 완료");
+
+	        String sql = """
+	            INSERT INTO users_p
+	            (num, branch_id, user_id, password, user_name, updated_at, created_at)
+	            VALUES(user_p_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, SYSDATE)
+	        """;
+	        System.out.println("▶ SQL 준비 완료");
+
+	        psmt = conn.prepareStatement(sql);
+	        System.out.println("▶ prepareStatement 완료");
+
+	        // DTO 값 체크
+	        System.out.println("▶ DTO 값 체크");
+	        System.out.println("branchId: " + dto.getBranch_id());
+	        System.out.println("userId: " + dto.getUser_id());
+	        System.out.println("password: " + dto.getPassword());
+	        System.out.println("userName: " + dto.getUser_name());
+
+	        // 바인딩
+	        psmt.setString(1, dto.getBranch_id());
+	        psmt.setString(2, dto.getUser_id());
+	        psmt.setString(3, dto.getPassword());
+	        psmt.setString(4, dto.getUser_name());
+
+	        System.out.println("▶ executeUpdate() 호출 전");
+	        rowCount = psmt.executeUpdate();
+	        System.out.println("▶ executeUpdate() 완료");
+
+	    } catch (SQLException e) {
+	        System.out.println("🚨 SQLException 발생");
+	        System.out.println("📌 SQL ErrorCode: " + e.getErrorCode());
+	        System.out.println("📌 SQL Message: " + e.getMessage());
+	        e.printStackTrace();
+	    } catch (Exception e) {
+	        System.out.println("🚨 Exception 발생");
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (psmt != null) psmt.close();
+	            if (conn != null) conn.close();
+	            System.out.println("▶ 커넥션 정리 완료");
+	        } catch (Exception e) {
+	            e.printStackTrace();
 	        }
-			e.printStackTrace();
-			
-		} catch (Exception e){
-			e.printStackTrace();
-		}
-			finally {
-			try {
-				if (psmt != null) psmt.close();
-				if (conn != null) conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		if (rowCount > 0) {
-			return true; // 작업 성공이라는 의미에서 true 리턴하기
-		} else {
-			return false; // 작업 실패라는 의미에서 false 리턴하기
-		}
+	    }
+
+	    System.out.println("▶ 최종 rowCount = " + rowCount);
+	    return rowCount > 0;
 	}
 }

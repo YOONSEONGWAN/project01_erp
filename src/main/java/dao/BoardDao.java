@@ -96,49 +96,39 @@ public class BoardDao {
  		}
  	}
     
-    // 검색 키워드에 부합하는 글의 갯수를 리턴하는 메소드
- 		public int getCountByKeyword(String keyword) {
- 			// count 값을 담을 지역변수 선언 
- 			int count=0;
- 			
- 			Connection conn = null;
- 			PreparedStatement pstmt = null;
- 			ResultSet rs = null;
- 			try {
- 				conn = new DbcpBean().getConn();
- 				// 실행할 sql 문 
- 				String sql = """
- 						SELECT MAX(ROWNUM) AS count
- 						FROM board_p
- 						WHERE title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%'
- 						""";
- 				pstmt = conn.prepareStatement(sql);
- 				// ? 값에 바인딩
- 				pstmt.setString(1, "keyword");
- 				pstmt.setString(2, "keyword");
- 				// select 문 실행하고 결과를 ResultSet 으로 받아온다. 
- 				rs = pstmt.executeQuery();
- 				// 반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 어떤 객체에 담는다. 
- 				if (rs.next()) {
- 					count=rs.getInt("count");
- 				}
- 			} catch (Exception e) {
- 				e.printStackTrace();
- 			} finally {
- 				try {
- 					// 메소드 호출하기 전에 null 인지 아닌지 체크, 아닌경우에만 호출하도록 
- 					// 닫아줄때 위에서 객체를 선언한 conn, pstmt, rs 순의 반대 순으로 닫아준다
- 					// rs -> pstmt -> conn 
- 					if (rs != null)
- 						pstmt.close();
- 					if (pstmt != null)
- 						pstmt.close();
- 					if (conn != null)
- 						conn.close();
- 				} catch (Exception e) {}
- 			}
- 			return count;
- 		}
+ 	// 검색 키워드 + 게시판 유형에 부합하는 글의 갯수를 리턴하는 메소드
+ 	public int getCountByKeyword(String boardType, String keyword) {
+ 	    int count = 0;
+ 	    Connection conn = null;
+ 	    PreparedStatement pstmt = null;
+ 	    ResultSet rs = null;
+ 	    
+ 	    try {
+ 	        conn = new DbcpBean().getConn();
+ 	        String sql = """
+ 	            SELECT COUNT(*) AS count
+ 	            FROM board_p
+ 	            WHERE board_type = ?
+ 	              AND (title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')
+ 	        """;
+ 	        pstmt = conn.prepareStatement(sql);
+ 	        pstmt.setString(1, boardType);   // NOTICE 또는 QNA
+ 	        pstmt.setString(2, keyword);
+ 	        pstmt.setString(3, keyword);
+
+ 	        rs = pstmt.executeQuery();
+ 	        if (rs.next()) {
+ 	            count = rs.getInt("count");
+ 	        }
+ 	    } catch (Exception e) {
+ 	        e.printStackTrace();
+ 	    } finally {
+ 	        try { if (rs != null) rs.close(); } catch (Exception e) {}
+ 	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+ 	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+ 	    }
+ 	    return count;
+ 	}
     
     
     // 전체 글의 갯수를 리턴하는 메소드
@@ -540,66 +530,63 @@ public class BoardDao {
     	return list;
     }
     
-    // 1. 글 저장 메서드
+    // 글 저장 메서드
     public boolean insert(BoardDto dto) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         int rowCount = 0;
 
         try {
+            // 회원 유형 검사 추가
+            if ("NOTICE".equalsIgnoreCase(dto.getBoard_type()) && !"HQ".equalsIgnoreCase(dto.getBranch_id())) {
+                System.out.println("❌ 지점 회원은 공지사항 등록 불가");
+                return false;
+            }
+            if ("QNA".equalsIgnoreCase(dto.getBoard_type()) && "HQ".equalsIgnoreCase(dto.getBranch_id())) {
+                System.out.println("❌ 본사 회원은 문의사항 등록 불가");
+                return false;
+            }
+
             conn = new DbcpBean().getConn();
-            String sql = """
-                INSERT INTO board_p
-                (num, writer, title, content, board_type, branch_id, user_id, view_count, created_at)
-                VALUES
-                (?, ?, ?, ?, ?, ?, ?, 0, SYSDATE)
-            """;
+
+            // 시퀀스 분기
+            String sql;
+            if ("NOTICE".equalsIgnoreCase(dto.getBoard_type())) {
+                sql = """
+                    INSERT INTO board_p
+                    (num, writer, title, content, board_type, branch_id, user_id, view_count, created_at)
+                    VALUES
+                    (?, ?, ?, ?, ?, ?, ?, 0, SYSDATE)
+                """;
+            } else {
+                sql = """
+                    INSERT INTO board_p
+                    (num, writer, title, content, board_type, branch_id, user_id, view_count, created_at)
+                    VALUES
+                    (?, ?, ?, ?, ?, ?, ?, 0, SYSDATE)
+                """;
+            }
+
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, dto.getNum());
+            pstmt.setInt(1, dto.getNum()); // save.jsp에서 받은 시퀀스
             pstmt.setString(2, dto.getWriter());
             pstmt.setString(3, dto.getTitle());
             pstmt.setString(4, dto.getContent());
-            pstmt.setString(5, dto.getBoard_type()); // boardType 바인딩
+            pstmt.setString(5, dto.getBoard_type());
             pstmt.setString(6, dto.getBranch_id());
             pstmt.setString(7, dto.getUser_id());
-            rowCount = pstmt.executeUpdate();
 
+            rowCount = pstmt.executeUpdate();
             System.out.println("🟢 INSERT 실행 완료, rowCount = " + rowCount);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("insert 실패!", e); // 에러 전파 권장
+            throw new RuntimeException("insert 실패!", e);
         } finally {
             try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
 
         return rowCount > 0;
-        
-    }
-    // 3. 저장할 글의 글번호를 리턴해주는 메소드
-    public int getSequence() {
-        int num = 0;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "SELECT board_p_seq.NEXTVAL AS num FROM DUAL";
-            pstmt = conn.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-            if (rs.next()) {
-                num = rs.getInt("num");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {}
-        }
-        return num;
     }
     // 4. 글번호에 해당하는 게시글의 정보를 DB에서 조회하는 메소드
     public BoardDto getData(int num, String board_type) {
@@ -644,6 +631,24 @@ public class BoardDao {
         
         return dto;
         
+    }
+    
+    public int getSequence(String boardType) {
+        int seq = 0;
+        String sql = "SELECT " + 
+            ("NOTICE".equalsIgnoreCase(boardType) ? "board_notice_seq" : "board_qna_seq") +
+            ".NEXTVAL AS seq FROM dual";
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                seq = rs.getInt("seq");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return seq;
     }
     
 }

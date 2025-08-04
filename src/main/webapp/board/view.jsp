@@ -86,15 +86,29 @@
     <div class="text-end">
         <a href="list.jsp?boardType=<%= dto.getBoard_type() %>" class="btn btn-secondary">목록</a>
 		
+		<%-- 수정 버튼: 작성자면 공통으로 노출 --%>
 		<% if (loginUserId != null && loginUserId.equals(writerId)) { %>
 		    <a href="update.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>" class="btn btn-warning">수정</a>
 		<% } %>
 		
-        <%-- boardType이 "문의사항"이면서 작성자가 일치할때만 삭제 버튼 노출 --%>
-        <% if ("QNA".equalsIgnoreCase(board_type) && loginUserId != null && loginUserId.equals(writerId)) { %>
+		<%-- 삭제 버튼 분기 처리 --%>
+		<%
+		    String branchId = dto.getBranch_id(); // 글 작성자의 소속 (HQ 또는 지점)
+		    boolean isWriter = loginUserId != null && loginUserId.equals(writerId);
+		%>
+		
+		<%-- 문의사항: 작성자면 삭제 가능 --%>
+		<% if ("QNA".equalsIgnoreCase(board_type) && isWriter) { %>
 		    <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
-			   onclick="return confirm('정말 삭제하시겠습니까?');"
-			   class="btn btn-danger">삭제</a>
+		       onclick="return confirm('정말 삭제하시겠습니까?');"
+		       class="btn btn-danger">삭제</a>
+		<% } %>
+		
+		<%-- 공지사항: 본사 작성자만 삭제 가능 --%>
+		<% if ("NOTICE".equalsIgnoreCase(board_type) && isWriter && "HQ".equalsIgnoreCase(branchId)) { %>
+		    <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
+		       onclick="return confirm('공지사항을 삭제하시겠습니까?');"
+		       class="btn btn-danger">삭제</a>
 		<% } %>
     </div>
 </div>

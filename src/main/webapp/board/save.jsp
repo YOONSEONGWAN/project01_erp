@@ -9,9 +9,11 @@ System.out.println("✅ 세션 branchId: " + session.getAttribute("branchId"));
 	String title = request.getParameter("title");
 	String content = request.getParameter("content");
 	String writer = (String)session.getAttribute("userId");
-	String branchId = (String)session.getAttribute("branchId");
+	String branchId = (String)session.getAttribute("branch_id");
 	String board_type = request.getParameter("board_type");
-	
+	System.out.println("📌 전달된 board_type: " + board_type);
+	System.out.println("📌 전달된 branch_id: " + branchId);
+	System.out.println("📌 전달된 writer: " + writer);
 	// 지점 회원인지 확인
 	if (branchId == null || branchId.trim().isEmpty()) {
 		board_type = "QNA";
@@ -34,9 +36,8 @@ System.out.println("✅ 세션 branchId: " + session.getAttribute("branchId"));
 	dto.setBranch_id(branchId);
 	dto.setUser_id(writer);
 	
-	int num=BoardDao.getInstance().getSequence();
-	dto.setNum(num);
-	
+	int num = BoardDao.getInstance().getSequence(board_type); // 시퀀스 호출
+	dto.setNum(num); // 글 번호 설정
 	boolean isSuccess=BoardDao.getInstance().insert(dto);
 %>
 
