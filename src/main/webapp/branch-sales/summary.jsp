@@ -1,9 +1,9 @@
-<%@page import="test.dao.SalesDao"%>
-<%@page import="test.dto.SalesSummaryDto"%>
+<%@page import="test.dao.BranchSalesDao"%>
+<%@page import="test.dto.BranchSalesSummaryDto"%>
 <%@page import="java.util.List"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    request.setCharacterEncoding("UTF-8");
+request.setCharacterEncoding("UTF-8");
 
     String branchId = (String)session.getAttribute("branchId");
     if(branchId == null){
@@ -11,7 +11,7 @@
         return;
     }
 
-    List<SalesSummaryDto> myDailyList = SalesDao.getInstance().getDailySummaryByBranch(branchId);
+    List<BranchSalesSummaryDto> myDailyList = BranchSalesDao.getInstance().getDailySummaryByBranch(branchId);
 %>
 <!DOCTYPE html>
 <html>
@@ -20,13 +20,15 @@
     <title>/branch-sales/summary.jsp</title>
 </head>
 <body>
-    <h2>내 지점(<%= branchId %>) 일자별 매출 요약</h2>
+    <h2>내 지점(<%=branchId%>) 일자별 매출 요약</h2>
     <table border="1">
         <tr>
             <th>날짜</th>
             <th>매출합계</th>
         </tr>
-        <% for(SalesSummaryDto dto : myDailyList){ %>
+        <%
+        for(BranchSalesSummaryDto dto : myDailyList){
+        %>
         <tr>
             <td><%= dto.getSalesDate() %></td>
             <td><%= dto.getTotalAmount() %> 원</td>

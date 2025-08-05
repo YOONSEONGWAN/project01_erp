@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="test.dao.SalesDao" %>
+<%@ page import="test.dao.BranchSalesDao" %>
 <%
-    request.setCharacterEncoding("UTF-8");
+request.setCharacterEncoding("UTF-8");
 
     String branchId = (String)session.getAttribute("branchId");
     if(branchId == null){
@@ -10,7 +10,7 @@
     }
 
     int salesId = Integer.parseInt(request.getParameter("salesId"));
-    boolean isSuccess = SalesDao.getInstance().delete(salesId, branchId);
+    boolean isSuccess = BranchSalesDao.getInstance().delete(salesId, branchId);
 %>
 <script>
     alert("<%= isSuccess ? "삭제 성공" : "삭제 실패" %>");

@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="test.dao.SalesDao" %>
-<%@ page import="test.dto.SalesDto" %>
+<%@ page import="test.dao.BranchSalesDao" %>
+<%@ page import="test.dto.BranchSalesDto" %>
 <%
-    request.setCharacterEncoding("UTF-8");
+request.setCharacterEncoding("UTF-8");
 
     String branchId = (String)session.getAttribute("branchId");
     if(branchId == null){
@@ -11,7 +11,7 @@
     }
 
     int salesId = Integer.parseInt(request.getParameter("salesId"));
-    SalesDto dto = SalesDao.getInstance().getById(salesId, branchId);
+    BranchSalesDto dto = BranchSalesDao.getInstance().getById(salesId, branchId);
 
     if(dto == null){
 %>

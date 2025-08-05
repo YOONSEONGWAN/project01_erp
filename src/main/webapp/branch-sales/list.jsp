@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="test.dao.SalesDao" %>
-<%@ page import="test.dto.SalesDto" %>
+<%@ page import="test.dao.BranchSalesDao" %>
+<%@ page import="test.dto.BranchSalesDto" %>
 <%
-    request.setCharacterEncoding("UTF-8");
+request.setCharacterEncoding("UTF-8");
 
     String branchId = (String)session.getAttribute("branchId");
     if(branchId == null){
@@ -11,7 +11,7 @@
         return;
     }
 
-    List<SalesDto> list = SalesDao.getInstance().getList(branchId);
+    List<BranchSalesDto> list = BranchSalesDao.getInstance().getList(branchId);
     String cpath = request.getContextPath();
 %>
 <!DOCTYPE html>
@@ -19,10 +19,10 @@
 <head>
     <meta charset="UTF-8">
     <title>/branch-sales/list.jsp</title>
-    <script>const cpath = "<%= cpath %>";</script>
+    <script>const cpath = "<%=cpath%>";</script>
 </head>
 <body>
-    <h2>매출 목록 (지점: <%= branchId %>)</h2>
+    <h2>매출 목록 (지점: <%=branchId%>)</h2>
     <button onclick="location.href=cpath+'/branch-sales/insert-form.jsp'">매출 등록</button>
     <button onclick="location.href=cpath+'/branch-sales/summary.jsp'">매출 합계</button>
     <br><br>
@@ -34,7 +34,7 @@
             <th>상세보기</th>
         </tr>
         <%
-            for(SalesDto dto : list){
+        for(BranchSalesDto dto : list){
         %>
         <tr>
             <td><%= dto.getSalesId() %></td>

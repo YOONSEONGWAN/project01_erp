@@ -6,14 +6,14 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import test.dto.SalesDto;
-import test.dto.SalesSummaryDto;
+import test.dto.BranchSalesDto;
+import test.dto.BranchSalesSummaryDto;
 import util.DbcpBean;
 
-public class SalesDao {
-    private static SalesDao dao = new SalesDao();
-    private SalesDao() {}
-    public static SalesDao getInstance() {
+public class BranchSalesDao {
+    private static BranchSalesDao dao = new BranchSalesDao();
+    private BranchSalesDao() {}
+    public static BranchSalesDao getInstance() {
         return dao;
     }
 
@@ -22,7 +22,7 @@ public class SalesDao {
     ---------------------- */
 
     // 매출 등록
-    public boolean insert(SalesDto dto) {
+    public boolean insert(BranchSalesDto dto) {
         boolean isSuccess = false;
         String sql = """
             INSERT INTO sales (sales_id, branch_id, created_at, totalamount)
@@ -40,8 +40,8 @@ public class SalesDao {
     }
 
     // 지점별 매출 목록
-    public List<SalesDto> getList(String branchId) {
-        List<SalesDto> list = new ArrayList<>();
+    public List<BranchSalesDto> getList(String branchId) {
+        List<BranchSalesDto> list = new ArrayList<>();
         String sql = """
             SELECT sales_id, branch_id,
                    TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at,
@@ -55,7 +55,7 @@ public class SalesDao {
             pstmt.setString(1, branchId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    SalesDto dto = new SalesDto();
+                    BranchSalesDto dto = new BranchSalesDto();
                     dto.setSalesId(rs.getInt("sales_id"));
                     dto.setBranchId(rs.getString("branch_id"));
                     dto.setCreated_at(rs.getString("created_at"));
@@ -70,8 +70,8 @@ public class SalesDao {
     }
 
     // 매출 상세 조회
-    public SalesDto getById(int salesId, String branchId) {
-        SalesDto dto = null;
+    public BranchSalesDto getById(int salesId, String branchId) {
+        BranchSalesDto dto = null;
         String sql = """
             SELECT sales_id, branch_id,
                    TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at,
@@ -85,7 +85,7 @@ public class SalesDao {
             pstmt.setString(2, branchId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    dto = new SalesDto();
+                    dto = new BranchSalesDto();
                     dto.setSalesId(rs.getInt("sales_id"));
                     dto.setBranchId(rs.getString("branch_id"));
                     dto.setCreated_at(rs.getString("created_at"));
@@ -99,7 +99,7 @@ public class SalesDao {
     }
 
     // 매출 수정
-    public boolean update(SalesDto dto) {
+    public boolean update(BranchSalesDto dto) {
         boolean isSuccess = false;
         String sql = """
             UPDATE sales
@@ -137,8 +137,8 @@ public class SalesDao {
        2. 지점별 일자별 매출 요약
     ---------------------- */
 
-    public List<SalesSummaryDto> getDailySummaryByBranch(String branchId) {
-        List<SalesSummaryDto> list = new ArrayList<>();
+    public List<BranchSalesSummaryDto> getDailySummaryByBranch(String branchId) {
+        List<BranchSalesSummaryDto> list = new ArrayList<>();
         String sql = """
             SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS salesDate,
                    SUM(totalamount) AS totalAmount
@@ -152,7 +152,7 @@ public class SalesDao {
             pstmt.setString(1, branchId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    SalesSummaryDto dto = new SalesSummaryDto();
+                    BranchSalesSummaryDto dto = new BranchSalesSummaryDto();
                     dto.setSalesDate(rs.getString("salesDate"));
                     dto.setBranch(branchId);
                     dto.setTotalAmount(rs.getInt("totalAmount"));

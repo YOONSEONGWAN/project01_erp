@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="test.dao.SalesDao" %>
-<%@ page import="test.dto.SalesDto" %>
+<%@ page import="test.dao.BranchSalesDao" %>
+<%@ page import="test.dto.BranchSalesDto" %>
 <%
-    request.setCharacterEncoding("UTF-8");
+request.setCharacterEncoding("UTF-8");
 
     String branchId = (String)session.getAttribute("branchId");
     if(branchId == null){
@@ -12,11 +12,11 @@
 
     int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
 
-    SalesDto dto = new SalesDto();
+    BranchSalesDto dto = new BranchSalesDto();
     dto.setBranchId(branchId);
     dto.setTotalAmount(totalAmount);
 
-    boolean isSuccess = SalesDao.getInstance().insert(dto);
+    boolean isSuccess = BranchSalesDao.getInstance().insert(dto);
 %>
 <script>
     alert("<%= isSuccess ? "등록 성공" : "등록 실패" %>");
