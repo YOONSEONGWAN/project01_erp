@@ -198,8 +198,7 @@ CREATE TABLE users_p (
   role         VARCHAR2(10),
   updated_at   DATE,
   created_at   DATE,
-  CONSTRAINT pk_users_p PRIMARY KEY (num, branch_id),
-  CONSTRAINT uq_users_p_branch_id UNIQUE (branch_id),
+  CONSTRAINT pk_users_p PRIMARY KEY (num),
   CONSTRAINT uq_users_p_user_id UNIQUE (user_id)
 );
 
