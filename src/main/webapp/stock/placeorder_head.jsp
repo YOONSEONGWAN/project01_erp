@@ -20,30 +20,51 @@
     <jsp:include page="/WEB-INF/include/resource.jsp"/>
 
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        h2 {
-            margin-top: 40px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .table-container {
-            max-width: 900px;
-            margin: 0 auto 50px auto;
-        }
-        /* 테이블 헤더 파란색 배경 및 흰색 글씨 */
-        table thead th {
-            background-color: #007bff !important;
-            color: white !important;
-            text-align: center;
-        }
-        table td, table th {
-            vertical-align: middle !important;
-            text-align: center;
-        }
-    </style>
+    body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        max-width: 900px;
+        width: 100%;
+    }
+    h2 {
+        margin-top: 40px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .table-container {
+        margin-bottom: 50px;
+    }
+    table thead th {
+        background-color: #007bff !important;
+        color: white !important;
+        text-align: center;
+    }
+    table td, table th {
+        vertical-align: middle !important;
+        text-align: center;
+    }
+    input.form-control-sm {
+        max-width: 80px;
+        margin: 0 auto;
+        display: block;
+    }
+    select.form-select-sm {
+        max-width: 120px;
+        margin: 0 auto;
+        display: block;
+    }
+</style>
 </head>
 <body>
 

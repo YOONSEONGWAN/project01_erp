@@ -36,12 +36,30 @@
     <jsp:include page="/WEB-INF/include/resource.jsp"/>
 
     <style>
-        body {
+        /* 화면 전체 높이, 플렉스박스 중앙 정렬 */
+        html, body {
+            height: 100%;
+            margin: 0;
             background-color: #f8f9fa;
+        }
+        body {
+            display: flex;
+            justify-content: center; /* 가로 중앙 */
+            align-items: center;     /* 세로 중앙으로 수정 */
+            padding: 40px 20px;      /* 상대적 여백 */
+            box-sizing: border-box;
+            min-height: 100vh;
         }
         .container {
             max-width: 960px;
-            margin: 40px auto;
+            width: 100%;
+            max-height: calc(100vh - 80px); /* padding 위아래 40px씩 빼고 남은 공간 */
+            overflow-y: auto; /* 내용이 길면 스크롤 */
+            background: #fff;
+            padding: 20px 30px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            box-sizing: border-box;
         }
         h2 {
             text-align: center;
@@ -53,29 +71,113 @@
             justify-content: flex-end;
             margin-bottom: 10px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
         table th {
             background-color: #007bff !important;
             color: white !important;
             text-align: center;
+            padding: 8px;
         }
         table td {
             text-align: center;
             vertical-align: middle;
+            padding: 6px;
+        }
+        .btn {
+            cursor: pointer;
+            border: 1px solid transparent;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.2rem;
+            transition: background-color 0.15s ease-in-out;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+            color: white;
+        }
+        .btn-outline-primary {
+            color: #007bff;
+            border-color: #007bff;
+            background-color: transparent;
+        }
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #6c757d;
+            background-color: transparent;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+        /* 페이지네비게이션 스타일 */
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding-left: 0;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 15px;
+        }
+        .pagination .page-item {
+            display: inline;
+        }
+        .pagination .page-link {
+            color: #007bff;
+            text-decoration: none;
+            padding: 4px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            user-select: none;
+            display: inline-block;
+        }
+        .pagination .page-item.disabled .page-link,
+        .pagination .page-item.disabled .page-link:hover {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+            cursor: default;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            cursor: default;
+        }
+        .text-center {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 <div class="container">
-	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
-        <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
-        <li class="breadcrumb-item"><a href="placeorder_head.jsp">본사 발주</a></li>
-        <li class="breadcrumb-item active" aria-current="page"> 전체 발주 내역</li>
-      </ol>
+    <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+            <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
+            <li class="breadcrumb-item"><a href="placeorder_head.jsp">본사 발주</a></li>
+            <li class="breadcrumb-item active" aria-current="page"> 전체 발주 내역</li>
+        </ol>
     </nav>
     <h2>전체 발주 내역</h2>
-	
+
     <form class="search-bar" method="get" action="placeorder_head_all.jsp">
         <input type="text" name="managerKeyword" class="form-control form-control-sm me-2"
                style="max-width: 200px;"
@@ -114,7 +216,7 @@
 
     <!-- 페이지네비게이션 -->
     <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center pagination-sm">
+        <ul class="pagination pagination-sm">
             <% if (currentPage > 1) { %>
                 <li class="page-item">
                     <a class="page-link" href="placeorder_head_all.jsp?page=<%= currentPage -1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
