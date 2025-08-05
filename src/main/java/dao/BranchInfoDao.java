@@ -158,7 +158,7 @@ public class BranchInfoDao {
 							ON
 							    u.branch_id = b.branch_id
 							    WHERE
-							u.user_name = ?
+							u.user_id = ?
 				""";
 				pstmt = conn.prepareStatement(sql);
 				//? 에 값 바인딩

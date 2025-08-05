@@ -37,7 +37,7 @@
                                 <label class="form-label">프로필 이미지</label><br/>
                                 <a href="javascript:" id="profileLink">
                                     <% if(dto.getProfile_image() == null){ %>
-                                        <i style="font-size:200px;" class="img-thumbnail"></i>
+                                        <i style="font-size:200px;" class="bi bi-person-add"></i>
                                     <% } else { %>
                                         <img src="${pageContext.request.contextPath }/upload/<%=dto.getProfile_image() %>" 
                                             style="width:200px;height:200px;" class="img-thumbnail"/>
@@ -54,17 +54,17 @@
 
                             <div class="mb-3">
                                 <label class="form-label" for="userLocation">회원 주소</label>
-                                <input class="form-control" type="text" name="userLocation" value="<%=dto.getLocation() %>" />
+                                <input class="form-control" type="text" name="userLocation" value="<%= (dto.getLocation() != null && !dto.getLocation().isEmpty()) ? dto.getLocation() : "주소 정보 없음" %>" />
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="userPhone">전화번호</label>
-                                <input class="form-control" type="text" name="userPhone" value="<%=dto.getPhone() %>" />
+                                <input class="form-control" type="text" name="userPhone" value="<%= (dto.getPhone() != null && !dto.getPhone().isEmpty()) ? dto.getPhone() : "전화번호 정보 없음" %>" />
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="userRole">직급</label>
-                                <input class="form-control" type="text" name="userRole" value="<%=dto.getRole() %>" />
+                                <input class="form-control" type="text" name="userRole" value="<%= (dto.getRole() != null && !dto.getRole().isEmpty()) ? dto.getRole() : "" %>" />
                             </div>
 
                            <div class="mb-3">

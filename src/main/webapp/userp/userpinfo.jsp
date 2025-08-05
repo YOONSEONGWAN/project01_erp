@@ -41,7 +41,7 @@
                                 <td>
                                     <% if(dto != null) { %>
                                         <% if(dto.getProfile_image() == null){ %>
-                                            <i style="font-size:200px;" class="img-thumbnail"></i>
+                                            <i style="font-size:200px;" class="bi bi-person-add"></i>
                                         <% } else { %>
                                             <img src="${pageContext.request.contextPath }/upload/<%=dto.getProfile_image() %>" 
                                                 style="width:200px;height:200px;"/>
@@ -53,7 +53,7 @@
                             </tr>
                             <tr>
                                 <th>지점장 이름</th>
-                                <td><%=dto.getUser_name() %></td>
+                                <td><%= (dto.getUser_name() != null) ? dto.getUser_name() : "이름 정보 없음" %></td>
                             </tr>
                             <tr>
                                 <th>비밀번호</th>
@@ -65,11 +65,11 @@
                             </tr>
                             <tr>
                                 <th>회원 주소</th>
-                                <td><%=dto.getLocation() %></td>
+                                <td><%= (dto.getLocation() != null) ? dto.getLocation() : "주소 정보 없음" %></td>
                             </tr>
                             <tr>
                                 <th>전화번호</th>
-                                <td><%=dto.getPhone() %></td>
+                                <td><%= (dto.getPhone() != null) ? dto.getPhone() : "전화번호 정보 없음" %></td>
                             </tr>
                             <tr>
                                 <th>직급</th>
@@ -77,7 +77,7 @@
                             </tr>
                             <tr>
                                 <th>가입 날짜</th>
-                                <td><%=dto.getCreated_at() %></td>
+                                <td><%= (dto.getCreated_at() != null) ? dto.getCreated_at() : "가입일 정보 없음" %></td>
                             </tr>
                         </table>
                     </div>
