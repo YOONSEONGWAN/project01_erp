@@ -1,6 +1,6 @@
 package test.dto;
 
-public class SalesSummaryDto {
+public class BranchSalesSummaryDto {
     private String branch;         // 지점 ID (지점별 요약용)
     private String branchName;     // 지점명 (지점별 요약용)
     private String salesDate;      // 날짜 (일자별 요약용)

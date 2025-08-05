@@ -1,6 +1,6 @@
 package test.dto;
 
-public class SalesDto {
+public class BranchSalesDto {
     private int salesId;         // 매출 고유 번호
     private String branchId;     // 지점 아이디
     private String created_at;    // 매출 발생일 (문자열 타입)
