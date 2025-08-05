@@ -10,6 +10,18 @@ import dto.WorkLogDto;
 import util.DbcpBean;
 
 public class WorkLogDao{
+	private static WorkLogDao dao;
+	
+	static {
+		dao=new WorkLogDao();
+	}
+	private WorkLogDao() {
+		
+	};
+	
+	private static WorkLogDao getInstance() {
+		return dao;
+	}
 
 	public boolean insertStartTime(String branchId, String userId){
 		Connection conn = null;
