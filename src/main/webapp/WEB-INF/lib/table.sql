@@ -215,7 +215,7 @@ CREATE TABLE work_log (
   CONSTRAINT fk_work_log_branch FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
   CONSTRAINT fk_work_log_user   FOREIGN KEY (user_id)   REFERENCES users_p(user_id)
 );
-ALTER TABLE work_log MODIFY (end_time NULL);
+-- 이미 만드셨으면 오른쪽 코드 입력. ALTER TABLE work_log MODIFY (end_time NULL);
 
 -- 17. comments_p
 CREATE TABLE comments_p(
