@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import dto.BranchDto;
 import dto.UserDtoAdmin;
@@ -24,6 +25,42 @@ public class BranchDao {
 	//참조값을 리턴해주는 static 메소드 제공
 	public static BranchDao getInstance() {
 		return dao;
+	}
+	
+	// 랜덤한 branch_id 생성
+	public String generate() {
+		Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Random rand = new Random();
+        String branchId = null;
+
+        try {
+            conn = new DbcpBean().getConn();
+
+            while (true) {
+                int num = rand.nextInt(100000);
+                String candidate = "JB" + String.format("%05d", num);
+
+                String sql = "SELECT COUNT(*) FROM branches WHERE branch_id = ?";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, candidate);
+                rs = pstmt.executeQuery();
+                if (rs.next() && rs.getInt(1) == 0) {
+                    branchId = candidate;
+                    break;
+                }
+
+                rs.close();
+                pstmt.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); if (pstmt != null) pstmt.close(); if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+
+        return branchId;
 	}
 	
 	// 직원 목록 반환
