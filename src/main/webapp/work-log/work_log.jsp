@@ -11,8 +11,6 @@ String branchId = (String) session.getAttribute("branchId");
 String userId = (String) session.getAttribute("userId");
 WorkLogDao dao = new WorkLogDao();
 
-//디버깅용 값 찍기
-out.println("DEBUG: checkout 클릭 branchId=" + branchId + ", userId=" + userId);
 
 String action = request.getParameter("action");
 if ("checkin".equals(action)) {
