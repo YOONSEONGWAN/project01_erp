@@ -38,99 +38,115 @@
         }
     </style>
 </head>
-<body>
-<div class="container my-5">
+<body class="bg-light">
 
-    <h2 class="text-center mb-4">전체 출고 내역</h2>
+<div class="container py-5">
 
-    <!-- 검색 폼 -->
-    <form method="get" action="outbound_list.jsp" class="d-flex justify-content-end mb-3" role="search">
-        <input
-            class="form-control form-control-sm me-2"
-            style="max-width: 200px;"
-            type="search"
-            placeholder="담당자 검색"
-            aria-label="Search"
-            name="managerKeyword"
-            value="<%= managerKeyword %>"
-        />
-        <button class="btn btn-primary btn-sm" type="submit">검색</button>
-    </form>
+    <!-- 중앙 정렬 wrapper 시작 -->
+    <div class="d-flex flex-column justify-content-center" style="min-height: calc(100vh - 150px);">
 
-    <!-- 테이블 -->
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center align-middle">
-            <thead>
-                <tr>
-                    <th>출고 ID</th>
-                    <th>재고 ID</th>
-                    <th>승인 상태</th>
-                    <th>출고 날짜</th>
-                    <th>담당자</th>
-                    <th>관리</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (list == null || list.isEmpty()) { %>
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+                <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+                <li class="breadcrumb-item"><a href="inandout.jsp">입고 / 출고</a></li>
+                <li class="breadcrumb-item active" aria-current="page">전체 출고 내역</li>
+            </ol>
+        </nav>
+
+        <h2 class="text-center mb-4 fw-bold">전체 출고 내역</h2>
+
+        <!-- 검색 폼 -->
+        <form method="get" action="outbound_list.jsp" class="d-flex justify-content-end mb-3" role="search">
+            <input
+                class="form-control form-control-sm me-2"
+                style="max-width: 200px;"
+                type="search"
+                placeholder="담당자 검색"
+                aria-label="Search"
+                name="managerKeyword"
+                value="<%= managerKeyword %>"
+            />
+            <button class="btn btn-primary btn-sm" type="submit">검색</button>
+        </form>
+
+        <!-- 테이블 -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center align-middle">
+                <thead>
                     <tr>
-                        <td colspan="6">출고 내역이 없습니다.</td>
+                        <th>출고 ID</th>
+                        <th>재고 ID</th>
+                        <th>승인 상태</th>
+                        <th>출고 날짜</th>
+                        <th>담당자</th>
+                        <th>관리</th>
                     </tr>
-                <% } else {
-                    for (OutboundOrdersDto dto : list) { %>
+                </thead>
+                <tbody>
+                    <% if (list == null || list.isEmpty()) { %>
                         <tr>
-                            <td><%= dto.getOrder_id() %></td>
-                            <td><%= dto.getBranch_id() %></td>
-                            <td><%= dto.getApproval() != null ? dto.getApproval() : "-" %></td>
-                            <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
-                            <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
-                            <td>
-                                <a href="inandout_out_edit.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">수정</a>
-                            </td>
+                            <td colspan="6">출고 내역이 없습니다.</td>
                         </tr>
-                <%  } } %>
-            </tbody>
-        </table>
-    </div>
+                    <% } else {
+                        for (OutboundOrdersDto dto : list) { %>
+                            <tr>
+                                <td><%= dto.getOrder_id() %></td>
+                                <td><%= dto.getBranch_id() %></td>
+                                <td><%= dto.getApproval() != null ? dto.getApproval() : "-" %></td>
+                                <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
+                                <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
+                                <td>
+                                    <a href="inandout_out_edit.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">수정</a>
+                                </td>
+                            </tr>
+                    <%  } } %>
+                </tbody>
+            </table>
+        </div>
 
-    <!-- 페이징 -->
-    <nav aria-label="Page navigation" class="d-flex justify-content-center">
-        <ul class="pagination pagination-sm">
-            <% if (currentPage > 1) { %>
-                <li class="page-item">
-                    <a class="page-link" href="outbound_list.jsp?page=<%= currentPage - 1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
-                </li>
-            <% } else { %>
-                <li class="page-item disabled"><span class="page-link">이전</span></li>
-            <% } %>
-
-            <% for (int i = 1; i <= totalPages; i++) {
-                if (i == currentPage) { %>
-                    <li class="page-item active" aria-current="page">
-                        <span class="page-link"><%= i %></span>
+        <!-- 페이징 -->
+        <nav aria-label="Page navigation" class="d-flex justify-content-center">
+            <ul class="pagination pagination-sm">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="outbound_list.jsp?page=<%= currentPage - 1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
                     </li>
                 <% } else { %>
+                    <li class="page-item disabled"><span class="page-link">이전</span></li>
+                <% } %>
+
+                <% for (int i = 1; i <= totalPages; i++) {
+                    if (i == currentPage) { %>
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link"><%= i %></span>
+                        </li>
+                    <% } else { %>
+                        <li class="page-item">
+                            <a class="page-link" href="outbound_list.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
+                        </li>
+                <%  }} %>
+
+                <% if (currentPage < totalPages) { %>
                     <li class="page-item">
-                        <a class="page-link" href="outbound_list.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
+                        <a class="page-link" href="outbound_list.jsp?page=<%= currentPage + 1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
                     </li>
-            <%  }} %>
+                <% } else { %>
+                    <li class="page-item disabled"><span class="page-link">다음</span></li>
+                <% } %>
+            </ul>
+        </nav>
 
-            <% if (currentPage < totalPages) { %>
-                <li class="page-item">
-                    <a class="page-link" href="outbound_list.jsp?page=<%= currentPage + 1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
-                </li>
-            <% } else { %>
-                <li class="page-item disabled"><span class="page-link">다음</span></li>
-            <% } %>
-        </ul>
-    </nav>
+        <!-- 돌아가기 버튼 -->
+        <div class="text-center mt-3">
+            <a href="inandout.jsp" class="btn btn-outline-primary btn-sm">돌아가기</a>
+        </div>
 
-    <div class="text-center mt-3">
-        <a href="inandout.jsp" class="btn btn-outline-primary btn-sm">돌아가기</a>
-    </div>
+    </div> <!-- 중앙 정렬 wrapper 끝 -->
 
 </div>
 
-<!-- Optional: Bootstrap JS Bundle (e.g., for modals) -->
+<!-- Optional: Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

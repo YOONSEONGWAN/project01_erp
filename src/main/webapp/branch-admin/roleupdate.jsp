@@ -17,18 +17,14 @@
 <title>/branch-admin/roleupdate.jsp</title>
 </head>
 <body>
-	<div class="container">
-		<%if(isSuccess){%>
-			<p>
-				<strong><%=dto.getUser_name() %></strong> 님의 등급이 <%=dto.getRole() %> (으)로 수정되었습니다
-				<a href="detail.jsp?num=<%=dto.getBranch_num()%>">돌아가기</a>
-			</p>
-		<%}else{ %>
-			<p>
-				수정 실패
-				<a href="roleupdate-form.jsp?num=<%=dto.getNum()%>">돌아가기</a>
-			</p>
-		<%} %>
-	</div>	
+	<script>
+	<%if(isSuccess){%>
+		alert("<%=dto.getUser_name() %> 님의 등급이 <%=dto.getRole() %>로 변경되었습니다")
+		location.href="${pageContext.request.contextPath }/branch-admin/user-list.jsp"
+	<%}else{ %>
+		alert("<%=dto.getUser_name() %> 님의 등급 변경에 실패하였습니다")
+		location.href="${pageContext.request.contextPath }/branch-admin/user-list.jsp"
+	<%} %>
+	</script>
 </body>
 </html>

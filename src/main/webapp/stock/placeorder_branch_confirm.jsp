@@ -89,7 +89,14 @@
                 dto.setApproval_status("YES".equals(approval) ? "승인" : "반려");
                 dto.setManager(manager);
 
+
+                // outbound_orders 테이블에도 insert
+               	OutboundOrdersDao.getInstance().insert(orderId, branchId, dto.getApproval_status(), orderDateStr, manager);
+
+                InventoryDao.getInstance().updateApproval(num, "대기");
+
                 placeOrderBranchDetailDao.insert(dto);
+
 
                 // 출고 이력 저장 (inventoryId 사용, approvalStatus 인자 순서 주의!)
                	outboundOrdersDao.insert(orderId, branchId, dto.getApproval_status(), orderDateStr, manager);
