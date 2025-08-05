@@ -7,9 +7,14 @@
 <%
 	//검색 keyword 가 있는지 읽어와 본다.
 	String keyword=request.getParameter("keyword");
-	//System.out.println(keyword); // null or "" 또는 "검색어..." 
 	if(keyword==null){
 		keyword=""; // 이렇게 써주면 StringUtils.isEmpty() 가 필요 없음
+	}
+	
+	// 상태(status) 파라미터 읽어오기
+	String status = request.getParameter("status");
+	if (status == null || "all".equals(status) || status.isEmpty()) {
+	    status = "all"; 
 	}
 	
 	//기본 페이지 번호는 1 로 설정하고 
@@ -40,11 +45,20 @@
 	
 	//전체 글의 갯수 
 	int totalRow=0;
-	//만일 전달된 keyword 가 없다면 
-	if(StringUtils.isEmpty(keyword)){
-		totalRow=BranchDao.getInstance().getCount();
-	}else{ //있다면 
-		totalRow=BranchDao.getInstance().getCountByKeyword(keyword);
+	BranchDao dao = BranchDao.getInstance();
+
+	// 조건에 따라 분기하여 전체 row의 갯수를 얻어온다.
+	boolean isKeywordEmpty = StringUtils.isEmpty(keyword);
+	boolean isStatusAll = "all".equals(status);
+
+	if (isKeywordEmpty && isStatusAll) { // 1. 키워드 X, 상태 X
+	    totalRow = dao.getCount();
+	} else if (!isKeywordEmpty && isStatusAll) { // 2. 키워드 O, 상태 X
+	    totalRow = dao.getCountByKeyword(keyword);
+	} else if (isKeywordEmpty && !isStatusAll) { // 3. 키워드 X, 상태 O
+	    totalRow = dao.getCountByStatus(status);
+	} else { // 4. 키워드 O, 상태 O
+	    totalRow = dao.getCountByKeywordAndStatus(keyword, status);
 	}
 	
 	//전체 페이지의 갯수 구하기
@@ -61,14 +75,18 @@
 		
 	//글목록
 	List<BranchDto> list =null;
-	//만일 keyword 가 없으면
-	if(StringUtils.isEmpty(keyword)){
-		list = BranchDao.getInstance().selectPage(dto);
-	}else{ //있다면
-		//dto 에 keyword 를 담고
-		dto.setKeyword(keyword);
-		// 키워드에 해당하는 글 목록을 얻어낸다
-		list=BranchDao.getInstance().selectPageByKeyword(dto);
+
+	// 조건에 따라 분기하여 목록을 얻어온다.
+	if (isKeywordEmpty && isStatusAll) { // 1. 키워드 X, 상태 X
+	    list = dao.selectPage(dto);
+	} else if (!isKeywordEmpty && isStatusAll) { // 2. 키워드 O, 상태 X
+	    dto.setKeyword(keyword);
+	    list = dao.selectPageByKeyword(dto);
+	} else if (isKeywordEmpty && !isStatusAll) { // 3. 키워드 X, 상태 O
+	    list = dao.selectPageByStatus(dto, status);
+	} else { // 4. 키워드 O, 상태 O
+	    dto.setKeyword(keyword);
+	    list = dao.selectPageByKeywordAndStatus(dto, status);
 	}
 %>
 <!DOCTYPE html>
@@ -84,17 +102,19 @@
 </jsp:include>
 	<div class="container">
 		<a href="insert-form.jsp">지점 등록</a>
+		<a href="user-list.jsp">직원 목록 보기</a>
 		<h1>지점 목록</h1>
 		<div class="row">
 			<div class="col">
 				<form action="list.jsp" method="get">
 					<div>
-						<select name="status" id="status">
-							<option value="on">운영중</option>
-							<option value="off">폐업</option>
-							<option value="paused">휴업</option>
-						</select>
-						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="지점 이름 입력..." />
+						<select name="status">
+			                <option value="all" <%= "all".equals(status) ? "selected" : "" %>>전체</option>
+			                <option value="운영중" <%= "운영중".equals(status) ? "selected" : "" %>>운영중</option>
+			                <option value="휴업" <%= "휴업".equals(status) ? "selected" : "" %>>휴업</option>
+			                <option value="폐업" <%= "폐업".equals(status) ? "selected" : "" %>>폐업</option>
+			            </select>
+						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="지점 이름 or 아이디 입력..." />
 						<button type="submit">검색</button>
 						<a href="list.jsp">초기화</a>
 					</div>
@@ -131,18 +151,18 @@
 		<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
 		<%if(startPageNum != 1){ %>
 			<li class="page-item">
-				<a class="page-link" href="list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>">&lsaquo;</a>
+				<a class="page-link" href="list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>&status=<%=status%>">&lsaquo;</a>
 			</li>
 		<%} %>			
 		<%for(int i=startPageNum; i<=endPageNum ; i++){ %>
 			<li class="page-item">
-				<a class="page-link <%= i==pageNum ? "active":"" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>"><%=i %></a>
+				<a class="page-link <%= i==pageNum ? "active":"" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>&status=<%=status%>"><%=i %></a>
 			</li>
 		<%} %>
 		<%-- endPageNum 이 totalPageCount 보다 작을때 다음 page 가 있다 --%>		
 		<%if(endPageNum < totalPageCount){ %>
 			<li class="page-item">
-				<a class="page-link" href="list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>">&rsaquo;</a>
+				<a class="page-link" href="list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>&status=<%=status%>">&rsaquo;</a>
 			</li>
 		<%} %>	
 	</ul>

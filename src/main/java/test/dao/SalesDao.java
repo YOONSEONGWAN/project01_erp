@@ -26,7 +26,7 @@ public class SalesDao {
             conn = new DbcpBean().getConn();
             String sql = """
                 INSERT INTO sales
-                (sales_id, branch_id, createdAt, totalamount)
+                (sales_id, branch_id, created_at, totalamount)
                 VALUES (sales_seq.NEXTVAL, ?, SYSDATE, ?)
             """;
             pstmt = conn.prepareStatement(sql);

@@ -19,7 +19,11 @@ import jakarta.servlet.http.HttpSession;
 public class SecurityFilter implements Filter{
 	//로그인 없이 접근 가능한 경로 목록
 	Set<String> whiteList = Set.of(
-		"/index.jsp"
+		"/index.jsp",
+		"/userp/signup-form.jsp", "/userp/signup.jsp",
+		"/userp/hqlogin-form.jsp", "/userp/hqlogin.jsp",
+		"/userp/branchlogin-form.jsp", "/userp/branchlogin.jsp",
+		"/images/", "/userp/loginform.jsp"
 	);
 	
 	@Override
@@ -39,19 +43,18 @@ public class SecurityFilter implements Filter{
 		String path=uri.substring(cPath.length()); // "/index.jsp"
 				
 		//로그인 없이 접근 가능한 요청 경로면 필터링을 하지 않는다
-//		if(isWhiteList(path)) { 로그인 폼 만들면 아래 true 없애고 이 줄 넣기
-		if(true) {
+		if(isWhiteList(path)) {
 			chain.doFilter(request, response);
 			return; //메소드를 여기서 종료하기
 		}
 		
 		//로그인 여부 확인
-		String userName=(String)session.getAttribute("userName");
+		String userId=(String)session.getAttribute("userId");
 		//role 정보 얻어오기
 		String role=(String)session.getAttribute("role");
 		
 		//만일 로그인을 하지 않았다면 
-		if(userName == null) {
+		if(userId == null) {
 			//로그인 페이지로 리다이렉트(새로운 경로로 요청을 다시하라고 응답) 이동 시킨다 
 			//query 문자열이 있으면 읽어와서 
 	        String query = req.getQueryString();
@@ -95,17 +98,17 @@ public class SecurityFilter implements Filter{
         if ("ROLE_KING".equals(role)) {
             return true; // 모든 경로 접근 허용
         } else if ("ROLE_ADMIN".equals(role)) {
-        	// "/admin/" 하위 경로를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/admin/");
-        }else if ("ROLE_MANAGER".equals(role)) {
-        	// "/admin/" 하위 경로를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/admin/");
-        }else if ("ROLE_CLERK".equals(role)) {
-        	// "/admin/" 하위 경로를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/admin/");
+        	// "/index/branchindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
+            return !path.startsWith("/index/branchindex.jsp");
+        } else if ("ROLE_MANAGER".equals(role)) {
+        	// "/index/headqueaterindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
+            return !path.startsWith("/index/headquaterindex.jsp");
+        } else if ("ROLE_CLERK".equals(role)) {
+        	// "/index/headquaterindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
+            return !path.startsWith("/index/headquaterindex.jsp");
         } else if ("ROLE_UNAPPROVED".equals(role)) {
-        	// "/admin/" 하위와 "/staff/" 하위를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/admin/") && !path.startsWith("/staff/");
+        	// "/index/" 하위를 제외한 모든 경로 접근 허용
+            return !path.startsWith("/index/");
         }
         return false; // unknown role
     }
