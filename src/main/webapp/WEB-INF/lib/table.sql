@@ -198,8 +198,7 @@ CREATE TABLE users_p (
   role         VARCHAR2(10),
   updated_at   DATE,
   created_at   DATE,
-  CONSTRAINT pk_users_p PRIMARY KEY (num, branch_id),
-  CONSTRAINT uq_users_p_branch_id UNIQUE (branch_id),
+  CONSTRAINT pk_users_p PRIMARY KEY (num),
   CONSTRAINT uq_users_p_user_id UNIQUE (user_id)
 );
 
@@ -238,7 +237,62 @@ CREATE SEQUENCE inventory_seq;
 
 CREATE SEQUENCE inbound_seq;
 
+
+CREATE SEQUENCE inandout_seq;
+
+CREATE TABLE inbound_orders (
+    in_order_id   NUMBER PRIMARY KEY,     -- 입고 고유 ID
+    inventory_id  NUMBER NOT NULL,        -- 입고 위치 ID
+    approval      VARCHAR2(10),           -- 승인 상태 ('대기', '승인', '반려' 등)
+    in_date       DATE,                   -- 입고 날짜
+    manager       VARCHAR2(100)           -- 담당자
+);
+
+create sequence inbound_seq;
+
+CREATE TABLE outbound_orders (
+    out_order_id  NUMBER PRIMARY KEY,     -- 출고 고유 ID
+    inventory_id  NUMBER NOT NULL,        -- 출고 위치 ID
+    approval      VARCHAR2(10),           -- 승인 상태 ('대기', '승인', '반려' 등)
+    out_date      DATE,                   -- 출고 날짜
+    manager       VARCHAR2(100)           -- 담당자
+);
+
+create sequence outbound_sequence;
+
+
+CREATE TABLE users_p (
+    num         NUMBER         NOT NULL,
+    branch_id   VARCHAR2(20)   NOT NULL,
+    user_id     VARCHAR2(20)   NOT NULL UNIQUE,
+    password    VARCHAR2(100)  NOT NULL,
+    user_name   VARCHAR2(20)   NOT NULL,
+    location    VARCHAR2(100),
+    phone       VARCHAR2(50),
+    role        VARCHAR2(10),
+    updated_at  DATE,
+    created_at  DATE,
+    CONSTRAINT pk_users_p PRIMARY KEY (num),
+    CONSTRAINT fk_users_p_branch FOREIGN KEY (branch_id)
+        REFERENCES branches(branch_id)
+        ON DELETE CASCADE
+);
+
+CREATE SEQUENCE users_p_seq;
+
+CREATE TABLE branches (
+    num         NUMBER         PRIMARY KEY, 	-- 지점 고유 번호
+    branch_id   VARCHAR2(20)   NOT NULL UNIQUE, -- 지점 아이디
+    name        VARCHAR2(50)   NOT NULL, 		-- 지점 이름
+    address     VARCHAR2(100)  NOT NULL,		-- 지점 주소
+    phone       VARCHAR2(20)   NOT NULL, 		-- 지점 연락처
+    created_at  DATE           NOT NULL, 		-- 등록일
+    updated_at  DATE, 							-- 수정일
+    status		VARCHAR2(20)   NOT NULL			-- 운영 상태(운영중 | 휴업 | 폐업)
+);
+
 CREATE SEQUENCE outbound_sequence;
+
 
 CREATE SEQUENCE branches_seq;
 

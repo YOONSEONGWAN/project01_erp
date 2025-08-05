@@ -16,7 +16,7 @@
 	
 	if(isValid) {
 		session.setAttribute("userId", userId);
-		session.setAttribute("branch_id", branchId);
+		session.setAttribute("branchId", branchId);
 		session.setAttribute("role", dto.getRole());
 
 		session.setMaxInactiveInterval(60*60);

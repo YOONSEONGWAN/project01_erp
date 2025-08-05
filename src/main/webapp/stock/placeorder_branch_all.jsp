@@ -72,6 +72,14 @@
 <body>
 
 <div class="container">
+<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
+        <li class="breadcrumb-item"><a href="placeorder_branch.jsp">지점 발주</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> 전체 발주 내역</li>
+      </ol>
+    </nav>
     <h2>전체 발주 내역 (지점)</h2>
 
     <form method="get" action="placeorder_branch_all.jsp" class="search-bar">

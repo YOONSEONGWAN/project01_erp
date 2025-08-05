@@ -65,6 +65,13 @@
 <body>
 
 <div class="section">
+	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
+        <li class="breadcrumb-item active" aria-current="page">발주 신청 내역 </li>
+      </ol>
+    </nav>
     <h2>발주 신청 내역</h2>
     <form action="placeorder_branch_confirm.jsp" method="post">
         <table class="table table-bordered">

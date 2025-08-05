@@ -52,7 +52,13 @@
     </style>
 </head>
 <body>
-
+	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> 출고 상세 내역</li>
+      </ol>
+    </nav>
     <h2>입고 상세 내역 (Order ID: <%= orderId %>)</h2>
 
     <div class="table-container">
