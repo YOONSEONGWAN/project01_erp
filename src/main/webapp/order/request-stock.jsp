@@ -4,6 +4,7 @@
 <%@page import="dao.IngredientDao"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
+
 request.setCharacterEncoding("UTF-8");
 
 List<StockRequestDto> requests = new ArrayList<>();
@@ -20,20 +21,15 @@ for(int i=0; i<100; i++) {
        product == null || currentQuantityStr == null || requestQuantityStr == null) {
         break;
     }
+   
+  
 
-<<<<<<< HEAD
-dto.setBranchId(branchId);
-dto.setInventoryId(inventoryId);
-dto.setProduct(product);
-dto.setCurrentQuantity(currentQuantity);
-dto.setRequestQuantity(requestQuantity);
-dto.setStatus("대기중");
-dto.setIsPlaceOrder("요청");
 
-=======
+
     int requestQuantity = Integer.parseInt(requestQuantityStr);
     if(requestQuantity <= 0) continue; // 요청수량이 0 이하면 skip
->>>>>>> da777106801bb60ae953620a17c21197ba68b02b
+
+
 
     StockRequestDto dto = new StockRequestDto();
     dto.setBranchNum(Integer.parseInt(branchNumStr));

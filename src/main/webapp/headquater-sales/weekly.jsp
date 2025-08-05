@@ -2,7 +2,9 @@
 <%@page import="dao.SalesDao"%>
 <%@page import="dto.SalesDto"%>
 <%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
 <%
     request.setCharacterEncoding("utf-8");
 
@@ -19,28 +21,25 @@
     NumberFormat nf = NumberFormat.getInstance();
 
     int totalSum = 0;
-    for(SalesDto dto : list){
+    for (SalesDto dto : list) {
         totalSum += dto.getTotalSales();
     }
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>/sales/weekly.jsp</title>
+    <title>주간 매출 통계</title>
+    <!-- ✅ Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>주간 매출 통계</h1>
+<body class="container mt-4">
 
-    <% if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) { %>
-        <p>조회 범위: <%= start %> ~ <%= end %></p>
-    <% } else { %>
-        <p>전체 기간 매출입니다.</p>
-    <% } %>
 
-    <p>총 매출 합계: <%= nf.format(totalSum) %> 원</p>
+    <h2 class="mb-4">주간 매출 통계</h2>
 
-    <table border="1">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>주차</th>
@@ -58,5 +57,6 @@
             <% } %>
         </tbody>
     </table>
+
 </body>
 </html>

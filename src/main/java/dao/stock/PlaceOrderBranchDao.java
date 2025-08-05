@@ -155,4 +155,73 @@ public class PlaceOrderBranchDao {
         return orderDateStr;
     }
 	
+	public int countByManager(String managerKeyword) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    int count = 0;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT COUNT(*) FROM placeorder_branch
+	            WHERE manager LIKE '%' || ? || '%'
+	            """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, managerKeyword);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            count = rs.getInt(1);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch(Exception ign){}
+	        try { if (pstmt != null) pstmt.close(); } catch(Exception ign){}
+	        try { if (conn != null) conn.close(); } catch(Exception ign){}
+	    }
+	    return count;
+	}
+
+	public List<PlaceOrderBranchDto> selectByManagerWithPaging(String managerKeyword, int startRow, int endRow) {
+	    List<PlaceOrderBranchDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+
+	        String sql = """
+	            SELECT * FROM (
+	                SELECT tmp.*, ROWNUM rnum FROM (
+	                    SELECT order_id, order_date, manager
+	                    FROM placeorder_branch
+	                    WHERE manager LIKE ?
+	                    ORDER BY order_id DESC
+	                ) tmp WHERE ROWNUM <= ?
+	            ) WHERE rnum >= ?
+	            """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, "%" + managerKeyword + "%");
+	        pstmt.setInt(2, endRow);
+	        pstmt.setInt(3, startRow);
+	        
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            PlaceOrderBranchDto dto = new PlaceOrderBranchDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setDate(rs.getString("order_date"));  // 필드명 order_date로 맞춤
+	            dto.setManager(rs.getString("manager"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch (Exception ign) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception ign) {}
+	        try { if (conn != null) conn.close(); } catch (Exception ign) {}
+	    }
+	    return list;
+	}
 }

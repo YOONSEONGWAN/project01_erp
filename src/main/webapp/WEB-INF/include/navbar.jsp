@@ -45,7 +45,7 @@
 	            <ul class="navbar-nav">
 	                <% if (userId != null) { %>
 	                    <li class="nav-item me-2">
-	                        <a class="nav-link p-0" href="${pageContext.request.contextPath}/userp/userinfo.jsp">
+	                        <a class="nav-link p-0" href="${pageContext.request.contextPath}/userp/userpinfo.jsp">
 	                            <strong><%=userId %></strong>
 	                        </a>
 	                    </li>
