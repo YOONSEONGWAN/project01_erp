@@ -1,4 +1,3 @@
-
 -- 250804 테이블문 ------------------- ▼ -------------
 
 --1. baord_p
@@ -88,7 +87,7 @@ CREATE TABLE inventory (
 CREATE TABLE outbound_orders (
   order_id   NUMBER        NOT NULL,
   branch_id  VARCHAR2(20)  NOT NULL,
-  approval   VARCHAR2(10),
+  approval   VARCHAR2(20),
   out_date   DATE,
   manager    VARCHAR2(100),
   CONSTRAINT fk_outbound_orders_branch FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
@@ -113,11 +112,9 @@ CREATE TABLE placeorder_branch_detail (
   product          VARCHAR2(100) NOT NULL,
   current_quantity NUMBER        NOT NULL,
   request_quantity NUMBER        NOT NULL,
-  approval_status  VARCHAR2(10),
+  approval_status  VARCHAR2(20),
   manager          VARCHAR2(20),
-  CONSTRAINT fk_pobd_branch    FOREIGN KEY (branch_id)    REFERENCES branches(branch_id),
-  CONSTRAINT fk_pobd_inventory FOREIGN KEY (inventory_id) REFERENCES inventory(num),
-  CONSTRAINT fk_pobd_order     FOREIGN KEY (order_id)     REFERENCES stock_request(order_id)
+  CONSTRAINT fk_pobd_branch    FOREIGN KEY (branch_id)    REFERENCES branches(branch_id)
 );
 
 --10. PLACEORDER_HEAD
@@ -215,17 +212,16 @@ CREATE TABLE work_log (
   CONSTRAINT fk_work_log_branch FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
   CONSTRAINT fk_work_log_user   FOREIGN KEY (user_id)   REFERENCES users_p(user_id)
 );
--- 이미 만드셨으면 오른쪽 코드 입력. ALTER TABLE work_log MODIFY (end_time NULL);
 
 -- 17. comments_p
 CREATE TABLE comments_p(
-	num NUMBER PRIMARY KEY, -- 댓글 고유 번호 (시퀀스 사용)
-	board_num NUMBER NOT NULL, -- 원글 번호(board_p 테이블의 num 참조)
-	writer VARCHAR2(100) NOT NULL, -- 작성자
-	content CLOB NOT NULL, -- 댓글 내용
-	created_at DATE DEFAULT SYSDATE, -- 작성일
-	updated_at DATE, -- 수정일
-	FOREIGN KEY (board_num) REFERENCES board_p(num) ON DELETE CASCADE
+   num NUMBER PRIMARY KEY, -- 댓글 고유 번호 (시퀀스 사용)
+   board_num NUMBER NOT NULL, -- 원글 번호(board_p 테이블의 num 참조)
+   writer VARCHAR2(100) NOT NULL, -- 작성자
+   content CLOB NOT NULL, -- 댓글 내용
+   created_at DATE DEFAULT SYSDATE, -- 작성일
+   updated_at DATE, -- 수정일
+   FOREIGN KEY (board_num) REFERENCES board_p(num) ON DELETE CASCADE
 );
 
 CREATE SEQUENCE placeOrder_head_seq;
@@ -282,14 +278,14 @@ CREATE TABLE users_p (
 CREATE SEQUENCE users_p_seq;
 
 CREATE TABLE branches (
-    num         NUMBER         PRIMARY KEY, 	-- 지점 고유 번호
+    num         NUMBER         PRIMARY KEY,    -- 지점 고유 번호
     branch_id   VARCHAR2(20)   NOT NULL UNIQUE, -- 지점 아이디
-    name        VARCHAR2(50)   NOT NULL, 		-- 지점 이름
-    address     VARCHAR2(100)  NOT NULL,		-- 지점 주소
-    phone       VARCHAR2(20)   NOT NULL, 		-- 지점 연락처
-    created_at  DATE           NOT NULL, 		-- 등록일
-    updated_at  DATE, 							-- 수정일
-    status		VARCHAR2(20)   NOT NULL			-- 운영 상태(운영중 | 휴업 | 폐업)
+    name        VARCHAR2(50)   NOT NULL,       -- 지점 이름
+    address     VARCHAR2(100)  NOT NULL,      -- 지점 주소
+    phone       VARCHAR2(20)   NOT NULL,       -- 지점 연락처
+    created_at  DATE           NOT NULL,       -- 등록일
+    updated_at  DATE,                      -- 수정일
+    status      VARCHAR2(20)   NOT NULL         -- 운영 상태(운영중 | 휴업 | 폐업)
 );
 
 CREATE SEQUENCE outbound_sequence;
