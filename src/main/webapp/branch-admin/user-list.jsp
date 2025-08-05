@@ -53,13 +53,13 @@
 	
 	// 조건에 따라 분기하여 전체 row의 갯수를 얻어온다.
 	boolean isKeywordEmpty = StringUtils.isEmpty(keyword);
-	boolean isRollAll = "all".equals(role);
+	boolean isRoleAll = "all".equals(role);
 	
-	if (isKeywordEmpty && isRollAll) { // 1. 키워드 X, 상태 X
+	if (isKeywordEmpty && isRoleAll) { // 1. 키워드 X, 상태 X
 	    totalRow = dao.getCount();
-	} else if (!isKeywordEmpty && isRollAll) { // 2. 키워드 O, 상태 X
+	} else if (!isKeywordEmpty && isRoleAll) { // 2. 키워드 O, 상태 X
 	    totalRow = dao.getCountByKeyword(keyword);
-	} else if (isKeywordEmpty && !isRollAll) { // 3. 키워드 X, 상태 O
+	} else if (isKeywordEmpty && !isRoleAll) { // 3. 키워드 X, 상태 O
 	    totalRow = dao.getCountByRole(role);
 	} else { // 4. 키워드 O, 상태 O
 	    totalRow = dao.getCountByKeywordAndRole(keyword, role);
@@ -80,12 +80,12 @@
 	//글목록
 	List<UserDtoAdmin> list =null;
 	// 조건에 따라 분기하여 목록을 얻어온다.
-	if (isKeywordEmpty && isRollAll) { // 1. 키워드 X, 상태 X
+	if (isKeywordEmpty && isRoleAll) { // 1. 키워드 X, 상태 X
 	    list = dao.selectPage(dto);
-	} else if (!isKeywordEmpty && isRollAll) { // 2. 키워드 O, 상태 X
+	} else if (!isKeywordEmpty && isRoleAll) { // 2. 키워드 O, 상태 X
 	    dto.setKeyword(keyword);
 	    list = dao.selectPageByKeyword(dto);
-	} else if (isKeywordEmpty && !isRollAll) { // 3. 키워드 X, 상태 O
+	} else if (isKeywordEmpty && !isRoleAll) { // 3. 키워드 X, 상태 O
 	    list = dao.selectPageByRole(dto, role);
 	} else { // 4. 키워드 O, 상태 O
 	    dto.setKeyword(keyword);
@@ -97,13 +97,15 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/user-list.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
 <div class="container">
-		<h1>등급 업데이트</h1>
-		<a href="list.jsp">지점 목록으로</a>
+		
+		<a class="btn btn-outline-primary" href="list.jsp">지점 목록으로</a>
+		<h1 class="text-center">등급 업데이트</h1>
 		<div class="row">
-			<div class="col">
+			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end mb-3">
 				<form action="user-list.jsp" method="get">
 					<div>
 						<select name="role">
@@ -113,36 +115,44 @@
 							<option value="unapproved" <%= "unapproved".equals(role) ? "selected" : "" %>>미등록</option>
 						</select>
 						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="아이디 or 이름 입력..." />
-						<button type="submit">검색</button>
-						<a href="user-list.jsp">초기화</a>
+						<button class="btn btn-sm btn-primary" type="submit">검색</button>
+						<a class="btn btn-sm btn-primary" href="user-list.jsp">초기화</a>
 					</div>
 				</form>
 			</div>
 		</div>		
-		<table>
+		<table class="table table-bordered w-75 mx-auto">
 			<tr>
 				<th>회원 아이디</th>
 				<th>지점명</th>
 				<th>이름</th>
 				<th>등급</th>
+				<th>등급 수정</th>
 			</tr>
-			<tr>
 			<%for(UserDtoAdmin tmp:list){ %>
 				<tr>
-					<td><%=tmp.getUser_id() %></td>
-					<td><%=tmp.getBranch_name() %></td>
-					<td><%=tmp.getUser_name() %></td>					
-					<td><%=tmp.getRole() %></td>
-					<td>
-						<a href="roleupdate-form.jsp?num=<%=tmp.getNum()%>">등급 수정</a>
-					</td>
+					<form action="roleupdate.jsp" method="get">
+						<input type="hidden" name="num" value="<%=tmp.getNum() %>">
+						<td><%=tmp.getUser_id() %></td>
+						<td><%=tmp.getBranch_name() %></td>
+						<td><%=tmp.getUser_name() %></td>					
+						<td>
+							<select name="role" id="role">
+								<option value="manager" <%= tmp.getRole().equals("manager") ? "selected" : "" %>>사장님</option>
+								<option value="clerk" <%= tmp.getRole().equals("clerk") ? "selected" : "" %>>직원</option>
+								<option value="unapproved" <%= tmp.getRole().equals("unapproved") ? "selected" : "" %>>미등록</option>
+							</select>
+						</td>
+						<td>
+							<button class="btn btn-primary btn-sm" type="submit">등급 수정</button>
+						</td>
+					</form>					
 				</tr>
-			<%} %>	
-			</tr>
+			<%} %>
 		</table>
 	</div>
 	
-	<ul class="pagination">
+	<ul class="pagination d-flex justify-content-center">
 		<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
 		<%if(startPageNum != 1){ %>
 			<li class="page-item">
