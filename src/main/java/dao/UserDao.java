@@ -172,7 +172,7 @@ private static UserDao dao;
 	        String sql = """
 	            INSERT INTO users_p
 	            (num, branch_id, user_id, password, user_name, updated_at, created_at)
-	            VALUES(user_p_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, SYSDATE)
+	            VALUES(users_p_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, SYSDATE)
 	        """;
 	        System.out.println("▶ SQL 준비 완료");
 

@@ -1,50 +1,40 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="test.dao.BranchSalesDao" %>
-<%@ page import="test.dto.BranchSalesDto" %>
+<%@page import="test.dao.BranchSalesDao"%>
+<%@page import="test.dto.BranchSalesDto"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-request.setCharacterEncoding("UTF-8");
+    request.setCharacterEncoding("UTF-8");
 
-    String branchId = (String)session.getAttribute("branchId");
+    String branchId = (String) session.getAttribute("branchId");
     if(branchId == null){
         response.sendRedirect(request.getContextPath()+"/userp/branchlogin-form.jsp");
         return;
     }
 
     int salesId = Integer.parseInt(request.getParameter("salesId"));
-    BranchSalesDto dto = BranchSalesDao.getInstance().getById(salesId, branchId);
+    BranchSalesDto dto = BranchSalesDao.getInstance().getData(salesId);
 
-    if(dto == null){
-%>
-    <script>
-        alert("권한이 없거나 존재하지 않는 매출입니다.");
-        history.back();
-    </script>
-<%
+    // 데이터가 없거나 내 지점 데이터가 아니면 접근 차단
+    if(dto == null || !branchId.equals(dto.getBranchId())){
+        out.println("<script>alert('권한이 없습니다.'); location.href='list.jsp';</script>");
         return;
     }
-
-    String cpath = request.getContextPath();
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>/branch-sales/detail.jsp</title>
-    <script>const cpath = "<%= cpath %>";</script>
+<meta charset="UTF-8">
+<title>/branch-sales/detail.jsp</title>
 </head>
 <body>
-    <h2>매출 상세 보기</h2>
-    <table border="1" cellpadding="10">
-        <tr><th>매출 ID</th><td><%= dto.getSalesId() %></td></tr>
-        <tr><th>지점 ID</th><td><%= dto.getBranchId() %></td></tr>
-        <tr><th>매출 발생일</th><td><%= dto.getCreated_at() %></td></tr>
-        <tr><th>총 매출 금액</th><td><%= dto.getTotalAmount() %> 원</td></tr>
+    <h2>매출 상세 보기 (내 지점: <%=branchId%>)</h2>
+    <table border="1">
+        <tr><th>번호</th><td><%= dto.getSalesId() %></td></tr>
+        <tr><th>날짜</th><td><%= dto.getCreated_at() %></td></tr>
+        <tr><th>금액</th><td><%= dto.getTotalAmount() %> 원</td></tr>
     </table>
-
-    <p style="margin-top: 15px;">
-        <button onclick="location.href = cpath + '/branch-sales/update-form.jsp?salesId=<%= dto.getSalesId() %>'">수정</button>
-        <button onclick="location.href = cpath + '/branch-sales/delete.jsp?salesId=<%= dto.getSalesId() %>'">삭제</button>
-        <button onclick="location.href = cpath + '/branch-sales/list.jsp'">목록</button>
-    </p>
+    <br>
+    <button onclick="location.href='list.jsp'">← 목록으로</button>
+    <button onclick="location.href='update-form.jsp?salesId=<%=dto.getSalesId()%>'">수정</button>
+    <button onclick="if(confirm('삭제할까요?')) location.href='delete.jsp?salesId=<%=dto.getSalesId()%>'">삭제</button>
 </body>
 </html>
