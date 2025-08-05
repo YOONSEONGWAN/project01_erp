@@ -19,48 +19,58 @@
     <jsp:include page="/WEB-INF/include/resource.jsp"/>
 
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        h2 {
-            text-align: center;
-            margin-top: 40px;
-            font-weight: bold;
-        }
-        .section {
-            max-width: 960px;
-            margin: 0 auto 50px;
-        }
-        table {
-            width: 100%;
-            margin: 20px 0;
-            border-collapse: collapse;
-        }
-        table th {
-            background-color: #007bff !important;
-            color: white !important;
-            text-align: center;
-            vertical-align: middle;
-            padding: 8px;
-        }
-        table td {
-            vertical-align: middle;
-            padding: 6px 8px;
-            text-align: center;
-        }
-        input.form-control-sm, select.form-select-sm {
-            display: block;
-            margin: 0 auto;
-            max-width: 120px;
-        }
-        .btn-submit {
-            display: block;
-            margin: 10px auto;
-        }
-        a.btn-link {
-            text-decoration: none;
-        }
-    </style>
+    body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        margin: 0;
+        padding: 20px;
+    }
+    h2 {
+        text-align: center;
+        margin-top: 40px;
+        font-weight: bold;
+    }
+    .section {
+        max-width: 960px;
+        width: 100%;
+        margin-bottom: 50px;
+    }
+    table {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+    }
+    table th {
+        background-color: #007bff !important;
+        color: white !important;
+        text-align: center;
+        vertical-align: middle;
+        padding: 8px;
+    }
+    table td {
+        vertical-align: middle;
+        padding: 6px 8px;
+        text-align: center;
+    }
+    input.form-control-sm, select.form-select-sm {
+        display: block;
+        margin: 0 auto;
+        max-width: 120px;
+    }
+    .btn-submit {
+        display: block;
+        margin: 10px auto;
+    }
+    a.btn-link {
+        text-decoration: none;
+    }
+</style>
 </head>
 <body>
 
