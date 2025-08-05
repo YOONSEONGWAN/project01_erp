@@ -106,7 +106,7 @@
   <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+	<jsp:include page="/WEB-INF/include/navbar.jsp">
 		<jsp:param value="board" name="thisPage"/>
 	</jsp:include>
   <div class="container">

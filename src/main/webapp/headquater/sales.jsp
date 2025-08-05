@@ -35,7 +35,7 @@
     <jsp:include page="/WEB-INF/include/resource.jsp" />
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+<jsp:include page="/WEB-INF/include/navbar.jsp">
     <jsp:param value="sales" name="thisPage"/>
 </jsp:include>
 

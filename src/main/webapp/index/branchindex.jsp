@@ -13,7 +13,7 @@
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+	<jsp:include page="/WEB-INF/include/navbar.jsp">
 		<jsp:param value="index" name="thisPage"/>
 	</jsp:include>
 	<h1>지점 인덱스</h1>
