@@ -1,6 +1,6 @@
-<%@page import="dao.stock.PlaceOrderBranchDetailDao"%>
-<%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
 <%@page import="java.util.List"%>
+<%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
+<%@page import="dao.stock.PlaceOrderBranchDetailDao"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%
@@ -13,6 +13,7 @@
         return;
     }
 
+    // order_id 기준으로 상세 리스트 조회
     List<PlaceOrderBranchDetailDto> list = PlaceOrderBranchDetailDao.getInstance().getDetailListByOrderId(orderId);
 %>
 
@@ -20,34 +21,94 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>발주 상세 내역</title>
+    <title>지점 발주 상세 내역</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 제목과 테이블 전체 가운데 정렬 */
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .table thead th {
+            color: #007bff;
+            text-align: center;
+        }
+        /* 테이블 데이터도 가운데 정렬 */
+        .table tbody td {
+            text-align: center;
+        }
+        /* 수정 링크는 파란색으로 표시 */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /* 테이블을 화면 중앙에 배치 */
+        .table-container {
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+        }
+    </style>
 </head>
 <body>
-    <h2>발주 상세 내역 (Order ID: <%= orderId %>)</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <tr>
-            <th>상품명</th>
-            <th>현재 수량</th>
-            <th>신청 수량</th>
-            <th>승인 여부</th>
-            <th>담당자</th>
-            <th>수정</th>
-        </tr>
-        <%
-            for (PlaceOrderBranchDetailDto tmp : list) {
-        %>
-        <tr>
-            <td><%= tmp.getProduct() %></td>
-            <td><%= tmp.getCurrent_quantity() %></td>
-            <td><%= tmp.getRequest_quantity() %></td>
-            <td><%= tmp.getApproval_status() %></td>
-            <td><%= tmp.getManager() %></td>
-            <td>
-                <a href="placeorder_branch_editform.jsp?detail_id=<%= tmp.getDetail_id() %>&order_id=<%= tmp.getOrder_id() %>">수정</a>
-            </td>
-        </tr>
-        <% } %>
-    </table>
-    <br>
-    <a href="placeorder_branch.jsp">돌아가기</a>
+
+<div class="container">
+	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
+        <li class="breadcrumb-item"><a href="placeorder_branch.jsp">지점 발주</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> 상세 발주 내역</li>
+      </ol>
+    </nav>
+    <h2>지점 발주 상세 내역 (Order ID: <%= orderId %>)</h2>
+
+    <div class="table-container">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>상세ID</th>
+                    <th>지점ID</th>
+                    <th>상품명</th>
+                    <th>현재 수량</th>
+                    <th>신청 수량</th>
+                    <th>승인 여부</th>
+                    <th>담당자</th>
+                    <th>수정</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                    for (PlaceOrderBranchDetailDto dto : list) {
+                %>
+                <tr>
+                    <td><%= dto.getDetail_id() %></td>
+                    <td><%= dto.getBranch_id() %></td>
+                    <td><%= dto.getProduct() %></td>
+                    <td><%= dto.getCurrent_quantity() %></td>
+                    <td><%= dto.getRequest_quantity() %></td>
+                    <td><%= dto.getApproval_status() %></td>
+                    <td><%= dto.getManager() %></td>
+                    <td>
+                        <a href="placeorder_branch_editform.jsp?detail_id=<%= dto.getDetail_id() %>&order_id=<%= dto.getOrder_id() %>">수정</a>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mb-5">
+        <a href="placeorder_branch.jsp" class="btn btn-primary">돌아가기</a>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS bundle (optional if you use JS components) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+</html>

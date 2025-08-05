@@ -8,7 +8,7 @@
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+	<jsp:include page="/WEB-INF/include/navbar.jsp">
 		<jsp:param value="index" name="thisPage"/>
 	</jsp:include>
 	<h1>본사 인덱스 페이지</h1>

@@ -1,34 +1,45 @@
 package dto;
 
 public class SalesDto {
-	private int sales_id;
-	private String branch;
-	private String created_at;
-	private int totalamount;
-	
-	private String period;
-	private int totalSales;
-	
-	private int averageSales;
+	private int sales_id;         
+	private String branch_id;      
+	private String branch_name;   
+	private String created_at;    
+	private int totalamount;      
 
-	private String maxSalesDate;
-	private int maxSalesAmount;
-	
-	private int dayCount;
+
+	private String period;              
+	private int totalSales;             
+	private int averageSales;           
+	private String maxSalesDate;        
+	private String minSalesDate;
+	private int maxSalesAmount;        
+	private int minSalesAmount;
+	private int dayCount;               
 	private int averageSalesPerDay;
 	
-	
+	private int rank;
+
+    private String topBranchName;
+    private int topBranchSales;
+    
 	public int getSales_id() {
 		return sales_id;
 	}
 	public void setSales_id(int sales_id) {
 		this.sales_id = sales_id;
 	}
-	public String getBranch() {
-		return branch;
+	public String getBranch_id() {
+		return branch_id;
 	}
-	public void setBranch(String branch) {
-		this.branch = branch;
+	public void setBranch_id(String branch_id) {
+		this.branch_id = branch_id;
+	}
+	public String getBranch_name() {
+		return branch_name;
+	}
+	public void setBranch_name(String branch_name) {
+		this.branch_name = branch_name;
 	}
 	public String getCreated_at() {
 		return created_at;
@@ -66,11 +77,23 @@ public class SalesDto {
 	public void setMaxSalesDate(String maxSalesDate) {
 		this.maxSalesDate = maxSalesDate;
 	}
+	public String getMinSalesDate() {
+		return minSalesDate;
+	}
+	public void setMinSalesDate(String minSalesDate) {
+		this.minSalesDate = minSalesDate;
+	}
 	public int getMaxSalesAmount() {
 		return maxSalesAmount;
 	}
 	public void setMaxSalesAmount(int maxSalesAmount) {
 		this.maxSalesAmount = maxSalesAmount;
+	}
+	public int getMinSalesAmount() {
+		return minSalesAmount;
+	}
+	public void setMinSalesAmount(int minSalesAmount) {
+		this.minSalesAmount = minSalesAmount;
 	}
 	public int getDayCount() {
 		return dayCount;
@@ -84,6 +107,25 @@ public class SalesDto {
 	public void setAverageSalesPerDay(int averageSalesPerDay) {
 		this.averageSalesPerDay = averageSalesPerDay;
 	}
-	
-	
+	public int getRank() {
+		return rank;
+	}
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+	public String getTopBranchName() {
+		return topBranchName;
+	}
+	public void setTopBranchName(String topBranchName) {
+		this.topBranchName = topBranchName;
+	}
+	public int getTopBranchSales() {
+		return topBranchSales;
+	}
+	public void setTopBranchSales(int topBranchSales) {
+		this.topBranchSales = topBranchSales;
+	}
+    
+    
+    
 }

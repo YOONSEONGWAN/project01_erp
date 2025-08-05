@@ -23,8 +23,10 @@
 			<tr>
 				<th>번호</th>
 				<th>기간</th>
-				<th>총 매출</th>
+				<th>지점</th>
 				<th>평균 매출</th>
+				<th>총 매출</th>
+
 			</tr>
 		</thead>
 		<tbody>
@@ -35,9 +37,10 @@
 				<tr>
 					<td><%= index++ %></td>
 					<td><%= dto.getPeriod() %></td>
-					<td><%= dto.getBranch() %></td>
+					<td><%= dto.getBranch_name() %></td>
+					<td><%= nf.format(dto.getAverageSales()) %></td>					
 					<td><%= nf.format(dto.getTotalSales()) %></td>
-					<td><%= nf.format(dto.getAverageSales()) %></td>
+
 				</tr>
 			<% } %>
 		</tbody>

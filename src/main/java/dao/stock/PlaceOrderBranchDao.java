@@ -83,6 +83,9 @@ public class PlaceOrderBranchDao {
 	    try {
 	        conn = new DbcpBean().getConn();
 
+	        // 자동 커밋 해제(필요하면)
+	        conn.setAutoCommit(false);
+
 	        // 1단계: 시퀀스에서 NEXTVAL로 새 order_id 먼저 얻기
 	        String seqSql = "SELECT placeOrder_branch_seq.NEXTVAL AS order_id FROM dual";
 	        pstmt = conn.prepareStatement(seqSql);
@@ -103,14 +106,24 @@ public class PlaceOrderBranchDao {
 	        pstmt.setString(2, manager);
 	        pstmt.executeUpdate();
 
+	        // 커밋을 반드시 수행
+	        conn.commit();
+
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	        try {
+	            if (conn != null) conn.rollback();  // 예외 시 롤백
+	        } catch (Exception e2) {
+	            e2.printStackTrace();
+	        }
 	    } finally {
 	        try {
 	            if (rs != null) rs.close();
 	            if (pstmt != null) pstmt.close();
 	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 	    }
 
 	    return orderId;
@@ -142,4 +155,73 @@ public class PlaceOrderBranchDao {
         return orderDateStr;
     }
 	
+	public int countByManager(String managerKeyword) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    int count = 0;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT COUNT(*) FROM placeorder_branch
+	            WHERE manager LIKE '%' || ? || '%'
+	            """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, managerKeyword);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            count = rs.getInt(1);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch(Exception ign){}
+	        try { if (pstmt != null) pstmt.close(); } catch(Exception ign){}
+	        try { if (conn != null) conn.close(); } catch(Exception ign){}
+	    }
+	    return count;
+	}
+
+	public List<PlaceOrderBranchDto> selectByManagerWithPaging(String managerKeyword, int startRow, int endRow) {
+	    List<PlaceOrderBranchDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+
+	        String sql = """
+	            SELECT * FROM (
+	                SELECT tmp.*, ROWNUM rnum FROM (
+	                    SELECT order_id, order_date, manager
+	                    FROM placeorder_branch
+	                    WHERE manager LIKE ?
+	                    ORDER BY order_id DESC
+	                ) tmp WHERE ROWNUM <= ?
+	            ) WHERE rnum >= ?
+	            """;
+
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, "%" + managerKeyword + "%");
+	        pstmt.setInt(2, endRow);
+	        pstmt.setInt(3, startRow);
+	        
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            PlaceOrderBranchDto dto = new PlaceOrderBranchDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setDate(rs.getString("order_date"));  // 필드명 order_date로 맞춤
+	            dto.setManager(rs.getString("manager"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch (Exception ign) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception ign) {}
+	        try { if (conn != null) conn.close(); } catch (Exception ign) {}
+	    }
+	    return list;
+	}
 }

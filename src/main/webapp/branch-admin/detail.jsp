@@ -1,3 +1,5 @@
+<%@page import="dto.UserDtoAdmin"%>
+<%@page import="java.util.List"%>
 <%@page import="dao.BranchDao"%>
 <%@page import="dto.BranchDto"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -7,6 +9,9 @@
 	int num=Integer.parseInt(request.getParameter("num"));
 	//DB 에서 해당 지점의 자세한 정보를 얻어낸다.
 	BranchDto dto=BranchDao.getInstance().getByNum(num);
+	
+	List<UserDtoAdmin> clerkList=BranchDao.getInstance().getListWithRole(dto.getBranch_id());
+	List<UserDtoAdmin> managerList=BranchDao.getInstance().getManagerListByBranchId(dto.getBranch_id());
 
 %>
 <!DOCTYPE html>
@@ -14,10 +19,12 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/detail.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
 	<div>
 		<h1>지점 상세 보기</h1>
+		<a href="list.jsp">지점 목록으로 돌아가기</a>
 		<table>
 			<tr>
 				<th>지점 고유 번호</th>
@@ -37,7 +44,19 @@
 			</tr>
 			<tr>
 				<th>지점장 이름</th>
-				<td><%=dto.getUserName() %></td>
+				<td>
+					<%for(UserDtoAdmin manager : managerList){%>
+						<a href="roleupdate-form.jsp?num=<%=manager.getNum()%>"><%=manager.getUser_name() %></a> <br/>
+					<%} %>
+				</td>
+				<th>직원 목록</th>
+				<td>
+					<%for(UserDtoAdmin clerk : clerkList){%>
+						<a href="roleupdate-form.jsp?num=<%=clerk.getNum()%>"><%=clerk.getUser_name() %></a>
+						<%=clerk.getRole() %>
+						 <br/>
+					<%} %>
+				</td>
 			</tr>
 			<tr>
 				<th>등록일</th>

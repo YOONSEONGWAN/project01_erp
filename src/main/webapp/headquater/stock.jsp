@@ -15,7 +15,7 @@
 
     <ul>
         <li><a href="${pageContext.request.contextPath}/stock/stock.jsp">재고 페이지</a></li>
-        <li><a href="${pageContext.request.contextPath}/stock/placeorder.jsp">발주 페이지</a></li>
+        <li><a href="${pageContext.request.contextPath}/stock/stock/placeorder.jsp">발주 페이지</a></li>
     </ul>
 </body>
 </html>

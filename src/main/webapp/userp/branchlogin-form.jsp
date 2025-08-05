@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div class="container">
-		<h1>로그인</h1>
+		<h1>지점 로그인</h1>
 		<form action="branchlogin.jsp" method="post">
 			<div>
 				<label for="branchId" class="form-label">지점 코드</label>
