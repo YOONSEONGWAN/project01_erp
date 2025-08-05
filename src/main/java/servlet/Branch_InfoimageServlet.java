@@ -1,4 +1,4 @@
-package branch.servlet;
+package servlet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,18 +12,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 /*
- * 	이 서블릿은 upload 폴더에 저장된 이미지 데이터를 응답하는 서블릿
- * 
- * -SecurityFileter 에 whiteList 에 "/upload/" 를 추가 해야 동작한다.
- * 
- * -upload/xx.png , /upload/xxx.jpg 형식의 요청을 이 서블릿에서 처리 합니다.
- * 
- * - img 요소에 특징 이미지를 보여주려면 <img src="컨택스트경로/upload/저장된파일명"> 형식으로 코딩하면 된다
- * 
+ *  이 서블릿은 upload 폴더에 저장된 이미지 데이터를 응답하는 서블릿
+ *  
+ *  - SecurityFilter 에  whiteList 에  "/upload/" 를 추가 해야 동작한다
+ *  - /upload/xxx.png , /upload/xxx.jpg 형식의 요청을 이 서블릿에서 처리 합니다.
+ *  - img 요소에 특정 이미지를 보여주려면  <img src="컨텍스트경로/upload/저장된파일명" >  형식으로 코딩하면 됩니다
  */
-
-@WebServlet("/upload2/*")
-public class ImageServlet extends HttpServlet{
+@WebServlet("/upload/*")
+public class Branch_InfoimageServlet extends HttpServlet{
 
 	// 이미지 저장 경로 
     private  String fileLocation;
@@ -45,7 +41,7 @@ public class ImageServlet extends HttpServlet{
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Image name missing.");
             return;
         }
-        //맨앞에 / 제거
+        // 맨앞에 / 제거 
         String imageName = pathInfo.substring(1); // "xxx.jpg"
 
         // 2. 파일 전체 경로 구성
@@ -78,5 +74,9 @@ public class ImageServlet extends HttpServlet{
         }
     }
 }
+
+
+
+
 
 

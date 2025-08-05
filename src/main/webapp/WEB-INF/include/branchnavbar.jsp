@@ -33,7 +33,7 @@
                 <%if (userId != null) {%>
 	                <li class="nav-item  me-2">
 					    <a class="nav-link  p-0"
-					       href="${pageContext.request.contextPath}/userp/userinfo.jsp">
+					       href="${pageContext.request.contextPath}/userp/userpinfo.jsp">
 					        <strong><%=userId %></strong>
 					    </a>
 					</li>
@@ -42,7 +42,7 @@
 	                </li>
 	                <li class="nav-item  me-2">
 					    <a class="nav-link  p-0"
-					       href="${pageContext.request.contextPath}/userp/branchinfo.jsp">
+					       href="${pageContext.request.contextPath}/branchinfo/info2.jsp">
 					        <strong><%=branchId %></strong> 점 정보변경
 					    </a>
 					</li>

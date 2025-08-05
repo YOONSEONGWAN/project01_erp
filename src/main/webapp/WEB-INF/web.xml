@@ -11,7 +11,6 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>default.xhtml</welcome-file>
   </welcome-file-list>
-  
 
   	<resource-ref>
 	 <description>Oracle Datasource example</description>
@@ -19,7 +18,16 @@
 	 <res-type>javax.sql.DataSource</res-type>
 	 <res-auth>Container</res-auth>
 	</resource-ref>
-	
+
+
+	<context-param>
+		<description>업로드된 파일을 저장할 경로</description>
+		<param-name>fileLocation</param-name>
+		<param-value>C:/playground/upload</param-value>
+	</context-param>
+
+
+	<!--경로 하나로 수정 -->
 	<context-param>
 		<description>업로드된 파일을 저장할 경로</description>
 		<param-name>fileLocation</param-name>
@@ -29,6 +37,4 @@
 
 	
 </web-app>
-
-
 
