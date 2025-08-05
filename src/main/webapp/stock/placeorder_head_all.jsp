@@ -66,9 +66,16 @@
 </head>
 <body>
 <div class="container">
-
+	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
+        <li class="breadcrumb-item"><a href="placeorder_head.jsp">본사 발주</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> 전체 발주 내역</li>
+      </ol>
+    </nav>
     <h2>전체 발주 내역</h2>
-
+	
     <form class="search-bar" method="get" action="placeorder_head_all.jsp">
         <input type="text" name="managerKeyword" class="form-control form-control-sm me-2"
                style="max-width: 200px;"
