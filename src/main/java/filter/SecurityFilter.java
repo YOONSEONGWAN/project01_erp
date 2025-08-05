@@ -15,11 +15,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 //들어오는 모든 요청에 대해서 필터링을 하겠다는 의미
-@WebFilter("/*")
+// @WebFilter("/*")
 public class SecurityFilter implements Filter{
 	//로그인 없이 접근 가능한 경로 목록
 	Set<String> whiteList = Set.of(
-		"/index.jsp",
+		"/index.jsp", "userp/signuppath.jsp",
 		"/userp/signup-form.jsp", "/userp/signup.jsp",
 		"/userp/hqlogin-form.jsp", "/userp/hqlogin.jsp",
 		"/userp/branchlogin-form.jsp", "/userp/branchlogin.jsp",
@@ -62,7 +62,7 @@ public class SecurityFilter implements Filter{
 	        String encodedUrl = query == null ? URLEncoder.encode(uri, "UTF-8")
 	                                          : URLEncoder.encode(uri + "?" + query, "UTF-8");
 	        //리다이렉트 되는 경로뒤에 url 이라는 파라미터명으로 전달한다 
-	        res.sendRedirect(req.getContextPath() + "/user/loginform.jsp?url=" + encodedUrl); 
+	        res.sendRedirect(req.getContextPath() + "/userp/loginform.jsp?url=" + encodedUrl); 
 			return; //메소드를 여기서 끝내기
 		}
 		
