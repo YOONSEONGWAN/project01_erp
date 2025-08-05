@@ -11,9 +11,10 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/roleupdate-form.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-	<div class="container">		
+	<div class="container">
 		<form action="roleupdate.jsp" method="get">
 			<input type="hidden" name="num" value="<%=dto.getNum() %>">
 			<table>
@@ -36,7 +37,7 @@
 					</td>					
 				</tr>
 			</table>		
-			<button type="submit">수정</button>
+			<button class="btn btn-sm btn-primary" type="submit">수정</button>
 		</form>		
 	</div>
 </body>
