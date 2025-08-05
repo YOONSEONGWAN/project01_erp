@@ -30,22 +30,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body {
+        html, body {
+            height: 100%;
+            margin: 0;
             background-color: #f8f9fa;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            min-height: 100vh;
         }
         h2 {
             text-align: center;
-            margin-top: 40px;
             margin-bottom: 30px;
             font-weight: 700;
         }
         .form-container {
             max-width: 480px;
-            margin: 0 auto;
+            width: 100%;
             background: #fff;
             padding: 25px 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
         table {
             width: 100%;
@@ -71,55 +81,58 @@
             margin: 0 auto;
             display: block;
         }
-        .btn-group {
+        .btn-group, .d-flex.justify-content-center {
             margin-top: 20px;
             text-align: center;
         }
-        .btn-group .btn + .btn {
+        .btn-group .btn + .btn,
+        .d-flex.justify-content-center .btn + .btn {
             margin-left: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h2>발주 내역 수정 (Order ID: <%= orderId %>)</h2>
+    <div>
+        <h2>발주 내역 수정 (Order ID: <%= orderId %>)</h2>
 
-    <div class="form-container">
-        <form action="placeorder_head_edit.jsp" method="post">
-            <input type="hidden" name="detail_id" value="<%= detailId %>">
-            <input type="hidden" name="order_id" value="<%= orderId %>">
+        <div class="form-container">
+            <form action="placeorder_head_edit.jsp" method="post">
+                <input type="hidden" name="detail_id" value="<%= detailId %>">
+                <input type="hidden" name="order_id" value="<%= orderId %>">
 
-            <table>
-                <tr>
-                    <th>상품명</th>
-                    <td><%= dto.getProduct() %></td>
-                </tr>
-                <tr>
-                    <th>현재 수량</th>
-                    <td><%= dto.getCurrent_quantity() %></td>
-                </tr>
-                <tr>
-                    <th>신청 수량</th>
-                    <td>
-                        <input type="number" name="request_quantity" value="<%= dto.getRequest_quantity() %>" min="1" required class="form-control">
-                    </td>
-                </tr>
-                <tr>
-                    <th>승인 상태</th>
-                    <td>
-                        <select name="approval_status" class="form-select">
-                            <option value="승인" <%= "승인".equals(dto.getApproval_status()) ? "selected" : "" %>>승인</option>
-                            <option value="반려" <%= "반려".equals(dto.getApproval_status()) ? "selected" : "" %>>반려</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
+                <table>
+                    <tr>
+                        <th>상품명</th>
+                        <td><%= dto.getProduct() %></td>
+                    </tr>
+                    <tr>
+                        <th>현재 수량</th>
+                        <td><%= dto.getCurrent_quantity() %></td>
+                    </tr>
+                    <tr>
+                        <th>신청 수량</th>
+                        <td>
+                            <input type="number" name="request_quantity" value="<%= dto.getRequest_quantity() %>" min="1" required class="form-control">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>승인 상태</th>
+                        <td>
+                            <select name="approval_status" class="form-select">
+                                <option value="승인" <%= "승인".equals(dto.getApproval_status()) ? "selected" : "" %>>승인</option>
+                                <option value="반려" <%= "반려".equals(dto.getApproval_status()) ? "selected" : "" %>>반려</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="d-flex justify-content-center mt-3">
-    			<button type="submit" class="btn btn-primary">수정 완료</button>
-    			<a href="placeorder_head_detail.jsp?order_id=<%= orderId %>" class="btn btn-secondary ms-2">취소</a>
-			</div>
-        </form>
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-primary">수정 완료</button>
+                    <a href="placeorder_head_detail.jsp?order_id=<%= orderId %>" class="btn btn-secondary ms-2">취소</a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Bootstrap JS (Optional, for components if needed) -->

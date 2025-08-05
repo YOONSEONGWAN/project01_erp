@@ -27,15 +27,27 @@
     <style>
         body {
             background-color: #f8f9fa;
+
+            /* 화면 전체 높이 */
+            min-height: 100vh;
+
+            /* flexbox 중앙 정렬 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            margin: 0;
+            padding: 20px;
         }
         h2 {
-            margin-top: 40px;
+            margin-bottom: 30px;
             text-align: center;
             font-weight: bold;
         }
         .table-container {
             max-width: 900px;
-            margin: 30px auto;
+            width: 100%;
         }
         /* 재고 목록 페이지와 동일한 테이블 헤더 스타일 */
         table thead th {
@@ -45,7 +57,7 @@
     </style>
 </head>
 <body>
-	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+    <nav aria-label="breadcrumb" style="width: 100%; max-width: 900px; margin-bottom: 20px;">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
         <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>

@@ -28,15 +28,27 @@
     <style>
         body {
             background-color: #f8f9fa;
+
+            /* 화면 전체 높이 100% */
+            min-height: 100vh;
+
+            /* flexbox로 수직, 수평 중앙 정렬 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            margin: 0;
+            padding: 20px;
         }
         h2 {
-            margin-top: 40px;
+            margin-bottom: 30px;
             font-weight: bold;
             text-align: center;
         }
         .table-container {
             max-width: 900px;
-            margin: 30px auto;
+            width: 100%;
         }
         /* 테이블 헤더 파란색 배경 및 흰색 글씨 */
         table thead th {
@@ -49,16 +61,22 @@
             text-align: center;
             vertical-align: middle;
         }
+        nav[aria-label="breadcrumb"] {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+    <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
         <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
         <li class="breadcrumb-item active" aria-current="page"> 출고 상세 내역</li>
       </ol>
     </nav>
+
     <h2>입고 상세 내역 (Order ID: <%= orderId %>)</h2>
 
     <div class="table-container">
