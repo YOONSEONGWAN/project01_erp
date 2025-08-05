@@ -1,7 +1,7 @@
 
 -- 250804 테이블문 ------------------- ▼ -------------
 
---1. baord_p
+--1. board_p
 CREATE TABLE board_p (
     num             NUMBER         PRIMARY KEY,
     branch_id       VARCHAR2(20)   NOT NULL,

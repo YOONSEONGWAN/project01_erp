@@ -15,10 +15,10 @@
 	            <ul class="navbar-nav me-auto">
 	                <% if(branchId != null && branchId.startsWith("B")) { // 지점 %>
 	                    <li class="nav-item">
-	                        <a class="nav-link <%=thisPage.equals("order") ? "active":""%>" href="${pageContext.request.contextPath }/order/list.jsp">발주신청</a>
+	                        <a class="nav-link <%=thisPage.equals("board") ? "active":""%>" href="${pageContext.request.contextPath }/board/list.jsp">통합게시판</a>
 	                    </li>
 	                    <li class="nav-item">
-	                        <a class="nav-link <%=thisPage.equals("board") ? "active":""%>" href="${pageContext.request.contextPath }/board/list.jsp">통합게시판</a>
+	                        <a class="nav-link <%=thisPage.equals("order") ? "active":""%>" href="${pageContext.request.contextPath }/order/list.jsp">발주신청</a>
 	                    </li>
 	                    <li class="nav-item">
 	                        <a class="nav-link <%=thisPage.equals("work") ? "active":""%>" href="${pageContext.request.contextPath }/work-log/view-work_log.jsp">출퇴근</a>
@@ -27,6 +27,9 @@
 	                        <a class="nav-link <%=thisPage.equals("branch-sales") ? "active":""%>" href="${pageContext.request.contextPath }/branch-sales/list.jsp">매출</a>
 	                    </li>
 	                <% } else if(branchId != null && branchId.equals("HQ")) { // 본사 %>
+	                	<li class="nav-item">
+	                        <a class="nav-link <%=thisPage.equals("board") ? "active":""%>" href="${pageContext.request.contextPath }/board/list.jsp">통합게시판</a>
+	                    </li>
 	                    <li class="nav-item">
 	                        <a class="nav-link <%=thisPage.equals("product") ? "active":""%>" href="${pageContext.request.contextPath }/product/list.jsp">상품관리</a>
 	                    </li>

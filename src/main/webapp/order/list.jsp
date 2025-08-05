@@ -30,7 +30,7 @@ List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내
     </style>
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+<jsp:include page="/WEB-INF/include/navbar.jsp">
 	<jsp:param value="order" name="thisPage"/>
 </jsp:include>
 <h3>발주 현황</h3>
