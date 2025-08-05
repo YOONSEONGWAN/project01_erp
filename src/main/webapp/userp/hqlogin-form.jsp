@@ -89,8 +89,12 @@
 </head>
 <body>
 	<div class="container">
-		<h1>본사 로그인 양식</h1>
+		<h1>본사 로그인</h1>
 		<form action="hqlogin.jsp" method="post">
+			<div>
+				<label for="branchId" class="form-label">본사 코드</label>
+				<input type="text" name="branchId" id="branchId" class="form-control" required/>
+			</div>
 			<div>
 				<label for="userId" class="form-label">아이디</label>
 				<input type="text" name="userId" id="userId" class="form-control" required/>

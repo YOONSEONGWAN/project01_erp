@@ -38,7 +38,7 @@
 
     <br />
 
-    <table border="1">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>번호</th>

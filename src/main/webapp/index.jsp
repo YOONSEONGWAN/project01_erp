@@ -64,6 +64,7 @@
 </head>
 <body>
 
+
 	<div class="container">
 		<img src="${pageContext.request.contextPath}/images/JB_logo.png" alt="치킨 로고" class="logo">
 		<div class="title">ERP 시스템 포털</div>
@@ -72,6 +73,11 @@
 			<a href="${pageContext.request.contextPath}/userp/signup-form.jsp">회원가입</a>
 		</div>
 	</div>
+
+
+	<h1>종복치킨</h1>
+	<a href="${pageContext.request.contextPath }/userp/signuppath.jsp">회원가입</a>
+	<a href="${pageContext.request.contextPath }/userp/loginform.jsp">로그인</a>
 
 </body>
 </html>

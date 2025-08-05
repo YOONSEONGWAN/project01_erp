@@ -19,6 +19,7 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/detail.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
 	<div>
