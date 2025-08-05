@@ -1,38 +1,127 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%
-    String branchType = request.getParameter("branch");
-%>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>회원가입</title>
+<meta charset="UTF-8">
+<title>회원가입</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        font-family: 'Noto Sans KR', sans-serif;
+        padding-top: 50px;
+    }
+    .signup-card {
+        background-color: white;
+        padding: 40px 50px;
+        border-radius: 12px;
+        box-shadow: 0 6px 25px rgba(0, 40, 85, 0.2);
+        width: 600px;
+    }
+    .signup-card h1 {
+        text-align: center;
+        color: #002855;
+        margin-bottom: 30px;
+        font-weight: 700;
+        font-size: 28px;
+        letter-spacing: 1.2px;
+    }
+    .btn-primary {
+        background-color: #002855;
+        border-color: #002855;
+        font-weight: 700;
+        border-radius: 10px;
+    }
+    .btn-primary:hover {
+        background-color: #001f3f;
+        border-color: #001f3f;
+        box-shadow: 0 0 12px #001f3f;
+    }
+    .nav-tabs .nav-link.active {
+        background-color: #002855;
+        color: white;
+        font-weight: 700;
+    }
+    .nav-tabs .nav-link {
+        color: #002855;
+        border-radius: 8px 8px 0 0;
+        font-weight: 600;
+    }
+</style>
 </head>
 <body>
-
-<h1>회원가입</h1>
-
-<form action="signup.jsp" method="post">
-	<%
-        if ("HQ".equals(branchType)) {
-    %>
-        <p><strong>※ 본사 회원으로 가입합니다.</strong></p>
-        본사 코드 (branch_id): <input type="text" name="branchId" placeholder="예: HQ"><br>
-    <%
-        } else {
-    %>
-        <p><strong>※ 지점 회원으로 가입합니다.</strong></p>
-        지점 코드 (branch_id): <input type="text" name="branchId" placeholder="예: B001"><br>
-    <%
-        }
-    %>
-    <br />
-    아이디: <input type="text" name="userId"><br>
-    비밀번호: <input type="password" name="password"><br>
-    이름: <input type="text" name="userName"><br>
-
-    <input type="submit" value="회원가입">
-</form>
-
+	<div class="signup-card">
+	    <h1>회원가입</h1>
+	
+	    <!-- 본사/지점 탭 -->
+	    <ul class="nav nav-tabs mb-4 justify-content-center" id="branchTabs" role="tablist">
+	        <li class="nav-item" role="presentation">
+	            <button class="nav-link active" id="hq-tab" data-bs-toggle="tab" data-bs-target="#hq" type="button" role="tab">
+	                본사
+	            </button>
+	        </li>
+	        <li class="nav-item" role="presentation">
+	            <button class="nav-link" id="branch-tab" data-bs-toggle="tab" data-bs-target="#branch" type="button" role="tab">
+	                지점
+	            </button>
+	        </li>
+	    </ul>
+	
+	    <!-- 탭 내용 -->
+	    <div class="tab-content" id="branchTabsContent">
+	        <!-- 본사 회원가입 -->
+	        <div class="tab-pane fade show active" id="hq" role="tabpanel">
+	            <form action="signup.jsp" method="post">
+	                <input type="hidden" name="branchType" value="HQ">
+	                <div class="mb-3">
+	                    <label class="form-label">본사 코드 (branch_id)</label>
+	                    <input type="text" class="form-control" name="branchId" placeholder="예: HQ" required>
+	                </div>
+	                <div class="mb-3">
+	                    <label class="form-label">아이디</label>
+	                    <input type="text" class="form-control" name="userId" required>
+	                </div>
+	                <div class="mb-3">
+	                    <label class="form-label">비밀번호</label>
+	                    <input type="password" class="form-control" name="password" required>
+	                </div>
+	                <div class="mb-3">
+	                    <label class="form-label">이름</label>
+	                    <input type="text" class="form-control" name="userName" required>
+	                </div>
+	                <button type="submit" class="btn btn-primary w-100 py-2">본사 회원가입</button>
+	            </form>
+	        </div>
+	
+	        <!-- 지점 회원가입 -->
+	        <div class="tab-pane fade" id="branch" role="tabpanel">
+	            <form action="signup.jsp" method="post">
+	                <input type="hidden" name="branchType" value="BRANCH">
+	                <div class="mb-3">
+	                    <label class="form-label">지점 코드 (branch_id)</label>
+	                    <input type="text" class="form-control" name="branchId" placeholder="예: B001" required>
+	                </div>
+	                <div class="mb-3">
+	                    <label class="form-label">아이디</label>
+	                    <input type="text" class="form-control" name="userId" required>
+	                </div>
+	                <div class="mb-3">
+	                    <label class="form-label">비밀번호</label>
+	                    <input type="password" class="form-control" name="password" required>
+	                </div>
+	                <div class="mb-3">
+	                    <label class="form-label">이름</label>
+	                    <input type="text" class="form-control" name="userName" required>
+	                </div>
+	                <button type="submit" class="btn btn-primary w-100 py-2">지점 회원가입</button>
+	            </form>
+	        </div>
+	    </div>
+	</div>
 </body>
 </html>
