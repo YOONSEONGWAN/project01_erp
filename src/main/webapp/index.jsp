@@ -9,6 +9,6 @@
 <body>
 	<h1>종복치킨</h1>
 	<a href="${pageContext.request.contextPath }/userp/signuppath.jsp">회원가입</a>
-	<a href="${pageContext.request.contextPath }/userp/loginform.jsp">로그인</a> 
+	<a href="${pageContext.request.contextPath }/userp/loginform.jsp">로그인</a>
 </body>
 </html>

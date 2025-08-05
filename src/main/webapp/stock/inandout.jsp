@@ -28,6 +28,13 @@
 </head>
 <body>
 <div class="container my-4">
+	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> 입고 / 출고</li>
+      </ol>
+    </nav>
 
     <!-- 입고 처리 내역 -->
     <h2 class="mb-3">입고 처리 내역 (최근 10건)</h2>

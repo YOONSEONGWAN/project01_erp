@@ -342,5 +342,30 @@ public class OutboundOrdersDao {
 
         return count;
     }
+    
+    public boolean insert(int orderId, String branchId, String approval, String outDate, String manager) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int flag = 0;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = "INSERT INTO outbound_orders (order_id, branch_id, approval, out_date, manager) VALUES (?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            pstmt.setString(2, branchId);
+            pstmt.setString(3, approval);
+            pstmt.setString(4, outDate);
+            pstmt.setString(5, manager);
+            flag = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return flag > 0;
+    }
 }
 

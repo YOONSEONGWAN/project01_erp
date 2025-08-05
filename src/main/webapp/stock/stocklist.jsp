@@ -83,6 +83,14 @@
 <body class="bg-light">
 
 <div class="container py-5">
+ 	<!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+        <li class="breadcrumb-item active" aria-current="page">재고 목록</li>
+      </ol>
+    </nav>
     <h1 class="text-center mb-4 fw-bold">재고 목록</h1>
 
     <!-- 검색창 오른쪽 정렬 -->
@@ -153,9 +161,7 @@
         <% } %>
     </div>
 
-    <div class="text-center mt-4">
-        <a href="stock.jsp" class="btn btn-outline-dark">돌아가기</a>
-    </div>
+    
 </div>
 
 </body>

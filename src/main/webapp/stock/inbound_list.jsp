@@ -60,6 +60,14 @@
 </head>
 <body>
 <div class="container my-5">
+	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+        <li class="breadcrumb-item"><a href="inandout.jsp">입고 / 출고 </a></li>
+        <li class="breadcrumb-item active" aria-current="page"> 전체 입고 내역</li>
+      </ol>
+    </nav>
 
     <!-- 제목 가운데 정렬 -->
     <h2 class="text-center mb-4">전체 입고 내역</h2>

@@ -3,9 +3,14 @@
 <%@ page import="dao.StockRequestDao" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
+//String branchId = (String)session.getAttribute("branchId");
+
 String branchId = (String)session.getAttribute("branchId");
+
+
 StockRequestDao dao = new StockRequestDao();
 List<StockRequestDto> orderList = dao.selectAllByBranch(branchId); // 발주 내역 리스트
+
 
 
 
@@ -68,10 +73,6 @@ if (orderList == null || orderList.isEmpty()) {
                 <%= dto.getRequestedAt() %>
             <% } %>
         </td>
-<<<<<<< HEAD
-        
-=======
->>>>>>> da777106801bb60ae953620a17c21197ba68b02b
         <td>
             <form action="update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
@@ -97,6 +98,6 @@ if (orderList == null || orderList.isEmpty()) {
         <button class="btn btn-update" type="button">새 발주 요청</button>
     </a>
 </div>
-
+<h3>branchId: <%= branchId %></h3>
 </body>
 </html>
