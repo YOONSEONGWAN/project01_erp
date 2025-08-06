@@ -55,7 +55,8 @@
             margin-bottom: 30px;
         }
         .table thead th {
-            color: #007bff;
+            background-color: #007bff !important;
+            color: white !important;
             text-align: center;
         }
         .table tbody td {
@@ -94,7 +95,7 @@
 
     <div class="table-container">
         <table class="table table-bordered table-hover">
-            <thead class="table-light">
+            <thead>
                 <tr>
                     <th>상세ID</th>
                     <th>지점ID</th>

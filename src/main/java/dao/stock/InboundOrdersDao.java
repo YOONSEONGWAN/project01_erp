@@ -265,7 +265,7 @@ public class InboundOrdersDao {
                 SELECT order_id, branch_id, approval, TO_CHAR(in_date, 'YYYY-MM-DD') AS in_date, manager
                 FROM inbound_orders
                 WHERE approval IN ('승인', '완료')
-                ORDER BY in_date DESC
+                ORDER BY order_id DESC
             )
             WHERE ROWNUM <= ?
         """;
@@ -303,7 +303,7 @@ public class InboundOrdersDao {
                     FROM inbound_orders
                     WHERE approval IN ('승인', '완료')
                     AND manager LIKE ?
-                    ORDER BY in_date DESC
+                    ORDER BY order_id DESC
                 ) tmp
                 WHERE ROWNUM <= ?
             )
