@@ -109,7 +109,7 @@
 		<h1 class="text-center">지점 목록</h1>
 		<div class="row">
 			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end">
-				<form action="list.jsp" method="get">					
+				<form action="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp" method="get">					
 					<select name="status">
 		                <option value="all" <%= "all".equals(status) ? "selected" : "" %>>전체</option>
 		                <option value="운영중" <%= "운영중".equals(status) ? "selected" : "" %>>운영중</option>
@@ -118,7 +118,7 @@
 		            </select>
 					<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="지점 이름 or 아이디 입력..." />
 					<button class="btn btn-outline-primary btn-sm" type="submit">검색</button>
-					<a class="btn btn-outline-primary btn-sm" href="list.jsp">초기화</a>					
+					<a class="btn btn-outline-primary btn-sm" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">초기화</a>					
 				</form>
 			</div>
 		</div>
