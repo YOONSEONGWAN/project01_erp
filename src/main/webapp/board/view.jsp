@@ -65,160 +65,158 @@
 <div class="container">
     <h2> 글 상세보기</h2>
     <table class="table table-bordered">
-        <tr>
-            <th>번호</th>
-            <td><%= dto.getNum() %></td>
-        </tr>
-        <tr>
-            <th>제목</th>
-            <td><%= dto.getTitle() %></td>
-        </tr>
-        <tr>
-            <th>작성자</th>
-            <td><%= dto.getWriter() != null ? dto.getWriter() : "알 수 없음" %></td>
-        </tr>
-        <tr>
-            <th>작성일</th>
-            <td><%= dto.getCreated_at() %></td>
-        </tr>
-        <tr>
-            <th>게시판 유형</th>
-            <td><%= dto.getBoard_type() %></td>
-        </tr>
+        <tr><th>번호</th><td><%= dto.getNum() %></td></tr>
+        <tr><th>제목</th><td><%= dto.getTitle() %></td></tr>
+        <tr><th>작성자</th><td><%= dto.getWriter() != null ? dto.getWriter() : "알 수 없음" %></td></tr>
+        <tr><th>작성일</th><td><%= dto.getCreated_at() %></td></tr>
+        <tr><th>게시판 유형</th><td><%= dto.getBoard_type() %></td></tr>
     </table>
-	<div class="card mt-4">
-			<div class="card-header bg-success">
-				<strong>본문 내용</strong>
-			</div>
-			<div class="card-body p-1"><%=dto.getContent() %></div>
-	</div>
-		
-		
+    <div class="card mt-4">
+        <div class="card-header bg-success"><strong>본문 내용</strong></div>
+        <div class="card-body p-1"><%= dto.getContent() %></div>
+    </div>
+
     <div class="text-end">
         <a href="list.jsp?boardType=<%= dto.getBoard_type() %>" class="btn btn-secondary">목록</a>
-		
-		<%-- 수정 버튼: 작성자면 공통으로 노출 --%>
-		<% if (loginUserId != null && loginUserId.equals(writerId)) { %>
-		    <a href="update.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>" class="btn btn-warning">수정</a>
-		<% } %>
-		
-		<%-- 삭제 버튼 분기 처리 --%>
-		<%
-		    String branchId = dto.getBranch_id(); // 글 작성자의 소속 (HQ 또는 지점)
-		    boolean isWriter = loginUserId != null && loginUserId.equals(writerId);
-		%>
-		
-		<%-- 문의사항: 작성자면 삭제 가능 --%>
-		<% if ("QNA".equalsIgnoreCase(board_type) && isWriter) { %>
-		    <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
-		       onclick="return confirm('정말 삭제하시겠습니까?');"
-		       class="btn btn-danger">삭제</a>
-		<% } %>
-		
-		<%-- 공지사항: 본사 작성자만 삭제 가능 --%>
-		<% if ("NOTICE".equalsIgnoreCase(board_type) && isWriter && "HQ".equalsIgnoreCase(branchId)) { %>
-		    <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
-		       onclick="return confirm('공지사항을 삭제하시겠습니까?');"
-		       class="btn btn-danger">삭제</a>
-		<% } %>
+        <% if (user_name != null && user_name.equals(dto.getUser_id())) { %>
+            <a href="update.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>" class="btn btn-warning">수정</a>
+        <% } %>
+        <% if ("QNA".equalsIgnoreCase(board_type) && user_name != null && user_name.equals(dto.getUser_id())) { %>
+            <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
+               onclick="return confirm('정말 삭제하시겠습니까?');" class="btn btn-danger">삭제</a>
+        <% } %>
+        <!-- 현재 게시글이 공지사항이고, 로그인한 사용자가 작성자이며, 그 사용자가 본사(HQ) 소속인 경우에만 삭제 버튼 노출하기 -->
+        <% if ("NOTICE".equalsIgnoreCase(board_type) && user_name != null && user_name.equals(dto.getUser_id()) && "HQ".equalsIgnoreCase(dto.getBranch_id())) { %>
+            <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
+               onclick="return confirm('공지사항을 삭제하시겠습니까?');" class="btn btn-danger">삭제</a>
+        <% } %>
     </div>
+
     <% if (isLogin) { %>
-    <div class="mt-4">
-        <h5><%=commentHeaderText %></h5>
-        <form action="<%= request.getContextPath() %>/board/save-comment.jsp" method="post">
-            <input type="hidden" name="writer" value="<%= user_name %>">
-            <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
-            <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
-            <input type="hidden" name="parent_num" value="<%= dto.getNum() %>">
-            
-            <input type="hidden" name="target_user_id" value="">
-            
-            <div class="mb-2">
-                <textarea class="form-control" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-success">등록</button>
-        </form>
-    </div>
-	<% } else { %>
-	    <p class="text-muted mt-4">※ 댓글을 작성하려면 로그인해주세요.</p>
-	<% } %>
-	
-	<!-- 댓글 목록을 출력하기 -->
-		<div class="comments">
-		<%for(CommentDto tmp:commentList){ %>
-		<%-- 대댓글은 자신의 글번호와 댓글의 그룹번호가 다르다. 그런 경우 왼쪽 마진을 부여한다 --%>
-		 <div class="card border border-dark mb-3 <%=tmp.getNum() == tmp.getGroupNum() ? "" : "ms-5"%>">
-			<%if(tmp.getDeleted().equals("yes")){ %>
-				<div class="card-body bg-light text-muted rounded">삭제된 댓글입니다</div>
-			<%}else{ %>
-			<div class="card-body d-flex flex-column flex-sm-row position-relative">
-				<%-- 대댓글 작성 시 표시되는 화살표 UI --%>
-				<%if(tmp.getNum() != tmp.getGroupNum()){ %>
-					<i class="bi bi-arrow-return-right position-absolute" style="top:0;left:-30px"></i>
-					<%} %>
-            	<%-- 댓글 작성자가 로그인된 userName 과 같을때만 삭제버튼 출력 --%>
-            	<%if(tmp.getWriter().equals(user_name)){ %>
-            		<button data-num="<%=tmp.getNum() %>" class="btn-close position-absolute top-0 end-0 m-2" ></button>
-            	<%} %>
-            	
-            	<%if(tmp.getProfileImage() == null){ %>
-					<i style="font-size:50px;" class="bi bi-person-circle me-3 align-self-center"></i>
-            	<%}else{ %>
-            		<img class="rounded-circle me-3 align-self-center " 
-                	 src="${pageContext.request.contextPath}/upload/<%=tmp.getProfileImage() %>" 
-                	 alt="프로필이미지"
-                	 style="width:50px; height:50px;">
-            	<%} %>
-                <div class="flex-grow-1">
-                <div class="d-flex justify-content-between">
-                                <div >
-                                        <strong><%=tmp.getWriter() %></strong>
-                                        <small><span><%= tmp.getTargetUserId() != null ? "@" + tmp.getTargetUserId() : "" %></span></small>
+        <div class="mt-4">
+            <h5><%= commentHeaderText %></h5>
+            <form action="<%= request.getContextPath() %>/board/save-comment.jsp" method="post">
+                <input type="hidden" name="writer" value="<%= user_name %>">
+                <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+                <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+                <input type="hidden" name="parent_num" value="<%= dto.getNum() %>">
+                <input type="hidden" name="target_user_id" value="">
+                <textarea class="form-control mb-2" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
+                <button type="submit" class="btn btn-success">등록</button>
+            </form>
+        </div>
+    <% } else { %>
+        <p class="text-muted mt-4">※ 댓글을 작성하려면 로그인해주세요.</p>
+    <% } %>
+
+    <div class="comments mt-5">
+        <% for (CommentDto tmp : commentList) { %>
+            <div class="card border border-dark mb-3 <%= tmp.getNum() == tmp.getGroupNum() ? "" : "ms-5" %>">
+                <% if ("yes".equals(tmp.getDeleted())) { %>
+                    <div class="card-body bg-light text-muted rounded">삭제된 댓글입니다</div>
+                <% } else { %>
+                    <div class="card-body d-flex flex-column flex-sm-row position-relative">
+                        <% if (tmp.getNum() != tmp.getGroupNum()) { %>
+                            <i class="bi bi-arrow-return-right position-absolute" style="top:0;left:-30px"></i>
+                        <% } %>
+
+                        <% if (tmp.getProfileImage() == null) { %>
+                            <i style="font-size:50px;" class="bi bi-person-circle me-3 align-self-center"></i>
+                        <% } else { %>
+                            <img class="rounded-circle me-3 align-self-center" src="${pageContext.request.contextPath}/upload/<%= tmp.getProfileImage() %>" alt="프로필이미지" style="width:50px; height:50px;">
+                        <% } %>
+
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong><%= tmp.getWriter() %></strong>
+                                    <small><span><%= tmp.getTargetUserId() != null ? "@" + tmp.getTargetUserId() : "" %></span></small>
                                 </div>
-                                <small><%=tmp.getCreatedAt() %></small>
+                                <small><%= tmp.getCreatedAt() %></small>
+                            </div>
+                            <pre><%= tmp.getContent() %></pre>
+
+                            <% if (tmp.getWriter().equals(user_name)) { %>
+                                <form action="comment-delete.jsp" method="post" class="position-absolute top-0 end-0 m-2">
+                                    <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+                                    <input type="hidden" name="parent_num" value="<%= dto.getNum() %>">
+                                    <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+                                    <button class="btn-close" onclick="return confirm('정말 삭제하시겠습니까?')"></button>
+                                </form>
+                                <button class="btn btn-sm btn-outline-dark mb-2 edit-btn">수정</button>
+                                <div class="d-none form-div">
+                                    <form action="comment-update.jsp" method="post">
+                                        <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+                                        <input type="hidden" name="parent_num" value="<%= dto.getNum() %>">
+                                        <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+                                        <textarea name="content" class="form-control mb-2" rows="2"><%= tmp.getContent() %></textarea>
+                                        <button type="submit" class="btn btn-sm btn-dark mb-2">수정 완료</button>
+                                        <button type="reset" class="btn btn-sm btn-secondary cancel-edit-btn mb-2">취소</button>
+                                    </form>
+                                </div>
+                            <% } else { %>
+                                <button class="btn btn-sm btn-outline-dark mb-2 show-reply-btn">댓글</button>
+                                <div class="d-none form-div">
+                                    <form action="save-comment.jsp" method="post">
+                                        <input type="hidden" name="parent_num" value="<%= dto.getNum() %>">
+                                        <input type="hidden" name="target_user_id" value="<%= tmp.getWriter() %>">
+                                        <input type="hidden" name="groupNum" value="<%= tmp.getGroupNum() %>">
+                                        <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+                                        <textarea name="content" class="form-control mb-3" rows="2" placeholder="댓글을 입력하세요"></textarea>
+                                        <button type="submit" class="btn btn-sm btn-dark">등록</button>
+                                        <button type="reset" class="btn btn-sm btn-secondary cancel-reply-btn">취소</button>
+                                    </form>
+                                </div>
+                            <% } %>
                         </div>
-                        <pre><%=tmp.getContent() %></pre>
-                        
-                        <%-- 댓글 작성자가 로그인된 userName 과 같으면 수정폼, 다르면 댓글폼을 출력한다 --%>
-                        <%if(tmp.getWriter().equals(user_name)){ %>
-                         <!-- 수정 버튼 (본인에게만 보임) -->
-                           <button class="btn btn-sm btn-outline-dark mb-2 edit-btn">수정</button>  
-                           
-                           <!-- 댓글 입력 폼 (처음에는 숨김) -->
-                           <div class="d-none form-div">
-                               <form action="comment-update.jsp" method="post">
-                               	   <!-- 댓글을 수정하기 위한 댓글의 번호, 이 페이지로 다시 돌아오기 위한 parentNum 도 같이 전송되도록 -->
-                                   <input type="hidden" name="num" value="<%=tmp.getNum() %>" />
-                                   <input type="hidden" name="parentNum" value="<%=num %>" />
-                                   <textarea name="content" class="form-control mb-2" rows="2" ><%=tmp.getContent() %></textarea>
-                                   <button type="submit" class="btn btn-sm btn-dark mb-2">수정 완료</button>
-                                   <button type="reset" class="btn btn-sm btn-secondary cancel-edit-btn mb-2">취소</button>
-                               </form>
-                           </div>
-                        <%}else{ %>
-						  <button class="btn btn-sm btn-outline-dark mb-2 show-reply-btn">댓글</button>
-                       		<!-- 대댓글 입력 폼(처음에는 숨김) -->
-                        	<div class="d-none form-div">
-                            	<form action="save-comment.jsp" method="post">
-                            		<!-- 원글의 글번호, 댓글 대상자의 userName, 댓글의 그룹번호도 같이 전송해야한다
-                            		input type = "hidden"으로 들고간다.  -->
-                            	<input type="hidden" name="parentNum" value="<%=dto.getNum() %>" />
-                            	<input type="hidden" name="targetWriter" value="<%=tmp.getWriter() %>" />
-                            	<input type="hidden" name="groupNum" value="<%=tmp.getGroupNum() %>"/>
-                            	<input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>" />
-                                <textarea name="content" class="form-control mb-3" rows="2" 
-                                        placeholder="댓글을 입력하세요"></textarea>
-                                <button type="submit" class="btn btn-sm btn-dark">등록</button>
-                                <button type="reset" class="btn btn-sm btn-secondary cancel-reply-btn">취소</button>
-                            </form>
-                        </div>
-                        <%} %>
-                </div>
-            </div><!-- .card-body -->
-			<%} %>
-         </div><!-- .card -->
-		 <%} %>
-		 
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
 </div>
+<script>
+  // 수정 버튼 누르면 폼 보여주기
+  document.querySelectorAll(".edit-btn").forEach(item => {
+    item.addEventListener("click", () => {
+      item.classList.add("d-none");
+      const formDiv = item.nextElementSibling;
+      formDiv.classList.remove("d-none");
+
+      // 댓글 버튼 숨기기
+      const replyBtn = item.closest(".card").querySelector(".show-reply-btn");
+      if (replyBtn) replyBtn.classList.add("d-none");
+    });
+  });
+
+  // 수정 취소 버튼
+  document.querySelectorAll(".cancel-edit-btn").forEach(item => {
+    item.addEventListener("click", () => {
+      const formDiv = item.closest(".form-div");
+      formDiv.classList.add("d-none");
+      formDiv.previousElementSibling.classList.remove("d-none");
+
+      const replyBtn = item.closest(".card").querySelector(".show-reply-btn");
+      if (replyBtn) replyBtn.classList.remove("d-none");
+    });
+  });
+
+  // 대댓글 버튼 눌렀을 때
+  document.querySelectorAll(".show-reply-btn").forEach(item => {
+    item.addEventListener("click", () => {
+      item.classList.add("d-none");
+      item.nextElementSibling.classList.remove("d-none");
+    });
+  });
+
+  // 대댓글 취소 버튼
+  document.querySelectorAll(".cancel-reply-btn").forEach(item => {
+    item.addEventListener("click", () => {
+      const formDiv = item.closest(".form-div");
+      formDiv.classList.add("d-none");
+      formDiv.previousElementSibling.classList.remove("d-none");
+    });
+  });
+</script>
 </body>
 </html>
