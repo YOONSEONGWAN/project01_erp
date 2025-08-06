@@ -59,8 +59,9 @@
 <body>
     <nav aria-label="breadcrumb" style="width: 100%; max-width: 900px; margin-bottom: 20px;">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
-        <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp"> 입고 / 출고</a></li>
         <li class="breadcrumb-item active" aria-current="page"> 입고 상세 내역</li>
       </ol>
     </nav>
@@ -90,9 +91,7 @@
             </tbody>
         </table>
 
-        <div class="text-center mt-4">
-            <a href="inandout.jsp" class="btn btn-outline-primary">돌아가기</a>
-        </div>
+        
     </div>
 
 </body>

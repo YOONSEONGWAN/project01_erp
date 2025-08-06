@@ -42,12 +42,12 @@
         <div>
             <h1 class="mb-5 text-center">발주 관리 메뉴</h1>
             <div class="d-flex justify-content-center gap-4">
-                <a href="${pageContext.request.contextPath}/stock/stock.jsp" class="menu-button hq">
-                    재고 관리
-                </a>
-                <a href="${pageContext.request.contextPath}/stock/placeorder.jsp" class="menu-button branch">
-                    발주 관리
-                </a>
+                <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp" class="menu-button hq">
+    				재고 관리
+				</a>
+				<a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder.jsp" class="menu-button branch">
+   					 발주 관리
+				</a>
             </div>
         </div>
     </div>

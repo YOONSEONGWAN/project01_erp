@@ -71,10 +71,10 @@
             <p class="text-muted">원하는 메뉴를 선택하세요</p>
 
             <div class="menu-box">
-                <a href="stocklist.jsp" class="menu-card bg-gray">
+                <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp" class="menu-card bg-gray">
                     재고 리스트
                 </a>
-                <a href="inandout.jsp" class="menu-card bg-blue">
+                <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp"" class="menu-card bg-blue">
                     입고 / 출고
                 </a>
             </div>

@@ -45,14 +45,18 @@
             margin: 0;
         }
         body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center; /* 가로 중앙 */
-            align-items: center;     /* 세로 중앙 */
-            padding: 20px;
-            box-sizing: border-box;
-            min-height: 100vh;
-        }
+    background-color: #f8f9fa;
+    min-height: 100vh;
+
+    /* 기존 중앙 정렬 제거 */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: center; */
+    /* align-items: center; */
+
+    margin: 0;
+    padding: 20px;
+}
         .container {
             max-width: 960px;
             width: 100%;
@@ -173,16 +177,16 @@
 <div class="container">
     <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/index/headquaterindex.jsp">홈</a></li>
-            <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
-            <li class="breadcrumb-item"><a href="placeorder_branch.jsp">지점 발주</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp">홈</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder.jsp">발주 관리</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch.jsp">지점 발주</a></li>
             <li class="breadcrumb-item active" aria-current="page">전체 발주 내역</li>
         </ol>
     </nav>
 
     <h2>전체 발주 내역 (지점)</h2>
 
-    <form method="get" action="placeorder_branch_all.jsp" class="search-bar">
+    <form method="get" action="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp" class="search-bar">
         <input type="text" name="managerKeyword" class="form-control form-control-sm me-2"
                placeholder="담당자 검색" style="max-width:200px;" value="<%= managerKeyword %>">
         <button type="submit" class="btn btn-primary btn-sm">검색</button>
@@ -205,14 +209,14 @@
                     for (PlaceOrderBranchDto dto : list) { %>
                     <tr>
                         <td>
-                            <a href="placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>">
+                            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>">
                                 <%= dto.getOrder_id() %>
                             </a>
                         </td>
                         <td><%= dto.getDate() %></td>
                         <td><%= dto.getManager() %></td>
                         <td>
-                            <a href="placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>"
+                            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>"
                                class="btn btn-sm btn-outline-primary">상세 보기</a>
                         </td>
                     </tr>
@@ -226,7 +230,7 @@
         <ul class="pagination pagination-sm">
             <% if (currentPage > 1) { %>
                 <li class="page-item">
-                    <a class="page-link" href="placeorder_branch_all.jsp?page=<%= currentPage-1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
+                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp?page=<%= currentPage-1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
                 </li>
             <% } else { %>
                 <li class="page-item disabled"><span class="page-link">이전</span></li>
@@ -237,13 +241,13 @@
                     <li class="page-item active"><span class="page-link"><%= i %></span></li>
                 <% } else { %>
                     <li class="page-item">
-                        <a class="page-link" href="placeorder_branch_all.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
+                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
                     </li>
             <% }} %>
 
             <% if (currentPage < totalPages) { %>
                 <li class="page-item">
-                    <a class="page-link" href="placeorder_branch_all.jsp?page=<%= currentPage+1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
+                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp?page=<%= currentPage+1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
                 </li>
             <% } else { %>
                 <li class="page-item disabled"><span class="page-link">다음</span></li>
@@ -251,9 +255,7 @@
         </ul>
     </nav>
 
-    <div class="text-center mt-3">
-        <a href="placeorder_branch.jsp" class="btn btn-outline-secondary btn-sm">돌아가기</a>
-    </div>
+    
 </div>
 
 </body>

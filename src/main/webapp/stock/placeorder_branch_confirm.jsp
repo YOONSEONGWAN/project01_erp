@@ -38,8 +38,8 @@
         return;
     }
 
-    StockRequestDao stockRequestDao = new StockRequestDao();
-    IngredientDao ingredientDao = new IngredientDao();
+    StockRequestDao stockRequestDao = StockRequestDao.getInstance();
+    IngredientDao ingredientDao = IngredientDao.getInstance();
     PlaceOrderBranchDetailDao placeOrderBranchDetailDao = PlaceOrderBranchDetailDao.getInstance();
     OutboundOrdersDao outboundOrdersDao = OutboundOrdersDao.getInstance();
     InventoryDao inventoryDao = InventoryDao.getInstance();
@@ -69,7 +69,7 @@
                 String product = stockRequestDao.getProductByOrderId(currentOrderId);
                 int currentQty = stockRequestDao.getQuantityByOrderId(currentOrderId);
                 String branchId = stockRequestDao.getBranchIdByOrderId(currentOrderId);
-                int inventoryId = stockRequestDao.getInventoryIdByOrderId(currentOrderId);
+                int inventoryId = StockRequestDao.getInstance().getInventoryIdByOrderId(currentOrderId);
 
                 lastBranchId = branchId;
 

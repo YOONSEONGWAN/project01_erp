@@ -33,9 +33,9 @@
         <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a>
+                    <a href="${pageContext.request.contextPath}/headquater.jsp">홈</a>
                 </li>
-                <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
                 <li class="breadcrumb-item active" aria-current="page">입고 / 출고</li>
             </ol>
         </nav>
@@ -61,13 +61,13 @@
                         <td><%= dto.getIn_date() != null ? dto.getIn_date() : "-" %></td>
                         <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
                         <td>
-                            <a href="inbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
+                            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
                         </td>
                     </tr>
             <% } } %>
             </tbody>
         </table>
-        <a href="inbound_list.jsp" class="btn btn-link mb-4">전체 입고 내역 보기</a>
+        <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inbound_list.jsp" class="btn btn-link mb-4">전체 입고 내역 보기</a>
 
         <!-- 출고 내역 -->
         <h2 class="mb-3 fw-bold text-center">출고 처리 내역 (최근 10건)</h2>
@@ -90,13 +90,13 @@
                         <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
                         <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
                         <td>
-                            <a href="outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
+                            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
                         </td>
                     </tr>
             <% } } %>
             </tbody>
         </table>
-        <a href="outbound_list.jsp" class="btn btn-link">전체 출고 내역 보기</a>
+        <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/outbound_list.jsp" class="btn btn-link">전체 출고 내역 보기</a>
 
     </div> <!-- /.main-wrapper -->
 

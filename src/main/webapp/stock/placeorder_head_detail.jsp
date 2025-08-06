@@ -33,13 +33,18 @@
             background-color: #f8f9fa;
         }
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            box-sizing: border-box;
-            min-height: 100vh;
-        }
+    background-color: #f8f9fa;
+    min-height: 100vh;
+
+    /* 기존 중앙 정렬 제거 */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: center; */
+    /* align-items: center; */
+
+    margin: 0;
+    padding: 20px;
+}
         .container {
             max-width: 960px;
             width: 100%;
@@ -78,9 +83,9 @@
 <div class="container py-5">
     <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/index/headquaterindex.jsp">홈</a></li>
-        <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
-        <li class="breadcrumb-item"><a href="placeorder_head.jsp">본사 발주</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder.jsp">발주 관리</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head.jsp">본사 발주</a></li>
         <li class="breadcrumb-item active" aria-current="page">상세 발주 내역</li>
       </ol>
     </nav>
@@ -108,7 +113,7 @@
                     <td><%= dto.getApproval_status() %></td>
                     <td><%= dto.getManager() %></td>
                     <td>
-                        <a href="placeorder_head_editform.jsp?detail_id=<%= dto.getDetail_id() %>&order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-outline-primary">수정</a>
+                        <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_editform.jsp?detail_id=<%= dto.getDetail_id() %>&order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-outline-primary">수정</a>
                     </td>
                 </tr>
                 <% } %>
@@ -116,9 +121,7 @@
         </table>
     </div>
 
-    <div class="text-center">
-        <a href="placeorder_head.jsp" class="btn btn-outline-secondary">돌아가기</a>
-    </div>
+    
 </div>
 
 </body>

@@ -83,9 +83,9 @@
         <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a>
+                    <a href="${pageContext.request.contextPath }/headquater.jsp">홈</a>
                 </li>
-                <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
                 <li class="breadcrumb-item active" aria-current="page">재고 목록</li>
             </ol>
         </nav>

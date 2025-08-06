@@ -6,7 +6,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%
-    List<StockRequestDto> list2 = new StockRequestDao().selectAll();
+    List<StockRequestDto> list2 = StockRequestDao.getInstance().selectAll();
     List<PlaceOrderBranchDto> recentList = PlaceOrderBranchDao.getInstance().getRecentOrders();
 %>
 
@@ -20,17 +20,18 @@
 
     <style>
     body {
-        background-color: #f8f9fa;
-        min-height: 100vh;
+    background-color: #f8f9fa;
+    min-height: 100vh;
 
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+    /* 기존 중앙 정렬 제거 */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: center; */
+    /* align-items: center; */
 
-        margin: 0;
-        padding: 20px;
-    }
+    margin: 0;
+    padding: 20px;
+}
     h2 {
         text-align: center;
         margin-top: 40px;
@@ -77,13 +78,13 @@
 <div class="section">
 	<nav aria-label="breadcrumb" style="margin-bottom: 20px;">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
-        <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder.jsp">발주 관리</a></li>
         <li class="breadcrumb-item active" aria-current="page">발주 신청 내역 </li>
       </ol>
     </nav>
     <h2>발주 신청 내역</h2>
-    <form action="placeorder_branch_confirm.jsp" method="post">
+    <form action="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_confirm.jsp" method="post">
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -143,7 +144,7 @@
                 <td><%= poDto.getDate() %></td>
                 <td><%= poDto.getManager() %></td>
                 <td>
-                    <a href="placeorder_branch_detail.jsp?order_id=<%= poDto.getOrder_id() %>"
+                    <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%= poDto.getOrder_id() %>"
                        class="btn btn-sm btn-outline-primary">상세 보기</a>
                 </td>
             </tr>
@@ -152,8 +153,8 @@
     </table>
 
     <div class="text-center">
-        <a href="placeorder_branch_all.jsp" class="btn btn-outline-secondary btn-sm">전체 발주 내역 보기</a>
-        <a href="placeorder.jsp" class="btn btn-outline-secondary btn-sm">돌아가기</a>
+        <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp" class="btn btn-outline-secondary btn-sm">전체 발주 내역 보기</a>
+        
     </div>
 </div>
 

@@ -47,9 +47,9 @@
 
         <nav aria-label="breadcrumb" class="mb-3">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
-                <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
-                <li class="breadcrumb-item"><a href="inandout.jsp">입고 / 출고</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp">입고 / 출고</a></li>
                 <li class="breadcrumb-item active" aria-current="page">전체 출고 내역</li>
             </ol>
         </nav>
@@ -97,7 +97,7 @@
                                 <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
                                 <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
                                 <td>
-                            		<a href="outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
+                            		<a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
                         		</td>
                             </tr>
                     <%  } } %>

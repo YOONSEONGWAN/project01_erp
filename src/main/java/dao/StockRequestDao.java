@@ -680,4 +680,24 @@ public class StockRequestDao {
         return isSuccess;
     }
     
+    public int getInventoryIdByOrderId(int orderId) {
+        int inventoryId = 0;
+        String sql = "SELECT inventory_id FROM stock_requests WHERE order_id = ?";
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, orderId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    inventoryId = rs.getInt("inventory_id");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return inventoryId;
+    }
+    
 }
