@@ -9,6 +9,7 @@ import java.util.List;
 import dto.WorkLogDto;
 import util.DbcpBean;
 
+//change
 public class WorkLogDao{
 	private static WorkLogDao dao;
 	
