@@ -36,6 +36,7 @@
     <% } %>
     
     <br>
-    <a href="list.jsp">← 목록으로</a>
+   <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp">← 목록으로</a>
+
 </body>
 </html>

@@ -77,7 +77,7 @@
       </ol>
     </nav>
 
-    <h2>입고 상세 내역 (Order ID: <%= orderId %>)</h2>
+    <h2>출고 상세 내역 (Order ID: <%= orderId %>)</h2>
 
     <div class="table-container">
         <table class="table table-bordered table-hover align-middle">

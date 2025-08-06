@@ -4,8 +4,10 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
 <%
     request.setCharacterEncoding("UTF-8");
+
     String start = request.getParameter("start");
     String end = request.getParameter("end");
 
@@ -22,14 +24,34 @@
         totalSum += dto.getTotalSales();
     }
 %>
-<h2>연간 매출 통계</h2>
-<table class="table table-bordered">
-    <tr><th>연도</th><th>지점</th><th>매출 합계</th></tr>
-    <% for (SalesDto dto : list) { %>
-        <tr>
-            <td><%= dto.getPeriod() %></td>
-            <td><%= dto.getBranch_name() %></td>
-            <td><%= nf.format(dto.getTotalSales()) %></td>
-        </tr>
-    <% } %>
-</table>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>연간 매출 통계</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <h2 class="mb-4">연간 매출 통계</h2>
+
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>연도</th>
+                <th>지점</th>
+                <th>매출 합계</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(SalesDto dto : list) { %>
+                <tr>
+                    <td><%= dto.getPeriod() %></td>
+                    <td><%= dto.getBranch_name() %></td>
+                    <td><%= nf.format(dto.getTotalSales()) %> 원</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+</html>

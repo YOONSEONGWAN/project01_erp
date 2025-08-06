@@ -73,7 +73,7 @@ public class PlaceOrderHeadDao {
         List<PlaceOrderHeadDto> list = new ArrayList<>();
         String sql = """
             SELECT * FROM (
-                SELECT * FROM placeOrder_head ORDER BY order_date DESC
+                SELECT * FROM placeOrder_head ORDER BY order_id DESC
             ) WHERE ROWNUM <= 10
         """;
         try (

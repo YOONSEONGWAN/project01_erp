@@ -25,21 +25,10 @@
     <meta charset="UTF-8">
     <title>/sales/yearly-max.jsp</title>
 </head>
-<body>
-    <h1>지점별 연간 최고 매출일</h1>
-
-    <!-- 날짜 필터 
-    <form method="get" action="<%=request.getContextPath()%>/sales/yearly-max.jsp">
-        시작일: <input type="date" name="start" value="<%=start != null ? start : "" %>">
-        종료일: <input type="date" name="end" value="<%=end != null ? end : "" %>">
-        <button type="submit">조회</button>
-    </form>
-    -->
-
-    <br />
-
+<body class="container mt-4">
+    <h2 class="mb-4">지점별 연간 최고 매출일</h2>
     <table class="table table-bordered">
-        <thead>
+        <thead class="table-light">
             <tr>
                 <th>번호</th>
                 <th>연도</th>

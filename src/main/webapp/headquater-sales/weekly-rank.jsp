@@ -25,21 +25,10 @@
 <meta charset="UTF-8">
 <title>/sales/weekly-rank.jsp</title>
 </head>
-<body>
-    <h1>지점별 주간 매출 순위</h1>
-
-    <!-- 날짜 필터 
-    <form method="get" action="<%=request.getContextPath()%>/sales/weekly-rank.jsp">
-        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
-        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
-        <button type="submit">조회</button>
-    </form>
-    -->
-
-    <br/>
-
+<body class="container mt-4">
+    <h2 class="mb-4">지점별 주간 매출 순위</h2>
     <table class="table table-bordered">
-        <thead>
+        <thead class="table-light">
             <tr>
                 <th>순위</th>
                 <th>주차</th>

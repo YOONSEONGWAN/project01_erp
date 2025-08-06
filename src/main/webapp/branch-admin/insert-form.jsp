@@ -13,6 +13,13 @@
 </head>
 <body>
 	<div class="container">
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+		    <li class="breadcrumb-item active" aria-current="page">지점 등록</li>
+		  </ol>
+		</nav>
 	
 		<div class="row d-flex align-self-center align-items-center justify-content-center" style="min-height: 100vh;">
 			<div class="col col-lg-5 col-md-6 mx-auto">

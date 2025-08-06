@@ -29,7 +29,7 @@ public class PlaceOrderBranchDao {
 	    String sql = """
 	        SELECT * FROM (
 	            SELECT * FROM placeOrder_branch
-	            ORDER BY order_date DESC
+	            ORDER BY order_id DESC
 	        ) t
 	        WHERE ROWNUM <= 10
 	    """;
@@ -83,9 +83,6 @@ public class PlaceOrderBranchDao {
 	    try {
 	        conn = new DbcpBean().getConn();
 
-	        // 자동 커밋 해제(필요하면)
-	        conn.setAutoCommit(false);
-
 	        // 1단계: 시퀀스에서 NEXTVAL로 새 order_id 먼저 얻기
 	        String seqSql = "SELECT placeOrder_branch_seq.NEXTVAL AS order_id FROM dual";
 	        pstmt = conn.prepareStatement(seqSql);
@@ -106,8 +103,7 @@ public class PlaceOrderBranchDao {
 	        pstmt.setString(2, manager);
 	        pstmt.executeUpdate();
 
-	        // 커밋을 반드시 수행
-	        conn.commit();
+	        
 
 	    } catch (Exception e) {
 	        e.printStackTrace();

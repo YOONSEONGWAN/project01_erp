@@ -23,22 +23,12 @@
 <head>
     <meta charset="UTF-8">
     <title>/sales/weekly-max.jsp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>지점별 주간 최고 매출일</h1>
-
-    <!--
-    <form method="get" action="<%=request.getContextPath()%>/sales/weekly-max.jsp">
-        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
-        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
-        <button type="submit">조회</button>
-    </form>
-    -->
-
-    <br />
-
-    <table border="1">
-        <thead>
+<body class="container mt-4">
+    <h2>지점별 주간 최고 매출일</h2>
+    <table class="table table-bordered">
+        <thead class="table-light">
             <tr>
                 <th>번호</th>
                 <th>주차</th>

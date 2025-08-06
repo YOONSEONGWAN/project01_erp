@@ -130,7 +130,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>주문번호</th>
+                <th>발주 ID</th>
                 <th>발주일</th>
                 <th>담당자</th>
                 <th>상세 보기</th>

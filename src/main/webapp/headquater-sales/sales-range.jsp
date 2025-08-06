@@ -23,7 +23,7 @@
     <title>기간별 매출 통계</title>
 </head>
 <body>
-    <h1>📆 날짜 범위 기반 매출 통계</h1>
+    <h1>날짜 범위 기반 매출 통계</h1>
 
    	<form method="get" action="<%= request.getContextPath() %>/sales/sales-range.jsp">
 

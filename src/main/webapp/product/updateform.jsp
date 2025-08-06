@@ -76,7 +76,7 @@
 			    <input type="file" name="imagePath" id="imagePath" accept="image/*">
 			</div>
             <button type="submit">수정 확인</button>
-			<button type="button" onclick="location.href='<%= request.getContextPath() %>/product/list.jsp'">취소</button>
+			<button type="button" onclick="window.location.href='<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp'">취소</button>
 
         </form>
     </div>

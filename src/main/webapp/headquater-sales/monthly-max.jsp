@@ -26,20 +26,10 @@
     <meta charset="UTF-8">
     <title>/sales/monthly-max.jsp</title>
 </head>
-<body>
-    <h1>지점별 월간 최고 매출일</h1>
-
-    <!-- 날짜 필터 
-    <form method="get" action="<%=request.getContextPath()%>/sales/monthly-max.jsp">
-        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
-        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
-        <button type="submit">조회</button>
-    </form>
-    -->
-
-    <br />
-
+<body class="container mt-4">
+    <h2 class="mb-4">지점별 월간 최고 매출일</h2>
     <table class="table table-bordered">
+    <thead class="table-light">
         <tr>
             <th>번호</th>
             <th>월간</th>
@@ -47,6 +37,7 @@
             <th>최고 매출일</th>
             <th>매출액</th>
         </tr>
+        </thead>
 
         <%
             int index = 1;

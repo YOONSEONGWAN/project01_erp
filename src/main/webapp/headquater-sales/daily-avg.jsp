@@ -27,18 +27,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container mt-4">
-
     <h2 class="mb-4">일 평균 매출 (지점별)</h2>
-
-    <!-- ✅ 카드 대신 테이블로 조회 정보 표시 -->
-    <table class="table table-bordered w-50 mb-4">
-        <tr>
-
-        </tr>
-    </table>
-
-    <table class="table table-striped table-bordered">
-        <thead>
+    <table class="table table-bordered">
+        <thead class="table-light">
             <tr>
                 <th>번호</th>
                 <th>지점</th>
@@ -65,3 +56,5 @@
 
 </body>
 </html>
+
+

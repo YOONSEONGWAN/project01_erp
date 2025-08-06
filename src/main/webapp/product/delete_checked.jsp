@@ -19,5 +19,7 @@
         int deleted = dao.deleteMultiple(nums);
     }
 
-    response.sendRedirect("list.jsp");
+    String redirectUrl = request.getContextPath() + "/headquater.jsp?page=product/list.jsp";
+    response.sendRedirect(redirectUrl);
+
 %>

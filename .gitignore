@@ -1,8 +1,16 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /build/
 /bin/
 >>>>>>> 0d452170f5169ce207b962348f38281249186603
+=======
+/bin/
+
+/build/
+/bin/
+
+>>>>>>> develop
 # Created by https://www.toptal.com/developers/gitignore/api/java,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse
 
@@ -106,7 +114,12 @@ replay_pid*
 !**/WEB-INF/lib/*.jar
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse
 =======
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse
 >>>>>>> 0d452170f5169ce207b962348f38281249186603
+=======
+
+# End of https://www.toptal.com/developers/gitignore/api/java,eclipse
+>>>>>>> develop

@@ -23,6 +23,7 @@ private static SalesDao dao;
 		return dao;
 	}
 	
+	
 	// 달력 기능 메소드
 	
 	public SalesDto getStatsBetweenDates(String start, String end) {

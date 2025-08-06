@@ -23,6 +23,9 @@ public class SalesDto {
     private String topBranchName;
     private int topBranchSales;
     
+    private int startRowNum;
+    private int endRowNum;
+    private String keyword;
 	public int getSales_id() {
 		return sales_id;
 	}
@@ -125,7 +128,25 @@ public class SalesDto {
 	public void setTopBranchSales(int topBranchSales) {
 		this.topBranchSales = topBranchSales;
 	}
+	public int getStartRowNum() {
+		return startRowNum;
+	}
+	public void setStartRowNum(int startRowNum) {
+		this.startRowNum = startRowNum;
+	}
+	public int getEndRowNum() {
+		return endRowNum;
+	}
+	public void setEndRowNum(int endRowNum) {
+		this.endRowNum = endRowNum;
+	}
+	public String getKeyword() {
+		return keyword;
+	}
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
     
-    
-    
+
 }
