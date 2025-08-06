@@ -19,12 +19,21 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/detail.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-	<div>
-		<h1>지점 상세 보기</h1>
-		<a href="list.jsp">지점 목록으로 돌아가기</a>
-		<table>
+	<div class="container position-relative">
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+			<li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/list.jsp">지점 목록</a></li>
+		    <li class="breadcrumb-item active" aria-current="page">지점 상세보기</li>
+		  </ol>
+		</nav>
+	
+		<h1 class="text-center">지점 상세 보기</h1>
+		<table class="table table-bordered w-75 mx-auto">
 			<tr>
 				<th>지점 고유 번호</th>
 				<td><%=dto.getBranch_id() %></td>
@@ -42,12 +51,14 @@
 				<td><%=dto.getPhone() %></td>
 			</tr>
 			<tr>
-				<th>지점장 이름</th>
+				<th>지점장 목록</th>
 				<td>
 					<%for(UserDtoAdmin manager : managerList){%>
 						<a href="roleupdate-form.jsp?num=<%=manager.getNum()%>"><%=manager.getUser_name() %></a> <br/>
 					<%} %>
 				</td>
+			</tr>
+			<tr>
 				<th>직원 목록</th>
 				<td>
 					<%for(UserDtoAdmin clerk : clerkList){%>
@@ -70,10 +81,8 @@
 				<td><%=dto.getStatus() %></td>
 			</tr>
 		</table>
-	</div>
-	<div>
-	<a href="#" id="delete-btn" data-num="<%=dto.getNum()%>">삭제</a>
-	</div>
+		<a class="btn btn-sm btn-warning position-absolute" style="right:12.5%;" href="#" id="delete-btn" data-num="<%=dto.getNum()%>">삭제</a>
+	</div>	
 	<script>
 		document.querySelector("#delete-btn").addEventListener("click", (e) => {
 			e.preventDefault(); // 링크의 기본 동작 막기
@@ -84,5 +93,17 @@
 			}
 		});
 	</script>
+	<%
+		String alertMsg = (String) session.getAttribute("alertMsg");
+			if (alertMsg != null) {
+				session.removeAttribute("alertMsg"); // 한 번 쓰고 지워줌
+	%>
+		<script>
+			alert("<%= alertMsg %>");
+		</script>
+	<%
+			}
+	%>
+	
 </body>
 </html>

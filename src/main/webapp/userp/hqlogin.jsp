@@ -8,6 +8,17 @@
 	String userId = request.getParameter("userId");
 	String password = request.getParameter("password");
 	
+	boolean isHQ = "HQ".equalsIgnoreCase(branchId);
+    if (!isHQ) {
+%>
+    <script>
+        alert("이 페이지는 본사 전용 로그인입니다. 본사 코드는 'HQ'여야 합니다.");
+        history.back();
+    </script>
+<%
+        return; // 잘못된 본사코드면 로그인 시도 자체를 막음
+    }
+	
 	boolean isValid = false;
 	UserDto dto = UserDao.getInstance().getByBIandUI(branchId, userId);
 	if(dto != null) {
@@ -15,9 +26,10 @@
 	}
 	
 	if(isValid) {
-		session.setAttribute("branchId", branchId);
 		session.setAttribute("userId", userId);
+		session.setAttribute("branchId", branchId);
 		session.setAttribute("role", dto.getRole());
+
 		session.setMaxInactiveInterval(60*60);
 		// 로그인 성공 -> /index/headquaterindex.jsp 로 이동
 		response.sendRedirect(request.getContextPath()+ "/index/headquaterindex.jsp");

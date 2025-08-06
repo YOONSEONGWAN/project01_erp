@@ -1,9 +1,11 @@
 package dao.stock;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -241,8 +243,8 @@ public class OutboundOrdersDao {
             SELECT * FROM (
                 SELECT order_id, branch_id, approval, TO_CHAR(out_date, 'YYYY-MM-DD') AS out_date, manager
                 FROM outbound_orders
-                WHERE approval IN ('승인', '완료')
-                ORDER BY out_date DESC
+                WHERE approval IN ('승인', '완료','처리됨')
+                ORDER BY order_id DESC
             )
             WHERE ROWNUM <= ?
         """;
@@ -269,6 +271,7 @@ public class OutboundOrdersDao {
 
         return list;
     }
+
     
     public List<OutboundOrdersDto> selectByManagerWithPaging(String managerKeyword, int currentPage, int pageSize) {
         List<OutboundOrdersDto> list = new ArrayList<>();
@@ -282,7 +285,7 @@ public class OutboundOrdersDao {
                     SELECT order_id, branch_id, approval, out_date, manager
                     FROM outbound_orders
                     WHERE manager LIKE ?
-                    ORDER BY out_date DESC
+                    ORDER BY order_id DESC
                 ) inner_query
                 WHERE ROWNUM <= ?
             )
@@ -341,6 +344,31 @@ public class OutboundOrdersDao {
         }
 
         return count;
+    }
+    
+    public boolean insert(int orderId, String branchId, String approval, String outDate, String manager) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int flag = 0;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = "INSERT INTO outbound_orders (order_id, branch_id, approval, out_date, manager) VALUES (?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            pstmt.setString(2, branchId);
+            pstmt.setString(3, approval);
+            pstmt.setString(4, outDate);
+            pstmt.setString(5, manager);
+            flag = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return flag > 0;
     }
 }
 

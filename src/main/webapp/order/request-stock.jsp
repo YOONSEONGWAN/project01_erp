@@ -30,6 +30,7 @@ for(int i=0; i<100; i++) {
     if(requestQuantity <= 0) continue; // 요청수량이 0 이하면 skip
 
 
+
     StockRequestDto dto = new StockRequestDto();
     dto.setBranchNum(Integer.parseInt(branchNumStr));
     dto.setBranchId(branchId);
@@ -42,10 +43,10 @@ for(int i=0; i<100; i++) {
     requests.add(dto);
 }
 
-StockRequestDao dao = new StockRequestDao();
+
 boolean isSuccess = false;
 if(!requests.isEmpty()) {
-    isSuccess = dao.batchInsertRequest(requests);
+    isSuccess = StockRequestDao.getInstance().batchInsertRequest(requests);
 }
 %>
 <!DOCTYPE html>

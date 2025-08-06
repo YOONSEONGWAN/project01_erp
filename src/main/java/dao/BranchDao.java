@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import dto.BranchDto;
 import dto.UserDtoAdmin;
@@ -24,6 +25,42 @@ public class BranchDao {
 	//참조값을 리턴해주는 static 메소드 제공
 	public static BranchDao getInstance() {
 		return dao;
+	}
+	
+	// 랜덤한 branch_id 생성
+	public String generate() {
+		Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Random rand = new Random();
+        String branchId = null;
+
+        try {
+            conn = new DbcpBean().getConn();
+
+            while (true) {
+                int num = rand.nextInt(100000);
+                String candidate = "JB" + String.format("%05d", num);
+
+                String sql = "SELECT COUNT(*) FROM branches WHERE branch_id = ?";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, candidate);
+                rs = pstmt.executeQuery();
+                if (rs.next() && rs.getInt(1) == 0) {
+                    branchId = candidate;
+                    break;
+                }
+
+                rs.close();
+                pstmt.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); if (pstmt != null) pstmt.close(); if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+
+        return branchId;
 	}
 	
 	// 직원 목록 반환
@@ -200,25 +237,24 @@ public class BranchDao {
 			//실행할 sql문
 			String sql = """
 					SELECT *
-						FROM (
-							SELECT 
-								b.num,
-								b.branch_id,
-								b.name,
-								b.address,
-								b.phone,
-								u.user_name,
-								u.num AS user_num,
-								b.status,
-								TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
-								TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
-							FROM branches b
-							LEFT OUTER JOIN  (
+					FROM (
+					SELECT 
+						b.num,
+						b.branch_id,
+						b.name,
+						b.address,
+						b.phone,
+						u.user_name,
+						b.status,
+						TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at,
+						TO_CHAR(b.updated_at, 'YY"년" MM"월" DD"일" HH24:MI') AS updated_at
+					FROM branches b
+					LEFT OUTER JOIN  (
 								SELECT * FROM users_p WHERE role = 'manager'
-							) u ON b.branch_id = u.branch_id
+					) u ON b.branch_id = u.branch_id
 						) 
-						WHERE num = ?
-					""";
+					WHERE num = ?
+				""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
 			pstmt.setInt(1, num);
