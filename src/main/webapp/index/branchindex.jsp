@@ -10,7 +10,6 @@
 <head>
 <meta charset="UTF-8">
 <title>/index/branchindex.jsp</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
 	<h1>지점 인덱스</h1>
