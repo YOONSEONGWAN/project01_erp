@@ -42,8 +42,10 @@
 
       <!-- 지점관리 -->
       <li class="nav-item">
-        <a class="nav-link <%= "branch-admin/list.jsp".equals(pageParam) ? "active" : "" %>"
-           href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">지점관리</a>
+        <a class="nav-link <%= "branch-admin/list.jsp".equals(request.getParameter("page")) ? "active" : "" %>"
+           href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/main.jsp">
+           지점관리
+        </a>
       </li>
 
       <!-- 게시판 -->
