@@ -177,122 +177,107 @@ public class BoardDao {
     // 특정 page 와 keyword 에 해당하는 row 만 select 해서 리턴하는 메소드
  	// BoardDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
  	public List<BoardDto> selectPageByKeyword(BoardDto dto) {
- 		List<BoardDto> list=new ArrayList<>();
- 		
- 		Connection conn = null;
- 		PreparedStatement pstmt = null;
- 		ResultSet rs = null;
- 		try {
- 			conn = new DbcpBean().getConn();
- 			// 실행할 sql 문 
- 			String sql = """
- 					SELECT *
- 					FROM
- 						(SELECT result1.*, ROWNUM AS rnum
- 						FROM
- 							(SELECT num, writer, title, view_count, created_at
- 							FROM board_p
- 							WHERE title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%'
- 							ORDER BY num DESC) result1)
- 					WHERE rnum BETWEEN ? AND ?
- 					""";
- 			pstmt = conn.prepareStatement(sql);
- 			// ? 값에 바인딩
- 			pstmt.setString(1, dto.getKeyword());
- 			pstmt.setString(2, dto.getKeyword());
- 			pstmt.setInt(3, dto.getStartRowNum());
- 			pstmt.setInt(4, dto.getEndRowNum());
- 			// select 문 실행하고 결과를 ResultSet 으로 받아온다. 
- 			rs = pstmt.executeQuery();
- 			// 반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 어떤 객체에 담는다. 
- 			while (rs.next()) {
- 				// 커서가 위치한 곳의 회원정보를 저장할 MemberDto 객체 생성 
- 				BoardDto dto2=new BoardDto();
- 				dto2.setNum(rs.getInt("num"));
- 				dto2.setWriter(rs.getString("writer"));
- 				dto2.setTitle(rs.getString("title"));
- 				dto2.setView_count(rs.getInt("view_count"));
- 				dto2.setCreated_at(rs.getString("created_at"));
- 				dto2.setBoard_type(dto.getBoard_type()); 
- 				list.add(dto2);
- 			}
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		} finally {
- 			try {
- 				// 메소드 호출하기 전에 null 인지 아닌지 체크, 아닌경우에만 호출하도록 
- 				// 닫아줄때 위에서 객체를 선언한 conn, pstmt, rs 순의 반대 순으로 닫아준다
- 				// rs -> pstmt -> conn 
- 				if (rs != null)
- 					pstmt.close();
- 				if (pstmt != null)
- 					pstmt.close();
- 				if (conn != null)
- 					conn.close();
- 			} catch (Exception e) {}
- 		}
- 		return list;
+ 	    List<BoardDto> list = new ArrayList<>();
+ 	    Connection conn = null;
+ 	    PreparedStatement pstmt = null;
+ 	    ResultSet rs = null;
+
+ 	    try {
+ 	        conn = new DbcpBean().getConn();
+ 	        String sql = """
+ 	            SELECT *
+ 	            FROM (
+ 	                SELECT result.*, ROWNUM AS rnum
+ 	                FROM (
+ 	                    SELECT num, writer, title, view_count, created_at
+ 	                    FROM board_p
+ 	                    WHERE (title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%')
+ 	                      AND board_type = ?
+ 	                    ORDER BY num DESC
+ 	                ) result
+ 	                WHERE ROWNUM <= ?
+ 	            )
+ 	            WHERE rnum >= ?
+ 	        """;
+
+ 	        pstmt = conn.prepareStatement(sql);
+ 	        pstmt.setString(1, dto.getKeyword());
+ 	        pstmt.setString(2, dto.getKeyword());
+ 	        pstmt.setString(3, dto.getBoard_type());
+ 	        pstmt.setInt(4, dto.getEndRowNum());    // WHERE ROWNUM <= ?
+ 	        pstmt.setInt(5, dto.getStartRowNum());  // WHERE rnum >= ?
+
+ 	        rs = pstmt.executeQuery();
+ 	        while (rs.next()) {
+ 	            BoardDto dto2 = new BoardDto();
+ 	            dto2.setNum(rs.getInt("num"));
+ 	            dto2.setWriter(rs.getString("writer"));
+ 	            dto2.setTitle(rs.getString("title"));
+ 	            dto2.setView_count(rs.getInt("view_count"));
+ 	            dto2.setCreated_at(rs.getString("created_at"));
+ 	            dto2.setBoard_type(dto.getBoard_type());
+ 	            list.add(dto2);
+ 	        }
+ 	    } catch (Exception e) {
+ 	        e.printStackTrace();
+ 	    } finally {
+ 	        try { if (rs != null) rs.close(); } catch (Exception e) {}
+ 	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+ 	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+ 	    }
+ 	    return list;
  	}
     
     
     // 특정 page 에 해당하는 row 만 selelct 해서 리턴하는 메소드
  	// BoardDto 객체에 startRowNum 과 endRowNum 을 담아와서 select
  	public List<BoardDto> selectPage(BoardDto dto) {
- 		List<BoardDto> list=new ArrayList<>();
- 		
- 		Connection conn = null;
- 		PreparedStatement pstmt = null;
- 		ResultSet rs = null;
- 		try {
- 			conn = new DbcpBean().getConn();
- 			// 실행할 sql 문 
- 			String sql = """
- 					SELECT *
- 					FROM
- 						(SELECT result1.*, ROWNUM AS rnum
- 						FROM
- 							(SELECT num, writer, title, view_count, created_at
- 							FROM board_p
- 							WHERE board_type = ?
- 							ORDER BY num DESC) result1)
- 					WHERE rnum BETWEEN ? AND ?
- 					""";
- 			pstmt = conn.prepareStatement(sql);
- 			// ? 값에 바인딩
- 			pstmt.setString(1, dto.getBoard_type());
- 			pstmt.setInt(2, dto.getStartRowNum());
- 			pstmt.setInt(3, dto.getEndRowNum());
- 			// select 문 실행하고 결과를 ResultSet 으로 받아온다. 
- 			rs = pstmt.executeQuery();
- 			// 반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 어떤 객체에 담는다. 
- 			while (rs.next()) {
- 				// 커서가 위치한 곳의 회원정보를 저장할 MemberDto 객체 생성 
- 				BoardDto dto2=new BoardDto();
- 				dto2.setNum(rs.getInt("num"));
- 				dto2.setWriter(rs.getString("writer"));
- 				dto2.setTitle(rs.getString("title"));
- 				dto2.setView_count(rs.getInt("view_count"));
- 				dto2.setCreated_at(rs.getString("created_at"));
- 				dto2.setBoard_type(dto.getBoard_type()); 
- 				
- 				list.add(dto2);
- 			}
- 		} catch (Exception e) {
- 			e.printStackTrace();
- 		} finally {
- 			try {
- 				// 메소드 호출하기 전에 null 인지 아닌지 체크, 아닌경우에만 호출하도록 
- 				// 닫아줄때 위에서 객체를 선언한 conn, pstmt, rs 순의 반대 순으로 닫아준다
- 				// rs -> pstmt -> conn 
- 				if (rs != null)
- 					pstmt.close();
- 				if (pstmt != null)
- 					pstmt.close();
- 				if (conn != null)
- 					conn.close();
- 			} catch (Exception e) {}
- 		}
- 		return list;
+ 	    List<BoardDto> list = new ArrayList<>();
+ 	    
+ 	    Connection conn = null;
+ 	    PreparedStatement pstmt = null;
+ 	    ResultSet rs = null;
+ 	    try {
+ 	        conn = new DbcpBean().getConn();
+ 	        // 안전한 Oracle 페이징 쿼리
+ 	        String sql = """
+ 	            SELECT *
+ 	            FROM (
+ 	                SELECT result.*, ROWNUM AS rnum
+ 	                FROM (
+ 	                    SELECT num, writer, title, view_count, created_at
+ 	                    FROM board_p
+ 	                    WHERE board_type = ?
+ 	                    ORDER BY num DESC ) result
+ 	                WHERE ROWNUM <= ?
+ 	            )
+ 	            WHERE rnum >= ?
+ 	        """;
+
+ 	        pstmt = conn.prepareStatement(sql);
+ 	        pstmt.setString(1, dto.getBoard_type());        
+ 	        pstmt.setInt(2, dto.getEndRowNum());            
+ 	        pstmt.setInt(3, dto.getStartRowNum());         
+
+ 	        rs = pstmt.executeQuery();
+ 	        while (rs.next()) {
+ 	            BoardDto dto2 = new BoardDto();
+ 	            dto2.setNum(rs.getInt("num"));
+ 	            dto2.setWriter(rs.getString("writer"));
+ 	            dto2.setTitle(rs.getString("title"));
+ 	            dto2.setView_count(rs.getInt("view_count"));
+ 	            dto2.setCreated_at(rs.getString("created_at"));
+ 	            dto2.setBoard_type(dto.getBoard_type());
+ 	            list.add(dto2);
+ 	        }
+ 	    } catch (Exception e) {
+ 	        e.printStackTrace();
+ 	    } finally {
+ 	        try { if (rs != null) rs.close(); } catch (Exception e) {}
+ 	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+ 	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+ 	    }
+ 	    return list;
  	}
     
     

@@ -20,7 +20,7 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
 <head>
     <meta charset="UTF-8">
     <title>발주 현황</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+
     <style>
         table { border-collapse: collapse; width: 850px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
@@ -101,7 +101,7 @@ if (orderList == null || orderList.isEmpty()) {
 %>
 </table>
 <div style="margin-top:18px;">
-    <a href="insert.jsp" style="text-decoration:none;">
+    <a href="<%=request.getContextPath()%>/headquater.jsp?page=order/insert.jsp" style="text-decoration:none;">
         <button class="btn btn-update" type="button">새 발주 요청</button>
     </a>
 </div>

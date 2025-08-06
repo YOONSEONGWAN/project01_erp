@@ -40,118 +40,129 @@
 <meta charset="UTF-8">
 <title>직원 목록</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+</style>
 </head>
-<body class="p-3">
+<body>
 
-<!-- 탭 네비게이션 -->
-<ul class="nav nav-tabs mb-3">
-  <li class="nav-item">
-    <a class="nav-link <%= "admin".equals(from) ? "active" : "" %>" href="?page=hrm/list.jsp&from=admin">본사 직원</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link <%= "branch".equals(from) ? "active" : "" %>" href="?page=hrm/list.jsp&from=branch">지점 직원</a>
-  </li>
-</ul>
+<div class="container-fluid p-3">
 
-<!-- 본사 직원 -->
-<div class="<%= "admin".equals(from) ? "" : "d-none" %>">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>본사 직원 목록</h4>
-    <form method="get" action="<%= contextPath %>/headquater.jsp" class="d-flex">
-      <input type="hidden" name="page" value="hrm/list.jsp" />
-      <input type="hidden" name="from" value="admin" />
-      <input type="text" name="hqKeyword" class="form-control me-2" placeholder="이름 또는 직급 검색" value="<%= hqKeyword %>" style="max-width: 250px;" />
-      <button type="submit" class="btn btn-primary">검색</button>
-    </form>
-  </div>
-
-  <table class="table table-bordered table-hover align-middle text-center">
-    <thead class="table-secondary">
-      <tr><th>번호</th><th>이름</th><th>직급</th><th>상세 보기</th><th>삭제</th></tr>
-    </thead>
-    <tbody>
-    <%
-      int hqDisplayNum = (hqPageNum - 1) * hqPageSize + 1;
-      for(HrmDto dto : hqList) {
-    %>
-      <tr>
-        <td><%= hqDisplayNum++ %></td>
-        <td><%= dto.getName() %></td>
-        <td><%= dto.getRole() %></td>
-        <td><a class="btn btn-info btn-sm" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=admin">상세</a></td>
-        <td><a class="btn btn-danger btn-sm" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a></td>
-      </tr>
-    <% } %>
-    </tbody>
-  </table>
-
-  <!-- 페이지네이션 -->
-  <nav>
-    <ul class="pagination justify-content-center">
-      <li class="page-item <%= (hqPageNum == 1) ? "disabled" : "" %>">
-        <a class="page-link" href="?page=hrm/list.jsp&from=admin&hqPageNum=<%= hqPageNum - 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">이전</a>
+    <!-- 탭 네비게이션 -->
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <a class="nav-link <%= "admin".equals(from) ? "active" : "" %>" href="?page=hrm/list.jsp&from=admin">본사 직원</a>
       </li>
-      <% for(int i=1; i<=hqTotalPage; i++) { %>
-        <li class="page-item <%= (i == hqPageNum) ? "active" : "" %>">
-          <a class="page-link" href="?page=hrm/list.jsp&from=admin&hqPageNum=<%= i %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>"><%= i %></a>
-        </li>
-      <% } %>
-      <li class="page-item <%= (hqPageNum == hqTotalPage) ? "disabled" : "" %>">
-        <a class="page-link" href="?page=hrm/list.jsp&from=admin&hqPageNum=<%= hqPageNum + 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">다음</a>
+      <li class="nav-item">
+        <a class="nav-link <%= "branch".equals(from) ? "active" : "" %>" href="?page=hrm/list.jsp&from=branch">지점 직원</a>
       </li>
     </ul>
-  </nav>
-</div>
 
-<!-- 지점 직원 -->
-<div class="<%= "branch".equals(from) ? "" : "d-none" %>">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>지점 직원 목록</h4>
-    <form method="get" action="<%= contextPath %>/headquater.jsp" class="d-flex">
-      <input type="hidden" name="page" value="hrm/list.jsp" />
-      <input type="hidden" name="from" value="branch" />
-      <input type="text" name="branchKeyword" class="form-control me-2" placeholder="이름 또는 지점 검색" value="<%= branchKeyword %>" style="max-width: 250px;" />
-      <button type="submit" class="btn btn-primary">검색</button>
-    </form>
-  </div>
+    <!-- 본사 직원 -->
+    <div class="<%= "admin".equals(from) ? "" : "d-none" %>">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>본사 직원 목록</h4>
+        <form method="get" action="<%= contextPath %>/headquater.jsp" class="d-flex">
+          <input type="hidden" name="page" value="hrm/list.jsp" />
+          <input type="hidden" name="from" value="admin" />
+          <input type="text" name="hqKeyword" class="form-control me-2" placeholder="이름 또는 직급 검색" value="<%= hqKeyword %>" style="max-width: 250px;" />
+          <button type="submit" class="btn btn-primary">검색</button>
+        </form>
+      </div>
 
-  <table class="table table-bordered table-hover align-middle text-center">
-    <thead class="table-secondary">
-      <tr><th>번호</th><th>이름</th><th>직급</th><th>지점</th><th>상세 보기</th><th>삭제</th></tr>
-    </thead>
-    <tbody>
-    <%
-      int branchDisplayNum = (branchPageNum - 1) * branchPageSize + 1;
-      for(HrmDto dto : branchList) {
-    %>
-      <tr>
-        <td><%= branchDisplayNum++ %></td>
-        <td><%= dto.getName() %></td>
-        <td><%= dto.getRole() %></td>
-        <td><%= dto.getBranchName() %></td>
-        <td><a class="btn btn-info btn-sm" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=branch">상세</a></td>
-        <td><a class="btn btn-danger btn-sm" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a></td>
-      </tr>
-    <% } %>
-    </tbody>
-  </table>
+      <table class="table table-bordered table-hover align-middle text-center">
+        <thead class="table-secondary">
+          <tr><th>번호</th><th>이름</th><th>직급</th><th>상세 보기</th><th>삭제</th></tr>
+        </thead>
+        <tbody>
+        <%
+          int hqDisplayNum = (hqPageNum - 1) * hqPageSize + 1;
+          for(HrmDto dto : hqList) {
+        %>
+          <tr>
+            <td><%= hqDisplayNum++ %></td>
+            <td><%= dto.getName() %></td>
+            <td><%= dto.getRole() %></td>
+            <td><a class="btn btn-info btn-sm" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=admin">상세</a></td>
+            <td><a class="btn btn-danger btn-sm" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a></td>
+          </tr>
+        <% } %>
+        </tbody>
+      </table>
 
-  <!-- 페이지네이션 -->
-  <nav>
-    <ul class="pagination justify-content-center">
-      <li class="page-item <%= (branchPageNum == 1) ? "disabled" : "" %>">
-        <a class="page-link" href="?page=hrm/list.jsp&from=branch&branchPageNum=<%= branchPageNum - 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">이전</a>
-      </li>
-      <% for(int i=1; i<=branchTotalPage; i++) { %>
-        <li class="page-item <%= (i == branchPageNum) ? "active" : "" %>">
-          <a class="page-link" href="?page=hrm/list.jsp&from=branch&branchPageNum=<%= i %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>"><%= i %></a>
-        </li>
-      <% } %>
-      <li class="page-item <%= (branchPageNum == branchTotalPage) ? "disabled" : "" %>">
-        <a class="page-link" href="?page=hrm/list.jsp&from=branch&branchPageNum=<%= branchPageNum + 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">다음</a>
-      </li>
-    </ul>
-  </nav>
+      <!-- 페이지네이션 -->
+      <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item <%= (hqPageNum == 1) ? "disabled" : "" %>">
+            <a class="page-link" href="?page=hrm/list.jsp&from=admin&hqPageNum=<%= hqPageNum - 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">이전</a>
+          </li>
+          <% for(int i=1; i<=hqTotalPage; i++) { %>
+            <li class="page-item <%= (i == hqPageNum) ? "active" : "" %>">
+              <a class="page-link" href="?page=hrm/list.jsp&from=admin&hqPageNum=<%= i %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>"><%= i %></a>
+            </li>
+          <% } %>
+          <li class="page-item <%= (hqPageNum == hqTotalPage) ? "disabled" : "" %>">
+            <a class="page-link" href="?page=hrm/list.jsp&from=admin&hqPageNum=<%= hqPageNum + 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">다음</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 지점 직원 -->
+    <div class="<%= "branch".equals(from) ? "" : "d-none" %>">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>지점 직원 목록</h4>
+        <form method="get" action="<%= contextPath %>/headquater.jsp" class="d-flex">
+          <input type="hidden" name="page" value="hrm/list.jsp" />
+          <input type="hidden" name="from" value="branch" />
+          <input type="text" name="branchKeyword" class="form-control me-2" placeholder="이름 또는 지점 검색" value="<%= branchKeyword %>" style="max-width: 250px;" />
+          <button type="submit" class="btn btn-primary">검색</button>
+        </form>
+      </div>
+
+      <table class="table table-bordered table-hover align-middle text-center">
+        <thead class="table-secondary">
+          <tr><th>번호</th><th>이름</th><th>직급</th><th>지점</th><th>상세 보기</th><th>삭제</th></tr>
+        </thead>
+        <tbody>
+        <%
+          int branchDisplayNum = (branchPageNum - 1) * branchPageSize + 1;
+          for(HrmDto dto : branchList) {
+        %>
+          <tr>
+            <td><%= branchDisplayNum++ %></td>
+            <td><%= dto.getName() %></td>
+            <td><%= dto.getRole() %></td>
+            <td><%= dto.getBranchName() %></td>
+            <td><a class="btn btn-info btn-sm" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=branch">상세</a></td>
+            <td><a class="btn btn-danger btn-sm" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a></td>
+          </tr>
+        <% } %>
+        </tbody>
+      </table>
+
+      <!-- 페이지네이션 -->
+      <nav>
+        <ul class="pagination justify-content-center">
+          <li class="page-item <%= (branchPageNum == 1) ? "disabled" : "" %>">
+            <a class="page-link" href="?page=hrm/list.jsp&from=branch&branchPageNum=<%= branchPageNum - 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">이전</a>
+          </li>
+          <% for(int i=1; i<=branchTotalPage; i++) { %>
+            <li class="page-item <%= (i == branchPageNum) ? "active" : "" %>">
+              <a class="page-link" href="?page=hrm/list.jsp&from=branch&branchPageNum=<%= i %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>"><%= i %></a>
+            </li>
+          <% } %>
+          <li class="page-item <%= (branchPageNum == branchTotalPage) ? "disabled" : "" %>">
+            <a class="page-link" href="?page=hrm/list.jsp&from=branch&branchPageNum=<%= branchPageNum + 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">다음</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

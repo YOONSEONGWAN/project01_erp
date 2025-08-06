@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 
 <!-- Toast UI Editor CSS -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
@@ -71,7 +70,7 @@
 <body>
 	<div class="container my-5">
 	    <h1 class="h3 mb-4">게시글 작성</h1>
-	    <form action="hq-save.jsp" method="post" id="saveForm" enctype="multipart/form-data">
+	    <form action="${pageContext.request.contextPath }/hqboard/save" method="post" id="saveForm" enctype="multipart/form-data">
 	        <div class="mb-3">
 	            <label for="title" class="form-label">제목</label>
 	            <input class="form-control" type="text" name="title" id="title" required />
@@ -102,7 +101,25 @@
 		height: '500px',
 		initialEditType: 'wysiwyg',
 		previewStyle: 'vertical',
-		language: 'ko'
+		language: 'ko',
+		hooks: {
+	        addImageBlobHook: async (blob, callback) => {
+	            // 1. 이미지 파일(blob)을 FormData에 담아서 서버에 전송
+	            const formData = new FormData();
+	            formData.append("myFile", blob);
+
+	            // 2. 서버에 이미지 업로드 요청 (이미지 업로드용 서블릿/엔드포인트 필요)
+	            const resp = await fetch("${pageContext.request.contextPath}/image-upload", {
+	                method: "POST",
+	                body: formData
+	            });
+	            const result = await resp.json();
+
+	            // 3. 서버가 이미지 저장 후, 저장된 URL 반환 (예시: /image?name=파일명)
+	            // result.url이 이미지에 접근 가능한 URL이어야 함!
+	            callback(result.url, blob.name);   // 에디터 본문에 <img src="URL">로 삽입
+	        }
+	    }
 	});
 	
 	document.querySelector("#saveForm").addEventListener("submit", (e)=>{
@@ -112,8 +129,8 @@
 		console.log(content);
 		// editor 로 작성된 문자열을 폼 전송이 될 수 있는 textarea 의 value 로 넣어준다.
 		document.querySelector("#hiddencontent").value=content;
-		// 테스트 하기 위해 폼 전송 막기
-		//e.preventDefault();
+		  //alert(document.querySelector("#hiddencontent").value); 
+	      //e.preventDefault(); // 테스트 끝났으면 주석처리!
 	})
 		
 		
