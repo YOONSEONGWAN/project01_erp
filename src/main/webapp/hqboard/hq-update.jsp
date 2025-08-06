@@ -8,6 +8,7 @@
 	String title=request.getParameter("title");
 	String content=request.getParameter("content");
 	
+	
 	// 글 작성자와 로그인 된 userName 이 동일한지 비교해서 동일하지 않으면 에러를 응답한다.
 		String writer=HqBoardDao.getInstance().getByNum(num).getWriter(); // 수정할 글 작성자
 		String userName=(String)session.getAttribute("userName");

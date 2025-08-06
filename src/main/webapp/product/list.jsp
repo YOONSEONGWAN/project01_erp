@@ -41,10 +41,17 @@
     <meta charset="UTF-8">
     <title>상품 관리</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
-<body class="bg-light p-4">
+<body>
 
-<div class="container bg-white p-4 rounded shadow-sm">
+<div class="container-fluid bg-white p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">상품 관리</h3>
         <form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
@@ -55,40 +62,33 @@
         </form>
     </div>
 
-   <!-- 검색 폼 -->
-	<form action="<%=request.getContextPath()%>/headquater.jsp" method="get" 
-	      class="d-flex justify-content-end mb-3">
-	    <input type="hidden" name="page" value="product/list.jsp" />
-	    <input type="hidden" name="pageNum" value="1" />
-	    <input type="text" name="keyword" 
-	           class="form-control me-2" 
-	           placeholder="상품명 또는 설명 검색" 
-	           value="<%= keyword %>" 
-	           style="max-width: 300px;" />
-	    <button type="submit" class="btn btn-primary">검색</button>
-	</form>
-
+    <!-- 검색 폼 -->
+    <form action="<%=request.getContextPath()%>/headquater.jsp" method="get" class="d-flex justify-content-end mb-3">
+        <input type="hidden" name="page" value="product/list.jsp" />
+        <input type="hidden" name="pageNum" value="1" />
+        <input type="text" name="keyword" class="form-control me-2" placeholder="상품명 또는 설명 검색" value="<%= keyword %>" style="max-width: 300px;" />
+        <button type="submit" class="btn btn-primary">검색</button>
+    </form>
 
     <!-- 상품 테이블 -->
-    <form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" 
-          onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
+    <form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
         <input type="hidden" name="pageNum" value="<%=pageNum%>">
         <input type="hidden" name="keyword" value="<%=keyword%>">
 
         <div class="table-responsive">
             <table class="table table-hover align-middle">
-               <thead class="table-secondary">
-				    <tr>
-				        <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
-				        <th>번호</th>
-				        <th>상품명</th>
-				        <th>설명</th>
-				        <th>가격</th>
-				        <th>상태</th>
-				        <th>수정</th>
-				        <th>삭제</th>
-				    </tr>
-				</thead>
+                <thead class="table-secondary">
+                    <tr>
+                        <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
+                        <th>번호</th>
+                        <th>상품명</th>
+                        <th>설명</th>
+                        <th>가격</th>
+                        <th>상태</th>
+                        <th>수정</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
                 <tbody>
                 <%
                     if(productList == null || productList.isEmpty()) {
@@ -122,9 +122,7 @@
                             <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>" class="btn btn-sm btn-outline-warning">수정</a>
                         </td>
                         <td>
-                            <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" 
-                               onclick="return confirm('삭제하시겠습니까?');" 
-                               class="btn btn-sm btn-outline-danger">삭제</a>
+                            <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" onclick="return confirm('삭제하시겠습니까?');" class="btn btn-sm btn-outline-danger">삭제</a>
                         </td>
                     </tr>
                 <%
@@ -178,6 +176,6 @@ function toggleAll(source) {
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

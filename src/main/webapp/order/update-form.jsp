@@ -23,12 +23,10 @@ if(dto == null) {
 <head>
     <meta charset="UTF-8">
     <title>발주 요청 수정</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/navbar.jsp">
-	<jsp:param value="order" name="thisPage"/>
-</jsp:include>
+
 <h3>발주 요청 수정</h3>
 <form action="<%=request.getContextPath()%>/branch.jsp?page=order/update-request.jsp" method="post">
     <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">

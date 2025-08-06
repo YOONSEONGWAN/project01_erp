@@ -93,7 +93,7 @@ List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
 <% } %>
 </table>
 <div style="margin-top: 18px; text-align: right;">
-    <a href="<%=request.getContextPath()%>/branch.jsp?page=work-log/work_log.jsp">
+    <a href="${pageContext.request.contextPath}/branch.jsp?page=work-log/work_log.jsp">
         <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#695cff; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
             출퇴근 하러가기
         </button>
