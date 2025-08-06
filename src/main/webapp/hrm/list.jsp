@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLEncoder, java.util.List, dao.HrmDao, dto.HrmDto" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%
     // 탭 선택 (admin=본사, branch=지점)
@@ -45,6 +45,8 @@
     List<HrmDto> branchList = dao.selectBranchByKeywordWithPaging(branchKeyword, branchStart, branchPageSize);
     int branchTotalCount = dao.getBranchCountByKeyword(branchKeyword);
     int branchTotalPage = (int) Math.ceil(branchTotalCount / (double) branchPageSize);
+
+    String contextPath = request.getContextPath();
 %>
 
 <!DOCTYPE html>
@@ -100,113 +102,116 @@
 </style>
 </head>
 <body>
+
+<div>
     <div>
-        <div>
-            <span class="tab-button <%= "admin".equals(from) ? "active" : "" %>" id="btn-admin" onclick="showTab('admin')">본사 직원</span>
-            <span class="tab-button <%= "branch".equals(from) ? "active" : "" %>" id="btn-branch" onclick="showTab('branch')">지점 직원</span>
-        </div>
+        <span class="tab-button <%= "admin".equals(from) ? "active" : "" %>" id="btn-admin" onclick="showTab('admin')">본사 직원</span>
+        <span class="tab-button <%= "branch".equals(from) ? "active" : "" %>" id="btn-branch" onclick="showTab('branch')">지점 직원</span>
+    </div>
 
-        <!-- 본사 직원 탭 -->
-        <div class="tab-content <%= "admin".equals(from) ? "active" : "" %>" id="admin">
-            <h2>본사 직원 목록</h2>
-            <form method="get" action="list.jsp">
-                <input type="hidden" name="from" value="admin">
-                <input type="text" name="hqKeyword" placeholder="이름 또는 직급 검색" value="<%= hqKeyword %>">
-                <button type="submit">검색</button>
-            </form>
+    <!-- 본사 직원 탭 -->
+    <div class="tab-content <%= "admin".equals(from) ? "active" : "" %>" id="admin">
+        <h2>본사 직원 목록</h2>
+        <form method="get" action="<%= contextPath %>/headquater.jsp">
+            <input type="hidden" name="page" value="hrm/list.jsp" />
+            <input type="hidden" name="from" value="admin" />
+            <input type="text" name="hqKeyword" placeholder="이름 또는 직급 검색" value="<%= hqKeyword %>" />
+            <button type="submit">검색</button>
+        </form>
 
-            <table>
-                <tr><th>번호</th><th>이름</th><th>직급</th><th>상세 보기</th><th>삭제</th></tr>
-                <%
-                    int hqDisplayNum = (hqPageNum - 1) * hqPageSize + 1;
-                    for(HrmDto dto : hqList) {
-                %>
-                <tr>
-                    <td><%= hqDisplayNum++ %></td>
-                    <td><%= dto.getName() %></td>
-                    <td><%= dto.getRole() %></td>
-                    <td><a href="detail.jsp?num=<%= dto.getNum() %>&from=admin">상세 보기</a></td>
-                    <td>
-                        <a href="<%= request.getContextPath() %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
-                    </td>
-                </tr>
-                <% } %>
-            </table>
+        <table>
+            <tr><th>번호</th><th>이름</th><th>직급</th><th>상세 보기</th><th>삭제</th></tr>
+            <%
+                int hqDisplayNum = (hqPageNum - 1) * hqPageSize + 1;
+                for(HrmDto dto : hqList) {
+            %>
+            <tr>
+                <td><%= hqDisplayNum++ %></td>
+                <td><%= dto.getName() %></td>
+                <td><%= dto.getRole() %></td>
+                <td><a href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=admin">상세 보기</a></td>
+                <td>
+                    <a href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                </td>
+            </tr>
+            <% } %>
+        </table>
 
-            <div class="pagination">
-                <% if(hqPageNum > 1) { %>
-                    <a href="list.jsp?from=admin&hqPageNum=<%= hqPageNum - 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">이전</a>
+        <div class="pagination">
+            <% if(hqPageNum > 1) { %>
+                <a href="<%= contextPath %>/headquater.jsp?page=hrm/list.jsp&from=admin&hqPageNum=<%= hqPageNum - 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">이전</a>
+            <% } else { %>
+                <span>이전</span>
+            <% } %>
+
+            <% for(int i = 1; i <= hqTotalPage; i++) {
+                if(i == hqPageNum) { %>
+                    <span class="current"><%= i %></span>
                 <% } else { %>
-                    <span>이전</span>
-                <% } %>
+                    <a href="<%= contextPath %>/headquater.jsp?page=hrm/list.jsp&from=admin&hqPageNum=<%= i %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>"><%= i %></a>
+                <% }
+            } %>
 
-                <% for(int i = 1; i <= hqTotalPage; i++) {
-                    if(i == hqPageNum) { %>
-                        <span class="current"><%= i %></span>
-                    <% } else { %>
-                        <a href="list.jsp?from=admin&hqPageNum=<%= i %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>"><%= i %></a>
-                    <% }
-                } %>
-
-                <% if(hqPageNum < hqTotalPage) { %>
-                    <a href="list.jsp?from=admin&hqPageNum=<%= hqPageNum + 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">다음</a>
-                <% } else { %>
-                    <span>다음</span>
-                <% } %>
-            </div>
-        </div>
-
-        <!-- 지점 직원 탭 -->
-        <div class="tab-content <%= "branch".equals(from) ? "active" : "" %>" id="branch">
-            <h2>지점 직원 목록</h2>
-            <form method="get" action="list.jsp">
-                <input type="hidden" name="from" value="branch">
-                <input type="text" name="branchKeyword" placeholder="이름 또는 지점 검색" value="<%= branchKeyword %>">
-                <button type="submit">검색</button>
-            </form>
-
-            <table>
-                <tr><th>번호</th><th>이름</th><th>직급</th><th>지점</th><th>상세 보기</th><th>삭제</th></tr>
-                <%
-                    int branchDisplayNum = (branchPageNum - 1) * branchPageSize + 1;
-                    for(HrmDto dto : branchList) {
-                %>
-                <tr>
-                    <td><%= branchDisplayNum++ %></td>
-                    <td><%= dto.getName() %></td>
-                    <td><%= dto.getRole() %></td>
-                    <td><%= dto.getBranchName() %></td>
-                    <td><a href="detail.jsp?num=<%= dto.getNum() %>&from=branch">상세 보기</a></td>
-                    <td>
-                        <a href="<%= request.getContextPath() %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
-                    </td>
-                </tr>
-                <% } %>
-            </table>
-
-            <div class="pagination">
-                <% if(branchPageNum > 1) { %>
-                    <a href="list.jsp?from=branch&branchPageNum=<%= branchPageNum - 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">이전</a>
-                <% } else { %>
-                    <span>이전</span>
-                <% } %>
-
-                <% for(int i = 1; i <= branchTotalPage; i++) {
-                    if(i == branchPageNum) { %>
-                        <span class="current"><%= i %></span>
-                    <% } else { %>
-                        <a href="list.jsp?from=branch&branchPageNum=<%= i %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>"><%= i %></a>
-                    <% }
-                } %> 
-
-                <% if(branchPageNum < branchTotalPage) { %>
-                    <a href="list.jsp?from=branch&branchPageNum=<%= branchPageNum + 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">다음</a>
-                <% } else { %>
-                    <span>다음</span>
-                <% } %>
-            </div>
+            <% if(hqPageNum < hqTotalPage) { %>
+                <a href="<%= contextPath %>/headquater.jsp?page=hrm/list.jsp&from=admin&hqPageNum=<%= hqPageNum + 1 %>&hqKeyword=<%= URLEncoder.encode(hqKeyword, "UTF-8") %>">다음</a>
+            <% } else { %>
+                <span>다음</span>
+            <% } %>
         </div>
     </div>
+
+    <!-- 지점 직원 탭 -->
+    <div class="tab-content <%= "branch".equals(from) ? "active" : "" %>" id="branch">
+        <h2>지점 직원 목록</h2>
+        <form method="get" action="<%= contextPath %>/headquater.jsp">
+            <input type="hidden" name="page" value="hrm/list.jsp" />
+            <input type="hidden" name="from" value="branch" />
+            <input type="text" name="branchKeyword" placeholder="이름 또는 지점 검색" value="<%= branchKeyword %>" />
+            <button type="submit">검색</button>
+        </form>
+
+        <table>
+            <tr><th>번호</th><th>이름</th><th>직급</th><th>지점</th><th>상세 보기</th><th>삭제</th></tr>
+            <%
+                int branchDisplayNum = (branchPageNum - 1) * branchPageSize + 1;
+                for(HrmDto dto : branchList) {
+            %>
+            <tr>
+                <td><%= branchDisplayNum++ %></td>
+                <td><%= dto.getName() %></td>
+                <td><%= dto.getRole() %></td>
+                <td><%= dto.getBranchName() %></td>
+                <td><a href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=branch">상세 보기</a></td>
+                <td>
+                    <a href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+                </td>
+            </tr>
+            <% } %>
+        </table>
+
+        <div class="pagination">
+            <% if(branchPageNum > 1) { %>
+                <a href="<%= contextPath %>/headquater.jsp?page=hrm/list.jsp&from=branch&branchPageNum=<%= branchPageNum - 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">이전</a>
+            <% } else { %>
+                <span>이전</span>
+            <% } %>
+
+            <% for(int i = 1; i <= branchTotalPage; i++) {
+                if(i == branchPageNum) { %>
+                    <span class="current"><%= i %></span>
+                <% } else { %>
+                    <a href="<%= contextPath %>/headquater.jsp?page=hrm/list.jsp&from=branch&branchPageNum=<%= i %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>"><%= i %></a>
+                <% }
+            } %> 
+
+            <% if(branchPageNum < branchTotalPage) { %>
+                <a href="<%= contextPath %>/headquater.jsp?page=hrm/list.jsp&from=branch&branchPageNum=<%= branchPageNum + 1 %>&branchKeyword=<%= URLEncoder.encode(branchKeyword, "UTF-8") %>">다음</a>
+            <% } else { %>
+                <span>다음</span>
+            <% } %>
+        </div>
+    </div>
+</div>
 
 <script>
 function showTab(tabName) {

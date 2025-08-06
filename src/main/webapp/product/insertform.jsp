@@ -38,6 +38,7 @@
 			<input type="file" name="imagePath" accept="image/*">
 		</div> 
 		<button type="submit">등록</button>
+		<button type="button" onclick="window.location.href='<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp'">취소</button>
 	</form>
 	
 	<script>
