@@ -1,6 +1,9 @@
 <%@page import="dao.IngredientDao"%>
 <%@page import="dao.StockRequestDao"%>
-<%@page import="dao.stock.*"%>
+<%@page import="dao.stock.PlaceOrderBranchDetailDao"%>
+<%@page import="dao.stock.PlaceOrderBranchDao"%>
+<%@page import="dao.stock.OutboundOrdersDao"%>
+<%@page import="dao.stock.InventoryDao"%>
 <%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -13,6 +16,7 @@
     Enumeration<String> paramNames = request.getParameterNames();
     boolean hasApprovalOrRejection = false;
 
+    // 승인 혹은 반려 처리할 항목 있는지 체크
     while (paramNames.hasMoreElements()) {
         String param = paramNames.nextElement();
         if (param.startsWith("approval_")) {
@@ -26,19 +30,16 @@
 
     if (!hasApprovalOrRejection) {
 %>
-    <script>
-        alert("처리할 항목이 없습니다.");
-        location.href = "placeorder_branch.jsp";
-    </script>
+<script>
+    alert("처리할 항목이 없습니다.");
+    location.href = "placeorder_branch.jsp";
+</script>
 <%
         return;
     }
 
-    // StockRequestDao, IngredientDao는 new로 생성
     StockRequestDao stockRequestDao = new StockRequestDao();
     IngredientDao ingredientDao = new IngredientDao();
-
-    // 나머지 DAO는 getInstance() 유지
     PlaceOrderBranchDetailDao placeOrderBranchDetailDao = PlaceOrderBranchDetailDao.getInstance();
     OutboundOrdersDao outboundOrdersDao = OutboundOrdersDao.getInstance();
     InventoryDao inventoryDao = InventoryDao.getInstance();
@@ -48,7 +49,6 @@
     String orderDateStr = PlaceOrderBranchDao.getInstance().getOrderDateByOrderId(orderId);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    // 변수 하나 만들어서 마지막 branchId 저장 (출고 이력에 필요)
     String lastBranchId = null;
 
     // 2. 승인/반려 처리
@@ -58,45 +58,62 @@
         String paramName = paramNames.nextElement();
 
         if (paramName.startsWith("approval_")) {
-            String numStr = paramName.substring("approval_".length());
+            String orderIdStr = paramName.substring("approval_".length());
             String approval = request.getParameter(paramName);
-            String amountStr = request.getParameter("amount_" + numStr);
 
             try {
-                int num = Integer.parseInt(numStr);
-                int amount = Integer.parseInt(amountStr);
+                int currentOrderId = Integer.parseInt(orderIdStr);
 
-                String product = stockRequestDao.getProductByNum(num);         
-                int currentQty = stockRequestDao.getQuantityByNum(num);       
-                String branchId = stockRequestDao.getBranchIdByNum(num);
-                int inventoryId = stockRequestDao.getInventoryIdByNum(num);
+                // DB에서 실제 요청 수량과 inventory_id, product 등 가져오기
+                int requestQuantity = stockRequestDao.getRequestQuantityByOrderId(currentOrderId);
+                String product = stockRequestDao.getProductByOrderId(currentOrderId);
+                int currentQty = stockRequestDao.getQuantityByOrderId(currentOrderId);
+                String branchId = stockRequestDao.getBranchIdByOrderId(currentOrderId);
+                int inventoryId = stockRequestDao.getInventoryIdByOrderId(currentOrderId);
 
-                lastBranchId = branchId; // 마지막 branchId 저장
+                lastBranchId = branchId;
 
                 if ("YES".equals(approval)) {
-                    ingredientDao.increaseQuantity(branchId, inventoryId, amount);
-                    inventoryDao.decreaseQuantity(inventoryId, amount);
-                    stockRequestDao.updateStatus(num, "승인");
+                    // 1) inventory 재고에서 요청 수량만큼 차감 시도
+                    boolean decreased = inventoryDao.decreaseQuantity(inventoryId, requestQuantity);
+                    if (!decreased) {
+%>
+<script>
+    alert("재고 부족으로 주문 처리에 실패했습니다. 주문번호: <%= currentOrderId %>");
+    location.href = "placeorder_branch.jsp";
+</script>
+<%
+                        return;
+                    }
+
+                    // 2) branch_stock 재고에 요청 수량만큼 증가
+                    ingredientDao.increaseQuantity(branchId, inventoryId, requestQuantity);
+
+                    // 3) 주문 상태 승인으로 변경
+                    stockRequestDao.updateStatus(currentOrderId, "승인");
                 } else {
-                    stockRequestDao.updateStatus(num, "반려");
+                    // 반려 처리
+                    stockRequestDao.updateStatus(currentOrderId, "반려");
                 }
 
-                stockRequestDao.updateDate(num); // updatedAt
+                // 4) 주문 처리 날짜 업데이트
+                stockRequestDao.updateDate(currentOrderId);
 
-                // 발주 상세 insert
+                // 5) 발주 상세 내역 Insert
                 PlaceOrderBranchDetailDto dto = new PlaceOrderBranchDetailDto();
                 dto.setOrder_id(orderId);
                 dto.setBranch_id(branchId);
                 dto.setInventory_id(inventoryId);
                 dto.setProduct(product);
                 dto.setCurrent_quantity(currentQty);
-                dto.setRequest_quantity(amount);
+                dto.setRequest_quantity(requestQuantity);
                 dto.setApproval_status("YES".equals(approval) ? "승인" : "반려");
                 dto.setManager(manager);
 
                 placeOrderBranchDetailDao.insert(dto);
 
-                stockRequestDao.updateIsPlaceOrder(num, "no");
+                // 6) 발주 여부 플래그 업데이트
+                stockRequestDao.updateIsPlaceOrder(currentOrderId, "no");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -108,8 +125,8 @@
     if (lastBranchId != null) {
         outboundOrdersDao.insert(orderId, lastBranchId, "처리됨", orderDateStr, manager);
     }
-
 %>
+
 <script>
     alert("발주 내역이 정상적으로 처리되었습니다.");
     location.href = "placeorder_branch.jsp";

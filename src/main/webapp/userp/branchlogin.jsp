@@ -36,7 +36,7 @@
         session.setMaxInactiveInterval(60*60); // 1시간 세션 유지
 
         // 로그인 성공 -> 지점 인덱스로 이동
-        response.sendRedirect(request.getContextPath() + "/index/branchindex.jsp");
+        response.sendRedirect(request.getContextPath() + "/headquater.jsp");
     } else {
 %>
 <!DOCTYPE html>

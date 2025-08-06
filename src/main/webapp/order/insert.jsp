@@ -3,7 +3,6 @@
 <%@page import="dao.IngredientDao"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-
     List<IngredientDto> allIngredients = IngredientDao.getInstance().selectAllProducts();
 %>
 <!DOCTYPE html>
@@ -18,20 +17,19 @@
         .add-row-btn { margin: 10px 0; }
     </style>
     <script>
-        // 행 추가 JS
         function addRow() {
-            const table = document.getElementById('order-table');
-            // 실제 상품 select 개수로 인덱스 산정
-            const rowCount = table.querySelectorAll('select[name^="items"]').length;
-            const newRow = table.insertRow(-1); // 맨 뒤에 추가
+            const tbody = document.getElementById('order-table').querySelector('tbody');
+            // rowCount: 현재 행 개수(샘플행 제외)
+            const rowCount = tbody.querySelectorAll('tr:not(#sample-row-template)').length;
+            const template = document.getElementById('sample-row-template');
+            const newRow = template.cloneNode(true);
+            newRow.removeAttribute('id');
+            newRow.style.display = '';
+            // 인덱스 치환
+            newRow.innerHTML = newRow.innerHTML.replace(/\[0\]/g, '[' + rowCount + ']')
+                                               .replace(/_0/g, '_' + rowCount);
+            tbody.appendChild(newRow);
 
-            // sample-row 템플릿에서 name, id 인덱스 치환
-            let html = document.getElementById('sample-row-template').innerHTML;
-            html = html.replace(/\[0\]/g, '[' + rowCount + ']')
-                       .replace(/_0/g, '_' + rowCount);
-            newRow.innerHTML = html;
-
-            // 행이 추가되면 hidden값 세팅
             setTimeout(() => {
                 updateHidden(newRow.querySelector('select'), rowCount);
             }, 10);
@@ -59,62 +57,65 @@
 <h3>발주 요청 입력</h3>
 <form action="request-stock.jsp" method="post">
     <table id="order-table">
-        <tr>
-            <th>상품명</th>
-            <th>수량</th>
-        </tr>
-        <!-- 첫 번째 행 -->
-        <tr>
-            <td>
-                <select name="items[0].product" onchange="updateHidden(this, 0)">
-                <% for(IngredientDto dto : allIngredients) { %>
-                    <option
-                        value="<%= dto.getProduct() %>"
-                        data-branchnum="<%= dto.getBranchNum() %>"
-                        data-branchid="<%= dto.getBranchId() %>"
-                        data-inventoryid="<%= dto.getInventoryId() %>"
-                        data-currentqty="<%= dto.getCurrentQuantity() %>">
-                        <%= dto.getProduct() %>
-                    </option>
-                <% } %>
-                </select>
-                <input type="hidden" name="items[0].branchNum" id="items0_branchNum">
-                <input type="hidden" name="items[0].branchId" id="items0_branchId">
-                <input type="hidden" name="items[0].inventoryId" id="items0_inventoryId">
-                <input type="hidden" name="items[0].currentQuantity" id="items0_currentQuantity">
-            </td>
-            <td>
-                <input type="number" name="items[0].requestQuantity" class="req-input" min="1" value="1" required>
-            </td>
-        </tr>
+        <thead>
+            <tr>
+                <th>상품명</th>
+                <th>수량</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 첫 번째 입력 행 -->
+            <tr>
+                <td>
+                    <select name="items[0].product" onchange="updateHidden(this, 0)">
+                    <% for(IngredientDto dto : allIngredients) { %>
+                        <option
+                            value="<%= dto.getProduct() %>"
+                            data-branchnum="<%= dto.getBranchNum() %>"
+                            data-branchid="<%= dto.getBranchId() %>"
+                            data-inventoryid="<%= dto.getInventoryId() %>"
+                            data-currentqty="<%= dto.getCurrentQuantity() %>">
+                            <%= dto.getProduct() %>
+                        </option>
+                    <% } %>
+                    </select>
+                    <input type="hidden" name="items[0].branchNum" id="items0_branchNum">
+                    <input type="hidden" name="items[0].branchId" id="items0_branchId">
+                    <input type="hidden" name="items[0].inventoryId" id="items0_inventoryId">
+                    <input type="hidden" name="items[0].currentQuantity" id="items0_currentQuantity">
+                </td>
+                <td>
+                    <input type="number" name="items[0].requestQuantity" class="req-input" min="1" value="1" required>
+                </td>
+            </tr>
+            <!-- 샘플 row (tr) - 실제로는 화면에 안 보임 -->
+            <tr id="sample-row-template" style="display:none">
+                <td>
+                    <select name="items[0].product" onchange="updateHidden(this, 0)">
+                    <% for(IngredientDto dto : allIngredients) { %>
+                        <option
+                            value="<%= dto.getProduct() %>"
+                            data-branchnum="<%= dto.getBranchNum() %>"
+                            data-branchid="<%= dto.getBranchId() %>"
+                            data-inventoryid="<%= dto.getInventoryId() %>"
+                            data-currentqty="<%= dto.getCurrentQuantity() %>">
+                            <%= dto.getProduct() %>
+                        </option>
+                    <% } %>
+                    </select>
+                    <input type="hidden" name="items[0].branchNum" id="items0_branchNum">
+                    <input type="hidden" name="items[0].branchId" id="items0_branchId">
+                    <input type="hidden" name="items[0].inventoryId" id="items0_inventoryId">
+                    <input type="hidden" name="items[0].currentQuantity" id="items0_currentQuantity">
+                </td>
+                <td>
+                    <input type="number" name="items[0].requestQuantity" class="req-input" min="1" value="1" required>
+                </td>
+            </tr>
+        </tbody>
     </table>
     <button type="button" class="add-row-btn" onclick="addRow()">상품 추가</button>
     <button type="submit" class="req-btn">발주 요청</button>
 </form>
-
-<!-- sample-row는 테이블 바깥에 숨겨둠(템플릿 용도) -->
-<div id="sample-row-template" style="display:none;">
-    <td>
-        <select name="items[0].product" onchange="updateHidden(this, 0)">
-        <% for(IngredientDto dto : allIngredients) { %>
-            <option
-                value="<%= dto.getProduct() %>"
-                data-branchnum="<%= dto.getBranchNum() %>"
-                data-branchid="<%= dto.getBranchId() %>"
-                data-inventoryid="<%= dto.getInventoryId() %>"
-                data-currentqty="<%= dto.getCurrentQuantity() %>">
-                <%= dto.getProduct() %>
-            </option>
-        <% } %>
-        </select>
-        <input type="hidden" name="items[0].branchNum" id="items0_branchNum">
-        <input type="hidden" name="items[0].branchId" id="items0_branchId">
-        <input type="hidden" name="items[0].inventoryId" id="items0_inventoryId">
-        <input type="hidden" name="items[0].currentQuantity" id="items0_currentQuantity">
-    </td>
-    <td>
-        <input type="number" name="items[0].requestQuantity" class="req-input" min="1" value="1" required>
-    </td>
-</div>
 </body>
 </html>
