@@ -100,3 +100,4 @@ replay_pid*
 !**/WEB-INF/lib/*.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse
+/build/
