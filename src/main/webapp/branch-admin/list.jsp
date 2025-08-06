@@ -97,10 +97,15 @@
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-
-	<div class="container pt-1">
-		<a class="btn btn-outline-primary" href="insert-form.jsp">지점 등록</a>
-		<a class="btn btn-outline-primary" href="user-list.jsp">직원 목록 보기</a>
+	<div class="container mt-1">
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+		    <li class="breadcrumb-item active" aria-current="page">지점 목록</li>
+		  </ol>
+		</nav>
+		
 		<h1 class="text-center">지점 목록</h1>
 		<div class="row">
 			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end">
@@ -117,7 +122,7 @@
 				</form>
 			</div>
 		</div>
-		<table class="table table-bordered w-75 mx-auto">
+		<table class="table table-bordered w-75 mx-auto mt-2">
 		<thead>
 			<tr>
 				<th>지점명</th>
