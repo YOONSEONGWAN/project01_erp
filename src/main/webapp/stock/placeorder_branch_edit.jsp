@@ -25,8 +25,8 @@ try {
     String branchId = oldDto.getBranch_id();
     int inventoryId = oldDto.getInventory_id();
 
-    StockRequestDao stockRequestDao = new StockRequestDao();
-    IngredientDao ingredientDao = new IngredientDao();
+    StockRequestDao stockRequestDao = StockRequestDao.getInstance();
+    IngredientDao ingredientDao = IngredientDao.getInstance();
 
     int requestNum = stockRequestDao.getNumByDetailId(detailId); // 이 메서드 구현 필요
 
@@ -44,15 +44,15 @@ try {
     // 상태 변경 처리
     if ("승인".equals(oldApprovalStatus) && "반려".equals(newApprovalStatus)) {
         // 승인 → 반려
-        ingredientDao.decreaseQuantity(branchId, inventoryId, oldRequestQty);       // 지점 재고 원복
-        stockRequestDao.increaseCurrentQuantity(requestNum, oldRequestQty);         // 창고 재고 원복
-        stockRequestDao.updateStatus(requestNum, "반려");
+        ingredientDao.getInstance().decreaseQuantity(branchId, inventoryId, oldRequestQty);       // 지점 재고 원복
+        stockRequestDao.getInstance().increaseCurrentQuantity(requestNum, oldRequestQty);         // 창고 재고 원복
+        stockRequestDao.getInstance().updateStatus(requestNum, "반려");
 
     } else if ("반려".equals(oldApprovalStatus) && "승인".equals(newApprovalStatus)) {
         // 반려 → 승인
-        ingredientDao.increaseQuantity(branchId, inventoryId, newRequestQty);       // 지점 재고 증가
-        stockRequestDao.decreaseCurrentQuantity(requestNum, newRequestQty);         // 창고 재고 차감
-        stockRequestDao.updateStatus(requestNum, "승인");
+        ingredientDao.getInstance().increaseQuantity(branchId, inventoryId, newRequestQty);       // 지점 재고 증가
+        stockRequestDao.getInstance().decreaseCurrentQuantity(requestNum, newRequestQty);         // 창고 재고 차감
+        stockRequestDao.getInstance().updateStatus(requestNum, "승인");
     }
 
     // 상세 발주 업데이트

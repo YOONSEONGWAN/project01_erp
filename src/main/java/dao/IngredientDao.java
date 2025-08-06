@@ -263,48 +263,30 @@ public class IngredientDao {
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
-    public void decreaseQuantity(String branchId, int inventoryId, int amount) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = """
-                UPDATE branch_stock
-                   SET current_quantity = current_quantity - ?
-                 WHERE branch_id = ?
-                   AND inventory_id = ?
-            """;
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, amount);
-            pstmt.setString(2, branchId);
-            pstmt.setInt(3, inventoryId);
-            pstmt.executeUpdate();
-        } finally {
-            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-            try { if (conn != null) conn.close(); } catch (Exception e) {}
-        }
-    }
+    
 
-
-public void adjustQuantity(String branchId, int inventoryId, int diff) throws SQLException {
+public boolean decreaseQuantity(String branchId, int inventoryId, int qty) {
     Connection conn = null;
     PreparedStatement pstmt = null;
+    int rowCount = 0;
     try {
         conn = new DbcpBean().getConn();
         String sql = """
             UPDATE branch_stock
-               SET current_quantity = current_quantity + ?
-             WHERE branch_id = ?
-               AND inventory_id = ?
+               SET current_quantity = current_quantity - ?
+             WHERE branch_id = ? AND inventory_id = ?
         """;
         pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, diff);
+        pstmt.setInt(1, qty);
         pstmt.setString(2, branchId);
         pstmt.setInt(3, inventoryId);
-        pstmt.executeUpdate();
+        rowCount = pstmt.executeUpdate();
+    } catch(Exception e) {
+        e.printStackTrace();
     } finally {
-        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-        try { if (conn != null) conn.close(); } catch (Exception e) {}
+        try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
+        try { if(conn != null) conn.close(); } catch(Exception e) {}
     }
+    return rowCount > 0;
 }
 }
