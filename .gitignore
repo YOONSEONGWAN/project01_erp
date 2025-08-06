@@ -6,7 +6,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse
 
-
 .classpath
 .project
 
@@ -106,4 +105,6 @@ replay_pid*
 !**/WEB-INF/lib/*.jar
 
 
+
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse
+
