@@ -8,14 +8,27 @@ import dto.StockRequestDto;
 import util.DbcpBean;
 
 public class StockRequestDao {
-	//추가됨
+	
+	
+	private static StockRequestDao dao;
+	
+	static {
+		dao=new StockRequestDao();
+	}
+	
+	private StockRequestDao(){};
+	
+	public static StockRequestDao getInstance() {
+		return dao;
+	}
+	
 	public boolean batchInsertRequest(List<StockRequestDto> requests) {
 	    Connection conn = null;
 	    PreparedStatement pstmt = null;
 	    boolean isSuccess = true;
 	    try {
 	        conn = new DbcpBean().getConn();
-	        conn.setAutoCommit(false);
+	       
 	        String sql = """
 	            INSERT INTO stock_request 
 	            (order_id, branch_num, branch_id, inventory_id, product, current_quantity,
@@ -38,8 +51,7 @@ public class StockRequestDao {
 	                break;
 	            }
 	        }
-	        if(isSuccess) conn.commit();
-	        else conn.rollback();
+	       
 	    } catch(Exception e) {
 	        e.printStackTrace();
 	        isSuccess = false;
@@ -276,54 +288,85 @@ public class StockRequestDao {
     
     public String getProductByNum(int orderId) {
         String product = null;
-        String sql = """
-            SELECT product
-            FROM stock_request
-            WHERE order_id = ?
-        """;
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT product
+                  FROM stock_request
+                 WHERE order_id = ?
+            """;
+            pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, orderId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    product = rs.getString("product");
-                }
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                product = rs.getString("product");
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
         return product;
     }
 
-    public int getQuantityByNum(int num) throws SQLException {
-        String sql = """
-            SELECT request_quantity
-            FROM stock_request
-            WHERE order_id = ?
-        """;
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public int getQuantityByNum(int num) {
+        int result = 0;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT request_quantity
+                  FROM stock_request
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, num);
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getInt("request_quantity") : 0;
+            rs = ps.executeQuery();
+            if (rs.next()) result = rs.getInt("request_quantity");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
+        return result;
     }
 
-    public String getBranchIdByNum(int num) throws SQLException {
-        String sql = """
-            SELECT branch_id
-            FROM stock_request
-            WHERE order_id = ?
-        """;
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public String getBranchIdByNum(int num) {
+        String branchId = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT branch_id
+                  FROM stock_request
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, num);
-            ResultSet rs = ps.executeQuery();
-            return rs.next() ? rs.getString("branch_id") : null;
+            rs = ps.executeQuery();
+            if (rs.next()) branchId = rs.getString("branch_id");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
+        return branchId;
     }
 
+<<<<<<< HEAD
     public int getInventoryIdByOrderId(int orderId) {
         String sql = "SELECT inventory_id FROM stock_request WHERE order_id = ?";
         int inventoryId = 0;
@@ -340,105 +383,205 @@ public class StockRequestDao {
             e.printStackTrace();
         }
 
+=======
+    public int getInventoryIdByNum(int num) {
+        int inventoryId = 0;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT inventory_id
+                  FROM stock_request
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, num);
+            rs = ps.executeQuery();
+            if (rs.next()) inventoryId = rs.getInt("inventory_id");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+>>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
         return inventoryId;
     }
 
-    public void updateApproval(int num, String status) throws SQLException {
-        String sql = """
-            UPDATE stock_request
-            SET approval = ?
-            WHERE order_id = ?
-        """;
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public void updateApproval(int num, String status) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                UPDATE stock_request
+                   SET approval = ?
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setString(1, status);
             ps.setInt(2, num);
             ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
 
-    public void updatePlaceOrder(int num, boolean isPlaceOrder) throws SQLException {
-        String sql = """
-            UPDATE stock_request
-            SET is_placeorder = ?
-            WHERE order_id = ?
-        """;
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public void updatePlaceOrder(int num, boolean isPlaceOrder) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                UPDATE stock_request
+                   SET is_placeorder = ?
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setString(1, isPlaceOrder ? "승인" : "대기");
             ps.setInt(2, num);
             ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
 
-    public void updateDate(int num) throws SQLException {
-        String sql = """
-            UPDATE stock_request
-            SET updatedAt = SYSDATE
-            WHERE order_id = ?
-        """;
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public void updateDate(int num) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                UPDATE stock_request
+                   SET updatedAt = SYSDATE
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, num);
             ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
 
-    public void update(int num, String isPlaceOrder) throws SQLException {
-        String sql = """
-            UPDATE stock_request
-            SET is_placeorder = ?
-            WHERE order_id = ?
-        """;
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public void update(int num, String isPlaceOrder) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                UPDATE stock_request
+                   SET is_placeorder = ?
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setString(1, isPlaceOrder);
             ps.setInt(2, num);
             ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
-    
-    public void updateStatus(int num, String status) throws SQLException {
-        String sql = """
-            UPDATE stock_request
-            SET status = ?, updatedAt = SYSDATE
-            WHERE order_id  = ?
-        """;
 
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public void updateStatus(int num, String status) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                UPDATE stock_request
+                   SET status = ?, updatedAt = SYSDATE
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setString(1, status);
             ps.setInt(2, num);
             ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
     
     public void updateIsPlaceOrder(int num, String value) {
-        String sql = "UPDATE stock_request SET isplaceorder = ? WHERE order_id = ?";
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                UPDATE stock_request
+                   SET isplaceorder = ?
+                 WHERE order_id = ?
+            """;
+            ps = conn.prepareStatement(sql);
             ps.setString(1, value);
             ps.setInt(2, num);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
+<<<<<<< HEAD
     public int getNumByDetailId(int detailId) {
         String sql = "SELECT request_quantity FROM stock_request WHERE inventory_id = ?";
         try (Connection conn = new DbcpBean().getConn();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+=======
+>>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
 
+    public int getNumByDetailId(int detailId) {
+        int result = -1;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT request_num
+                  FROM stock_request
+                 WHERE detail_id = ?
+            """;
+            pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, detailId);
+<<<<<<< HEAD
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("request_quantity");
                 }
+=======
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt("request_num");
+>>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
-        return -1; // 존재하지 않을 경우
+        return result;
     }
 
     /**
@@ -461,16 +604,31 @@ public class StockRequestDao {
      * 내부 메소드: current_quantity 값 ±변경
      */
     private void updateCurrentQuantity(int requestNum, int qtyDiff) {
+<<<<<<< HEAD
         String sql = "UPDATE stock_request SET current_quantity = current_quantity + ? WHERE request_quantity = ?";
         try (Connection conn = new DbcpBean().getConn();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
+=======
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                UPDATE stock_request
+                   SET current_quantity = current_quantity + ?
+                 WHERE request_num = ?
+            """;
+            pstmt = conn.prepareStatement(sql);
+>>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
             pstmt.setInt(1, qtyDiff);
             pstmt.setInt(2, requestNum);
             pstmt.executeUpdate();
-
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
     
