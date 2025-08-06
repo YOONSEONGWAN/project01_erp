@@ -22,7 +22,7 @@
 </head>
 
 <body>
-	 <jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+	 <jsp:include page="/WEB-INF/include/navbar.jsp">
         <jsp:param value="index" name="thisPage"/>
     </jsp:include>
 
