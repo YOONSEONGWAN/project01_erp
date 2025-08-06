@@ -80,7 +80,7 @@
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">게시글 목록</h1>
-        <a class="btn btn-primary" href="hq-new-form.jsp">
+        <a class="btn btn-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
             <i class="bi bi-pencil-square"></i> 새 글 작성
         </a>
     </div>
@@ -107,7 +107,7 @@
                     <td><%=tmp.getNum()%></td>
                     <td><%=tmp.getWriter()%></td>
                     <td class="text-start">
-                        <a class="link-dark" href="hq-view.jsp?num=<%=tmp.getNum()%>">
+                        <a class="link-dark" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=tmp.getNum()%>">
                             <%=tmp.getTitle()%>
                         </a>
                     </td>
@@ -126,17 +126,17 @@
         <ul class="pagination justify-content-center">
         <% if(startPageNum != 1) { %>
             <li class="page-item">
-                <a class="page-link" href="hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">&lsaquo;</a>
+                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">&lsaquo;</a>
             </li>
         <% } %>
         <% for(int i=startPageNum; i<=endPageNum; i++){ %>
             <li class="page-item <%=i==pageNum ? "active" : ""%>">
-                <a class="page-link" href="hq-list.jsp?pageNum=<%=i%>&keyword=<%=keyword%>"><%=i%></a>
+                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=i%>&keyword=<%=keyword%>"><%=i%></a>
             </li>
         <% } %>
         <% if(endPageNum < totalPageCount) { %>
             <li class="page-item">
-                <a class="page-link" href="hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">&rsaquo;</a>
+                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">&rsaquo;</a>
             </li>
         <% } %>
         </ul>
