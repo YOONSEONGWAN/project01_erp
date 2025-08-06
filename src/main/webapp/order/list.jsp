@@ -20,7 +20,7 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
 <head>
     <meta charset="UTF-8">
     <title>발주 현황</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+
     <style>
         table { border-collapse: collapse; width: 850px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
