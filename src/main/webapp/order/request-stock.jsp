@@ -56,7 +56,7 @@ if(!requests.isEmpty()) {
     <title>발주 요청 결과</title>
     <script>
     <% if(isSuccess) { %>
-        location.href = "${pageContext.request.contextPath }/order/list.jsp?branchId=<%= (requests.size() > 0 ? requests.get(0).getBranchId() : "") %>";
+        location.href = "<%=request.getContextPath()%>/headquater.jsp?page=order/list.jsp?branchId=<%= (requests.size() > 0 ? requests.get(0).getBranchId() : "") %>";
     <% } else { %>
         alert("발주 요청 실패!");
         history.back();

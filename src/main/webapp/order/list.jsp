@@ -81,14 +81,14 @@ if (orderList == null || orderList.isEmpty()) {
             <% } %>
         </td>
         <td>
-            <form action="update-form.jsp" method="get" style="margin:0;">
+            <form action="<%=request.getContextPath()%>/headquater.jsp?page=order/update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-update">수정</button>
             </form>
         </td>
         <td>
-            <form action="delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <form action="<%=request.getContextPath()%>/headquater.jsp?page=order/delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-delete">삭제</button>
@@ -101,7 +101,7 @@ if (orderList == null || orderList.isEmpty()) {
 %>
 </table>
 <div style="margin-top:18px;">
-    <a href="insert.jsp" style="text-decoration:none;">
+    <a href="<%=request.getContextPath()%>/headquater.jsp?page=order/insert.jsp" style="text-decoration:none;">
         <button class="btn btn-update" type="button">새 발주 요청</button>
     </a>
 </div>

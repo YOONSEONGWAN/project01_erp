@@ -55,7 +55,7 @@
 </head>
 <body>
 <h3>발주 요청 입력</h3>
-<form action="request-stock.jsp" method="post">
+<form action="<%=request.getContextPath()%>/headquater.jsp?page=request-stock.jsp" method="post">
     <table id="order-table">
         <thead>
             <tr>

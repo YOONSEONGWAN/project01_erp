@@ -16,7 +16,7 @@ boolean isSuccess = StockRequestDao.getInstance().updateRequest(orderId, product
     <script>
     <% if(isSuccess) { %>
         alert('수정되었습니다.');
-        location.href = 'list.jsp';
+        location.href = '<%=request.getContextPath()%>/headquater.jsp?page=order/list.jsp';
     <% } else { %>
         alert('수정 실패!');
         history.back();
