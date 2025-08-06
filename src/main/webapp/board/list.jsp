@@ -12,26 +12,7 @@
       boardType = "NOTICE"; // 기본값
   }
 
-  List<BoardDto> list = BoardDao.getInstance().getListByType(boardType);
-  request.setAttribute("list", list);
- 
- String keyword=request.getParameter("keyword");
-	 if (keyword != null && !keyword.trim().isEmpty()) {
-	     BoardDto searchDto = new BoardDto();
-	     searchDto.setKeyword(keyword);
-	     searchDto.setBoard_type(boardType);
-	     searchDto.setStartRowNum(1); // 페이징 사용 시 계산
-	     searchDto.setEndRowNum(10);
-	
-	     list = BoardDao.getInstance().selectPageByKeyword(searchDto);
-	 } else {
-	     BoardDto pagingDto = new BoardDto();
-	     pagingDto.setBoard_type(boardType);
-	     pagingDto.setStartRowNum(1); // 페이징 계산
-	     pagingDto.setEndRowNum(10);
-	
-	     list = BoardDao.getInstance().selectPage(pagingDto);
-	 }
+  
 	//기본 페이지 번호는 1로 설정
 	int pageNum=1;
 	// 페이지 번호를 읽어와서
@@ -61,6 +42,8 @@
 	
 	// 전체 글의 갯수
 	int totalRow=0;
+	
+	String keyword = request.getParameter("keyword");
 	// 만일 전달된 keyword가 없다면
 	if(StringUtils.isEmpty(keyword)) {
 		// board_type별 글 수 계산 
@@ -85,12 +68,11 @@
 	dto.setBoard_type(boardType);
 	
 	// 만일 keyword 가 없다면
+	List<BoardDto> list = null;
 	if(StringUtils.isEmpty(keyword)){
 		list = BoardDao.getInstance().selectPage(dto);
-	}else{ // keyword 가 있다면
-		// dto 에 keyword 를 담고
+	}else{ 
 		dto.setKeyword(keyword);
-		// 키워드에 해당하는 글 목록을 얻어낸다. 
 		list = BoardDao.getInstance().selectPageByKeyword(dto);
 	}
   	
@@ -189,28 +171,27 @@
 </tbody>
     </table>
     <ul class="pagination justify-content-center mt-2">
-				<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
-				<%if(startPageNum != 1){ %>
-					<li class="page-item">
-					  <a class="page-link text-light bg-success"
-					     href="list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword %>&board_type=<%=boardType %>">&lsaquo;</a>
-					</li>
-				<%} %>		
-					
-				<%for(int i=startPageNum; i<=endPageNum ; i++){ %>
-					<li class="page-item">
-						<a class="page-link text-light bg-success <%= i==pageNum ? "active":"" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword %>&board_type=<%=boardType %>"><%=i %></a>
-					</li>
-				<%} %>
-				
-				<%-- endPageNum 이 totalPageCount 보다 작을때 다음 page 가 있다 --%>		
-				<%if(endPageNum < totalPageCount){ %>
-					<li class="page-item">
-				      <a class="page-link text-light bg-success"
-				         href="list.jsp?pageNum=<%=endPageNum + 1%>&keyword=<%=keyword%>&board_type=<%=boardType%>">&rsaquo;</a>
-				    </li>
-				<%} %>	
-			</ul>
+    <% if (startPageNum != 1) { %>
+        <li class="page-item">
+            <a class="page-link text-light bg-success"
+               href="list.jsp?pageNum=<%=startPageNum-1%>&board_type=<%=boardType%>&keyword=<%=keyword != null ? keyword : "" %>">&lsaquo;</a>
+        </li>
+    <% } %>
+
+    <% for (int i = startPageNum; i <= endPageNum; i++) { %>
+        <li class="page-item">
+            <a class="page-link text-light bg-success <%= i==pageNum ? "active":"" %>"
+               href="list.jsp?pageNum=<%=i%>&board_type=<%=boardType%>&keyword=<%=keyword != null ? keyword : "" %>"><%=i%></a>
+        </li>
+    <% } %>
+
+    <% if (endPageNum < totalPageCount) { %>
+        <li class="page-item">
+            <a class="page-link text-light bg-success"
+               href="list.jsp?pageNum=<%=endPageNum+1%>&board_type=<%=boardType%>&keyword=<%=keyword != null ? keyword : "" %>">&rsaquo;</a>
+        </li>
+    <% } %>
+	</ul>
   </div>
 </body>
 </html>
