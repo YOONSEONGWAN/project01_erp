@@ -21,6 +21,8 @@ public class HqBoardDto {
 	private String keyword;
 	// 첨부파일 리스트를 담은 필드
 	private List<HqBoardFileDto> fileList;
+	private String OriginalFileName;
+	private String SaveFileName;
 	
 	
 	public int getNum() {
@@ -100,6 +102,18 @@ public class HqBoardDto {
 	}
 	public void setFileList(List<HqBoardFileDto> fileList) {
 		this.fileList = fileList;
+	}
+	public String getOriginalFileName() {
+		return OriginalFileName;
+	}
+	public void setOriginalFileName(String originalFileName) {
+		OriginalFileName = originalFileName;
+	}
+	public String getSaveFileName() {
+		return SaveFileName;
+	}
+	public void setSaveFileName(String saveFileName) {
+		SaveFileName = saveFileName;
 	}
 	
 	
