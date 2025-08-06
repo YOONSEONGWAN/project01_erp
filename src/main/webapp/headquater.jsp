@@ -4,9 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>본사 인덱스 페이지</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
     /* 직원 상세 스타일 */
     .hrm-detail-table {
@@ -89,12 +87,19 @@
     <main class="flex-grow-1 p-3">
     <%
         String pages = request.getParameter("page");
-        if (pages == null || pages.isEmpty()) {
-            pages = "/index/headquaterindex.jsp"; // 기본 페이지
-        } else if (!pages.startsWith("/")) {
-            pages = "/" + pages; // 절대경로로 변환
-        }
-        pageContext.include(pages);
+	    String branchId = (String)session.getAttribute("branchId");
+	    if (pages == null || pages.isEmpty()) {
+	        if("HQ".equals(branchId)) {
+	            pages = "/index/headquaterindex.jsp";
+	        } else if(branchId.startsWith("BC")) {
+	            pages = "/index/branchindex.jsp";
+	        } else {
+	            pages = "/index/error.jsp"; // 권한없음 등
+	        }
+	    } else if (!pages.startsWith("/")) {
+	        pages = "/" + pages;
+	    }
+	    pageContext.include(pages);
     %>
     </main>
 
