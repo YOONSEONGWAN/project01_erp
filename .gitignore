@@ -4,7 +4,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse
 
-
 .classpath
 .project
 
@@ -103,4 +102,6 @@ replay_pid*
 # /WEB-INF/lib/ 폴더 안에 있는 jar 파일은 예외로 하기
 !**/WEB-INF/lib/*.jar
 
+
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse
+
