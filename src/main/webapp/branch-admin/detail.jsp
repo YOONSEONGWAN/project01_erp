@@ -25,9 +25,9 @@
 	<div class="container position-relative">
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
-			<li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/list.jsp">지점 목록</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/main.jsp">지점 관리</a></li>
+			<li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">지점 목록</a></li>
 		    <li class="breadcrumb-item active" aria-current="page">지점 상세보기</li>
 		  </ol>
 		</nav>
@@ -54,7 +54,7 @@
 				<th>지점장 목록</th>
 				<td>
 					<%for(UserDtoAdmin manager : managerList){%>
-						<a href="roleupdate-form.jsp?num=<%=manager.getNum()%>"><%=manager.getUser_name() %></a> <br/>
+						<a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/roleupdate-form.jsp?num=<%=manager.getNum()%>"><%=manager.getUser_name() %></a> <br/>
 					<%} %>
 				</td>
 			</tr>
@@ -62,7 +62,7 @@
 				<th>직원 목록</th>
 				<td>
 					<%for(UserDtoAdmin clerk : clerkList){%>
-						<a href="roleupdate-form.jsp?num=<%=clerk.getNum()%>"><%=clerk.getUser_name() %></a>
+						<a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/roleupdate-form.jsp?num=<%=clerk.getNum()%>"><%=clerk.getUser_name() %></a>
 						<%=clerk.getRole().equals("clerk")?"(직원)":"(미등록)" %>
 						 <br/>
 					<%} %>

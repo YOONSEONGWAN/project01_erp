@@ -17,17 +17,17 @@
 	<div class="container mt-1 position-relative">
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
-			<li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/list.jsp">지점 목록</a></li>
-			<li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/detail.jsp?num=<%=dto.getBranch_num()%>">지점 상세보기</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/main.jsp">지점 관리</a></li>
+			<li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">지점 목록</a></li>
+			<li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/detail.jsp?num=<%=dto.getBranch_num()%>">지점 상세보기</a></li>
 		    <li class="breadcrumb-item active" aria-current="page">직원 상세정보</li>
 		  </ol>
 		</nav>
 	
 		<h1 class="mb-4 text-center">회원 상세 정보</h1>
-		<form action="roleupdate.jsp" method="get">
-			<input type="hidden" name="returnUrl" value="detail.jsp?num=<%=dto.getBranch_num()%>">
+		<form action="${pageContext.request.contextPath }/branch-admin/roleupdate.jsp" method="get">
+			<input type="hidden" name="returnUrl" value="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/detail.jsp?num=<%=dto.getBranch_num()%>">
 			<input type="hidden" name="num" value="<%=dto.getNum() %>">
 			<div class="row">
 				<div class="col">
