@@ -144,6 +144,81 @@ public class PlaceOrderHeadDao {
         }
         return orderDateStr;
     }
+    
+    public int countByManager(String manager) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
 
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT COUNT(*) 
+                FROM placeorder_head
+                WHERE manager LIKE '%' || ? || '%'
+            """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, manager);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+
+        return count;
+    }
+    public List<PlaceOrderHeadDto> selectByManagerWithPaging(String manager, int startRow, int endRow) {
+        List<PlaceOrderHeadDto> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT * FROM (
+                    SELECT inner_result.*, ROWNUM AS rnum
+                    FROM (
+                        SELECT order_id, order_date, manager
+                        FROM placeorder_head
+                        WHERE manager LIKE '%' || ? || '%'
+                        ORDER BY order_id DESC
+                    ) inner_result
+                    WHERE ROWNUM <= ?
+                )
+                WHERE rnum >= ?
+            """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, manager);
+            pstmt.setInt(2, endRow);
+            pstmt.setInt(3, startRow);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                PlaceOrderHeadDto dto = new PlaceOrderHeadDto();
+                dto.setOrder_id(rs.getInt("order_id"));
+                dto.setOrder_date(rs.getString("order_date"));
+                dto.setManager(rs.getString("manager"));
+                list.add(dto);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+
+        return list;
+    }
 }
 	

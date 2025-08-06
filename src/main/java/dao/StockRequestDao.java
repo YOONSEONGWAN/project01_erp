@@ -142,6 +142,7 @@ public class StockRequestDao {
                     r.requestedat,
                     r.updatedat,
                     r.isPlaceOrder
+
                 FROM stock_request r
                 JOIN branch_stock b ON r.branch_num = b.branch_num
                 WHERE r.branch_id = ?

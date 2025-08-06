@@ -61,7 +61,7 @@
     </style>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+	<jsp:include page="/WEB-INF/include/navbar.jsp">
 		<jsp:param value="branch-sales" name="thisPage"/>
 	</jsp:include>
 <!-- 상품 등록 버튼 -->

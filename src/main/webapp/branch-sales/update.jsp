@@ -4,13 +4,13 @@
 <%
     request.setCharacterEncoding("UTF-8");
 
-    if (!request.getMethod().equals("POST")) {
-        response.sendRedirect("list.jsp");
+    String branchId = (String)session.getAttribute("branchId");
+    if(branchId == null){
+        response.sendRedirect(request.getContextPath()+"/userp/branchlogin-form.jsp");
         return;
     }
 
     int salesId = Integer.parseInt(request.getParameter("salesId"));
-    String branchId = request.getParameter("branchId");
     int totalAmount = Integer.parseInt(request.getParameter("totalAmount"));
 
     SalesDto dto = new SalesDto();
@@ -19,7 +19,7 @@
     dto.setTotalAmount(totalAmount);
 
     boolean isSuccess = SalesDao.getInstance().update(dto);
-    String cpath = request.getContextPath(); // contextPath 저장
+    String msg = isSuccess ? "수정 성공!" : "수정 실패!";
 %>
 <!DOCTYPE html>
 <html>
@@ -29,8 +29,8 @@
 </head>
 <body>
     <script>
-        alert("<%= isSuccess ? "수정 성공!" : "수정 실패!" %>");
-        location.href = "<%= cpath %>/branch-sales/list.jsp";
+        alert("<%= msg %>");
+        location.href = "<%= request.getContextPath() %>/branch-sales/list.jsp";
     </script>
 </body>
 </html>
