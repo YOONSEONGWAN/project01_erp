@@ -24,7 +24,7 @@
 						<a class="nav-link <%=thisPage.equals("stock") ? "active":""%>" href="${pageContext.request.contextPath }/headquater/stock.jsp">재고</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("branch-admin") ? "active":""%>" href="${pageContext.request.contextPath }/branch-admin/list.jsp">지점관리</a>
+						<a class="nav-link <%=thisPage.equals("branch-admin") ? "active":""%>" href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점관리</a>
 					</li>
 				</ul>
 	            <!-- 오른쪽 사용자 메뉴 -->

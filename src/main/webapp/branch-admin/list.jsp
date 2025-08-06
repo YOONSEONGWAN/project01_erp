@@ -97,6 +97,10 @@
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+		<jsp:param value="branch-admin" name="thisPage"/>
+	</jsp:include>
+		
 	<div class="container mt-1">
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">

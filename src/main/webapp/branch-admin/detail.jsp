@@ -63,7 +63,7 @@
 				<td>
 					<%for(UserDtoAdmin clerk : clerkList){%>
 						<a href="roleupdate-form.jsp?num=<%=clerk.getNum()%>"><%=clerk.getUser_name() %></a>
-						<%=clerk.getRole() %>
+						<%=clerk.getRole().equals("clerk")?"(직원)":"(미등록)" %>
 						 <br/>
 					<%} %>
 				</td>
@@ -74,7 +74,7 @@
 			</tr>
 			<tr>
 				<th>수정일</th>
-				<td><%=dto.getUpdatedAt() %></td>
+				<td><%=dto.getUpdatedAt()==null?"":dto.getUpdatedAt() %></td>
 			</tr>
 			<tr>
 				<th>운영 상태</th>
