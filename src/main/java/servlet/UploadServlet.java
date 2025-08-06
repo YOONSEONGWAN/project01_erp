@@ -64,7 +64,7 @@ public class UploadServlet extends HttpServlet {
         int insertedNum = new ProductDao().insert1(dto);
 
         if (insertedNum > 0) {
-        	response.sendRedirect(request.getContextPath() + "/product/detail.jsp?num=" + insertedNum);
+        	response.sendRedirect(request.getContextPath() + "/headquater.jsp?page=product/detail.jsp?num=" + insertedNum);
 
         } else {
             response.getWriter().println("DB SAVE FAIL");

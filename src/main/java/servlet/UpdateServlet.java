@@ -85,7 +85,7 @@ public class UpdateServlet extends HttpServlet {
         boolean success = new ProductDao().update(dto);
 
         if (success) {
-            response.sendRedirect(request.getContextPath() + "/product/detail.jsp?num=" + num);
+            response.sendRedirect(request.getContextPath() + "/headquater.jsp?page=product/detail.jsp?num=" + num);
         } else {
             response.getWriter().println("Update Fail");
         }
