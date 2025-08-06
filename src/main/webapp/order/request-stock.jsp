@@ -63,6 +63,7 @@ if(!requests.isEmpty()) {
     <% } %>
     </script>
 </head>
+
 <body>
 <% if(!isSuccess) { %>
     <h3 style="color:red;">발주 요청에 실패했습니다. 다시 시도해 주세요.</h3>
