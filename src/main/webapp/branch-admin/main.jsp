@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/main.jsp</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
     .btn-square {
         width: 160px;

@@ -1,6 +1,3 @@
-/build/
-/bin/
-
 # Created by https://www.toptal.com/developers/gitignore/api/java,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse
 
@@ -104,4 +101,8 @@ replay_pid*
 
 
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse
+<<<<<<< HEAD
+/build/
+=======
 
+>>>>>>> 6deb6800db8a3fe2247dace1bf118d565d49259c
