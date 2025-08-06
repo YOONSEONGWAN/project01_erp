@@ -6,8 +6,7 @@ int orderId = Integer.parseInt(request.getParameter("orderId"));
 String product = request.getParameter("product");
 int requestQuantity = Integer.parseInt(request.getParameter("requestQuantity"));
 
-StockRequestDao dao = new StockRequestDao();
-boolean isSuccess = dao.updateRequest(orderId, product, requestQuantity);
+boolean isSuccess = StockRequestDao.getInstance().updateRequest(orderId, product, requestQuantity);
 %>
 <!DOCTYPE html>
 <html>

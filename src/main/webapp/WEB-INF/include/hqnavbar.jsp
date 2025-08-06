@@ -15,7 +15,7 @@
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
 					<li class="nav-item">
-						<a class="nav-link <%=thisPage.equals("product") ? "active":""%>" href="${pageContext.request.contextPath }/product/list.jsp">상품관리</a>
+						<a class="nav-link <%=thisPage.equals("product") ? "active":""%>" href="${pageContext.request.contextPath }/product/main.jsp">상품관리</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link <%=thisPage.equals("sales") ? "active":""%>" href="${pageContext.request.contextPath }/headquater/sales.jsp">매출/회계</a>
