@@ -39,127 +39,135 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>상품 검색 및 목록</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
-    <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #f4f4f4; }
-        input[type="text"] { width: 300px; padding: 6px; }
-        input[type="submit"] { padding: 6px 12px; }
-        .pagination { margin-top: 20px; text-align: center; }
-        .pagination a, .pagination span {
-            margin: 0 5px; padding: 5px 10px;
-            border: 1px solid #ccc; text-decoration: none;
-            color: #333;
-        }
-        .pagination .current {
-            background-color: #666; color: white;
-            font-weight: bold;
-        }
-        .btn-register { margin-bottom: 20px; }
-    </style>
+    <title>상품 관리</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light p-4">
 
-<!-- 상품 등록 버튼 -->
-<form action="<%=request.getContextPath()%>/headquater.jsp" method="get" class="btn-register">
-    <input type="hidden" name="page" value="product/insertform.jsp" />
-    <input type="submit" value="상품 등록" />
-</form>
+<div class="container bg-white p-4 rounded shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">상품 관리</h3>
+        <form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
+            <input type="hidden" name="page" value="product/insertform.jsp" />
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> 상품 등록
+            </button>
+        </form>
+    </div>
 
-<h2>상품 검색 및 목록</h2>
+   <!-- 검색 폼 -->
+	<form action="<%=request.getContextPath()%>/headquater.jsp" method="get" 
+	      class="d-flex justify-content-end mb-3">
+	    <input type="hidden" name="page" value="product/list.jsp" />
+	    <input type="hidden" name="pageNum" value="1" />
+	    <input type="text" name="keyword" 
+	           class="form-control me-2" 
+	           placeholder="상품명 또는 설명 검색" 
+	           value="<%= keyword %>" 
+	           style="max-width: 300px;" />
+	    <button type="submit" class="btn btn-primary">검색</button>
+	</form>
 
-<!-- 검색 폼 -->
-<form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
-    <input type="hidden" name="page" value="product/list.jsp" />
-    <input type="hidden" name="pageNum" value="1" />
-    <input type="text" name="keyword" placeholder="상품명 또는 설명 검색" value="<%= keyword %>" />
-    <input type="submit" value="검색" />
-</form>
 
-<!-- 상품 테이블 -->
-<form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" 
-      onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
-    <input type="hidden" name="pageNum" value="<%=pageNum%>">
-    <input type="hidden" name="keyword" value="<%=keyword%>">
+    <!-- 상품 테이블 -->
+    <form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" 
+          onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
+        <input type="hidden" name="pageNum" value="<%=pageNum%>">
+        <input type="hidden" name="keyword" value="<%=keyword%>">
 
-    <table>
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
-                <th>번호</th>
-                <th>상품명</th>
-                <th>설명</th>
-                <th>가격</th>
-                <th>상태</th>
-                <th>수정</th>
-                <th>삭제</th>
-            </tr>
-        </thead>
-        <tbody>
-        <%
-            if(productList == null || productList.isEmpty()) {
-        %>
-            <tr><td colspan="8">검색 결과가 없습니다.</td></tr>
-        <%
-            } else {
-                int listSize = productList.size();
-                for(int i = 0; i < listSize; i++) {
-                    ProductDto dto = productList.get(i);
-                    int number = totalCount - ((pageNum - 1) * pageSize + i);
-        %>
-            <tr>
-                <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
-                <td><%= number %></td>
-                <td>
-                    <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/detail.jsp&num=<%= dto.getNum() %>">
-                        <%= dto.getName() %>
-                    </a>
-                </td>
-                <td><%= dto.getDescription() %></td>
-                <td><%= dto.getPrice() %>원</td>
-                <td><%= dto.getStatus() %></td>
-                <td>
-                    <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>">수정</a>
-                </td>
-                <td>
-                    <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" 
-                       onclick="return confirm('삭제하시겠습니까?');">
-                        삭제
-                    </a>
-                </td>
-            </tr>
-        <%
-                }
-            }
-        %>
-        </tbody>
-    </table>
-    <input type="submit" value="선택 삭제" />
-</form>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+               <thead class="table-secondary">
+				    <tr>
+				        <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
+				        <th>번호</th>
+				        <th>상품명</th>
+				        <th>설명</th>
+				        <th>가격</th>
+				        <th>상태</th>
+				        <th>수정</th>
+				        <th>삭제</th>
+				    </tr>
+				</thead>
+                <tbody>
+                <%
+                    if(productList == null || productList.isEmpty()) {
+                %>
+                    <tr><td colspan="8" class="text-center text-muted py-4">검색 결과가 없습니다.</td></tr>
+                <%
+                    } else {
+                        int listSize = productList.size();
+                        for(int i = 0; i < listSize; i++) {
+                            ProductDto dto = productList.get(i);
+                            int number = totalCount - ((pageNum - 1) * pageSize + i);
+                %>
+                    <tr>
+                        <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
+                        <td><%= number %></td>
+                        <td>
+                            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/detail.jsp&num=<%= dto.getNum() %>" class="text-decoration-none fw-semibold text-primary">
+                                <%= dto.getName() %>
+                            </a>
+                        </td>
+                        <td class="text-muted"><%= dto.getDescription() %></td>
+                        <td><%= dto.getPrice() %>원</td>
+                        <td>
+                            <% if("판매중".equals(dto.getStatus())) { %>
+                                <span class="badge bg-success"><%= dto.getStatus() %></span>
+                            <% } else { %>
+                                <span class="badge bg-secondary"><%= dto.getStatus() %></span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>" class="btn btn-sm btn-outline-warning">수정</a>
+                        </td>
+                        <td>
+                            <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" 
+                               onclick="return confirm('삭제하시겠습니까?');" 
+                               class="btn btn-sm btn-outline-danger">삭제</a>
+                        </td>
+                    </tr>
+                <%
+                        }
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
 
-<!-- 페이지 네비게이션 -->
-<div class="pagination">
-    <% if(pageNum > 1) { %>
-        <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= pageNum - 1 %>&keyword=<%= encodedKeyword %>">이전</a>
-    <% } else { %>
-        <span>이전</span>
-    <% } %>
+        <button type="submit" class="btn btn-danger btn-sm mt-2">선택 삭제</button>
+    </form>
 
-    <% for(int i = 1; i <= totalPage; i++) {
-        if(i == pageNum) { %>
-            <span class="current"><%= i %></span>
-        <% } else { %>
-            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= i %>&keyword=<%= encodedKeyword %>"><%= i %></a>
-        <% }
-    } %>
+    <!-- 페이지 네비게이션 -->
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <% if(pageNum > 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= pageNum - 1 %>&keyword=<%= encodedKeyword %>">이전</a>
+                </li>
+            <% } else { %>
+                <li class="page-item disabled"><span class="page-link">이전</span></li>
+            <% } %>
 
-    <% if(pageNum < totalPage) { %>
-        <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= pageNum + 1 %>&keyword=<%= encodedKeyword %>">다음</a>
-    <% } else { %>
-        <span>다음</span>
-    <% } %>
+            <% for(int i = 1; i <= totalPage; i++) {
+                if(i == pageNum) { %>
+                    <li class="page-item active"><span class="page-link"><%= i %></span></li>
+                <% } else { %>
+                    <li class="page-item">
+                        <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= i %>&keyword=<%= encodedKeyword %>"><%= i %></a>
+                    </li>
+                <% }
+            } %>
+
+            <% if(pageNum < totalPage) { %>
+                <li class="page-item">
+                    <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= pageNum + 1 %>&keyword=<%= encodedKeyword %>">다음</a>
+                </li>
+            <% } else { %>
+                <li class="page-item disabled"><span class="page-link">다음</span></li>
+            <% } %>
+        </ul>
+    </nav>
 </div>
 
 <script>
@@ -169,5 +177,7 @@ function toggleAll(source) {
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
