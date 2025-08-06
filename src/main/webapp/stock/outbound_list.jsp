@@ -80,7 +80,7 @@
                         <th>승인 상태</th>
                         <th>출고 날짜</th>
                         <th>담당자</th>
-                        <th>관리</th>
+                        <th>상세보기</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,8 +97,8 @@
                                 <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
                                 <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
                                 <td>
-                                    <a href="inandout_out_edit.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">수정</a>
-                                </td>
+                            		<a href="outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
+                        		</td>
                             </tr>
                     <%  } } %>
                 </tbody>

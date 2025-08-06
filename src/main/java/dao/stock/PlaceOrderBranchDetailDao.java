@@ -60,37 +60,41 @@ public class PlaceOrderBranchDetailDao {
 	
 	
 	
-	 public boolean insert(PlaceOrderBranchDetailDto dto) {
-	        Connection conn = null;
-	        PreparedStatement pstmt = null;
-	        String sql = """
-	            INSERT INTO placeOrder_branch_detail
-	            (detail_id, order_id, branch_id, inventory_id, product, current_quantity, request_quantity, approval_status, manager)
-	            VALUES (placeOrder_branch_detail_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)
-	        """;
-	        try {
-	            conn = new DbcpBean().getConn();
-	            pstmt = conn.prepareStatement(sql);
-	            pstmt.setInt(1, dto.getOrder_id());
-	            pstmt.setString(2, dto.getBranch_id());
-	            pstmt.setInt(3, dto.getInventory_id());
-	            pstmt.setString(4, dto.getProduct());
-	            pstmt.setInt(5, dto.getCurrent_quantity());
-	            pstmt.setInt(6, dto.getRequest_quantity());
-	            pstmt.setString(7, dto.getApproval_status());
-	            pstmt.setString(8, dto.getManager());
+	public boolean insert(PlaceOrderBranchDetailDto dto) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    String sql = """
+	        INSERT INTO placeOrder_branch_detail
+	        (detail_id, order_id, branch_id, inventory_id, product, current_quantity, request_quantity, approval_status, manager)
+	        VALUES (placeOrder_branch_detail_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)
+	    """;
+	    boolean isInserted = false;  // 결과 저장용 변수
 
-	            int inserted = pstmt.executeUpdate();
-	            conn.commit();
-	            return inserted > 0;
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            return false;
-	        } finally {
-	            try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
-	            try { if(conn != null) conn.close(); } catch(Exception e) {}
-	        }
+	    try {
+	        conn = new DbcpBean().getConn();
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, dto.getOrder_id());
+	        pstmt.setString(2, dto.getBranch_id());
+	        pstmt.setInt(3, dto.getInventory_id());
+	        pstmt.setString(4, dto.getProduct());
+	        pstmt.setInt(5, dto.getCurrent_quantity());
+	        pstmt.setInt(6, dto.getRequest_quantity());
+	        pstmt.setString(7, dto.getApproval_status());
+	        pstmt.setString(8, dto.getManager());
+
+	        int inserted = pstmt.executeUpdate();
+	        isInserted = inserted > 0;  // 변수에 결과 저장
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        isInserted = false;
+	    } finally {
+	        try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
+	        try { if(conn != null) conn.close(); } catch(Exception e) {}
 	    }
+
+	    return isInserted;
+	}
 	 
 	 public PlaceOrderBranchDetailDto getByDetailId(int detailId) {
 		    PlaceOrderBranchDetailDto dto = null;
