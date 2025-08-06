@@ -11,7 +11,6 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/roleupdate-form.jsp</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
 	<div class="container mt-1 position-relative">

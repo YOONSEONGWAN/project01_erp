@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>발주 관리 메뉴</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include> <!-- Bootstrap 포함 -->
+  
     <style>
         .menu-button {
             width: 180px;

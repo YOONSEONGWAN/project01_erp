@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 
 <!-- Toast UI Editor CSS -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
