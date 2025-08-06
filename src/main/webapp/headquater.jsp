@@ -4,7 +4,6 @@
 <head>
 <meta charset="UTF-8">
 <title>본사 인덱스 페이지</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
     /* 직원 상세 스타일 */
     .hrm-detail-table {
@@ -86,16 +85,9 @@
     <!-- 메인 컨텐츠 -->
     <main class="flex-grow-1 p-3">
     <%
-        String pages = request.getParameter("page");
-	    String branchId = (String)session.getAttribute("branchId");
+	    String pages = request.getParameter("page");
 	    if (pages == null || pages.isEmpty()) {
-	        if("HQ".equals(branchId)) {
-	            pages = "/index/headquaterindex.jsp";
-	        } else if(branchId.startsWith("BC")) {
-	            pages = "/index/branchindex.jsp";
-	        } else {
-	            pages = "/index/error.jsp"; // 권한없음 등
-	        }
+	        pages = "/index/headquaterindex.jsp";
 	    } else if (!pages.startsWith("/")) {
 	        pages = "/" + pages;
 	    }
