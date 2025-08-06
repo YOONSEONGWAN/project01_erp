@@ -1,183 +1,146 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="dto.ProductDto" %>
-<%@ page import="dao.ProductDao" %>
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
-
+<%@ page import="test.dto.BranchSalesDto" %>
+<%@ page import="test.dao.BranchSalesDao" %>
 <%
     request.setCharacterEncoding("UTF-8");
 
-    String keyword = request.getParameter("keyword");
-    if (keyword == null) keyword = "";
-
-    String strPageNum = request.getParameter("pageNum");
-    int pageNum = 1;
-    try {
-        pageNum = Integer.parseInt(strPageNum);
-        if(pageNum < 1) pageNum = 1;
-    } catch (Exception e) {}
-
-    int pageSize = 10;
-    int startRowNum = (pageNum - 1) * pageSize + 1;
-    int endRowNum = pageNum * pageSize;
-
-    ProductDao dao = new ProductDao();
-    int totalCount = dao.getCountByKeyword(keyword);
-    int totalPage = (int)Math.ceil(totalCount / (double) pageSize);
-    if (pageNum > totalPage) pageNum = totalPage == 0 ? 1 : totalPage;
-
-    List<ProductDto> productList = dao.selectByPageAndKeyword(startRowNum, endRowNum, keyword);
-
-    String encodedKeyword = "";
-    try {
-        encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8");
-    } catch (Exception e) {
-        encodedKeyword = keyword;
+    // 1. 로그인된 지점 확인
+    String branchId = (String)session.getAttribute("branchId");
+    if(branchId == null){
+        response.sendRedirect(request.getContextPath() + "/userp/branchlogin-form.jsp");
+        return;
     }
-%>
 
+    // 2. 기간 검색 파라미터
+    String startDate = request.getParameter("startDate");
+    String endDate = request.getParameter("endDate");
+
+    // 3. 현재 페이지 번호 처리
+    int pageNum = 1;
+    String strPageNum = request.getParameter("pageNum");
+    if(strPageNum != null){
+        pageNum = Integer.parseInt(strPageNum);
+    }
+
+    // 4. 페이지네이션 설정
+    final int PAGE_ROW_COUNT = 10;      // 한 페이지 10개
+    final int PAGE_DISPLAY_COUNT = 5;   // 하단에 5개 번호 표시
+
+    int startRowNum = 1 + (pageNum-1)*PAGE_ROW_COUNT;
+    int endRowNum   = pageNum*PAGE_ROW_COUNT;
+    int startPageNum = 1 + ((pageNum-1)/PAGE_DISPLAY_COUNT)*PAGE_DISPLAY_COUNT;
+    int endPageNum   = startPageNum + PAGE_DISPLAY_COUNT - 1;
+
+    // 5. DAO 호출 (조건에 따라 전체 목록 가져옴)
+    List<BranchSalesDto> allList;
+    if(startDate != null && endDate != null && !startDate.isEmpty() && !endDate.isEmpty()){
+        allList = BranchSalesDao.getInstance().getListByPeriod(branchId, startDate, endDate);
+    } else {
+        allList = BranchSalesDao.getInstance().getList(branchId);
+    }
+
+    // 6. 총 데이터 갯수 & 전체 페이지 계산
+    int totalRow = allList.size();
+    int totalPageCount = (int)Math.ceil(totalRow/(double)PAGE_ROW_COUNT);
+    if(endPageNum > totalPageCount) endPageNum = totalPageCount;
+
+    // 7. 현재 페이지에 해당하는 subList 추출
+    int fromIndex = Math.min(startRowNum-1, totalRow);
+    int toIndex   = Math.min(endRowNum, totalRow);
+    List<BranchSalesDto> salesList = allList.subList(fromIndex, toIndex);
+
+    // 8. 총매출 계산 (현재 페이지 기준)
+    int totalAmount = 0;
+    for(BranchSalesDto dto : salesList){
+        totalAmount += dto.getTotalAmount();
+    }
+
+    String cpath = request.getContextPath();
+%>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>상품 관리</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>/branch-sales/list.jsp</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light p-4">
+<body>
+<div class="container mt-3">
 
-<div class="container bg-white p-4 rounded shadow-sm">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold">상품 관리</h3>
-        <form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
-            <input type="hidden" name="page" value="product/insertform.jsp" />
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> 상품 등록
-            </button>
-        </form>
-    </div>
+    <h2>매출 목록</h2>
 
-   <!-- 검색 폼 -->
-	<form action="<%=request.getContextPath()%>/headquater.jsp" method="get" 
-	      class="d-flex justify-content-end mb-3">
-	    <input type="hidden" name="page" value="product/list.jsp" />
-	    <input type="hidden" name="pageNum" value="1" />
-	    <input type="text" name="keyword" 
-	           class="form-control me-2" 
-	           placeholder="상품명 또는 설명 검색" 
-	           value="<%= keyword %>" 
-	           style="max-width: 300px;" />
-	    <button type="submit" class="btn btn-primary">검색</button>
-	</form>
-
-
-    <!-- 상품 테이블 -->
-    <form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" 
-          onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
-        <input type="hidden" name="pageNum" value="<%=pageNum%>">
-        <input type="hidden" name="keyword" value="<%=keyword%>">
-
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-               <thead class="table-secondary">
-				    <tr>
-				        <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
-				        <th>번호</th>
-				        <th>상품명</th>
-				        <th>설명</th>
-				        <th>가격</th>
-				        <th>상태</th>
-				        <th>수정</th>
-				        <th>삭제</th>
-				    </tr>
-				</thead>
-                <tbody>
-                <%
-                    if(productList == null || productList.isEmpty()) {
-                %>
-                    <tr><td colspan="8" class="text-center text-muted py-4">검색 결과가 없습니다.</td></tr>
-                <%
-                    } else {
-                        int listSize = productList.size();
-                        for(int i = 0; i < listSize; i++) {
-                            ProductDto dto = productList.get(i);
-                            int number = totalCount - ((pageNum - 1) * pageSize + i);
-                %>
-                    <tr>
-                        <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
-                        <td><%= number %></td>
-                        <td>
-                            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/detail.jsp&num=<%= dto.getNum() %>" class="text-decoration-none fw-semibold text-primary">
-                                <%= dto.getName() %>
-                            </a>
-                        </td>
-                        <td class="text-muted"><%= dto.getDescription() %></td>
-                        <td><%= dto.getPrice() %>원</td>
-                        <td>
-                            <% if("판매중".equals(dto.getStatus())) { %>
-                                <span class="badge bg-success"><%= dto.getStatus() %></span>
-                            <% } else { %>
-                                <span class="badge bg-secondary"><%= dto.getStatus() %></span>
-                            <% } %>
-                        </td>
-                        <td>
-                            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>" class="btn btn-sm btn-outline-warning">수정</a>
-                        </td>
-                        <td>
-                            <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" 
-                               onclick="return confirm('삭제하시겠습니까?');" 
-                               class="btn btn-sm btn-outline-danger">삭제</a>
-                        </td>
-                    </tr>
-                <%
-                        }
-                    }
-                %>
-                </tbody>
-            </table>
+    <!-- 기간 검색 폼 -->
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-auto">
+            <input type="date" name="startDate" class="form-control" value="<%=startDate != null ? startDate : ""%>">
         </div>
-
-        <button type="submit" class="btn btn-danger btn-sm mt-2">선택 삭제</button>
+        <div class="col-auto">
+            <input type="date" name="endDate" class="form-control" value="<%=endDate != null ? endDate : ""%>">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">조회</button>
+            <a href="<%=cpath%>/branch-sales/list.jsp" class="btn btn-outline-secondary">전체보기</a>
+            <a href="<%=cpath%>/branch-sales/insert-form.jsp" class="btn btn-primary">매출 등록</a>
+        </div>
     </form>
 
-    <!-- 페이지 네비게이션 -->
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-            <% if(pageNum > 1) { %>
-                <li class="page-item">
-                    <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= pageNum - 1 %>&keyword=<%= encodedKeyword %>">이전</a>
-                </li>
-            <% } else { %>
-                <li class="page-item disabled"><span class="page-link">이전</span></li>
-            <% } %>
+    <!-- 총매출 표시 -->
+    <div class="alert alert-info">
+        현재 페이지 총 매출: <strong><%=totalAmount%></strong> 원
+    </div>
 
-            <% for(int i = 1; i <= totalPage; i++) {
-                if(i == pageNum) { %>
-                    <li class="page-item active"><span class="page-link"><%= i %></span></li>
-                <% } else { %>
-                    <li class="page-item">
-                        <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= i %>&keyword=<%= encodedKeyword %>"><%= i %></a>
-                    </li>
-                <% }
-            } %>
+    <!-- 매출 목록 테이블 -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>매출번호</th>
+                <th>지점</th>
+                <th>날짜</th>
+                <th>총금액</th>
+                <th>상세보기</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for(BranchSalesDto dto : salesList){ %>
+            <tr>
+                <td><%=dto.getSalesId()%></td>
+                <td><%=dto.getBranchId()%></td>
+                <td><%=dto.getCreated_at()%></td>
+                <td><%=dto.getTotalAmount()%></td>
+                <td>
+                    <a href="<%=cpath%>/branch-sales/detail.jsp?salesId=<%=dto.getSalesId()%>" 
+                       class="btn btn-sm btn-outline-secondary">보기</a>
+                </td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
 
-            <% if(pageNum < totalPage) { %>
-                <li class="page-item">
-                    <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp&pageNum=<%= pageNum + 1 %>&keyword=<%= encodedKeyword %>">다음</a>
-                </li>
-            <% } else { %>
-                <li class="page-item disabled"><span class="page-link">다음</span></li>
-            <% } %>
-        </ul>
-    </nav>
+    <!-- 페이지네이션 -->
+    <ul class="pagination justify-content-center">
+        <% if(startPageNum != 1) { %>
+            <li class="page-item">
+                <a class="page-link" 
+                   href="<%=cpath%>/branch-sales/list.jsp?pageNum=<%=startPageNum-1%>&startDate=<%=startDate != null ? startDate : ""%>&endDate=<%=endDate != null ? endDate : ""%>">&lsaquo;</a>
+            </li>
+        <% } %>
+
+        <% for(int i=startPageNum; i<=endPageNum; i++){ %>
+            <li class="page-item <%=i==pageNum ? "active" : "" %>">
+                <a class="page-link" 
+                   href="<%=cpath%>/branch-sales/list.jsp?pageNum=<%=i%>&startDate=<%=startDate != null ? startDate : ""%>&endDate=<%=endDate != null ? endDate : ""%>"><%=i%></a>
+            </li>
+        <% } %>
+
+        <% if(endPageNum < totalPageCount) { %>
+            <li class="page-item">
+                <a class="page-link" 
+                   href="<%=cpath%>/branch-sales/list.jsp?pageNum=<%=endPageNum+1%>&startDate=<%=startDate != null ? startDate : ""%>&endDate=<%=endDate != null ? endDate : ""%>">&rsaquo;</a>
+            </li>
+        <% } %>
+    </ul>
+
 </div>
-
-<script>
-function toggleAll(source) {
-    const checkboxes = document.querySelectorAll('input[name="productNums"]');
-    checkboxes.forEach(cb => cb.checked = source.checked);
-}
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
