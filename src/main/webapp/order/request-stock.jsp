@@ -56,13 +56,14 @@ if(!requests.isEmpty()) {
     <title>발주 요청 결과</title>
     <script>
     <% if(isSuccess) { %>
-        location.href = "${pageContext.request.contextPath }/order/list.jsp?branchId=<%= (requests.size() > 0 ? requests.get(0).getBranchId() : "") %>";
+        location.href = "<%=request.getContextPath()%>/branch.jsp?page=order/list.jsp?branchId=<%= (requests.size() > 0 ? requests.get(0).getBranchId() : "") %>";
     <% } else { %>
         alert("발주 요청 실패!");
         history.back();
     <% } %>
     </script>
 </head>
+
 <body>
 <% if(!isSuccess) { %>
     <h3 style="color:red;">발주 요청에 실패했습니다. 다시 시도해 주세요.</h3>

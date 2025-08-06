@@ -89,6 +89,7 @@ List<WorkLogDto> logs = WorkLogDao.getInstance().getLogsByUser(userId);
             <%= (checkIn != null && checkOut != null) ? hours + "시간 " + minutes + "분" : "-" %>
         </td>
     </tr>
+   
 <%
     }
 %>
@@ -97,7 +98,6 @@ List<WorkLogDto> logs = WorkLogDao.getInstance().getLogsByUser(userId);
     <a href="${pageContext.request.contextPath}/branch.jsp?page=work-log/view-work_log.jsp&branchId=<%= branchId %>" style="font-size:1.05em; font-weight:bold; color:#1565c0;">
     	▶ 전직원 출퇴근 현황 보기
 	</a>
-
 </div>
 </body>
 </html>

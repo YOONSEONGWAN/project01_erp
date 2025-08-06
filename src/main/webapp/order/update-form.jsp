@@ -28,7 +28,7 @@ if(dto == null) {
 <body>
 
 <h3>발주 요청 수정</h3>
-<form action="update-request.jsp" method="post">
+<form action="<%=request.getContextPath()%>/branch.jsp?page=order/update-request.jsp" method="post">
     <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
     <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>"><!-- ★ 반드시 추가 -->
     <table>
@@ -47,7 +47,7 @@ if(dto == null) {
     </table>
      <div style="text-align:right; margin-top:18px;">
         <button type="submit" class="btn btn-primary" style="margin-right:10px;">수정 완료</button>
-        <a href="list.jsp" class="btn btn-secondary">목록으로</a>
+        <a href="<%=request.getContextPath()%>/branch.jsp?page=order/list.jsp" class="btn btn-secondary">목록으로</a>
     </div>
 </form>
 </body>

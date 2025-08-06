@@ -14,7 +14,7 @@ boolean isSuccess = StockRequestDao.getInstance().deleteRequest(orderId);
     <script>
     <% if(isSuccess) { %>
         alert('삭제되었습니다.');
-        location.href = 'list.jsp';
+        location.href = '<%=request.getContextPath()%>/branch.jsp?page=order/list.jsp';
     <% } else { %>
         alert('삭제 실패!');
         history.back();

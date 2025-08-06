@@ -27,17 +27,44 @@ List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
 <html>
 <head>
 <meta charset="UTF-8">
-<title><%= branchName %> 출퇴근 현황</title>
+<h3 class="text-center fw-semibold" style="font-family:var(--bs-body-font-family); font-size:2rem; color:#444;">
+  <%= branchName %> 출퇴근 현황
+</h3>
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
-.big-table th, .big-table td { padding:8px; }
-select { font-size: 1.05em; padding: 4px 8px; }
+.big-table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #f7fbfd;
+}
+.big-table th, .big-table td {
+    padding: 9px 8px;
+    border: 1.3px solid #93d1f7; /* 연한 하늘색 */
+    color: #222;
+}
+.big-table th {
+    background: #e3f2fd;   /* 연한 파스텔 블루 */
+    color: #195e8d;        /* 차분한 진블루 */
+    font-weight: 600;
+}
+.big-table tr:nth-child(even) td {
+    background: #f3faff;
+}
+.big-table th:last-child, .big-table td:last-child {
+    border-right: none;
+}
+
+
+
 </style>
 </head>
 <body>
+
 <h3><%= branchName %> 출퇴근 현황</h3>
 
-<table border="1" class="big-table" style="width:100%;">
+
+
+<table border="1" class="big-table mt-3" style="width:100%;">
     <tr>
         <th>아이디</th>
         <th>날짜</th>
