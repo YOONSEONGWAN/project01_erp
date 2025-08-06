@@ -13,8 +13,40 @@
     <style>
         table { border-collapse: collapse; width: 650px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        .req-input { width: 60px; }
-        .add-row-btn { margin: 10px 0; }
+       .add-row-btn {
+    background: #fff;
+    color: #1877ff;              /* 네비바 색상과 맞춤 */
+    border: 2px solid #1877ff;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 12px 34px;
+    font-size: 1.2em;
+    margin-right: 14px;
+    box-shadow: none;
+    transition: background 0.15s, color 0.15s, border 0.15s;
+}
+.add-row-btn:hover, .add-row-btn:focus {
+    background: #eaf4ff;
+    color: #1152aa;
+    border: 2.2px solid #1152aa;
+}
+
+.req-btn {
+    background: #1877ff;        /* 네비바 파랑 */
+    color: #fff;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 34px;
+    font-size: 1.2em;
+    box-shadow: none;
+    letter-spacing: 1px;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+.req-btn:hover, .req-btn:focus {
+    background: #1360c4;
+    color: #fff;
+}
     </style>
     <script>
         function addRow() {
@@ -55,7 +87,7 @@
 </head>
 <body>
 <h3>발주 요청 입력</h3>
-<form action="<%=request.getContextPath()%>/headquater.jsp?page=request-stock.jsp" method="post">
+<form action="<%=request.getContextPath()%>/branch.jsp?page=request-stock.jsp" method="post">
     <table id="order-table">
         <thead>
             <tr>
