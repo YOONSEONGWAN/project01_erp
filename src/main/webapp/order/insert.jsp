@@ -3,8 +3,8 @@
 <%@page import="dao.IngredientDao"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-    IngredientDao dao = new IngredientDao();
-    List<IngredientDto> allIngredients = dao.selectAllProducts();
+
+    List<IngredientDto> allIngredients = IngredientDao.getInstance().selectAllProducts();
 %>
 <!DOCTYPE html>
 <html>

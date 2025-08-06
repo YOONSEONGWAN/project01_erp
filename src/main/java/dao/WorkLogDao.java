@@ -10,6 +10,18 @@ import dto.WorkLogDto;
 import util.DbcpBean;
 
 public class WorkLogDao{
+	private static WorkLogDao dao;
+	
+	static {
+		dao=new WorkLogDao();
+	}
+	private WorkLogDao() {
+		
+	};
+	
+	public static WorkLogDao getInstance() {
+		return dao;
+	}
 
 	public boolean insertStartTime(String branchId, String userId){
 		Connection conn = null;
@@ -20,8 +32,8 @@ public class WorkLogDao{
 			conn = new DbcpBean().getConn();
 			String sql = """
 						 INSERT INTO work_log
-					       (log_id, branch_id, user_id, work_date, start_time)
-					       VALUES(work_log_seq.NEXTVAL, ?, ?, SYSDATE, SYSTIMESTAMP)
+       (log_id, branch_id, user_id, work_date, start_time)
+       VALUES(work_log_seq.NEXTVAL, ?, ?, TRUNC(SYSDATE), SYSTIMESTAMP)
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
@@ -57,10 +69,16 @@ public class WorkLogDao{
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-					UPDATE work_log
-					       SET end_time = SYSTIMESTAMP
-					       WHERE branch_id = ? AND user_id = ? AND work_date = TRUNC(SYSDATE) 
-					       AND end_time IS NULL
+			UPDATE work_log
+               SET end_time = SYSTIMESTAMP
+             WHERE log_id = (
+                SELECT MAX(log_id)
+                FROM work_log
+                WHERE branch_id = ?
+                  AND user_id = ?
+                  AND work_date = TRUNC(SYSDATE)
+                  AND end_time IS NULL
+            )
 										""";
 			 	pstmt = conn.prepareStatement(sql);
 		        pstmt.setString(1, branchId);
@@ -71,15 +89,8 @@ public class WorkLogDao{
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				// null인지 아닌지 체크 안하면 오류가남
-				if (pstmt != null)
-					pstmt.close();
-				if (pstmt != null)
-					conn.close();
-			} catch (Exception e) {
-
-			}
+		    try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+		    try { if (conn != null) conn.close(); } catch (Exception e) {}
 		}
 		// 변화된 rowCount 값을 조사해서 작업의 성공 여부를 알아낼 수 있다.
 		if (rowCount >= 0) {
