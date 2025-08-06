@@ -35,9 +35,6 @@ select { font-size: 1.05em; padding: 4px 8px; }
 </style>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/include/navbar.jsp">
-		<jsp:param value="work" name="thisPage"/>
-	</jsp:include>
 <h3><%= branchName %> 출퇴근 현황</h3>
 
 <table border="1" class="big-table" style="width:100%;">
@@ -69,7 +66,7 @@ select { font-size: 1.05em; padding: 4px 8px; }
 <% } %>
 </table>
 <div style="margin-top: 18px; text-align: right;">
-    <a href="work_log.jsp">
+    <a href="${pageContext.request.contextPath}/headquater.jsp?page=work-log/work_log.jsp">
         <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#695cff; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
             출퇴근 하러가기
         </button>

@@ -36,10 +36,6 @@
     </style>
 </head>
 <body>
-    <!-- 네비게이션 바 -->
-    <jsp:include page="/WEB-INF/include/navbar.jsp">
-        <jsp:param value="stock" name="thisPage"/>
-    </jsp:include>
 
     <!-- 중앙 정렬 컨테이너 -->
     <div class="d-flex flex-column justify-content-center align-items-center min-vh-100">

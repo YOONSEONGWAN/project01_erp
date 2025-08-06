@@ -30,9 +30,6 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
     </style>
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/navbar.jsp">
-	<jsp:param value="order" name="thisPage"/>
-</jsp:include>
 <h3>발주 현황</h3>
 <table>
     <tr>
