@@ -36,7 +36,6 @@
         return;
     }
     
-
     //로그인 여부를 알아내기
     boolean isLogin = userName == null ? false : true;
 %>
