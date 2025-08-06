@@ -32,7 +32,7 @@
 
 		session.setMaxInactiveInterval(60*60);
 		// 로그인 성공 -> /index/headquaterindex.jsp 로 이동
-		response.sendRedirect(request.getContextPath()+ "/index/headquaterindex.jsp");
+		response.sendRedirect(request.getContextPath()+ "/headquater.jsp");
 	} else{
 %>
 <!DOCTYPE html>

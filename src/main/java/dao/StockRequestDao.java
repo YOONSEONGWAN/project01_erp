@@ -66,36 +66,37 @@ public class StockRequestDao {
 	
 	
     // 1. INSERT
-    public boolean insertRequest(StockRequestDto dto) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        int rowCount = 0;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = """
-                INSERT INTO stock_request 
-                (order_id, branch_num, branch_id, inventory_id, product, current_quantity,
-                 request_quantity, status, requestedat, updatedat, isPlaceOrder)
-                VALUES (stock_request_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, SYSDATE, SYSDATE, ?, ?)
-            """;
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, dto.getBranchNum());           // FK (branch_stock의 PK)
-            pstmt.setString(2, dto.getBranchId());
-            pstmt.setInt(3, dto.getInventoryId());
-            pstmt.setString(4, dto.getProduct());
-            pstmt.setInt(5, dto.getCurrentQuantity());
-            pstmt.setInt(6, dto.getRequestQuantity());
-            pstmt.setString(7, dto.getStatus());
-            pstmt.setString(8, dto.getIsPlaceOrder());
-            
-            rowCount = pstmt.executeUpdate();
-        } catch(Exception e) { e.printStackTrace(); }
-        finally {
-            try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
-            try { if(conn!=null) conn.close(); } catch(Exception e){}
-        }
-        return rowCount > 0;
-    }
+	public boolean insertRequest(StockRequestDto dto) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    int rowCount = 0;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            INSERT INTO stock_request 
+	            (order_id, branch_num, branch_id, inventory_id, product, current_quantity,
+	             request_quantity, status, requestedat, updatedat, isPlaceOrder)
+	            VALUES (stock_request_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, SYSDATE, SYSDATE, ?)
+	        """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, dto.getBranchNum());
+	        pstmt.setString(2, dto.getBranchId());
+	        pstmt.setInt(3, dto.getInventoryId());
+	        pstmt.setString(4, dto.getProduct());
+	        pstmt.setInt(5, dto.getCurrentQuantity());
+	        pstmt.setInt(6, dto.getRequestQuantity());
+	        pstmt.setString(7, dto.getStatus());
+	        pstmt.setString(8, dto.getIsPlaceOrder());
+	        
+	        rowCount = pstmt.executeUpdate();
+	    } catch(Exception e) { 
+	        e.printStackTrace(); 
+	    } finally {
+	        try { if(pstmt != null) pstmt.close(); } catch(Exception e) {}
+	        try { if(conn != null) conn.close(); } catch(Exception e) {}
+	    }
+	    return rowCount > 0;
+	}
 
     // 2. 단일건 SELECT (order_id로)
     public StockRequestDto selectByOrderId(int orderId) {
@@ -365,6 +366,7 @@ public class StockRequestDao {
         return branchId;
     }
 
+
     public int getInventoryIdByNum(int num) {
         int inventoryId = 0;
         Connection conn = null;
@@ -521,7 +523,6 @@ public class StockRequestDao {
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
-
     public int getNumByDetailId(int detailId) {
         int result = -1;
         Connection conn = null;
@@ -557,12 +558,7 @@ public class StockRequestDao {
         updateCurrentQuantity(requestNum, -qty);
     }
 
-    /**
-     * 승인 수량 증가 (예: 반려 → 승인 전환 시)
-     */
-    public void increaseCurrentQuantity(int requestNum, int qty) {
-        updateCurrentQuantity(requestNum, qty);
-    }
+    
 
     /**
      * 승인 수량 조정 (예: 승인 상태에서 수량 변경 시)
@@ -595,5 +591,92 @@ public class StockRequestDao {
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
-}
+    
+ // product 가져오기
+    public String getProductByOrderId(int orderId) throws SQLException {
+        String sql = "SELECT product FROM stock_request WHERE order_id = ?";
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("product");
+            }
+            return null;
+        }
+    }
 
+    // current_quantity 가져오기
+    public int getQuantityByOrderId(int orderId) throws SQLException {
+        String sql = "SELECT current_quantity FROM stock_request WHERE order_id = ?";
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("current_quantity");
+            }
+            return 0;
+        }
+    }
+
+    // branch_id 가져오기
+    public String getBranchIdByOrderId(int orderId) throws SQLException {
+        String sql = "SELECT branch_id FROM stock_request WHERE order_id = ?";
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("branch_id");
+            }
+            return null;
+        }
+    
+    
+    }
+    
+    public int getRequestQuantityByOrderId(int orderId) {
+        String sql = "SELECT request_quantity FROM stock_request WHERE order_id = ?";
+        int qty = 0;
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    qty = rs.getInt("request_quantity");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return qty;
+    }
+    
+    public boolean increaseCurrentQuantity(int requestNum, int quantity) {
+        boolean isSuccess = false;
+        String sql = """
+            UPDATE inventory
+            SET quantity = quantity + ?
+            WHERE num = (SELECT inventory_id FROM stock_request WHERE order_id = ?)
+        """;
+
+        try (Connection conn = new DbcpBean().getConn();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, quantity);
+            pstmt.setInt(2, requestNum);
+
+            int result = pstmt.executeUpdate();
+            if (result > 0) {
+                isSuccess = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return isSuccess;
+    }
+    
+}

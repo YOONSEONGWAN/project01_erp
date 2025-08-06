@@ -105,10 +105,7 @@
   <title>게시판 목록</title>
   <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
-<body>
-	<jsp:include page="/WEB-INF/include/navbar.jsp">
-		<jsp:param value="board" name="thisPage"/>
-	</jsp:include>
+<body>	
   <div class="container">
     <h2 class="mb-4">종복치킨 게시판</h2>
 	
