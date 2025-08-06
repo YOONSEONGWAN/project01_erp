@@ -112,7 +112,13 @@ public class InboundOrdersDao {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try { if (rs != null) rs.close(); if (pstmt != null) pstmt.close(); if (conn != null) conn.close(); } catch (Exception e) {}
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return list;
     }
@@ -137,10 +143,14 @@ public class InboundOrdersDao {
                 dto.setManager(rs.getString("manager"));
                 list.add(dto);
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            try { if (rs != null) rs.close(); if (pstmt != null) pstmt.close(); if (conn != null) conn.close(); } catch (Exception e) {}
+            try {
+                if(rs != null) rs.close();
+                if(pstmt != null) pstmt.close();
+                if(conn != null) conn.close();
+            } catch(Exception e) {}
         }
         return list;
     }
@@ -172,14 +182,14 @@ public class InboundOrdersDao {
                 dto.setManager(rs.getString("manager"));
                 list.add(dto);
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {}
+                if(rs != null) rs.close();
+                if(pstmt != null) pstmt.close();
+                if(conn != null) conn.close();
+            } catch(Exception e) {}
         }
         return list;
     }

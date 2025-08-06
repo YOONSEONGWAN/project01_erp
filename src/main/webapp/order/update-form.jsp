@@ -26,7 +26,7 @@ if(dto == null) {
     <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+<jsp:include page="/WEB-INF/include/navbar.jsp">
 	<jsp:param value="order" name="thisPage"/>
 </jsp:include>
 <h3>발주 요청 수정</h3>

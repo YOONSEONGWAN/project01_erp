@@ -368,18 +368,15 @@ public class HqBoardDao {
 	    ResultSet rs = null;
 	    try {
 	        conn = new DbcpBean().getConn();
-	        // 실행할 sql
 	        String sql = """
-	            SELECT *
-	            FROM	
-	                (SELECT b.num, writer, title, content, view_count, 
-	                    TO_CHAR(b.created_at, 'YY"년" MM"월" DD"일" HH24:MI') AS created_at, 
-	                    profileImage,
-	                    LAG(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS prevNum,
-	                    LEAD(b.num, 1, 0) OVER (ORDER BY b.num DESC) AS nextNum
-	                FROM hqboard b
-	                INNER JOIN users2 u ON b.writer = u.name) 
-	            WHERE num=?
+	            SELECT b.num, b.writer, b.title, b.content, b.view_count, 
+	                   TO_CHAR(b.created_at, 'YY\"년\" MM\"월\" DD\"일\" HH24:MI') AS created_at,
+	                   u.profile_image AS profileImage,
+                       (SELECT MAX(num) FROM hqboard WHERE num < b.num) AS prevNum,
+	        		   (SELECT MIN(num) FROM hqboard WHERE num > b.num) AS nextNum
+	            FROM hqboard b
+	            LEFT JOIN users_p u ON b.writer = u.user_name
+	            WHERE b.num = ?
 	        """;
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setInt(1, num);
@@ -397,6 +394,7 @@ public class HqBoardDao {
 	            dto.setNextNum(rs.getInt("nextNum"));
 
 	            // === 첨부파일 리스트 추가 ===
+	            List<HqBoardFileDto> fileList = new ArrayList<>();
 	            PreparedStatement fpstmt = null;
 	            ResultSet frs = null;
 	            try {
@@ -404,7 +402,6 @@ public class HqBoardDao {
 	                fpstmt = conn.prepareStatement(fsql);
 	                fpstmt.setInt(1, num);
 	                frs = fpstmt.executeQuery();
-	                java.util.List<HqBoardFileDto> fileList = new java.util.ArrayList<>();
 	                while (frs.next()) {
 	                    HqBoardFileDto fileDto = new HqBoardFileDto();
 	                    fileDto.setNum(frs.getInt("num"));
@@ -415,7 +412,6 @@ public class HqBoardDao {
 	                    fileDto.setCreatedAt(frs.getString("created_at"));
 	                    fileList.add(fileDto);
 	                }
-	                dto.setFileList(fileList);
 	            } catch (Exception e) {
 	                e.printStackTrace();
 	            } finally {
@@ -426,6 +422,8 @@ public class HqBoardDao {
 	                    e.printStackTrace();
 	                }
 	            }
+	            // 무조건 set (첨부파일이 없어도 빈 리스트)
+	            dto.setFileList(fileList);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -439,7 +437,7 @@ public class HqBoardDao {
 	        }
 	    }
 	    return dto;
-	}
+	}	
 
 	
 	/* ************************************************** */
