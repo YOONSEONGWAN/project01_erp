@@ -43,10 +43,10 @@ for(int i=0; i<100; i++) {
     requests.add(dto);
 }
 
-StockRequestDao dao = new StockRequestDao();
+
 boolean isSuccess = false;
 if(!requests.isEmpty()) {
-    isSuccess = dao.batchInsertRequest(requests);
+    isSuccess = StockRequestDao.getInstance().batchInsertRequest(requests);
 }
 %>
 <!DOCTYPE html>
