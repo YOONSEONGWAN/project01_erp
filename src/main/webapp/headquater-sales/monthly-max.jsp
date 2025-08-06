@@ -26,7 +26,7 @@
     <meta charset="UTF-8">
     <title>/sales/monthly-max.jsp</title>
 </head>
-<body class="container mt-4">
+<body class="container-fluid px-0">
     <h2 class="mb-4">지점별 월간 최고 매출일</h2>
     <table class="table table-bordered">
     <thead class="table-light">

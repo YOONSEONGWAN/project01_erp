@@ -25,7 +25,7 @@
     <meta charset="UTF-8">
     <title>/sales/weekly-min.jsp</title>
 </head>
-<body class="contaner mt-4">
+<body class="container-fluid px-0">
     <h2 class="mb-4">지점별 주간 최저 매출일</h2>
     <table class="table table-bordered">
         <thead class="table-light">

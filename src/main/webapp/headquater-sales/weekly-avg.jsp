@@ -16,7 +16,7 @@
 <meta charset="UTF-8">
 <title>/sales/weekly-avg.jsp</title>
 </head>
-<body class="container mt-4">
+<body class="container-fluid px-0">
 	<h2 class="mb-4">주간 평균 매출 통계</h2>
 	<table class="table table-bordered">
 		<thead class="table-light">

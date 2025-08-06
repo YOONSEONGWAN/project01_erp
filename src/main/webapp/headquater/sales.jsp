@@ -40,7 +40,7 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<main class="col-12 col-md-10 offset-md-1 mt-4">
+			<main class="col-md-12 px-4">
 
 				<div class="text-center mb-4">
 					<h1 class="fw-bold">지점별 매출 분석 대시보드</h1>
