@@ -15,6 +15,10 @@
 	dto.setNum(num);
 	// DB 에 저장하기
 	
+	System.out.println("title = " + title);
+	System.out.println("content = " + content);
+	System.out.println("writer = " + writer);
+	
 	dto.setWriter(writer);
 	dto.setTitle(title);
 	dto.setContent(content);

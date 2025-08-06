@@ -32,9 +32,9 @@
         <!-- 가운데 정렬 영역 -->
         <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
             <div class="d-flex gap-4">
-                <a class="btn btn-primary btn-square" href="insert-form.jsp">지점 등록</a>
-                <a class="btn btn-primary btn-square" href="list.jsp">지점 목록</a>
-                <a class="btn btn-primary btn-square" href="user-list.jsp">직원 관리</a>
+                <a class="btn btn-primary btn-square" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/insert-form.jsp">지점 등록</a>
+                <a class="btn btn-primary btn-square" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">지점 목록</a>
+                <a class="btn btn-primary btn-square" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp">직원 관리</a>
             </div>
         </div>
     </div>

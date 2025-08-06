@@ -39,8 +39,8 @@ public class BranchDao {
             conn = new DbcpBean().getConn();
 
             while (true) {
-                int num = rand.nextInt(100000);
-                String candidate = "JB" + String.format("%05d", num);
+                int num = rand.nextInt(1000);
+                String candidate = "BC-" + String.format("%03d", num);
 
                 String sql = "SELECT COUNT(*) FROM branches WHERE branch_id = ?";
                 pstmt = conn.prepareStatement(sql);
@@ -340,8 +340,8 @@ public class BranchDao {
 			//실행할 sql문
 			String sql = """
 					SELECT MAX(ROWNUM) AS count
-					FROM branches
-					WHERE name LIKE '%'||?||'%' or b.branch_id LIKE '%'||?||'%'
+					FROM branches b
+					WHERE name LIKE '%'||?||'%' or b.branch_id LIKE '%'||UPPER(?)||'%'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -464,7 +464,7 @@ public class BranchDao {
 							LEFT OUTER JOIN  (
 								SELECT * FROM users_p WHERE role = 'manager'
 							) u ON b.branch_id = u.branch_id
-							WHERE b.name LIKE '%'||?||'%' or b.branch_id LIKE '%'||?||'%'
+							WHERE b.name LIKE '%'||?||'%' or b.branch_id LIKE '%'||UPPER(?)||'%'
 							GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
@@ -548,7 +548,7 @@ public class BranchDao {
             String sql = """
                     SELECT COUNT(*) AS count
                     FROM branches
-                    WHERE (name LIKE '%'||?||'%' OR branch_id LIKE '%'||?||'%') AND status=?
+                    WHERE (name LIKE '%'||?||'%' OR branch_id LIKE '%'||UPPER(?)||'%') AND status=?
                     """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, keyword);
@@ -653,7 +653,7 @@ public class BranchDao {
                             LEFT OUTER JOIN  (
                                 SELECT * FROM users_p WHERE role = 'manager'
                             ) u ON b.branch_id = u.branch_id
-                            WHERE (b.name LIKE '%'||?||'%' OR b.branch_id LIKE '%'||?||'%') AND b.status = ?
+                            WHERE (b.name LIKE '%'||?||'%' OR b.branch_id LIKE '%'||UPPER(?)||'%') AND b.status = ?
                             GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
                             ORDER BY b.branch_id DESC) result1)
                     WHERE rnum BETWEEN ? AND ?
