@@ -91,6 +91,7 @@
 	    dto.setKeyword(keyword);
 	    list = dao.selectPageByKeywordAndRole(dto, role);
 	}
+
 %>
 <!DOCTYPE html>
 <html>
@@ -101,12 +102,19 @@
 </head>
 <body>
 <div class="container">
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+		    <li class="breadcrumb-item active" aria-current="page">직원 목록</li>
+		  </ol>
+		</nav>
 		
-		<a class="btn btn-outline-primary" href="list.jsp">지점 목록으로</a>
-		<h1 class="text-center">등급 업데이트</h1>
+		<h1 class="text-center">직원 목록</h1>
 		<div class="row">
 			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end mb-3">
 				<form action="user-list.jsp" method="get">
+					 <input type="hidden" name="returnUrl" value="user-list.jsp">
 					<div>
 						<select name="role">
 							<option value="all" <%= "all".equals(role) ? "selected" : "" %>>전체</option>
@@ -171,5 +179,17 @@
 			</li>
 		<%} %>
 	</ul>
+	
+	<%
+		String alertMsg = (String) session.getAttribute("alertMsg");
+			if (alertMsg != null) {
+				session.removeAttribute("alertMsg"); // 한 번 쓰고 지워줌
+	%>
+		<script>
+			alert("<%= alertMsg %>");
+		</script>
+	<%
+			}
+	%>
 </body>
 </html>

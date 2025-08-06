@@ -10,8 +10,7 @@ if(orderIdStr == null) {
     return;
 }
 int orderId = Integer.parseInt(orderIdStr);
-StockRequestDao dao = new StockRequestDao();
-StockRequestDto dto = dao.selectByOrderId(orderId);
+StockRequestDto dto = StockRequestDao.getInstance().selectByOrderId(orderId);
 if(dto == null) {
 %>
     <h3 style="color:red;">해당 발주 정보가 없습니다.</h3>
@@ -27,7 +26,7 @@ if(dto == null) {
     <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>
-<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+<jsp:include page="/WEB-INF/include/navbar.jsp">
 	<jsp:param value="order" name="thisPage"/>
 </jsp:include>
 <h3>발주 요청 수정</h3>

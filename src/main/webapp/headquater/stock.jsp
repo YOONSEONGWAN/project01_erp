@@ -37,7 +37,7 @@
 </head>
 <body>
     <!-- 네비게이션 바 -->
-    <jsp:include page="/WEB-INF/include/hqnavbar.jsp">
+    <jsp:include page="/WEB-INF/include/navbar.jsp">
         <jsp:param value="stock" name="thisPage"/>
     </jsp:include>
 

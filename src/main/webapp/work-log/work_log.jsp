@@ -9,16 +9,15 @@
 <%
 String branchId = (String) session.getAttribute("branchId");
 String userId = (String) session.getAttribute("userId");
-WorkLogDao dao = new WorkLogDao();
+
 
 String action = request.getParameter("action");
 if ("checkin".equals(action)) {
-	dao.insertStartTime(branchId, userId);
+	WorkLogDao.getInstance().insertStartTime(branchId, userId);
 } else if ("checkout".equals(action)) {
-	dao.updateEndTime(branchId, userId);
+	WorkLogDao.getInstance().updateEndTime(branchId, userId);
 }
-
-List<WorkLogDto> logs = dao.getLogsByUser(userId);
+List<WorkLogDto> logs = WorkLogDao.getInstance().getLogsByUser(userId);
 %>
 <!DOCTYPE html>
 <html>

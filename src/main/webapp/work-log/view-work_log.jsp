@@ -6,10 +6,9 @@
 
 <%
 String branchId = (String)session.getAttribute("branchId");
-WorkLogDao dao = new WorkLogDao();
-String branchName = dao.getBranchName(branchId); // 지점명 받아오기
-List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
-List<String> branchList = dao.getBranchIdListFromLog();
+String branchName = WorkLogDao.getInstance().getBranchName(branchId); // 지점명 받아오기
+List<WorkLogDto> logs = WorkLogDao.getInstance().getLogsByBranch(branchId);
+List<String> branchList = WorkLogDao.getInstance().getBranchIdListFromLog();
 
 /*WorkLogDao dao = new WorkLogDao();
 
@@ -36,7 +35,7 @@ select { font-size: 1.05em; padding: 4px 8px; }
 </style>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/include/branchnavbar.jsp">
+	<jsp:include page="/WEB-INF/include/navbar.jsp">
 		<jsp:param value="work" name="thisPage"/>
 	</jsp:include>
 <h3><%= branchName %> 출퇴근 현황</h3>

@@ -3,8 +3,8 @@
 <%
 int orderId = Integer.parseInt(request.getParameter("orderId"));
 
-StockRequestDao dao = new StockRequestDao();
-boolean isSuccess = dao.deleteRequest(orderId);
+
+boolean isSuccess = StockRequestDao.getInstance().deleteRequest(orderId);
 %>
 <!DOCTYPE html>
 <html>
