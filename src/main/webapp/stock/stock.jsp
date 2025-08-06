@@ -64,9 +64,7 @@
 </head>
 <body>
 
-    <!-- 나중에 네비바가 들어올 자리 -->
-    <!-- <jsp:include page="/WEB-INF/include/navbar.jsp" /> -->
-
+   
     <div class="main-wrapper">
         <div class="container text-center">
             <h1 class="fw-bold mb-3">재고 관리 시스템</h1>

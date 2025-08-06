@@ -34,18 +34,24 @@
         return;
     }
 
-    StockRequestDao stockRequestDao = new StockRequestDao();  
-    IngredientDao ingredientDao = new IngredientDao();         
+    // StockRequestDao, IngredientDao는 new로 생성
+    StockRequestDao stockRequestDao = new StockRequestDao();
+    IngredientDao ingredientDao = new IngredientDao();
 
-    PlaceOrderBranchDao placeOrderBranchDao = PlaceOrderBranchDao.getInstance();
-    InventoryDao inventoryDao = InventoryDao.getInstance();
+    // 나머지 DAO는 getInstance() 유지
     PlaceOrderBranchDetailDao placeOrderBranchDetailDao = PlaceOrderBranchDetailDao.getInstance();
     OutboundOrdersDao outboundOrdersDao = OutboundOrdersDao.getInstance();
+    InventoryDao inventoryDao = InventoryDao.getInstance();
 
-    int orderId = placeOrderBranchDao.insert(manager);
-    String orderDateStr = placeOrderBranchDao.getOrderDateByOrderId(orderId);
+    // 1. 발주 생성
+    int orderId = PlaceOrderBranchDao.getInstance().insert(manager);
+    String orderDateStr = PlaceOrderBranchDao.getInstance().getOrderDateByOrderId(orderId);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    // 변수 하나 만들어서 마지막 branchId 저장 (출고 이력에 필요)
+    String lastBranchId = null;
+
+    // 2. 승인/반려 처리
     paramNames = request.getParameterNames();
 
     while (paramNames.hasMoreElements()) {
@@ -65,20 +71,19 @@
                 String branchId = stockRequestDao.getBranchIdByNum(num);
                 int inventoryId = stockRequestDao.getInventoryIdByNum(num);
 
+                lastBranchId = branchId; // 마지막 branchId 저장
+
                 if ("YES".equals(approval)) {
-                    // 승인: 수량 증감, 상태 변경
                     ingredientDao.increaseQuantity(branchId, inventoryId, amount);
                     inventoryDao.decreaseQuantity(inventoryId, amount);
                     stockRequestDao.updateStatus(num, "승인");
                 } else {
-                    // 반려: 상태만 변경
                     stockRequestDao.updateStatus(num, "반려");
                 }
 
-                // 공통 처리
-                stockRequestDao.updateDate(num); // updatedAt = SYSDATE
+                stockRequestDao.updateDate(num); // updatedAt
 
-                // 상세 발주 기록 저장
+                // 발주 상세 insert
                 PlaceOrderBranchDetailDto dto = new PlaceOrderBranchDetailDto();
                 dto.setOrder_id(orderId);
                 dto.setBranch_id(branchId);
@@ -89,28 +94,22 @@
                 dto.setApproval_status("YES".equals(approval) ? "승인" : "반려");
                 dto.setManager(manager);
 
-
-                // outbound_orders 테이블에도 insert
-               	OutboundOrdersDao.getInstance().insert(orderId, branchId, dto.getApproval_status(), orderDateStr, manager);
-
-                InventoryDao.getInstance().updateApproval(num, "대기");
-
                 placeOrderBranchDetailDao.insert(dto);
 
-
-                // 출고 이력 저장 (inventoryId 사용, approvalStatus 인자 순서 주의!)
-               	outboundOrdersDao.insert(orderId, branchId, dto.getApproval_status(), orderDateStr, manager);
-                
-                // ★ isplaceorder 값을 'no'로 변경 추가 ★
                 stockRequestDao.updateIsPlaceOrder(num, "no");
-                
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-%>
 
+    // 3. 출고 이력은 order_id 1개당 1건만 insert
+    if (lastBranchId != null) {
+        outboundOrdersDao.insert(orderId, lastBranchId, "처리됨", orderDateStr, manager);
+    }
+
+%>
 <script>
     alert("발주 내역이 정상적으로 처리되었습니다.");
     location.href = "placeorder_branch.jsp";
