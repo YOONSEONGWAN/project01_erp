@@ -2,7 +2,7 @@
 <%
 	// 세션에서 로그인된 사용자 아이디 얻어오기
 	String writer = (String)session.getAttribute("userId");
-	String branchId = (String) session.getAttribute("branch_id");	
+	String branchId = (String) session.getAttribute("branchId");	
 
 	// URL 로 직접접근 막기
 	String boardType = request.getParameter("board_type");
@@ -10,11 +10,22 @@
 	    boardType = "NOTICE"; // 기본값
 	}
 	
-	// 공지사항을 클릭했을때 본사 회원이 아니라면 접근 차단
+	// 1. 공지사항 → 본사 아니면 차단
 	if ("NOTICE".equalsIgnoreCase(boardType) && !"HQ".equalsIgnoreCase(branchId)) {
 	%>
 	  <script>
 	    alert("공지사항은 본사 회원만 작성할 수 있습니다.");
+	    history.back();
+	  </script>
+	<%
+	    return;
+	}
+
+	// 2. 문의사항 → 본사면 차단
+	if ("QNA".equalsIgnoreCase(boardType) && "HQ".equalsIgnoreCase(branchId)) {
+	%>
+	  <script>
+	    alert("문의사항은 지점 회원만 작성할 수 있습니다.");
 	    history.back();
 	  </script>
 	<%
