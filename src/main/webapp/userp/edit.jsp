@@ -26,7 +26,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-primary text-white">
                         <h4 class="mb-0">가입정보 수정 양식</h4>
                     </div>
                     <div class="card-body">
