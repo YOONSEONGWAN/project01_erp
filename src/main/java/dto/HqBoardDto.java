@@ -5,6 +5,7 @@ import java.util.List;
 public class HqBoardDto {
 	private int num;
 	private String writer;
+	private String role;
 	private String title;
 	private String content;
 	private int viewCount;
@@ -114,6 +115,12 @@ public class HqBoardDto {
 	}
 	public void setSaveFileName(String saveFileName) {
 		SaveFileName = saveFileName;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 	
