@@ -29,9 +29,9 @@ public class PlaceOrderBranchDetailDao {
 	public PlaceOrderBranchDetailDto getDetailById(int detailId) {
 	    PlaceOrderBranchDetailDto dto = null;
 	    String sql = """
-	        SELECT detail_id, order_id, product, current_quantity, request_quantity, approval_status, manager
-	        FROM placeOrder_branch_detail
-	        WHERE detail_id = ?
+	    		SELECT detail_id, order_id, inventory_id, product, current_quantity, request_quantity, approval_status, manager, branch_id
+	    		FROM placeOrder_branch_detail
+	    		WHERE detail_id = ?
 	    """;
 
 	    try (
@@ -49,6 +49,8 @@ public class PlaceOrderBranchDetailDao {
 	                dto.setRequest_quantity(rs.getInt("request_quantity"));
 	                dto.setApproval_status(rs.getString("approval_status"));
 	                dto.setManager(rs.getString("manager"));
+	                dto.setInventory_id(rs.getInt("inventory_id"));
+	                dto.setBranch_id(rs.getString("branch_id"));
 	            }
 	        }
 	    } catch (Exception e) {
@@ -218,5 +220,26 @@ public class PlaceOrderBranchDetailDao {
 
 	        return list;
 	    }
+	 public boolean updateApprovalStatus(int detailId, int requestQty, String newApprovalStatus) {
+		    Connection conn = null;
+		    PreparedStatement pstmt = null;
+		    int result = 0;
+		    String sql = "UPDATE placeorder_branch_detail SET approval_status = ?, request_quantity = ? WHERE detail_id = ?";
+		    try {
+		        conn = new DbcpBean().getConn();
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, newApprovalStatus);
+		        pstmt.setInt(2, requestQty);
+		        pstmt.setInt(3, detailId);
+		        result = pstmt.executeUpdate();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try {
+		            if (pstmt != null) pstmt.close();
+		            if (conn != null) conn.close();
+		        } catch (Exception e) {}
+		    }
+		    return result > 0;
+		}
 	}
-

@@ -6,7 +6,7 @@
 	int num=Integer.parseInt(request.getParameter("num"));
 	
 	// 리다일렉트 이동할때 필요한 원글의 글번호
-	String parentNum=request.getParameter("parent_num");
+	String boardNum=request.getParameter("board_num");
 	
 	// dao 객체를 이용해서 삭제하고
 	CommentDao.getInstance().delete(num);
@@ -15,5 +15,8 @@
 	String cPath=request.getContextPath(); // getContextPath( ): context 경로를 얻어냄 
 	// board_type 파라미터 같이 넘겨주기
 	String boardType = request.getParameter("board_type");
-	response.sendRedirect(cPath + "/board/view.jsp?num=" + parentNum + "&board_type=" + boardType);
+	String redirectUrl = "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
+	        ? cPath + "/headquater.jsp?page=board/view.jsp&num=" + boardNum + "&board_type=" + boardType
+	        : cPath + "/branch.jsp?page=board/view.jsp&num=" + boardNum + "&board_type=" + boardType;
+	    response.sendRedirect(redirectUrl);
 %> 

@@ -122,13 +122,11 @@ public class CommentDao {
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
-	            SELECT comments_p.num, writer, target_user_id, content, deleted, groupnum,
-	                   comments_p.created_at, profile_image
-	            FROM comments_p
-	            INNER JOIN users_p ON comments_p.writer = users_p.user_name
-	            WHERE parent_num = ? AND board_type = ?
-	            ORDER BY groupnum ASC, num ASC
-	        """;
+	        	    SELECT num, writer, content, board_num, board_type, created_at, deleted, profile_image
+	        	    FROM comments_p
+	        	    WHERE board_num = ? AND board_type = ?
+	        	    ORDER BY num ASC
+	        	""";
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setInt(1, parentNum);
 	        pstmt.setString(2, boardType);
@@ -138,10 +136,8 @@ public class CommentDao {
 	            CommentDto dto = new CommentDto();
 	            dto.setNum(rs.getInt("num"));
 	            dto.setWriter(rs.getString("writer"));
-	            dto.setTargetUserId(rs.getString("target_user_id")); 
 	            dto.setContent(rs.getString("content"));
-	            dto.setParentNum(parentNum);
-	            dto.setGroupNum(rs.getInt("groupnum")); 
+	            dto.setBoardNum(rs.getInt("board_num"));
 	            dto.setDeleted(rs.getString("deleted"));
 	            dto.setCreatedAt(rs.getString("created_at")); 
 	            dto.setProfileImage(rs.getString("profile_image")); 
@@ -170,18 +166,15 @@ public class CommentDao {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
 	            INSERT INTO comments_p
-	            (num, board_num, board_type, writer, target_user_id, content, parent_num, created_at)
-	            VALUES (?, ?, ?, ?, ?, ?, ?, SYSDATE)
+	            (num, writer, content, board_num, board_type, created_at)
+	            VALUES (?, ?, ?, ?, ?, SYSDATE)
 	        """;
 	        pstmt = conn.prepareStatement(sql);
-
-	        pstmt.setInt(1, dto.getNum());                    // 댓글 번호
-	        pstmt.setInt(2, dto.getBoardNum());              // 게시글 번호
-	        pstmt.setString(3, dto.getBoard_type());          // 게시판 종류 (NOTICE / QNA)
-	        pstmt.setString(4, dto.getWriter());              // 작성자
-	        pstmt.setString(5, dto.getTargetUserId());      // 대상 사용자 ID
-	        pstmt.setString(6, dto.getContent());             // 내용
-	        pstmt.setObject(7, dto.getParentNum());          // 부모 댓글 번호 (nullable)
+	        pstmt.setInt(1, dto.getNum());
+	        pstmt.setString(2, dto.getWriter());
+	        pstmt.setString(3, dto.getContent());
+	        pstmt.setInt(4, dto.getBoardNum());
+	        pstmt.setString(5, dto.getBoard_type());
 
 	        rowCount = pstmt.executeUpdate();
 

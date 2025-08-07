@@ -75,6 +75,58 @@
 <head>
 <meta charset="UTF-8">
 <title>/hqboard/hq-list</title>
+<!-- Bootstrap CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<!-- "본사꾸미기" 커스텀 CSS (복붙만 하면 끝!) -->
+<style>
+.card-header.bg-light {
+    background-color: #f8f9fa !important;
+    font-weight: bold;
+    font-size: 1.15rem;
+}
+.btn-outline-primary, .btn-outline-danger {
+    border-radius: 0.5rem;
+    padding: 0.375rem 1rem;
+}
+.table th, .table td {
+    vertical-align: middle !important;
+}
+.my-5 {
+    margin-top: 3rem !important;
+    margin-bottom: 3rem !important;
+}
+.h3.mb-0 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #224488;
+    margin-bottom: 1.5rem !important;
+}
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+.gap-2 {
+    gap: 0.5rem !important;
+}
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+.pagination .active .page-link {
+    background-color: #224488;
+    border-color: #224488;
+    color: #fff;
+}
+.pagination .page-link {
+    color: #224488;
+}
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #224488;
+}
+</style>
 </head>
 <body>
 <div class="container my-5">
@@ -144,5 +196,4 @@
     </nav>
 </div>
 </body>
-
 </html>

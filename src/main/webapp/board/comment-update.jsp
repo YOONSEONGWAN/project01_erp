@@ -8,7 +8,7 @@
 	String content=request.getParameter("content");
 	
 	// 원글의 번호
-	String parentNum=request.getParameter("parent_num");
+	String boardNum=request.getParameter("board_num");
 	
 	String boardType = request.getParameter("board_type");
 	
@@ -30,10 +30,16 @@
 	<script>
 		<%if(isSuccess) {%>
 			alert("수정했습니다")
-			location.href = "${pageContext.request.contextPath}/board/view.jsp?num=<%= parentNum %>&board_type=<%= boardType %>";
+			 location.href = "<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+						        ? request.getContextPath() + "/headquater.jsp?page=board/view.jsp&num=" + boardNum + "&board_type=" + boardType 
+						        : request.getContextPath() + "/branch.jsp?page=board/view.jsp&num=" + boardNum + "&board_type=" + boardType 
+  							  %>";
 		<%}else{%>
 			alert("수정실패!")
-			location.href = "${pageContext.request.contextPath}/board/view.jsp?num=<%= parentNum %>&board_type=<%= boardType %>";
+			location.href = "<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+						        ? request.getContextPath() + "/headquater.jsp?page=board/view.jsp&num=" + boardNum + "&board_type=" + boardType 
+						        : request.getContextPath() + "/branch.jsp?page=board/view.jsp&num=" + boardNum + "&board_type=" + boardType 
+  							  %>";
 		<%} %>
 	</script>
 </body>
