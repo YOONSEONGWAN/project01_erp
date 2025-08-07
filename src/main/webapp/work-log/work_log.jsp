@@ -25,28 +25,54 @@ List<WorkLogDto> logs = WorkLogDao.getInstance().getLogsByUser(userId);
 <meta charset="UTF-8">
 <title>출퇴근 하기</title>
 <style>
-.button-bar {
+table {
+    border-collapse: collapse;
     width: 100%;
-    margin-bottom: 12px;
+    background: #f8fbff;
 }
-.button-left {
-    float: left;
+th, td {
+    border: 2px solid #136ec7;
+    padding: 9px 4px;
+    text-align: center;
+    font-size: 1em;
 }
-.button-right {
-    float: right;
+th {
+    background: #136ec7;
+    color: #fff;
+    font-weight: 700;
+}
+tr:nth-child(even) td {
+    background: #e7f2fd;
+}
+tr:nth-child(odd) td {
+    background: #f4faff;
 }
 .big-btn {
-    font-size: 1.2em;
+    font-size: 1.13em;
     padding: 10px 28px;
-    height: 48px;
     min-width: 120px;
     border-radius: 8px;
     font-weight: bold;
+    border: none;
+    color: #fff;
+    margin: 0 8px;
+    background: #136ec7; /* 출근 기본 파랑 */
+    transition: background 0.14s;
 }
-.clearfix::after {
-    content: "";
-    display: table;
-    clear: both;
+
+.button-left .big-btn {
+    background: #136ec7;
+}
+.button-left .big-btn:hover {
+    background: #125aad;
+}
+
+/* 퇴근: 단일 토마토(코랄)색 */
+.button-right .big-btn {
+    background: #f25c54;
+}
+.button-right .big-btn:hover {
+    background: #d8433a;
 }
 </style>
 </head>
