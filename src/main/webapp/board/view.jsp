@@ -86,18 +86,18 @@
 		  </div>
 		
 		  <!-- 본문 내용 카드 -->
-		  <div class="card mt-3">
+		  <div class="card mt-3 mb-3">
 			  <div class="card-header text-white" style="background-color: #003366;">
 			    <strong><%= contentHeaderText %></strong>
 			  </div>
-			  <div class="card-body p-2"><%= dto.getContent() %></div>
+			  <div class="card-body p-2 mb-3"><%= dto.getContent() %></div>
 		  </div>
 	</div>
     <div class="text-end">
         <% if (user_name != null && user_name.equals(dto.getUser_id())) { %>
-            <a href="<%="HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
-			        ? request.getContextPath() + "/headquater.jsp?page=board/update.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type()
-			        : request.getContextPath() + "/branch.jsp?page=board/update.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type() %>" class="btn btn-secondary">수정</a>
+            <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+					    ? request.getContextPath() + "/headquater.jsp?page=board/edit-form.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type() 
+					    : request.getContextPath() + "/branch.jsp?page=board/edit-form.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type() %>" class="btn" style="background-color: #003366 !important; color: white;">수정</a>
         <% } %>
         <% if ("QNA".equalsIgnoreCase(board_type) && user_name != null && user_name.equals(dto.getUser_id())) { %>
             <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
