@@ -301,7 +301,7 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			//실행할 sql문
 			String sql = """
-					SELECT MAX(ROWNUM) AS count
+					SELECT COUNT(*) AS count
 					FROM branches
 					""";
 			pstmt = conn.prepareStatement(sql);
@@ -339,9 +339,9 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			//실행할 sql문
 			String sql = """
-					SELECT MAX(ROWNUM) AS count
+					SELECT COUNT(*) AS count
 					FROM branches
-					WHERE name LIKE '%'||?||'%' or b.branch_id LIKE '%'||?||'%'
+					WHERE name LIKE '%'||?||'%' or branch_id LIKE '%'||?||'%'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩

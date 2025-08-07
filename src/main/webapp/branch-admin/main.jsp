@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-admin/main.jsp</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
     .btn-square {
         width: 160px;
@@ -24,7 +23,7 @@
     <div class="container">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
+            <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">지점 관리</li>
           </ol>
         </nav>
@@ -32,9 +31,9 @@
         <!-- 가운데 정렬 영역 -->
         <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
             <div class="d-flex gap-4">
-                <a class="btn btn-primary btn-square" href="insert-form.jsp">지점 등록</a>
-                <a class="btn btn-primary btn-square" href="list.jsp">지점 목록</a>
-                <a class="btn btn-primary btn-square" href="user-list.jsp">직원 관리</a>
+                <a class="btn btn-primary btn-square" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/insert-form.jsp">지점 등록</a>
+                <a class="btn btn-primary btn-square" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">지점 목록</a>
+                <a class="btn btn-primary btn-square" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp">직원 관리</a>
             </div>
         </div>
     </div>

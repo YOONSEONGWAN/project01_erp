@@ -104,8 +104,8 @@
 <div class="container">
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/main.jsp">지점 관리</a></li>
 		    <li class="breadcrumb-item active" aria-current="page">직원 목록</li>
 		  </ol>
 		</nav>
@@ -113,8 +113,8 @@
 		<h1 class="text-center">직원 목록</h1>
 		<div class="row">
 			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end mb-3">
-				<form action="user-list.jsp" method="get">
-					 <input type="hidden" name="returnUrl" value="user-list.jsp">
+				<form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
+				<input type="hidden" name="page" value="branch-admin/user-list.jsp" />
 					<div>
 						<select name="role">
 							<option value="all" <%= "all".equals(role) ? "selected" : "" %>>전체</option>
@@ -139,7 +139,8 @@
 			</tr>
 			<%for(UserDtoAdmin tmp:list){ %>
 				<tr>
-					<form action="roleupdate.jsp" method="get">
+					<form action="${pageContext.request.contextPath }/branch-admin/roleupdate.jsp" method="get">
+						<input type="hidden" name="returnUrl" value="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp">
 						<input type="hidden" name="num" value="<%=tmp.getNum() %>">
 						<td><%=tmp.getUser_id() %></td>
 						<td><%=tmp.getBranch_name() %></td>
@@ -164,18 +165,18 @@
 		<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
 		<%if(startPageNum != 1){ %>
 			<li class="page-item">
-				<a class="page-link" href="user-list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>&role=<%=role%>">&lsaquo;</a>
+				<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>&role=<%=role%>">&lsaquo;</a>
 			</li>
 		<%} %>			
 		<%for(int i=startPageNum; i<=endPageNum ; i++){ %>
 			<li class="page-item">
-				<a class="page-link <%= i==pageNum ? "active":"" %>" href="user-list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>&role=<%=role%>"><%=i %></a>
+				<a class="page-link <%= i==pageNum ? "active":"" %>" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>&role=<%=role%>"><%=i %></a>
 			</li>
 		<%} %>
 		<%-- endPageNum 이 totalPageCount 보다 작을때 다음 page 가 있다 --%>		
 		<%if(endPageNum < totalPageCount){ %>
 			<li class="page-item">
-				<a class="page-link" href="user-list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>&role=<%=role%>">&rsaquo;</a>
+				<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>&role=<%=role%>">&rsaquo;</a>
 			</li>
 		<%} %>
 	</ul>

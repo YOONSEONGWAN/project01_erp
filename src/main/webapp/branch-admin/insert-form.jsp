@@ -15,8 +15,8 @@
 	<div class="container">
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">홈</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/branch-admin/main.jsp">지점 관리</a></li>
 		    <li class="breadcrumb-item active" aria-current="page">지점 등록</li>
 		  </ol>
 		</nav>
@@ -24,7 +24,8 @@
 		<div class="row d-flex align-self-center align-items-center justify-content-center" style="min-height: 100vh;">
 			<div class="col col-lg-5 col-md-6 mx-auto">
 				<h1 class="text-center mb-5">지점 등록 양식</h1>
-				<form action="insert.jsp" method="post">
+				<form action="<%=request.getContextPath()%>/headquater.jsp" method="post">
+				<input type="hidden" name="page" value="branch-admin/insert.jsp" />
 				<div class="mb-3">
 					<label class="form-label" for="branchId">지점 아이디</label>
 					<input class="form-control" type="text" name="branchId" id="branchId" value="<%=branchId%>" readonly />
