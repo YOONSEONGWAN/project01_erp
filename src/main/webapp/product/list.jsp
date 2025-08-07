@@ -41,19 +41,68 @@
     <meta charset="UTF-8">
     <title>상품 관리</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-    </style>
+   <style>
+   /* 주석 */
+   /* 상품명 링크 색깔 검은색으로 강제 */
+	a.text-primary {
+	    color: #000 !important;
+	    font-weight: 600;
+	}
+   
+    /* 검색 버튼, 상품 등록 버튼 남색으로 */
+   .btn-primary {
+    background-color: #003366 !important;
+    border-color: #003366 !important;
+    color: white !important;
+    font-weight: 500;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	}
+	
+	.btn-primary:hover {
+	    background-color: #002244 !important;
+	    border-color: #002244 !important;
+	    color: white !important;
+	}
+	
+	/* 페이지네이션 숫자 기본 상태 */
+	.pagination .page-link {
+	    color: #003366 !important;  /* 남색으로 글자색 */
+	    border-color: #003366 !important; /* 테두리 남색 */
+	}
+	
+	/* 활성화된 페이지네이션 숫자 */
+	.pagination .page-item.active .page-link {
+	    background-color: #003366 !important; /* 남색 배경 */
+	    border-color: #003366 !important;
+	    color: white !important; /* 글자는 흰색 */
+	}
+	
+	/* 페이지네이션 숫자 호버 효과 */
+	.pagination .page-link:hover {
+	    background-color: #002244 !important; /* 진한 남색 배경 */
+	    border-color: #002244 !important;
+	    color: white !important;
+	}
+	</style>
+
 </head>
 <body>
 
 <div class="container-fluid bg-white p-4">
+    <!-- breadcrumb 추가 시작 -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item active" aria-current="page">상품 목록</li>
+       
+        
+      </ol>
+    </nav>
+    <!-- breadcrumb 추가 끝 -->
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold">상품 관리</h3>
+        <h3 class="fw-bold">상품 목록</h3>
         <form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
             <input type="hidden" name="page" value="product/insertform.jsp" />
             <button type="submit" class="btn btn-primary">

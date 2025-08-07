@@ -71,7 +71,7 @@
 <body>
 	<div class="container my-5">
 	    <h1 class="h3 mb-4">게시글 작성</h1>
-	    <form action="${pageContext.request.contextPath }/hqboard/save" method="post" id="saveForm" enctype="multipart/form-data">
+	    <form action="hqboard/save" method="post" id="saveForm" enctype="multipart/form-data">
 	        <div class="mb-3">
 	            <label for="title" class="form-label">제목</label>
 	            <input class="form-control" type="text" name="title" id="title" required />
@@ -91,7 +91,7 @@
 	        </div>
 	        <div class="d-flex gap-2">
 	            <button class="btn btn-success" type="submit">저장</button>
-	            <a class="btn btn-secondary" href="hq-list.jsp">취소</a>
+	            <a class="btn btn-secondary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp">취소</a>
 	        </div>
 	    </form>
 	</div>
@@ -131,7 +131,7 @@
 		// editor 로 작성된 문자열을 폼 전송이 될 수 있는 textarea 의 value 로 넣어준다.
 		document.querySelector("#hiddencontent").value=content;
 		  //alert(document.querySelector("#hiddencontent").value); 
-	      //e.preventDefault(); // 테스트 끝났으면 주석처리!
+	      //e.preventDefault(); // 테스트 끝났으면 주석처리
 	})
 		
 		

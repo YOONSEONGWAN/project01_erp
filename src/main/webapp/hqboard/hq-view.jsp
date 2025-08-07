@@ -19,7 +19,7 @@
     // DB 에서 해당 글의 자세한 정보를 얻어낸다.
     HqBoardDto dto=HqBoardDao.getInstance().getByNum(num);
     // 로그인 된 userName (null 가능성 있음)
-    String userName=(String)session.getAttribute("userName");
+    String userName=(String)session.getAttribute("userId");
     // 만일 본인 글 자세히 보기가 아니면 조회수를 1 증가시킨다.
     /*if(!dto.getWriter().equals(userName)){
         HqBoardDao.getInstance().addViewCount(num);
@@ -50,10 +50,10 @@
 	<div class="container my-5">
 	    <h1 class="h3 mb-4">게시글 상세보기</h1>
 	    <div class="btn-group mb-3">
-	        <a class="btn btn-outline-secondary <%=dto.getPrevNum()==0 ? "disabled":""%>" href="hq-view.jsp?num=<%=dto.getPrevNum() %>">
+	        <a class="btn btn-outline-secondary <%=dto.getPrevNum()==0 ? "disabled":""%>" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=dto.getPrevNum() %>">
 	            <i class="bi bi-arrow-left"></i> Prev
 	        </a>
-	        <a class="btn btn-outline-secondary <%=dto.getNextNum()==0 ? "disabled":""%>" href="hq-view.jsp?num=<%=dto.getNextNum() %>">
+	        <a class="btn btn-outline-secondary <%=dto.getNextNum()==0 ? "disabled":""%>" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=dto.getNextNum() %>">
 	            Next <i class="bi bi-arrow-right"></i>
 	        </a>
 	    </div>
@@ -104,10 +104,10 @@
 	        </ul>
 	    </div>
 	    <div class="d-flex gap-2 mt-4">
-	        <a class="btn btn-secondary" href="hq-list.jsp"><i class="bi bi-list"></i> 목록으로</a>
+	        <a class="btn btn-secondary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp"><i class="bi bi-list"></i> 목록으로</a>
 	        <% if(dto.getWriter().equals(userName)){ %>
-	            <a class="btn btn-outline-primary" href="hq-edit.jsp?num=<%=dto.getNum() %>"><i class="bi bi-pencil"></i> 수정</a>
-	            <a class="btn btn-outline-danger" href="hq-delete.jsp?num=<%=dto.getNum() %>" onclick="return confirm('정말 삭제하시겠습니까?');"><i class="bi bi-trash"></i> 삭제</a>
+	            <a class="btn btn-outline-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-edit.jsp?num=<%=dto.getNum() %>"><i class="bi bi-pencil"></i> 수정</a>
+	            <a class="btn btn-outline-danger" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-delete.jsp?num=<%=dto.getNum() %>" onclick="return confirm('정말 삭제하시겠습니까?');"><i class="bi bi-trash"></i> 삭제</a>
 	        <% } %>
 	    </div>
 	</div>

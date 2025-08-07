@@ -35,8 +35,14 @@ public class EditorImageUploadServlet extends HttpServlet {
             if (!uploadDir.exists()) uploadDir.mkdirs();
             filePart.write(fileLocation + File.separator + saveFileName);
 
-            // 에디터 본문에 삽입할 이미지 URL 생성
-            url = req.getContextPath() + "/image?name=" + saveFileName;
+         // 절대경로(풀 URL)로 이미지 URL 생성
+            String scheme = req.getScheme(); // http 또는 https
+            String serverName = req.getServerName(); // ex: localhost
+            int serverPort = req.getServerPort(); // ex: 8888
+            String contextPath = req.getContextPath(); // ex: /project01_erp
+            
+            String baseUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+            url = baseUrl + "/image?name=" + saveFileName;
         }
         // JSON 응답 (ToastUI 에디터의 callback에 사용됨)
         resp.setContentType("application/json; charset=UTF-8");
