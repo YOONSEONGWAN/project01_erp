@@ -84,7 +84,8 @@
             <i class="bi bi-pencil-square"></i> 새 글 작성
         </a>
     </div>
-    <form action="hq-list.jsp" method="get" class="mb-4">
+    <form action="<%=request.getContextPath()%>/headquater.jsp" method="get" class="mb-4">
+        <input type="hidden" name="page" value="hqboard/hq-list.jsp">
         <div class="input-group">
             <input value="<%=keyword%>" type="text" name="keyword" class="form-control" placeholder="검색어 입력..."/>
             <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i> 검색</button>
