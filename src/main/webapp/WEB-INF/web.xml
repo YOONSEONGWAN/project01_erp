@@ -22,7 +22,7 @@
 
 	<context-param>
 		<description>업로드된 파일을 저장할 경로</description>
-		<param-name>fileLocation</param-name>
+		<param-name>filesLocation</param-name>
 		<param-value>C:/playground/upload</param-value>
 	</context-param>
 
