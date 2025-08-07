@@ -14,10 +14,10 @@
 <title>직원 상세 정보</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="p-4">
+<body class="p-0">
 
-<div class="container">
-    <div class="card shadow-sm">
+<div class="container-fluid">
+    <div class="card shadow-sm" style="width: 100%;">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">직원 상세 정보</h4>
         </div>

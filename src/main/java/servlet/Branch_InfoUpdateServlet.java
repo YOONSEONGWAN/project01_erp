@@ -20,13 +20,13 @@ import jakarta.servlet.http.HttpServletResponse;
 )
 public class Branch_InfoUpdateServlet extends HttpServlet {
 
-	String fileLocation;
+	String filesLocation;
 
 	@Override
 	public void init() throws ServletException {
 		ServletContext context = getServletContext();
-		fileLocation = context.getInitParameter("fileLocation");
-		System.out.println("[UserUpdateServlet] fileLocation = " + fileLocation);
+		filesLocation = context.getInitParameter("filesLocation");
+		System.out.println("[UserUpdateServlet] filesLocation = " + filesLocation);
 	}
 
 	@Override
