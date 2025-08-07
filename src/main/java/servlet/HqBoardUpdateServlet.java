@@ -35,7 +35,7 @@ public class HqBoardUpdateServlet extends HttpServlet {
         int num = Integer.parseInt(req.getParameter("num"));
         String title = req.getParameter("title");
         String content = req.getParameter("content");
-        String writer = (String) req.getSession().getAttribute("userName");
+        String writer = (String) req.getSession().getAttribute("userId");
 
         // 1. 글 내용만 업데이트 (파일정보 X)
         HqBoardDto dto = new HqBoardDto();
@@ -85,7 +85,7 @@ public class HqBoardUpdateServlet extends HttpServlet {
         /*** 첨부파일 처리 끝 ***/
 
         if (isSuccess) {
-            resp.sendRedirect(req.getContextPath() + "/hqboard/hq-view.jsp?num=" + num);
+            resp.sendRedirect(req.getContextPath() + "/headquater.jsp?page=/hqboard/hq-view.jsp?num=" + num);
         } else {
             req.setAttribute("errorMsg", "수정실패!");
             req.setAttribute("num", num);

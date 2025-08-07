@@ -45,7 +45,7 @@
 <body>
 <script>
     alert("수정이 완료되었습니다.");
-    location.href = "stocklist.jsp";
+    location.href = "${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp";
 </script>
 </body>
 </html>

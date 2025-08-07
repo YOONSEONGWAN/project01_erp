@@ -3,6 +3,7 @@ package dao.stock;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,56 +75,29 @@ public class PlaceOrderBranchDao {
 	    return list;
 	}
 	
-	public int insert(String manager) {
-	    int orderId = 0;
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+	public int insert(int orderId, String manager) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
 
-	    try {
-	        conn = new DbcpBean().getConn();
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = "INSERT INTO placeorder_branch (order_id, manager, order_date) VALUES (?, ?, SYSDATE)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            pstmt.setString(2, manager);
+            pstmt.executeUpdate();
 
-	        // 1단계: 시퀀스에서 NEXTVAL로 새 order_id 먼저 얻기
-	        String seqSql = "SELECT placeOrder_branch_seq.NEXTVAL AS order_id FROM dual";
-	        pstmt = conn.prepareStatement(seqSql);
-	        rs = pstmt.executeQuery();
-	        if (rs.next()) {
-	            orderId = rs.getInt("order_id");
-	        }
-	        rs.close();
-	        pstmt.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if(pstmt != null) pstmt.close();
+                if(conn != null) conn.close();
+            } catch(Exception e) {}
+        }
 
-	        // 2단계: 위에서 얻은 orderId로 INSERT 실행
-	        String insertSql = """
-	            INSERT INTO placeOrder_branch (order_id, order_date, manager)
-	            VALUES (?, SYSDATE, ?)
-	        """;
-	        pstmt = conn.prepareStatement(insertSql);
-	        pstmt.setInt(1, orderId);
-	        pstmt.setString(2, manager);
-	        pstmt.executeUpdate();
-
-	        
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        try {
-	            if (conn != null) conn.rollback();  // 예외 시 롤백
-	        } catch (Exception e2) {
-	            e2.printStackTrace();
-	        }
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-
-	    return orderId;
-	}
+        return orderId;
+    }
 	
 	public String getOrderDateByOrderId(int orderId) {
         Connection conn = null;
@@ -220,4 +194,5 @@ public class PlaceOrderBranchDao {
 	    }
 	    return list;
 	}
+	
 }
