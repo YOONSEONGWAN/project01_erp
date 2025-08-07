@@ -23,7 +23,7 @@
     <div class="container">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
+            <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">지점 관리</li>
           </ol>
         </nav>
