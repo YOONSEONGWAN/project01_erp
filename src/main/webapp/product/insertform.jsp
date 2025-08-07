@@ -23,12 +23,15 @@
         font-weight: bold;
     }
     .btn-submit {
-        background-color: #2980b9;
-        color: white;
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+        color: white !important;
         font-weight: 600;
     }
     .btn-submit:hover {
-        background-color: #1c5980;
+        background-color: #002244 !important;
+        border-color: #002244 !important;
+        color: white !important;
     }
     .btn-cancel {
         background-color: #7f8c8d;
@@ -39,6 +42,7 @@
         background-color: #636e72;
     }
 </style>
+
 </head>
 <body>
 
