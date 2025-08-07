@@ -26,7 +26,7 @@
         width: 400px;
     }
 
-    .portal-card .logo {
+    .portal-card .logo {4
         display: block;
         margin: 0 auto 30px;
         width: 250px;
@@ -50,7 +50,8 @@
     .btn-primary:hover {
         background-color: #002244;
         border-color: #002244;
-    }
+    } 
+    
 
 </style>
 </head>

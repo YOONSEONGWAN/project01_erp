@@ -47,9 +47,9 @@
 
         <nav aria-label="breadcrumb" class="mb-3">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a></li>
-                <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
-                <li class="breadcrumb-item"><a href="inandout.jsp">입고 / 출고</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp">입고 / 출고</a></li>
                 <li class="breadcrumb-item active" aria-current="page">전체 출고 내역</li>
             </ol>
         </nav>
@@ -57,18 +57,19 @@
         <h2 class="text-center mb-4 fw-bold">전체 출고 내역</h2>
 
         <!-- 검색 폼 -->
-        <form method="get" action="outbound_list.jsp" class="d-flex justify-content-end mb-3" role="search">
-            <input
-                class="form-control form-control-sm me-2"
-                style="max-width: 200px;"
-                type="search"
-                placeholder="담당자 검색"
-                aria-label="Search"
-                name="managerKeyword"
-                value="<%= managerKeyword %>"
-            />
-            <button class="btn btn-primary btn-sm" type="submit">검색</button>
-        </form>
+        <form method="get" action="${pageContext.request.contextPath}/headquater.jsp" class="d-flex justify-content-end mb-3" role="search">
+		    <input type="hidden" name="page" value="/stock/outbound_list.jsp" />
+		    <input
+		        class="form-control form-control-sm me-2"
+		        style="max-width: 200px;"
+		        type="search"
+		        placeholder="담당자 검색"
+		        aria-label="Search"
+		        name="managerKeyword"
+		        value="<%= managerKeyword %>"
+		    />
+		    <button class="btn btn-primary btn-sm" type="submit">검색</button>
+		</form>
 
         <!-- 테이블 -->
         <div class="table-responsive">
@@ -97,7 +98,7 @@
                                 <td><%= dto.getOut_date() != null ? dto.getOut_date() : "-" %></td>
                                 <td><%= dto.getManager() != null ? dto.getManager() : "-" %></td>
                                 <td>
-                            		<a href="outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
+                            		<a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/outbound_detail.jsp?order_id=<%= dto.getOrder_id() %>" class="btn btn-sm btn-primary">상세보기</a>
                         		</td>
                             </tr>
                     <%  } } %>
@@ -110,7 +111,7 @@
             <ul class="pagination pagination-sm">
                 <% if (currentPage > 1) { %>
                     <li class="page-item">
-                        <a class="page-link" href="outbound_list.jsp?page=<%= currentPage - 1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
+                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/outbound_list.jsp?page=<%= currentPage - 1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
                     </li>
                 <% } else { %>
                     <li class="page-item disabled"><span class="page-link">이전</span></li>
@@ -123,13 +124,13 @@
                         </li>
                     <% } else { %>
                         <li class="page-item">
-                            <a class="page-link" href="outbound_list.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
+                            <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/outbound_list.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
                         </li>
                 <%  }} %>
 
                 <% if (currentPage < totalPages) { %>
                     <li class="page-item">
-                        <a class="page-link" href="outbound_list.jsp?page=<%= currentPage + 1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
+                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/outbound_list.jsp?page=<%= currentPage + 1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
                     </li>
                 <% } else { %>
                     <li class="page-item disabled"><span class="page-link">다음</span></li>
@@ -137,10 +138,7 @@
             </ul>
         </nav>
 
-        <!-- 돌아가기 버튼 -->
-        <div class="text-center mt-3">
-            <a href="inandout.jsp" class="btn btn-outline-primary btn-sm">돌아가기</a>
-        </div>
+
 
     </div> <!-- 중앙 정렬 wrapper 끝 -->
 

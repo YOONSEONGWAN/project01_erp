@@ -58,9 +58,16 @@
         <!-- 필요하면 설명 텍스트 넣어도 됨 -->
         <p class="subtitle">&nbsp;</p>
 
-        <a href="placeorder_head.jsp" class="btn-large btn-stock-list">본사 발주 관리</a>
-        <a href="placeorder_branch.jsp" class="btn-large btn-inout">지점 발주 관리</a>
+        <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head.jsp" class="btn-large btn-stock-list">본사 발주 관리</a>
+        <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch.jsp" class="btn-large btn-inout">지점 발주 관리</a>
+    	
     </div>
+    
+    <div class="text-center mt-4">
+    	<a href="${pageContext.request.contextPath}/headquater.jsp" class="btn btn-outline-secondary">
+        뒤로 가기
+    	</a>
+	</div>
 
     <!-- Bootstrap JS Bundle (Popper 포함) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

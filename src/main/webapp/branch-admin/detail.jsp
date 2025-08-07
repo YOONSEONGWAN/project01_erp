@@ -89,7 +89,7 @@
 			const num = e.currentTarget.getAttribute("data-num"); 
 			const isDelete = confirm(num + " 번 지점을 삭제 하시겠습니까?");
 			if (isDelete) {
-				location.href = `delete.jsp?num=\${num}`; 
+				location.href = `<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/delete.jsp?num=\${num}`; 
 			}
 		});
 	</script>

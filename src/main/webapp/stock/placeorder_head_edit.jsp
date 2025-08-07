@@ -42,7 +42,7 @@
 %>
             <script>
                 alert("수정이 완료되었습니다.");
-                location.href = "placeorder_head_detail.jsp?order_id=<%= orderId %>";
+                location.href = "${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_detail.jsp?order_id=<%= orderId %>";
             </script>
 <%
         } else {
