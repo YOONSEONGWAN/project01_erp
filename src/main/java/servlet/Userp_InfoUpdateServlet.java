@@ -28,15 +28,15 @@ import dto.UserDto;
 public class Userp_InfoUpdateServlet extends HttpServlet{
 	
 	//업로드된 파일 저장경로를 저장할 필드 선언
-	String filesLocation;
+	String fileLocation;
 	
 	//이 서블릿이 초기화되는 시점에 최초 1번 호출되는 메소드 
 	@Override
 	public void init() throws ServletException {
 		//무언가 초기화 작업을 여기서 하면된다.
 		ServletContext context = getServletContext();
-		// web.xml 파일에 "filesLocation" 이라는 이름으로 저장된 정보 읽어와서 필드에 저장하기 
-        filesLocation = context.getInitParameter("filesLocation");
+		// web.xml 파일에 "fileLocation" 이라는 이름으로 저장된 정보 읽어와서 필드에 저장하기 
+        fileLocation = context.getInitParameter("fileLocation");
 	}
 	
 	
@@ -69,7 +69,7 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 			//저장될 파일명을 구성한다
 			String saveFileName=uid+orgFileName;
 			//저장할 파일의 경로 구성하기
-			String filePath=filesLocation+"/"+saveFileName;
+			String filePath=fileLocation+"/"+saveFileName;
 			/*
 			 * 업로드된 파일은 임시 폴더에 임시 파일로 저장이 된다.
 			 * 해당 파일에서 byte 알갱이를 읽어 들일수 있는 InputStream 객체를 얻어내서 
@@ -81,7 +81,7 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 			//기존에 이미 저장된 프로필 사진이 있으면 파일 시스템에서 삭제하기 
 			if(dto.getProfile_image() != null) {
 				//삭제할 파일의 전체 경로 
-				String deleteFilePath=filesLocation+"/"+dto.getProfile_image();
+				String deleteFilePath=fileLocation+"/"+dto.getProfile_image();
 				//Files 클래스의 delete() 메소드를 이용해서 삭제하기 
 				Files.delete(Paths.get(deleteFilePath));
 			}
