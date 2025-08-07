@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
     h3 {
+
     text-align: left;
     font-weight: 800;
     font-size: 2.1rem;

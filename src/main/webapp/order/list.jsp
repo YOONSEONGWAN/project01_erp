@@ -105,6 +105,5 @@ if (orderList == null || orderList.isEmpty()) {
         <button class="btn btn-update" type="button">새 발주 요청</button>
     </a>
 </div>
-<h3>branchId: <%= branchId %></h3>
 </body>
 </html>
