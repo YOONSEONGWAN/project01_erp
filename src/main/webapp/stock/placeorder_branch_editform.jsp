@@ -34,13 +34,11 @@
             background-color: #f8f9fa;
         }
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            min-height: 100vh;
-        }
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    	}
         h2 {
             text-align: center;
             margin-bottom: 30px;
@@ -97,7 +95,7 @@
         <h2>지점 발주 내역 수정 (Order ID: <%= orderId %>)</h2>
 
         <div class="form-container">
-            <form action="placeorder_branch_edit.jsp" method="post">
+            <form action="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_edit.jsp" method="post">
                 <input type="hidden" name="detail_id" value="<%= detailId %>">
                 <input type="hidden" name="order_id" value="<%= orderId %>">
 
@@ -130,7 +128,7 @@
 
                 <div class="btn-group d-flex justify-content-center mt-4">
                     <button type="submit" class="btn btn-primary">수정 완료</button>
-                    <a href="placeorder_branch_detail.jsp?order_id=<%= orderId %>" class="btn btn-secondary ms-3">취소</a>
+                    <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%= orderId %>" class="btn btn-secondary ms-3">취소</a>
                 </div>
             </form>
         </div>

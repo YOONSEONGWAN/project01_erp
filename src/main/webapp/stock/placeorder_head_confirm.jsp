@@ -8,35 +8,46 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <%
-    String manager = "admin";
+    // ✅ 로그인된 사용자 ID를 담당자로 사용
+    String userId = (String) session.getAttribute("userId");
+    if (userId == null || userId.isEmpty()) {
+%>
+    <script>
+        alert("로그인이 필요합니다.");
+        location.href = "${pageContext.request.contextPath}/login.jsp";
+    </script>
+<%
+        return;
+    }
+    String manager = userId;
 
     Enumeration<String> paramNames = request.getParameterNames();
-    boolean hasApproval = false;
+    boolean hasApprovalOrRejection = false;
 
     while (paramNames.hasMoreElements()) {
         String param = paramNames.nextElement();
-        if (param.startsWith("approval_") && "YES".equals(request.getParameter(param))) {
-            hasApproval = true;
+        if (param.startsWith("approval_")) {
+            hasApprovalOrRejection = true;
             break;
         }
     }
 
-    if (!hasApproval) {
+    if (!hasApprovalOrRejection) {
 %>
     <script>
-        alert("승인된 항목이 없습니다.");
-        location.href = "placeorder_head.jsp";
+        alert("처리할 항목이 없습니다.");
+        location.href = "${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head.jsp";
     </script>
 <%
         return;
     }
 
-    // 예: 첫 번째 승인 항목에서 inventory_num 가져오기
+    // inventory_num 추출
     int inventoryNum = -1;
-    paramNames = request.getParameterNames(); // 다시 초기화
+    paramNames = request.getParameterNames(); // 초기화
     while (paramNames.hasMoreElements()) {
         String param = paramNames.nextElement();
-        if (param.startsWith("approval_") && "YES".equals(request.getParameter(param))) {
+        if (param.startsWith("approval_")) {
             String numStr = param.substring("approval_".length());
             inventoryNum = Integer.parseInt(numStr);
             break;
@@ -47,24 +58,25 @@
 %>
     <script>
         alert("inventory_num을 찾을 수 없습니다.");
-        location.href = "placeorder_head.jsp";
+        location.href = "${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head.jsp";
     </script>
 <%
         return;
     }
 
+    // 발주서 헤더 생성
     int orderId = PlaceOrderHeadDao.getInstance().insert(manager, inventoryNum);
     if (orderId <= 0) {
 %>
     <script>
         alert("발주서 생성 실패 (orderId 유효하지 않음)");
-        location.href = "placeorder_head.jsp";
+        location.href = "${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head.jsp";
     </script>
 <%
         return;
     }
 
-    // 발주일 조회
+    // 발주일
     String orderDate = PlaceOrderHeadDao.getInstance().getOrderDateByOrderId(orderId);
     String orderDateStr = orderDate != null ? orderDate : new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
 
@@ -95,17 +107,15 @@
 
                 InventoryDao.getInstance().updatePlaceOrder(num, false);
 
-                // 상세 레코드 insert
                 PlaceOrderHeadDetailDto dto = new PlaceOrderHeadDetailDto();
                 dto.setOrder_id(orderId);
                 dto.setProduct(product);
                 dto.setCurrent_quantity(currentQty);
                 dto.setRequest_quantity(amount);
                 dto.setApproval_status("YES".equals(approval) ? "승인" : "반려");
-                dto.setManager(manager);
+                dto.setManager(manager); // ✅ 로그인한 사용자 ID 저장
                 PlaceOrderHeadDetailDao.getInstance().insert(dto);
 
-                // inbound_orders는 나중에 테이블 수정 후 처리 (주석 처리 가능)
                 if (!inboundInserted) {
                     InboundOrdersDao.getInstance().insert(orderId, inventoryNum, dto.getApproval_status(), orderDateStr, manager);
                     inboundInserted = true;
@@ -122,6 +132,5 @@
 
 <script>
     alert("발주 내역이 정상적으로 처리되었습니다.");
-    location.href = "placeorder_head.jsp";
-</script>
+    location.href = "${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head.jsp";
 </script>
