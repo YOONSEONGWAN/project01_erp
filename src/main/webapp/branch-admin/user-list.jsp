@@ -113,7 +113,8 @@
 		<h1 class="text-center">직원 목록</h1>
 		<div class="row">
 			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end mb-3">
-				<form action="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp" method="get">
+				<form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
+				<input type="hidden" name="page" value="branch-admin/user-list.jsp" />
 					<div>
 						<select name="role">
 							<option value="all" <%= "all".equals(role) ? "selected" : "" %>>전체</option>
