@@ -42,7 +42,7 @@
     <title>상품 관리</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
    <style>
-   
+   /* 주석 */
    /* 상품명 링크 색깔 검은색으로 강제 */
 	a.text-primary {
 	    color: #000 !important;
