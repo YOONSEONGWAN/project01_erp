@@ -101,7 +101,7 @@ if (orderList == null || orderList.isEmpty()) {
 %>
 </table>
 <div style="margin-top:18px;">
-    <a href="<%=request.getContextPath()%>/headquater.jsp?page=order/insert.jsp" style="text-decoration:none;">
+    <a href="<%=request.getContextPath()%>/branch.jsp?page=order/insert.jsp" style="text-decoration:none;">
         <button class="btn btn-update" type="button">새 발주 요청</button>
     </a>
 </div>

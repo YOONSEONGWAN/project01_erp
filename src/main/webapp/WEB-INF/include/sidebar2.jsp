@@ -6,19 +6,19 @@
 		  	<ul class="nav nav-pills flex-column">
 			  	<li class="nav-item">
 		          	<a class="nav-link <%= "order/list.jsp".equals(request.getParameter("page")) ? "active" : "" %>"
-		             	href="<%=request.getContextPath()%>/headquater.jsp?page=order/list.jsp">
+		             	href="<%=request.getContextPath()%>/branch.jsp?page=order/list.jsp">
 		             	발주신청
 		          	</a>
 	        	</li>
 	        	<li class="nav-item">
 		          <a class="nav-link <%= "board/list.jsp".equals(request.getParameter("page")) ? "active" : "" %>"
-		             href="<%=request.getContextPath()%>/headquater.jsp?page=board/list.jsp">
+		             href="<%=request.getContextPath()%>/branch.jsp?page=board/list.jsp">
 		             지점게시판
 		          </a>
 	        	</li>
 	        	<li class="nav-item">
-		          <a class="nav-link <%= "work-log/view-work_log.jsp".equals(request.getParameter("page")) ? "active" : "" %>"
-		             href="<%=request.getContextPath()%>/headquater.jsp?page=work-log/work_log.jsp">
+		          <a class="nav-link <%= "work-log/work_log.jsp".equals(request.getParameter("page")) ? "active" : "" %>"
+		             href="<%=request.getContextPath()%>/branch.jsp?page=work-log/work_log.jsp">
 		             출퇴근관리
 		          </a>
 	        	</li>

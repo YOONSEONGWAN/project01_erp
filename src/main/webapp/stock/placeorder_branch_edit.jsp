@@ -25,8 +25,8 @@ try {
     String branchId = oldDto.getBranch_id();
     int inventoryId = oldDto.getInventory_id();
 
-    StockRequestDao stockRequestDao = new StockRequestDao();
-    IngredientDao ingredientDao = new IngredientDao();
+    StockRequestDao stockRequestDao = StockRequestDao.getInstance();
+    IngredientDao ingredientDao = IngredientDao.getInstance();
 
     int requestNum = stockRequestDao.getNumByDetailId(detailId); // 이 메서드 구현 필요
 

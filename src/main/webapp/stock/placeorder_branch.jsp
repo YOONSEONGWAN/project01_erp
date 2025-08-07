@@ -6,7 +6,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <%
-    List<StockRequestDto> list2 = new StockRequestDao().selectAll();
+    List<StockRequestDto> list2 = StockRequestDao.getInstance().selectAll();
     List<PlaceOrderBranchDto> recentList = PlaceOrderBranchDao.getInstance().getRecentOrders();
 %>
 
