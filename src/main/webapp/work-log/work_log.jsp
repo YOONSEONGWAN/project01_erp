@@ -22,8 +22,9 @@ List<WorkLogDto> logs = WorkLogDao.getInstance().getLogsByUser(userId);
 <!DOCTYPE html>
 <html>
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <meta charset="UTF-8">
-<title>출퇴근 하기</title>
+<title>출퇴근 하기</title>	
 <style>
 table {
     border-collapse: collapse;
@@ -47,44 +48,30 @@ tr:nth-child(even) td {
 tr:nth-child(odd) td {
     background: #f4faff;
 }
-.big-btn {
-    font-size: 1.13em;
-    padding: 10px 28px;
-    min-width: 120px;
-    border-radius: 8px;
-    font-weight: bold;
-    border: none;
-    color: #fff;
-    margin: 0 8px;
-    background: #136ec7; /* 출근 기본 파랑 */
-    transition: background 0.14s;
-}
 
-.button-left .big-btn {
-    background: #136ec7;
-}
-.button-left .big-btn:hover {
-    background: #125aad;
-}
 
-/* 퇴근: 단일 토마토(코랄)색 */
-.button-right .big-btn {
-    background: #f25c54;
-}
-.button-right .big-btn:hover {
-    background: #d8433a;
-}
+
 </style>
 </head>
 <body>
 <h3>출퇴근 기록</h3>
-<div class="button-bar clearfix">
-    <form method="post" class="button-left" style="display:inline;">
-        <button class="big-btn" type="submit" name="action" value="checkin">출근</button>
-    </form>
-    <form method="post" class="button-right" style="display:inline;">
-        <button class="big-btn" type="submit" name="action" value="checkout">퇴근</button>
-    </form>
+<div class="row mb-4" style="width:100%; margin:0;">
+    <div class="col-6 d-grid">
+        <form id="checkinForm" method="post">
+            <button id="checkinBtn" type="submit" name="action" value="checkin" class="btn btn-lg fw-bold"
+                style="background:#00b894; color:#fff; border:none;">
+                출근
+            </button>
+        </form>
+    </div>
+    <div class="col-6 d-grid text-end">
+        <form id="checkoutForm" method="post">
+            <button id="checkoutBtn" type="submit" name="action" value="checkout" class="btn btn-lg fw-bold"
+                style="background:#596275; color:#fff; border:none;">
+                퇴근
+            </button>
+        </form>
+    </div>
 </div>
 <table border="1" style="width:100%;">
     <tr>
@@ -125,5 +112,25 @@ tr:nth-child(odd) td {
 	</a>
 
 </div>
+<script>
+const checkinBtn = document.getElementById("checkinBtn");
+const checkoutBtn = document.getElementById("checkoutBtn");
+
+// 새로고침 시 출근 버튼 상태 세팅
+if (localStorage.getItem("checkinLocked") === "true") {
+    checkinBtn.disabled = true;
+}
+
+// 출근 버튼 클릭 시 상태 저장
+document.getElementById("checkinForm").addEventListener("submit", function() {
+    localStorage.setItem("checkinLocked", "true");
+});
+
+// 퇴근 버튼 클릭 시 상태 제거
+document.getElementById("checkoutForm").addEventListener("submit", function() {
+    localStorage.removeItem("checkinLocked");
+});
+</script>
 </body>
+
 </html>
