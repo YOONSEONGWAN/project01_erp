@@ -30,8 +30,8 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
     </style>
 </head>
 <body>
-<h3>발주 현황</h3>
-<table>
+<h3 class="ms-4 mt-4 mb-3">발주 현황</h3>
+<table class="ms-4">
     <tr>
         <th>발주번호</th>
      <%--   <th>branch_stock번호</th>    branch_num 추가, 관리용 --%>
@@ -102,7 +102,7 @@ if (orderList == null || orderList.isEmpty()) {
 </table>
 <div style="margin-top:18px;">
     <a href="<%=request.getContextPath()%>/branch.jsp?page=order/insert.jsp" style="text-decoration:none;">
-        <button class="btn btn-update" type="button">새 발주 요청</button>
+        <button class="btn btn-update ms-4" type="button">새 발주 요청</button>
     </a>
 </div>
 </body>

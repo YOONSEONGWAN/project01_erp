@@ -54,8 +54,8 @@ tr:nth-child(odd) td {
 </style>
 </head>
 <body>
-<h3>출퇴근 기록</h3>
-<div class="row mb-4" style="width:100%; margin:0;">
+<h3 class="mb-4 ms-4">출퇴근 기록</h3>
+<div class="row mb-4 ms-3" style="width:100%; margin:0;">
     <div class="col-6 d-grid">
         <form id="checkinForm" method="post">
             <button id="checkinBtn" type="submit" name="action" value="checkin" class="btn btn-lg fw-bold"

@@ -66,6 +66,7 @@
         font-size: 1em;
         cursor: pointer;
         margin: 10px 0;
+        margin-left: 28px;
         transition: background 0.2s, box-shadow 0.15s;
         box-shadow: 0 2px 10px rgba(33,100,180,0.08);
     }
@@ -115,9 +116,9 @@
     </script>
 </head>
 <body>
-<h3>발주 요청 입력</h3>
+<h3 class="ms-4">발주 요청 입력</h3>
 <form action="${pageContext.request.contextPath}/branch.jsp?page=order/request-stock.jsp" method="post">
-    <table id="order-table">
+    <table id="order-table" class="ms-4">
         <thead>
             <tr>
                 <th>상품명</th>
