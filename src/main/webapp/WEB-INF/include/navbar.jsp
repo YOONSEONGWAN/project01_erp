@@ -31,8 +31,8 @@
         <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/userp/logout.jsp">로그아웃</a>
 
       <% } else { %>
-        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/login.jsp">로그인</a>
-        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/register.jsp">회원가입</a>
+        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/userp/loginform.jsp">로그인</a>
+        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/userp/signup-form.jsp">회원가입</a>
       <% } %>
     </div>
   </div>

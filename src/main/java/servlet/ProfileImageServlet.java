@@ -67,9 +67,11 @@ public class ProfileImageServlet extends HttpServlet {
         boolean isSuccess = new HrmDao().updateProfileImage(num, imageFileName);
 
         if (isSuccess) {
-            response.sendRedirect(request.getContextPath() + "/hrm/detail.jsp?num=" + dto.getNum());
+            String redirectUrl = request.getContextPath() + "/headquater.jsp?page=hrm/detail.jsp&num=" + num;
+            response.sendRedirect(redirectUrl); // ✅ 이거 안 하면 그냥 멈춰있음
         } else {
             response.getWriter().println("DB SAVE FAIL");
         }
+
 }
 }
