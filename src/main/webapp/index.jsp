@@ -26,7 +26,7 @@
         width: 400px;
     }
 
-    .portal-card .logo {
+    .portal-card .logo {4
         display: block;
         margin: 0 auto 30px;
         width: 250px;
