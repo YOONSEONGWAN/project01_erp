@@ -81,14 +81,14 @@ if (orderList == null || orderList.isEmpty()) {
             <% } %>
         </td>
         <td>
-            <form action="update-form.jsp" method="get" style="margin:0;">
+            <form action="${pageContext.request.contextPath}/branch.jsp?page=order/update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-update">수정</button>
             </form>
         </td>
         <td>
-            <form action="delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <form action="${pageContext.request.contextPath}/branch.jsp?page=order/delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-delete">삭제</button>
