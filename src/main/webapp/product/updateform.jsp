@@ -66,6 +66,15 @@
 </style>
 </head>
 <body>
+<!-- breadcrumb 추가 시작 -->
+    <nav aria-label="breadcrumb" class="mb-3" style="margin: 0 15px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp">상품 목록</a></li>
+        <li class="breadcrumb-item active" aria-current="page">상품 정보 수정</li>
+      </ol>
+    </nav>
+    <!-- breadcrumb 추가 끝 -->
 
 <div class="form-container">
     <h1>상품 정보 수정</h1>

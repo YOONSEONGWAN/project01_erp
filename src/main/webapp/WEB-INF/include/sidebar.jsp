@@ -33,17 +33,18 @@
 	        </a>
 	        <ul id="productMenu" class="submenu <%= isProductPage ? "open" : "" %>" style="padding-left: 3rem;">
 	          <li>
-	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/insertform.jsp"
-	               class="nav-link <%= "product/insertform.jsp".equals(pageParam) ? "active" : "" %>">
-	              <i class="bi bi-folder"></i> 상품 등록
-	            </a>
-	          </li>
-	          <li>
 	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp"
 	               class="nav-link <%= "product/list.jsp".equals(pageParam) ? "active" : "" %>">
 	              <i class="bi bi-folder"></i> 상품 목록
 	            </a>
 	          </li>
+	          <li>
+	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/insertform.jsp"
+	               class="nav-link <%= "product/insertform.jsp".equals(pageParam) ? "active" : "" %>">
+	              <i class="bi bi-folder"></i> 상품 등록
+	            </a>
+	          </li>
+	       
 	        </ul>
 	      </li>
 	
@@ -224,6 +225,3 @@
 	    });
 	  });
 	</script>
-
-    boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
-%>
