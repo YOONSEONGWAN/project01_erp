@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    // 로그인 상태 체크
     String userId = (String) session.getAttribute("userId");
     String branchId = (String) session.getAttribute("branchId");
 %>
@@ -30,8 +29,12 @@
            style="padding-left: 0.5rem; padding-right: 0.5rem; white-space: nowrap;" 
            href="<%=request.getContextPath()%>/userp/logout.jsp">로그아웃</a>
       <% } else { %>
-        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/login.jsp">로그인</a>
-        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/register.jsp">회원가입</a>
+        <a class="btn btn-outline-light btn-sm py-0 px-2" 
+           style="font-size: 0.8rem; line-height: 1.4;"
+           href="<%=request.getContextPath()%>/login.jsp">로그인</a>
+        <a class="btn btn-outline-light btn-sm py-0 px-2" 
+           style="font-size: 0.8rem; line-height: 1.4;"
+           href="<%=request.getContextPath()%>/register.jsp">회원가입</a>
       <% } %>
     </div>
   </div>

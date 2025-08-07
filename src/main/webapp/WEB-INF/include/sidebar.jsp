@@ -6,11 +6,13 @@
     String pageParam = request.getParameter("page");
 
     boolean isProductPage = pageParam != null && pageParam.startsWith("product/");
+
     boolean isBranchPage = pageParam != null && pageParam.startsWith("branch-admin/");
     boolean isBoardPage = pageParam != null && pageParam.startsWith("board/");
     boolean isSalesPage = "headquater/sales.jsp".equals(pageParam);
     boolean isStockPage = "headquater/stock.jsp".equals(pageParam);
     boolean isHqBoardPage = pageParam != null && pageParam.startsWith("hqboard/");
+
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
 %>
 
@@ -28,8 +30,10 @@
           <i class="bi <%= isProductPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
           <i class="bi <%= isProductPage ? "bi-folder2-open" : "bi-folder" %>"></i>
           상품관리
+
         </a>
         <ul id="productMenu" class="submenu <%= isProductPage ? "open" : "" %>" style="padding-left: 3rem;">
+
           <li>
             <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/insertform.jsp"
                class="nav-link <%= "product/insertform.jsp".equals(pageParam) ? "active" : "" %>">
@@ -47,6 +51,7 @@
 
       <!-- 지점관리 -->
       <li class="nav-item">
+
         <a href="#"
            class="nav-link d-flex align-items-center gap-2"
            id="toggleBranchMenu"
@@ -63,6 +68,7 @@
             </a>
           </li>
         </ul>
+
       </li>
 
       <!-- 게시판 -->
@@ -148,6 +154,7 @@
       <!-- 직원관리 -->
       <li class="nav-item">
         <a href="#"
+
            class="nav-link d-flex align-items-center gap-2"
            id="toggleHrmMenu"
            onclick="event.preventDefault(); toggleSubmenu('hrmMenu', this);">
@@ -160,6 +167,7 @@
             <a href="<%=request.getContextPath()%>/headquater.jsp?page=hrm/list.jsp"
                class="nav-link <%= "hrm/list.jsp".equals(pageParam) ? "active" : "" %>">
               <i class="bi bi-folder"></i> 직원 목록
+
             </a>
           </li>
         </ul>
@@ -177,6 +185,7 @@
     margin: 0;
     list-style: none;
   }
+
   .submenu.open {
     height: auto !important;
   }
@@ -190,21 +199,25 @@
   }
   #sidebar .nav-link.active,
   #sidebar .nav-link.active i {
+
     font-weight: 700;
     color: #003366;
   }
 </style>
 
 <script>
+
   function toggleSubmenu(submenuId, toggleBtn) {
     const submenu = document.getElementById(submenuId);
     const isOpen = submenu.classList.contains('open');
 
     if (isOpen) {
+
       submenu.style.height = submenu.scrollHeight + 'px';
       submenu.offsetHeight;
       submenu.style.height = '0';
       submenu.classList.remove('open');
+
       toggleBtn.querySelectorAll('i')[0].className = 'bi bi-caret-right-fill';
       toggleBtn.querySelectorAll('i')[1].className = 'bi bi-folder';
     } else {
@@ -213,6 +226,7 @@
       setTimeout(() => submenu.style.height = 'auto', 300);
       toggleBtn.querySelectorAll('i')[0].className = 'bi bi-caret-down-fill';
       toggleBtn.querySelectorAll('i')[1].className = 'bi bi-folder2-open';
+
     }
   }
 
@@ -221,4 +235,5 @@
       submenu.style.height = 'auto';
     });
   });
+
 </script>
