@@ -10,6 +10,60 @@ import dto.HrmDto;
 import util.DbcpBean;
 
 public class HrmDao {
+	
+	public Integer getNextNum(int currentNum, String from) {
+	    Integer nextNum = null;
+	    String sql = "";
+	    if ("admin".equals(from)) {
+	        sql = "SELECT MIN(num) AS nextNum FROM users_p WHERE role IN ('king', 'admin') AND num > ?";
+	    } else if ("branch".equals(from)) {
+	        sql = "SELECT MIN(num) AS nextNum FROM users_p WHERE role NOT IN ('king', 'admin') AND num > ?";
+	    } else {
+	        // 기본 fallback
+	        sql = "SELECT MIN(num) AS nextNum FROM users_p WHERE num > ?";
+	    }
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, currentNum);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                nextNum = rs.getInt("nextNum");
+	                if (rs.wasNull()) nextNum = null;
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return nextNum;
+	}
+
+	public Integer getPreviousNum(int currentNum, String from) {
+	    Integer prevNum = null;
+	    String sql = "";
+	    if ("admin".equals(from)) {
+	        sql = "SELECT MAX(num) AS prevNum FROM users_p WHERE role IN ('king', 'admin') AND num < ?";
+	    } else if ("branch".equals(from)) {
+	        sql = "SELECT MAX(num) AS prevNum FROM users_p WHERE role NOT IN ('king', 'admin') AND num < ?";
+	    } else {
+	        // 기본 fallback
+	        sql = "SELECT MAX(num) AS prevNum FROM users_p WHERE num < ?";
+	    }
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, currentNum);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                prevNum = rs.getInt("prevNum");
+	                if (rs.wasNull()) prevNum = null;
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return prevNum;
+	}
+
+
 
     // 본사 직원 리스트 키워드 + 페이징 (role IN ('king','admin')) 오라클용 페이징 적용
     public List<HrmDto> selectHeadOfficeByKeywordWithPaging(String keyword, int start, int pageSize) {

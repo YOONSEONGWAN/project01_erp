@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>/index/headquater.jsp</title>
+<title>document</title>
 </head>
 
 
