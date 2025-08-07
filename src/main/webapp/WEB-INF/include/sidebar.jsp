@@ -7,11 +7,16 @@
 
     boolean isProductPage = pageParam != null && pageParam.startsWith("product/");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     boolean isBranchPage = pageParam != null && pageParam.startsWith("branch-admin/");
     boolean isBoardPage = pageParam != null && pageParam.startsWith("board/");
     boolean isSalesPage = "headquater/sales.jsp".equals(pageParam);
     boolean isStockPage = "headquater/stock.jsp".equals(pageParam);
     boolean isHqBoardPage = pageParam != null && pageParam.startsWith("hqboard/");
+<<<<<<< HEAD
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
 %>
 	
@@ -224,6 +229,9 @@
 	  });
 	</script>
 =======
+=======
+
+>>>>>>> origin/main
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
 %>
 
@@ -241,9 +249,16 @@
            aria-controls="productMenu"
            onclick="event.preventDefault();">
           상품관리
+<<<<<<< HEAD
           <i class="bi <%= isProductPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
         </a>
         <ul id="productMenu" class="submenu <%= isProductPage ? "open" : "" %>" style="padding-left: 1rem;">
+=======
+
+        </a>
+        <ul id="productMenu" class="submenu <%= isProductPage ? "open" : "" %>" style="padding-left: 3rem;">
+
+>>>>>>> origin/main
           <li>
             <a class="nav-link <%= "product/insertform.jsp".equals(pageParam) ? "active" : "" %>"
                href="<%=request.getContextPath()%>/headquater.jsp?page=product/insertform.jsp">
@@ -261,10 +276,31 @@
 
       <!-- 지점관리 -->
       <li class="nav-item">
+<<<<<<< HEAD
         <a class="nav-link <%= "branch-admin/list.jsp".equals(request.getParameter("page")) ? "active" : "" %>"
            href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/main.jsp">
            지점관리
         </a>
+=======
+
+        <a href="#"
+           class="nav-link d-flex align-items-center gap-2"
+           id="toggleBranchMenu"
+           onclick="event.preventDefault(); toggleSubmenu('branchMenu', this);">
+          <i class="bi <%= isBranchPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
+          <i class="bi <%= isBranchPage ? "bi-folder2-open" : "bi-folder" %>"></i>
+          지점관리
+        </a>
+        <ul id="branchMenu" class="submenu <%= isBranchPage ? "open" : "" %>" style="padding-left: 3rem;">
+          <li>
+            <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp"
+               class="nav-link <%= "branch-admin/list.jsp".equals(pageParam) ? "active" : "" %>">
+              <i class="bi bi-folder"></i> 지점 목록
+            </a>
+          </li>
+        </ul>
+
+>>>>>>> origin/main
       </li>
 
       <!-- 게시판 -->
@@ -294,6 +330,7 @@
       <!-- 직원관리 -->
       <li class="nav-item">
         <a href="#"
+<<<<<<< HEAD
            class="nav-link d-flex justify-content-between align-items-center"
            id="toggleHrmMenu"
            aria-expanded="<%= isHrmPage ? "true" : "false" %>"
@@ -307,6 +344,22 @@
             <a class="nav-link <%= "hrm/list.jsp".equals(pageParam) ? "active" : "" %>"
                href="<%=request.getContextPath()%>/headquater.jsp?page=hrm/list.jsp">
               <i class="bi bi-caret-right-fill"></i> 직원 목록
+=======
+
+           class="nav-link d-flex align-items-center gap-2"
+           id="toggleHrmMenu"
+           onclick="event.preventDefault(); toggleSubmenu('hrmMenu', this);">
+          <i class="bi <%= isHrmPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
+          <i class="bi <%= isHrmPage ? "bi-folder2-open" : "bi-folder" %>"></i>
+          직원관리
+        </a>
+        <ul id="hrmMenu" class="submenu <%= isHrmPage ? "open" : "" %>" style="padding-left: 3rem;">
+          <li>
+            <a href="<%=request.getContextPath()%>/headquater.jsp?page=hrm/list.jsp"
+               class="nav-link <%= "hrm/list.jsp".equals(pageParam) ? "active" : "" %>">
+              <i class="bi bi-folder"></i> 직원 목록
+
+>>>>>>> origin/main
             </a>
           </li>
         </ul>
@@ -326,17 +379,36 @@
     padding-left: 0;
     list-style: none;
   }
+<<<<<<< HEAD
   .submenu.open { height: auto !important; }
   .submenu li { white-space: normal; }
   .submenu li a.nav-link { padding-left: 0.5rem; }
   #toggleProductMenu.active,
   #toggleHrmMenu.active {
+=======
+
+  .submenu.open {
+    height: auto !important;
+  }
+  #sidebar .nav-link,
+  #sidebar .nav-link i {
+    color: #003366;
+  }
+  #sidebar .nav-link:hover,
+  #sidebar .nav-link:hover i {
+    color: #002244;
+  }
+  #sidebar .nav-link.active,
+  #sidebar .nav-link.active i {
+
+>>>>>>> origin/main
     font-weight: 700;
     color: #0d6efd;
   }
 </style>
 
 <script>
+<<<<<<< HEAD
   document.addEventListener('DOMContentLoaded', () => {
     const menus = [
       { btn: 'toggleProductMenu', list: 'productMenu' },
@@ -384,6 +456,35 @@
         submenu.style.height = '0';
         toggleBtn.querySelector('i').className = 'bi bi-caret-right-fill';
       }
+=======
+
+  function toggleSubmenu(submenuId, toggleBtn) {
+    const submenu = document.getElementById(submenuId);
+    const isOpen = submenu.classList.contains('open');
+
+    if (isOpen) {
+
+      submenu.style.height = submenu.scrollHeight + 'px';
+      submenu.offsetHeight;
+      submenu.style.height = '0';
+      submenu.classList.remove('open');
+
+      toggleBtn.querySelectorAll('i')[0].className = 'bi bi-caret-right-fill';
+      toggleBtn.querySelectorAll('i')[1].className = 'bi bi-folder';
+    } else {
+      submenu.style.height = submenu.scrollHeight + 'px';
+      submenu.classList.add('open');
+      setTimeout(() => submenu.style.height = 'auto', 300);
+      toggleBtn.querySelectorAll('i')[0].className = 'bi bi-caret-down-fill';
+      toggleBtn.querySelectorAll('i')[1].className = 'bi bi-folder2-open';
+
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.submenu.open').forEach(submenu => {
+      submenu.style.height = 'auto';
+>>>>>>> origin/main
     });
   });
 

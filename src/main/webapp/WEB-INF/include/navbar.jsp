@@ -4,6 +4,9 @@
     String branchId = (String) session.getAttribute("branchId");
 %>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
 <style>
   body {
     margin: 0; /* 페이지 전체 상단 여백 제거 */
@@ -28,6 +31,7 @@
         <% } %>
         <a class="btn btn-outline-light btn-sm d-flex align-items-center" 
            style="padding-left: 0.5rem; padding-right: 0.5rem; white-space: nowrap;" 
+<<<<<<< HEAD
 =======
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-1" style="min-height: 45px;">
   <div class="container-fluid" style="padding-top: 0.25rem; padding-bottom: 0.25rem;">
@@ -51,6 +55,8 @@
         <a class="btn btn-outline-light btn-sm py-0 px-2" 
            style="font-size: 0.8rem; line-height: 1.4;"
 >>>>>>> 72e7f5dc9479ee103b005f61aab18dc366d19d59
+=======
+>>>>>>> origin/main
            href="<%=request.getContextPath()%>/userp/logout.jsp">로그아웃</a>
       <% } else { %>
         <a class="btn btn-outline-light btn-sm py-0 px-2" 
