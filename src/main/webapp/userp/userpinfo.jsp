@@ -85,6 +85,9 @@
                         <a href="edit.jsp" class="btn btn-primary">
                             <i class="bi bi-person-lines-fill"></i> 개인 정보 수정
                         </a>
+                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">
+                             지점으로가기<i class="bi bi-back"></i>
+                        </a>
                     </div>
                 </div>
             </div>

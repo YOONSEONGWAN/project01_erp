@@ -22,12 +22,12 @@ import jakarta.servlet.http.HttpServletResponse;
 public class Branch_InfoimageServlet extends HttpServlet{
 
 	// 이미지 저장 경로 
-    private  String filesLocation;
+    private  String fileLocation;
     
     @Override
     public void init() throws ServletException {
         ServletContext context = getServletContext();
-        filesLocation = context.getInitParameter("filesLocation");
+        fileLocation = context.getInitParameter("fileLocation");
     }
     
     
@@ -45,7 +45,7 @@ public class Branch_InfoimageServlet extends HttpServlet{
         String imageName = pathInfo.substring(1); // "xxx.jpg"
 
         // 2. 파일 전체 경로 구성
-        File imageFile = new File(filesLocation, imageName);
+        File imageFile = new File(fileLocation, imageName);
 
         // 3. 파일 존재 여부 확인
         if (!imageFile.exists() || imageFile.isDirectory()) {
