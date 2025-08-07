@@ -366,7 +366,6 @@ public class StockRequestDao {
         return branchId;
     }
 
-
     public int getInventoryIdByNum(int num) {
         int inventoryId = 0;
         Connection conn = null;
@@ -390,7 +389,6 @@ public class StockRequestDao {
             try { if (ps != null) ps.close(); } catch (Exception e) {}
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
-
         return inventoryId;
     }
 
@@ -525,7 +523,6 @@ public class StockRequestDao {
         }
     }
 
-
     public int getNumByDetailId(int detailId) {
         int result = -1;
         Connection conn = null;
@@ -544,7 +541,6 @@ public class StockRequestDao {
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 result = rs.getInt("request_num");
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -576,7 +572,6 @@ public class StockRequestDao {
      * 내부 메소드: current_quantity 값 ±변경
      */
     private void updateCurrentQuantity(int requestNum, int qtyDiff) {
-
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
@@ -587,7 +582,6 @@ public class StockRequestDao {
                  WHERE request_num = ?
             """;
             pstmt = conn.prepareStatement(sql);
-
             pstmt.setInt(1, qtyDiff);
             pstmt.setInt(2, requestNum);
             pstmt.executeUpdate();
