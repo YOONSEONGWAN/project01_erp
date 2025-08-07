@@ -243,4 +243,3 @@ public class PlaceOrderBranchDetailDao {
 		    return result > 0;
 		}
 	}
-

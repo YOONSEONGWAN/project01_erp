@@ -20,20 +20,29 @@
 	</resource-ref>
 
 
+	
+	
 	<context-param>
 		<description>업로드된 파일을 저장할 경로</description>
 		<param-name>fileLocation</param-name>
 		<param-value>C:/playground/upload</param-value>
 	</context-param>
+	
+	<!-- Userp_InfoUpdateServlet 이용 할 web.xml-->
+	<context-param>
+		<description>업로드된 파일을 저장할 경로</description>
+		<param-name>filesLocation</param-name>
+		<param-value>C:/playground/upload</param-value>
+	</context-param>
 
 
-	<!--경로 하나로 수정 -->
+	<!--경로 하나로 수정
 	<context-param>
 		<description>업로드된 파일을 저장할 경로</description>
 		<param-name>fileLocation</param-name>
 		<param-value>/Users/dohyun/desktop/playground/upload</param-value>
 	</context-param>
-	
+	 -->
 
 	
 </web-app>

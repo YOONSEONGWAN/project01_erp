@@ -776,6 +776,3 @@ public class StockRequestDao {
         return result;
     }
 }
-
-
-

@@ -22,7 +22,11 @@
 %>
     <script>
         alert("수정 완료되었습니다.");
-        location.href = "view.jsp?num=<%=num%>&board_type=<%=board_type%>";
+        location.href = "<%= 
+            "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+            ? request.getContextPath() + "/headquater.jsp?page=board/view.jsp&num=" + num + "&board_type=" + board_type 
+            : request.getContextPath() + "/branch.jsp?page=board/view.jsp&num=" + num + "&board_type=" + board_type 
+        %>";
     </script>
 <%
     } else {

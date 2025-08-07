@@ -19,7 +19,13 @@
     // DB 에서 해당 글의 자세한 정보를 얻어낸다.
     HqBoardDto dto=HqBoardDao.getInstance().getByNum(num);
     // 로그인 된 userName (null 가능성 있음)
-    String userName=(String)session.getAttribute("userId");
+    String userId=(String)session.getAttribute("userId");
+    String userName=(String)session.getAttribute("userName");
+    String role=(String)session.getAttribute("role");
+    
+    boolean isWriter = userId != null && userName.equals(dto.getWriter());
+    boolean isAdmin = "admin".equalsIgnoreCase(role);
+    boolean isKing = "king".equalsIgnoreCase(role) ;
     // 만일 본인 글 자세히 보기가 아니면 조회수를 1 증가시킨다.
     /*if(!dto.getWriter().equals(userName)){
         HqBoardDao.getInstance().addViewCount(num);
@@ -105,9 +111,9 @@
 	    </div>
 	    <div class="d-flex gap-2 mt-4">
 	        <a class="btn btn-secondary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp"><i class="bi bi-list"></i> 목록으로</a>
-	        <% if(dto.getWriter().equals(userName)){ %>
+	        <% if(isWriter){ %>
 	            <a class="btn btn-outline-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-edit.jsp?num=<%=dto.getNum() %>"><i class="bi bi-pencil"></i> 수정</a>
-	            <a class="btn btn-outline-danger" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-delete.jsp?num=<%=dto.getNum() %>" onclick="return confirm('정말 삭제하시겠습니까?');"><i class="bi bi-trash"></i> 삭제</a>
+	            <a class="btn btn-outline-danger" href="<%=request.getContextPath()%>/hqboard/hq-delete.jsp?num=<%=dto.getNum() %>" onclick="return confirm('정말 삭제하시겠습니까?');"><i class="bi bi-trash"></i> 삭제</a>
 	        <% } %>
 	    </div>
 	</div>
