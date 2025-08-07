@@ -41,7 +41,7 @@ public class HqBoardDao {
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-				SELECT MAX(ROWNUM) AS count
+				SELECT COUNT(*) AS count
 				FROM hqBoard
 				WHERE title LIKE '%'||?||'%' OR content LIKE '%'||?||'%' 
 			""";
@@ -165,13 +165,16 @@ public class HqBoardDao {
 			conn = new DbcpBean().getConn();
 			String sql = """
 				SELECT *
-				FROM
-					(SELECT result1.*, ROWNUM AS rnum
-					FROM
-						(SELECT num, writer, title, content, view_count, created_at
-						FROM hqBoard
-						ORDER BY num DESC) result1)
-				WHERE rnum BETWEEN ? AND ?
+			    FROM (
+			        SELECT result1.*, ROWNUM AS rnum
+			        FROM (
+			            SELECT b.num, u.user_name AS writer, b.title, b.content, b.view_count, b.created_at
+			            FROM hqBoard b
+			            JOIN users_p u ON b.writer = u.user_id
+			            ORDER BY b.num DESC
+			        ) result1
+			    )
+			    WHERE rnum BETWEEN ? AND ?
 			""";
 			pstmt = conn.prepareStatement(sql);
 			
@@ -223,15 +226,18 @@ public class HqBoardDao {
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-				SELECT *
-				FROM
-					(SELECT result1.*, ROWNUM AS rnum
-					FROM
-						(SELECT num, writer, title, content, view_count, created_at
-						FROM hqboard
-						WHERE title LIKE '%'||?||'%' OR content LIKE '%'||?||'%' 
-						ORDER BY num DESC) result1)
-				WHERE rnum BETWEEN ? AND ?
+			    SELECT *
+			    FROM (
+			        SELECT result1.*, ROWNUM AS rnum
+			        FROM (
+			            SELECT b.num, u.user_name AS writer, b.title, b.content, b.view_count, b.created_at
+			            FROM hqBoard b
+			            JOIN users_p u ON b.writer = u.user_id
+			            WHERE b.title LIKE '%'||?||'%' OR b.content LIKE '%'||?||'%'
+			            ORDER BY b.num DESC
+			        ) result1
+			    )
+			    WHERE rnum BETWEEN ? AND ?
 			""";
 			pstmt = conn.prepareStatement(sql);
 			
@@ -330,7 +336,7 @@ public class HqBoardDao {
 		try {
 			conn = new DbcpBean().getConn();
 			String sql = """
-				SELECT MAX(ROWNUM) AS count
+				SELECT COUNT(*) AS count
 				FROM hqboard
 			""";
 			pstmt = conn.prepareStatement(sql);
@@ -369,13 +375,13 @@ public class HqBoardDao {
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
-	            SELECT b.num, b.writer, b.title, b.content, b.view_count, 
+	            SELECT b.num, u.user_name AS writer, b.title, b.content, b.view_count, 
 	                   TO_CHAR(b.created_at, 'YY\"년\" MM\"월\" DD\"일\" HH24:MI') AS created_at,
 	                   u.profile_image AS profileImage,
                        (SELECT MAX(num) FROM hqboard WHERE num < b.num) AS prevNum,
 	        		   (SELECT MIN(num) FROM hqboard WHERE num > b.num) AS nextNum
 	            FROM hqboard b
-	            LEFT JOIN users_p u ON b.writer = u.user_name
+	            LEFT JOIN users_p u ON b.writer = u.user_id
 	            WHERE b.num = ?
 	        """;
 	        pstmt = conn.prepareStatement(sql);
