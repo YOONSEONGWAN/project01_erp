@@ -11,6 +11,47 @@ import util.DbcpBean;
 
 
 public class ProductDao {
+	
+	// ProductDao.java
+
+	// 이전글 번호 가져오기 (num 보다 작은 num 중 가장 큰 번호)
+	public Integer getPreviousNum(int currentNum) {
+	    Integer prevNum = null;
+	    String sql = "SELECT MAX(num) AS prevNum FROM product WHERE num < ?";
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, currentNum);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                prevNum = rs.getInt("prevNum");
+	                if (rs.wasNull()) prevNum = null;
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return prevNum;
+	}
+
+	// 다음글 번호 가져오기 (num 보다 큰 num 중 가장 작은 번호)
+	public Integer getNextNum(int currentNum) {
+	    Integer nextNum = null;
+	    String sql = "SELECT MIN(num) AS nextNum FROM product WHERE num > ?";
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, currentNum);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                nextNum = rs.getInt("nextNum");
+	                if (rs.wasNull()) nextNum = null;
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return nextNum;
+	}
+
 	// 선택된 상품 여러 개 삭제하는 메서드
 	public int deleteMultiple(List<Integer> nums) {
 	    Connection conn = null;

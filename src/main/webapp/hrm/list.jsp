@@ -94,6 +94,15 @@
 </head>
 <body>
 
+	<!-- breadcrumb -->
+	<nav aria-label="breadcrumb" class="mb-3" style="margin: 0 15px;">
+	  <ol class="breadcrumb">
+	    <li class="breadcrumb-item"><a href="<%=contextPath%>/headquater.jsp">홈</a></li>
+	    <li class="breadcrumb-item active" aria-current="page">직원 관리</li>
+	    <li class="breadcrumb-item active" aria-current="page"><%= "admin".equals(from) ? "본사 직원 목록" : "지점 직원 목록" %></li>
+	  </ol>
+	</nav>
+
 <div class="container-fluid p-3">
 
     <!-- 탭 네비게이션 -->

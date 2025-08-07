@@ -26,11 +26,6 @@
 </head>
 
 <body>
-	
-        	 <jsp:include page="/WEB-INF/include/navbar.jsp">
-        <jsp:param value="index" name="thisPage"/>
-    </jsp:include>
-
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
