@@ -24,5 +24,5 @@
     }
 
     // 처리 후 목록 페이지로 리다이렉트
-    response.sendRedirect("inandout.jsp");
+    response.sendRedirect("${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp");
 %>
