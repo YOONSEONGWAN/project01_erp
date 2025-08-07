@@ -25,10 +25,10 @@
     <title>글 수정</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="p-4">
+<body>
 <div class="container">
     <h2>글 수정</h2>
-    <form action="edit.jsp" method="post">
+    <form action="<%= request.getContextPath() %>/board/edit.jsp" method="post">
         <input type="hidden" name="num" value="<%= dto.getNum() %>">
         <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
         <div class="mb-3">
@@ -40,6 +40,7 @@
             <textarea name="content" class="form-control" rows="6" required><%= dto.getContent() %></textarea>
         </div>
         <button type="submit" class="btn btn-primary">수정 완료</button>
+        
         <a href="view.jsp?num=<%=dto.getNum()%>&board_type=<%=dto.getBoard_type()%>" class="btn btn-secondary">취소</a>
     </form>
 </div>
