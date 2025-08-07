@@ -90,6 +90,15 @@
 <body>
 
 <div class="container-fluid bg-white p-4">
+    <!-- breadcrumb 추가 시작 -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item active" aria-current="page">상품 관리</li>
+      </ol>
+    </nav>
+    <!-- breadcrumb 추가 끝 -->
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">상품 관리</h3>
         <form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
