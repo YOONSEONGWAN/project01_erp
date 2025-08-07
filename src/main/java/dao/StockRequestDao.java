@@ -366,24 +366,6 @@ public class StockRequestDao {
         return branchId;
     }
 
-<<<<<<< HEAD
-    public int getInventoryIdByOrderId(int orderId) {
-        String sql = "SELECT inventory_id FROM stock_request WHERE order_id = ?";
-        int inventoryId = 0;
-
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, orderId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    inventoryId = rs.getInt("inventory_id");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-=======
     public int getInventoryIdByNum(int num) {
         int inventoryId = 0;
         Connection conn = null;
@@ -407,7 +389,6 @@ public class StockRequestDao {
             try { if (ps != null) ps.close(); } catch (Exception e) {}
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
->>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
         return inventoryId;
     }
 
@@ -541,13 +522,6 @@ public class StockRequestDao {
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
     }
-<<<<<<< HEAD
-    public int getNumByDetailId(int detailId) {
-        String sql = "SELECT request_quantity FROM stock_request WHERE inventory_id = ?";
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-=======
->>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
 
     public int getNumByDetailId(int detailId) {
         int result = -1;
@@ -563,16 +537,9 @@ public class StockRequestDao {
             """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, detailId);
-<<<<<<< HEAD
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("request_quantity");
-                }
-=======
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 result = rs.getInt("request_num");
->>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -604,12 +571,6 @@ public class StockRequestDao {
      * 내부 메소드: current_quantity 값 ±변경
      */
     private void updateCurrentQuantity(int requestNum, int qtyDiff) {
-<<<<<<< HEAD
-        String sql = "UPDATE stock_request SET current_quantity = current_quantity + ? WHERE request_quantity = ?";
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-=======
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
@@ -620,7 +581,6 @@ public class StockRequestDao {
                  WHERE request_num = ?
             """;
             pstmt = conn.prepareStatement(sql);
->>>>>>> 57067ecbbda0014cb2a97f187f6ee350e7f299cb
             pstmt.setInt(1, qtyDiff);
             pstmt.setInt(2, requestNum);
             pstmt.executeUpdate();

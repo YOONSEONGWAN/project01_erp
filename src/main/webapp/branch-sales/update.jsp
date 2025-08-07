@@ -32,7 +32,7 @@ request.setCharacterEncoding("UTF-8");
 <body>
     <script>
         alert("<%= isSuccess ? "수정 성공!" : "수정 실패!" %>");
-        location.href = "<%= request.getContextPath() %>/branch-sales/list.jsp";
+        location.href = "<%= request.getContextPath() %>/branch.jsp?page=branch-sales/list.jsp";
     </script>
 </body>
 </html>
