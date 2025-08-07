@@ -29,7 +29,8 @@
 		session.setAttribute("userId", userId);
 		session.setAttribute("branchId", branchId);
 		session.setAttribute("role", dto.getRole());
-
+		session.setAttribute("userName", dto.getUser_name());
+		
 		session.setMaxInactiveInterval(60*60);
 		// 로그인 성공 -> /index/headquaterindex.jsp 로 이동
 		response.sendRedirect(request.getContextPath()+ "/headquater.jsp");
