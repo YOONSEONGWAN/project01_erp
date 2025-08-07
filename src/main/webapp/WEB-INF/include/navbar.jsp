@@ -12,7 +12,7 @@
     margin-top: 0 !important; /* 네비바 상단 여백 제거 */
   }
 </style>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-primary py-1" style="min-height: 45px;">
+	<nav class="navbar navbar-expand-lg navbar-dark custom-navbar py-1" style="min-height: 45px;">
 	  <div class="container-fluid" style="padding-top: 0.25rem; padding-bottom: 0.25rem;">
 	    <!-- 로고 -->
 	    <a class="navbar-brand" 
@@ -26,7 +26,7 @@
 	        <span class="navbar-text text-white align-self-center"><%= userId %>님</span>
 	
 	        <% if(branchId != null && branchId.startsWith("BC")) { %>
-	          <a class="btn btn-outline-warning btn-sm" href="<%=request.getContextPath()%>/branchinfo/info2.jsp">지점 정보수정</a>
+	          <a class="btn btn-outline-warning btn-sm" href="<%=request.getContextPath()%>/branch.jsp?page=branchinfo/info2.jsp">지점 정보수정</a>
 	        <% } %>
 	
 	        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/userp/logout.jsp">로그아웃</a>
