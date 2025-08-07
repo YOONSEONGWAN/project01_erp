@@ -47,14 +47,23 @@
         border: 1px solid #ddd;
         border-radius: 4px;
     }
-    .btn-submit {
-        background-color: #2980b9;
-        color: white;
-        font-weight: 600;
+
+    /* 상품 목록 검색 버튼 스타일과 동일하게 수정 */
+    .btn-primary {
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+        color: white !important;
+        font-weight: 500;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-    .btn-submit:hover {
-        background-color: #1c5980;
+    .btn-primary:hover {
+        background-color: #002244 !important;
+        border-color: #002244 !important;
+        color: white !important;
     }
+
+    /* 취소 버튼 스타일 유지 */
     .btn-cancel {
         background-color: #7f8c8d;
         color: white;
@@ -66,6 +75,15 @@
 </style>
 </head>
 <body>
+<!-- breadcrumb 추가 시작 -->
+    <nav aria-label="breadcrumb" class="mb-3" style="margin: 0 15px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp">상품 목록</a></li>
+        <li class="breadcrumb-item active" aria-current="page">상품 정보 수정</li>
+      </ol>
+    </nav>
+    <!-- breadcrumb 추가 끝 -->
 
 <div class="form-container">
     <h1>상품 정보 수정</h1>
@@ -115,7 +133,8 @@
         </div>
 
         <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-submit">수정 확인</button>
+            <!-- 수정 확인 버튼 스타일 변경 -->
+            <button type="submit" class="btn btn-primary">수정 확인</button>
             <button type="button" class="btn btn-cancel" onclick="window.location.href='<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp'">취소</button>
         </div>
     </form>

@@ -42,6 +42,28 @@
         border-color: #001f3f;
         box-shadow: 0 0 12px #001f3f;
     }
+    .btn-small-group {
+        margin-top: 12px;
+        display: flex;
+        justify-content: flex-end;
+        font-size: 0.875rem;
+        gap: 12px;
+    }
+    .btn-small-group a {
+        color: #002855;
+        text-decoration: none;
+        cursor: pointer;
+        user-select: none;
+        padding: 0; /* 테두리 없애고 버튼 느낌 없애기 */
+        border: none;
+        background: none;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+    .btn-small-group a:hover {
+        color: #001f3f;
+        text-decoration: underline;
+    }
 </style>
 </head>
 <body>
@@ -62,6 +84,10 @@
             </div>
             <button type="submit" class="btn btn-primary w-100 py-2">로그인</button>
         </form>
+        <div class="btn-small-group">
+            <a href="${pageContext.request.contextPath}/userp/loginform.jsp">뒤로가기</a>
+            <a href="${pageContext.request.contextPath}/userp/signup-form.jsp">회원가입</a>
+        </div>
     </div>
 </body>
 </html>
