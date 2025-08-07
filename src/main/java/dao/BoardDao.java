@@ -21,6 +21,69 @@ public class BoardDao {
         return dao;
     }
      
+ 
+ // 글 이전 번호 가져오기
+    public Integer getPrevNum(int currentNum, String boardType) {
+        Integer prevNum = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT MAX(num) AS prev_num
+                FROM board_p
+                WHERE num < ? AND board_type = ?
+            """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, currentNum);
+            pstmt.setString(2, boardType);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                prevNum = rs.getInt("prev_num");
+                if (rs.wasNull()) prevNum = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(conn, pstmt, rs);
+        }
+
+        return prevNum;
+    }
+
+    // 글 다음 번호 가져오기
+    public Integer getNextNum(int currentNum, String boardType) {
+        Integer nextNum = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = new DbcpBean().getConn();
+            String sql = """
+                SELECT MIN(num) AS next_num
+                FROM board_p
+                WHERE num > ? AND board_type = ?
+            """;
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, currentNum);
+            pstmt.setString(2, boardType);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                nextNum = rs.getInt("next_num");
+                if (rs.wasNull()) nextNum = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(conn, pstmt, rs);
+        }
+
+        return nextNum;
+    }
+    
     // board_type 에 따라 페이징 처리를 위한 메소드
     public int getCountByType(String board_type) {
         int count = 0;

@@ -67,7 +67,7 @@
 			</div>
 
 			<!-- 등록 버튼 -->
-			<button type="submit" class="btn btn-primary">등록</button>
+			<button type="submit" class="btn" style="background-color: #003366; color: white;">등록</button>
 			<a href="${pageContext.request.contextPath}/board/list.jsp" class="btn btn-secondary">취소</a>
 		</form>
 	</div>

@@ -50,6 +50,17 @@
     if ("QNA".equalsIgnoreCase(board_type)) {
         commentHeaderText = "\uD83D\uDCAC 문의하기";
     }
+    
+    Integer prevNum = BoardDao.getInstance().getPrevNum(dto.getNum(), board_type);
+    Integer nextNum = BoardDao.getInstance().getNextNum(dto.getNum(), board_type);
+    
+    String contentHeaderText = "본문 내용"; 
+    
+    if ("NOTICE".equalsIgnoreCase(board_type)) {
+        contentHeaderText = "공지내용";
+    } else if ("QNA".equalsIgnoreCase(board_type)) {
+        contentHeaderText = "문의내용";
+    }
 %>
 
 <!DOCTYPE html>
@@ -62,29 +73,31 @@
 </head>
 <body>
 
-<div class="container-fluid mt-3">
-  <div class="row">
-    <h2> 글 상세보기</h2>
-    <table class="col-md-9 table table-bordered">
-        <tr><th>번호</th><td><%= dto.getNum() %></td></tr>
-        <tr><th>제목</th><td><%= dto.getTitle() %></td></tr>
-        <tr><th>작성자</th><td><%= dto.getWriter() != null ? dto.getWriter() : "알 수 없음" %></td></tr>
-        <tr><th>작성일</th><td><%= dto.getCreated_at() %></td></tr>
-        <tr><th>게시판 유형</th><td><%= dto.getBoard_type() %></td></tr>
-    </table>
-    <div class="card mt-4">
-        <div class="card-header bg-success"><strong>본문 내용</strong></div>
-        <div class="card-body p-1"><%= dto.getContent() %></div>
-    </div>
+	<div class="container-fluid mt-3">
+		  <div class="border-bottom pb-2 mb-3">
+		     <h2 class="fw-bold fs-3 mb-1"><%= dto.getTitle() %></h2>
+		  </div>
+		
+		  <!-- 글 정보 영역 -->
+		  <div class="d-flex flex-wrap mb-3 text-muted small">
+		    <div class="me-3">글 번호: <%= dto.getNum() %></div>
+		    <div class="me-3">작성자: <%= dto.getWriter() != null ? dto.getWriter() : "알 수 없음" %></div>
+		    <div class="me-3">작성일: <%= dto.getCreated_at() %></div>
+		  </div>
+		
+		  <!-- 본문 내용 카드 -->
+		  <div class="card mt-3">
+			  <div class="card-header text-white" style="background-color: #003366;">
+			    <strong><%= contentHeaderText %></strong>
+			  </div>
+			  <div class="card-body p-2"><%= dto.getContent() %></div>
+		  </div>
+	</div>
     <div class="text-end">
-        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
-				    ? request.getContextPath() + "/headquater.jsp?page=board/list.jsp&board_type=" + dto.getBoard_type()
-				    : request.getContextPath() + "/branch.jsp?page=board/list.jsp&board_type=" + dto.getBoard_type() %>" class="btn btn-secondary">목록</a>
-
         <% if (user_name != null && user_name.equals(dto.getUser_id())) { %>
             <a href="<%="HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
 			        ? request.getContextPath() + "/headquater.jsp?page=board/update.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type()
-			        : request.getContextPath() + "/branch.jsp?page=board/update.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type() %>" class="btn btn-warning">수정</a>
+			        : request.getContextPath() + "/branch.jsp?page=board/update.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type() %>" class="btn btn-secondary">수정</a>
         <% } %>
         <% if ("QNA".equalsIgnoreCase(board_type) && user_name != null && user_name.equals(dto.getUser_id())) { %>
             <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
@@ -103,16 +116,47 @@
     </div>
 
     <% if (canWriteComment) { %>
-        <div class="mt-4">
-            <h5><%= commentHeaderText %></h5>
-            <form action="<%= request.getContextPath() %>/board/save-comment.jsp" method="post">
-                <input type="hidden" name="writer" value="<%= user_name %>">
-                <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
-                <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
-                <textarea class="form-control mb-2" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
-                <button type="submit" class="btn btn-success">등록</button>
-            </form>
-        </div>
+        <div class="card mt-4">
+		  <div class="card-header text-white fw-bold" style="background-color: #003366;"><%= commentHeaderText %></div>
+		  <div class="card-body p-3">
+		    <!-- 댓글 작성 폼 여기로 이동 -->
+		    <form action="<%= request.getContextPath() %>/board/save-comment.jsp" method="post">
+		        <input type="hidden" name="writer" value="<%= user_name %>">
+		        <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+		        <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+		        <textarea class="form-control mb-2" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
+		         <div class="text-end">
+			        <button type="submit" class="btn" style="background-color: #003366; color: white;">등록</button>
+			    </div>
+		    </form>
+		  </div>
+		</div>
+        <!-- 목록 + Prev/Next 버튼 정렬 -->
+		<div class="d-flex justify-content-between align-items-center mt-5 px-5">
+		    <!-- Prev 버튼 -->
+		    <% if (prevNum != null) { %>
+		        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+				        ? "headquater.jsp?page=board/view.jsp&num=" + prevNum + "&board_type=" + board_type 
+				        : "branch.jsp?page=board/view.jsp&num=" + prevNum + "&board_type=" + board_type%>" class="btn btn-outline-secondary">&larr; Prev</a>
+		    <% } else { %>
+		        <button class="btn btn-outline-secondary" disabled>&larr; Prev</button>
+		    <% } %>
+		
+		    <!-- 목록 버튼 -->
+		    <a href="<%= isHQ
+		        ? request.getContextPath() + "/headquater.jsp?page=board/list.jsp&board_type=" + board_type
+		        : request.getContextPath() + "/branch.jsp?page=board/list.jsp&board_type=" + board_type
+		    %>" class="btn btn-dark btn-md px-4" style="background-color: #003366; color: white;">목록으로</a>
+		
+		    <!-- Next 버튼 -->
+		    <% if (nextNum != null) { %>
+		        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+						        ? "headquater.jsp?page=board/view.jsp&num=" + nextNum + "&board_type=" + board_type 
+						        : "branch.jsp?page=board/view.jsp&num=" + nextNum + "&board_type=" + board_type %>" class="btn btn-outline-secondary">Next &rarr;</a>
+		    <% } else { %>
+		        <button class="btn btn-outline-secondary" disabled>Next &rarr;</button>
+		    <% } %>
+		</div>
     <% } else if (isLogin) { %>
         <p class="text-muted mt-4">※ 이 게시판에서는 댓글 작성 권한이 없습니다.</p>
     <% } else { %>
