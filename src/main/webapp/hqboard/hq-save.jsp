@@ -38,12 +38,12 @@
 	<%if(isSuccess){ %>
 		<script>
 			alert("저장했습니다");
-			location.href="hq-view.jsp?num=<%=num %>";
+			location.href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=num %>";
 		</script>
 	<%}else{%>
 		<p>
 			글 저장 실패!
-			<a href="hq-new-form.jsp">다시 작성하기</a>
+			<a href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">다시 작성하기</a>
 		</p>
 	<%} %>
 </div>			

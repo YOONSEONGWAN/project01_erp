@@ -30,7 +30,7 @@
 <body>
 	<div class="container my-5">
 	    <h1 class="h3 mb-4">글 수정</h1>
-	    <form action="${pageContext.request.contextPath}/hqboard/update" method="post" id="editForm" enctype="multipart/form-data">
+	    <form action="<%=request.getContextPath()%>/hqboard/update" method="post" id="editForm" enctype="multipart/form-data">
 	        <div class="mb-3">
 	            <label for="num" class="form-label">글 번호</label>
 	            <input type="text" class="form-control" name="num" id="num" value="<%=dto.getNum() %>" readonly/>

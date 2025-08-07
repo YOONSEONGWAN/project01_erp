@@ -537,6 +537,7 @@ public class StockRequestDao {
             """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, detailId);
+
             rs = pstmt.executeQuery();
             if (rs.next()) {
                 result = rs.getInt("request_num");

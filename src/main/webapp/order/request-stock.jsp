@@ -19,7 +19,7 @@ for(int i=0; i<100; i++) {
 
     if(branchNumStr == null || branchId == null || inventoryIdStr == null ||
        product == null || currentQuantityStr == null || requestQuantityStr == null) {
-        break;
+        continue;
     }
    
   
@@ -47,7 +47,10 @@ for(int i=0; i<100; i++) {
 boolean isSuccess = false;
 if(!requests.isEmpty()) {
     isSuccess = StockRequestDao.getInstance().batchInsertRequest(requests);
+   
 }
+
+
 %>
 <!DOCTYPE html>
 <html>
@@ -56,7 +59,7 @@ if(!requests.isEmpty()) {
     <title>발주 요청 결과</title>
     <script>
     <% if(isSuccess) { %>
-        location.href = "${pageContext.request.contextPath }/order/list.jsp?branchId=<%= (requests.size() > 0 ? requests.get(0).getBranchId() : "") %>";
+        location.href = "${pageContext.request.contextPath}/branch.jsp?page=order/list.jsp?branchId=<%= (requests.size() > 0 ? requests.get(0).getBranchId() : "") %>";
     <% } else { %>
         alert("발주 요청 실패!");
         history.back();
