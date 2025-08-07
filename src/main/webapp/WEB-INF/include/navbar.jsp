@@ -3,7 +3,6 @@
     String userId = (String) session.getAttribute("userId");
     String branchId = (String) session.getAttribute("branchId");
 %>
-
 <style>
   body {
     margin: 0; /* 페이지 전체 상단 여백 제거 */
@@ -13,7 +12,6 @@
     margin-top: 0 !important; /* 네비바 상단 여백 제거 */
   }
 </style>
-
 <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
   <div class="container-fluid">
     <a class="navbar-brand" href="<%=request.getContextPath()%>/headquater.jsp" style="font-weight: bold; font-size: 1.5rem;">
@@ -31,9 +29,10 @@
         <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/userp/logout.jsp">로그아웃</a>
 
       <% } else { %>
-        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/login.jsp">로그인</a>
-        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/register.jsp">회원가입</a>
+        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/userp/loginform.jsp">로그인</a>
+        <a class="btn btn-outline-light btn-sm" href="<%=request.getContextPath()%>/userp/signup-form.jsp">회원가입</a>
       <% } %>
     </div>
   </div>
 </nav>
+
