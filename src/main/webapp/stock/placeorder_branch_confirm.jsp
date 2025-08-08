@@ -84,7 +84,7 @@
                 // stock_request 정보 가져오기
                 int requestQuantity = stockRequestDao.getRequestQuantityByOrderId(currentOrderId);
                 String product = stockRequestDao.getProductByOrderId(currentOrderId);
-                int currentQty = stockRequestDao.getQuantityByOrderId(currentOrderId);
+                int currentQty = stockRequestDao.getQuantityByOrderId (currentOrderId);
                 String branchId = stockRequestDao.getBranchIdByOrderId(currentOrderId);
                 int inventoryId = stockRequestDao.getInventoryIdByOrderId(currentOrderId);
 

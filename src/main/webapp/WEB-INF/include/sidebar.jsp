@@ -10,7 +10,7 @@
     boolean isBranchPage = pageParam != null && pageParam.startsWith("branch-admin/");
     boolean isBoardPage = pageParam != null && pageParam.startsWith("board/");
     boolean isSalesPage = "headquater/sales.jsp".equals(pageParam);
-    boolean isStockPage = "headquater/stock.jsp".equals(pageParam);
+    boolean isStockPage = pageParam != null && pageParam.startsWith("stock/");
     boolean isHqBoardPage = pageParam != null && pageParam.startsWith("hqboard/");
 
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
@@ -119,14 +119,20 @@
 	          재고
 	        </a>
 	        <ul id="stockMenu" class="submenu <%= isStockPage ? "open" : "" %>" style="padding-left: 3rem;">
-	          <li>
-	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/stock.jsp"
-	               class="nav-link <%= isStockPage ? "active" : "" %>">
-	              <i class="bi bi-folder"></i> 재고 페이지
-	            </a>
-	          </li>
-	        </ul>
-	      </li>
+			  <li>
+			    <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/stock.jsp"
+			       class="nav-link <%= isStockPage ? "active" : "" %>">
+			      <i class="bi bi-folder"></i> 재고 관리
+			    </a>
+			  </li>
+			  <li>
+			    <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/placeorder.jsp"
+			       class="nav-link <%= isStockPage ? "active" : "" %>">
+			      <i class="bi bi-folder"></i> 발주 관리
+			    </a>
+			  </li>
+			</ul>
+	      	</li>
 	
 	      <!-- 본사 내부 게시판 -->
 	      <li class="nav-item">
