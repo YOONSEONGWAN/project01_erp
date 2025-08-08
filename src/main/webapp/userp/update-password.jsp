@@ -1,4 +1,3 @@
-
 <%@page import="dto.BranchInfoDto"%>
 <%@page import="dao.BranchInfoDao"%>
 <%@page import="org.mindrot.jbcrypt.BCrypt"%>
@@ -32,24 +31,36 @@
 	System.out.println("BCrypt.checkpw 결과: " + isValid);
 %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>update-password2.jsp</title>
+<title>비밀번호 수정</title>
+<!-- 부트스트랩 CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<div class="container">
-		<%if(isValid){ %>
-			<p>
-				<strong><%=dto.getUser_name() %></strong> 님의 비밀번호가 수정되고 로그 아웃 되었습니다.
-				<a href="${pageContext.request.contextPath }/userp/loginform.jsp?url=${pageContext.request.contextPath }/branchinfo/info2.jsp">다시 로그인</a>
-			</p>
-		<%}else{ %>
-			<p>
-				기존 비밀 번호가 일치 하지 않습니다. 다시 입력해 주세요.
-				<a href="edit-password2.jsp">확인</a>
-			</p>
-		<%} %>
+	<div class="container mt-5" style="max-width: 600px;">
+		<div class="card shadow">
+			<div class="card-header text-white" style="background-color: #003366;">
+				<h5 class="mb-0">비밀번호 수정 결과</h5>
+			</div>
+			<div class="card-body">
+				<% if(isValid){ %>
+					<div class="alert alert-success" role="alert">
+						<strong><%=dto.getUser_name() %></strong> 님의 비밀번호가 성공적으로 수정되었으며, 로그아웃 되었습니다.
+					</div>
+					<a href="${pageContext.request.contextPath}/userp/loginform.jsp?url=${pageContext.request.contextPath}/branchinfo/info2.jsp" class="btn btn-outline-secondary btn-sm ms-auto">다시 로그인</a>
+				<% } else { %>
+					<div class="alert alert-danger" role="alert">
+						기존 비밀번호가 일치하지 않습니다. 다시 입력해 주세요.
+					</div>
+					<a href="edit-password2.jsp" class="btn btn-outline-secondary btn-sm">확인</a>
+				<% } %>
+			</div>
+		</div>
 	</div>
+
+	<!-- 부트스트랩 JS (선택사항, 모달 등 필요시) -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
