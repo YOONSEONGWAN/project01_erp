@@ -177,7 +177,7 @@ CREATE TABLE stock_request (
   status           VARCHAR2(20),
   requestedat      DATE,
   updatedat        DATE,
-  request_status   VARCHAR2(10),
+  isplaceorder   VARCHAR2(10),
   branch_num       NUMBER        NOT NULL,
   CONSTRAINT pk_stock_request PRIMARY KEY (order_id),
   CONSTRAINT fk_sr_branch    FOREIGN KEY (branch_id)    REFERENCES branches(branch_id),

@@ -104,7 +104,13 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 		}
 		
 		//리다일렉트 응답
-		String cPath=req.getContextPath();
-		resp.sendRedirect(cPath+"/branch.jsp?page=userp/userpinfo.jsp");
+		String cPath = req.getContextPath();
+		String branchId = (String) req.getSession().getAttribute("branchId");
+
+		if ("HQ".equalsIgnoreCase(branchId)) {
+		    resp.sendRedirect(cPath + "/headquater.jsp?page=userp/userpinfo.jsp");
+		} else {
+		    resp.sendRedirect(cPath + "/branch.jsp?page=userp/userpinfo.jsp");
+		}
 	}
 }
