@@ -539,7 +539,7 @@ public class StockRequestDao {
                  WHERE detail_id = ?
             """;
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, detailId);
+            pstmt.setInt(1, OrderId);
 
             rs = pstmt.executeQuery();
             if (rs.next()) {
