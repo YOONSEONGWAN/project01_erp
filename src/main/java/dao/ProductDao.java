@@ -343,50 +343,41 @@ public class ProductDao {
 
 	// 상품 하나의 정보 리턴
 	public ProductDto getByNum(int num) {
-		ProductDto dto = null;
-		// 필요한 객체를 담을 지역변수를 미리 만든다.
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = new DbcpBean().getConn();
-			// 실행할 sql 문
-			String sql = """
-					SELECT name, description, price, status, imagepath
-					FROM product
-					WHERE num=?
-					""";
-			pstmt = conn.prepareStatement(sql);
-			// ? 에 값 바인딩
-			pstmt.setInt(1, num);
-			// Select 문 실행하고 결과를 ResultSet 으로 받아온다
-			rs = pstmt.executeQuery();
-			// 만일 select 된 row가 있다면
-			if (rs.next()) {
-				// BookDto 객체를 생성해서 책 정보를 담는다
-				dto=new ProductDto();
-				dto.setNum(num);
-				dto.setName(rs.getString("name"));
-				dto.setDescription(rs.getString("description"));
-				dto.setPrice(rs.getInt("price"));
-				dto.setStatus(rs.getString("status"));
-				dto.setImagePath(rs.getString("imagepath"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-			}
-		}
-		return dto;
+	    ProductDto dto = null;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	                SELECT num, name, description, price, status, imagepath
+	                FROM product
+	                WHERE num=?
+	                """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, num);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            dto = new ProductDto();
+	            dto.setNum(rs.getInt("num"));
+	            dto.setName(rs.getString("name"));
+	            dto.setDescription(rs.getString("description"));
+	            dto.setPrice(rs.getInt("price"));
+	            dto.setStatus(rs.getString("status"));
+	            dto.setImagePath(rs.getString("imagepath"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return dto;
 	}
+
 	
 	
 	//상품 리스트 조회
