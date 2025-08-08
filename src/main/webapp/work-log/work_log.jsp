@@ -32,13 +32,13 @@ table {
     background: #f8fbff;
 }
 th, td {
-    border: 2px solid #136ec7;
+    border: 2px solid #003366;
     padding: 9px 4px;
     text-align: center;
     font-size: 1em;
 }
 th {
-    background: #136ec7;
+    background: #003366;
     color: #fff;
     font-weight: 700;
 }
@@ -66,8 +66,8 @@ tr:nth-child(odd) td {
     </div>
     <div class="col-6 d-grid text-end">
         <form id="checkoutForm" method="post">
-            <button id="checkoutBtn" type="submit" name="action" value="checkout" class="btn btn-lg fw-bold"
-                style="background:#80deea; color:#fff; border:none;">
+            <button id="checkoutBtn" type="submit" name="action" value="checkout" class="btn btn-secondary btn-lg fw-bold"
+                style="color:#fff; border:none;">
                 퇴근
             </button>
         </form>
