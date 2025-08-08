@@ -57,7 +57,7 @@
         background: #f0f8ff;
     }
     .add-row-btn, .req-btn {
-        background: linear-gradient(90deg, #2986d5, #136ec7 85%);
+        background: linear-gradient(90deg, #003366);
         color: #fff;
         border: none;
         border-radius: 8px;
