@@ -234,7 +234,7 @@
 	          <li>
 	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp"
 	               class="nav-link <%= "hqboard/hq-list.jsp".equals(pageParam) ? "active" : "" %>">
-	              <i class="bi bi-folder"></i> 내부 게시판 목록
+	              <i class="bi bi-folder"></i> 공지사항
 	            </a>
 	          </li>
 	        </ul>

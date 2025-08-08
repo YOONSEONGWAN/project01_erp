@@ -131,7 +131,7 @@
 <body>
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">게시글 목록</h1>
+        <h1 class="h3 mb-0">공지사항</h1>
         <a class="btn btn-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
             <i class="bi bi-pencil-square"></i> 새 글 작성
         </a>
