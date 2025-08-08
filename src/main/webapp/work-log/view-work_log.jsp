@@ -47,7 +47,7 @@ body {
     box-shadow: 0 2px 16px rgba(33,100,180,0.06);
 }
 .big-table th, .big-table td {
-    border: 2px solid #136ec7;
+    border: 2px solid #003366;
     padding: 10px 7px;
     text-align: center;
     font-size: 1em;
@@ -55,7 +55,7 @@ body {
     box-sizing: border-box;
 }
 .big-table th {
-    background: #136ec7;
+    background: #003366;
     color: #fff;
     font-weight: 700;
     font-size: 1.09em;
@@ -80,7 +80,7 @@ body {
 <h3><%= branchName %> 출퇴근 현황</h3>
 <div style="margin-top: 18px; margin-bottom:18px; text-align: right;">
     <a href="${pageContext.request.contextPath}/branch.jsp?page=work-log/work_log.jsp">
-        <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#695cff; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
+        <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#003366; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
             돌아가기
         </button>
     </a>
