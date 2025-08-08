@@ -31,7 +31,7 @@ public class HqBoardSaveServlet extends HttpServlet {
         throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
-        String writer = (String) req.getSession().getAttribute("userName");
+        String writer = (String) req.getSession().getAttribute("userId");
         String title = req.getParameter("title");
         String content = req.getParameter("content");
 
@@ -75,7 +75,7 @@ public class HqBoardSaveServlet extends HttpServlet {
         /** 첨부파일 처리 끝 **/
 
         if (isSuccess) {
-            resp.sendRedirect(req.getContextPath() + "/hqboard/hq-list.jsp");
+            resp.sendRedirect(req.getContextPath() + "/headquater.jsp?page=/hqboard/hq-list.jsp");
         } else {
             req.setAttribute("errorMsg", "저장실패!");
             req.getRequestDispatcher("/hqboard/hq-new-form.jsp").forward(req, resp);

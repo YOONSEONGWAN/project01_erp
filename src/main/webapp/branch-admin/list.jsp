@@ -100,8 +100,8 @@
 	<div class="container mt-1">
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/main.jsp">지점 관리</a></li>
 		    <li class="breadcrumb-item active" aria-current="page">지점 목록</li>
 		  </ol>
 		</nav>
@@ -109,7 +109,8 @@
 		<h1 class="text-center">지점 목록</h1>
 		<div class="row">
 			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end">
-				<form action="list.jsp" method="get">					
+				<form action="<%=request.getContextPath()%>/headquater.jsp" method="get">
+					<input type="hidden" name="page" value="branch-admin/list.jsp" />
 					<select name="status">
 		                <option value="all" <%= "all".equals(status) ? "selected" : "" %>>전체</option>
 		                <option value="운영중" <%= "운영중".equals(status) ? "selected" : "" %>>운영중</option>
@@ -118,7 +119,7 @@
 		            </select>
 					<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="지점 이름 or 아이디 입력..." />
 					<button class="btn btn-outline-primary btn-sm" type="submit">검색</button>
-					<a class="btn btn-outline-primary btn-sm" href="list.jsp">초기화</a>					
+					<a class="btn btn-outline-primary btn-sm" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">초기화</a>					
 				</form>
 			</div>
 		</div>
@@ -136,7 +137,7 @@
 			<%for(BranchDto tmp:list){ %>
 				<tr>
 					<td>
-						<a href="detail.jsp?num=<%=tmp.getNum() %>"><%=tmp.getName() %></a>
+						<a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/detail.jsp?num=<%=tmp.getNum() %>"><%=tmp.getName() %></a>
 					</td> 
 					<td><%=tmp.getAddress() %></td>
 					<td><%=tmp.getPhone() %></td>
@@ -150,18 +151,18 @@
 		<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
 		<%if(startPageNum != 1){ %>
 			<li class="page-item">
-				<a class="page-link" href="list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>&status=<%=status%>">&lsaquo;</a>
+				<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>&status=<%=status%>">&lsaquo;</a>
 			</li>
 		<%} %>			
 		<%for(int i=startPageNum; i<=endPageNum ; i++){ %>
 			<li class="page-item">
-				<a class="page-link <%= i==pageNum ? "active":"" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>&status=<%=status%>"><%=i %></a>
+				<a class="page-link <%= i==pageNum ? "active":"" %>" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>&status=<%=status%>"><%=i %></a>
 			</li>
 		<%} %>
 		<%-- endPageNum 이 totalPageCount 보다 작을때 다음 page 가 있다 --%>		
 		<%if(endPageNum < totalPageCount){ %>
 			<li class="page-item">
-				<a class="page-link" href="list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>&status=<%=status%>">&rsaquo;</a>
+				<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>&status=<%=status%>">&rsaquo;</a>
 			</li>
 		<%} %>	
 	</ul>	

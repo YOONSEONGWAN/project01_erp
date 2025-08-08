@@ -23,12 +23,15 @@
         font-weight: bold;
     }
     .btn-submit {
-        background-color: #2980b9;
-        color: white;
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+        color: white !important;
         font-weight: 600;
     }
     .btn-submit:hover {
-        background-color: #1c5980;
+        background-color: #002244 !important;
+        border-color: #002244 !important;
+        color: white !important;
     }
     .btn-cancel {
         background-color: #7f8c8d;
@@ -39,8 +42,19 @@
         background-color: #636e72;
     }
 </style>
+
 </head>
 <body>
+<!-- breadcrumb 추가 시작 -->
+    <nav aria-label="breadcrumb" class="mb-3" style="margin: 0 15px;">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">홈</a></li>
+        <li class="breadcrumb-item active" aria-current="page">상품 관리</li>
+        <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp">상품 목록</a></li>
+        <li class="breadcrumb-item active" aria-current="page">상품 등록</li>
+      </ol>
+    </nav>
+    <!-- breadcrumb 추가 끝 -->
 
 <div class="form-container">
     <h1>상품 등록</h1>

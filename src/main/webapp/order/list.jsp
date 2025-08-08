@@ -20,7 +20,7 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
 <head>
     <meta charset="UTF-8">
     <title>발주 현황</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+
     <style>
         table { border-collapse: collapse; width: 850px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
@@ -30,8 +30,8 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
     </style>
 </head>
 <body>
-<h3>발주 현황</h3>
-<table>
+<h3 class="ms-4 mt-4 mb-3">발주 현황</h3>
+<table class="ms-4">
     <tr>
         <th>발주번호</th>
      <%--   <th>branch_stock번호</th>    branch_num 추가, 관리용 --%>
@@ -81,14 +81,14 @@ if (orderList == null || orderList.isEmpty()) {
             <% } %>
         </td>
         <td>
-            <form action="update-form.jsp" method="get" style="margin:0;">
+            <form action="${pageContext.request.contextPath}/branch.jsp?page=order/update-form.jsp" method="get" style="margin:0;">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-update">수정</button>
             </form>
         </td>
         <td>
-            <form action="delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <form action="${pageContext.request.contextPath}/branch.jsp?page=order/delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-delete">삭제</button>
@@ -101,10 +101,9 @@ if (orderList == null || orderList.isEmpty()) {
 %>
 </table>
 <div style="margin-top:18px;">
-    <a href="insert.jsp" style="text-decoration:none;">
-        <button class="btn btn-update" type="button">새 발주 요청</button>
+    <a href="<%=request.getContextPath()%>/branch.jsp?page=order/insert.jsp" style="text-decoration:none;">
+        <button class="btn btn-update ms-4" type="button">새 발주 요청</button>
     </a>
 </div>
-<h3>branchId: <%= branchId %></h3>
 </body>
 </html>

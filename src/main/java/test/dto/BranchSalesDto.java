@@ -5,7 +5,14 @@ public class BranchSalesDto {
     private String branchId;     // 지점 아이디
     private String created_at;    // 매출 발생일 (문자열 타입)
     private int totalAmount;     // 해당일 전체 매출
+	private String branchName;
 	
+	public String getBranchName() {
+		return branchName;
+	}
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
     public int getSalesId() {
 		return salesId;
 	}

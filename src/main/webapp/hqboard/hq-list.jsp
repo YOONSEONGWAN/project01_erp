@@ -75,16 +75,69 @@
 <head>
 <meta charset="UTF-8">
 <title>/hqboard/hq-list</title>
+<!-- Bootstrap CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<!-- "본사꾸미기" 커스텀 CSS (복붙만 하면 끝!) -->
+<style>
+.card-header.bg-light {
+    background-color: #f8f9fa !important;
+    font-weight: bold;
+    font-size: 1.15rem;
+}
+.btn-outline-primary, .btn-outline-danger {
+    border-radius: 0.5rem;
+    padding: 0.375rem 1rem;
+}
+.table th, .table td {
+    vertical-align: middle !important;
+}
+.my-5 {
+    margin-top: 3rem !important;
+    margin-bottom: 3rem !important;
+}
+.h3.mb-0 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #224488;
+    margin-bottom: 1.5rem !important;
+}
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+.gap-2 {
+    gap: 0.5rem !important;
+}
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+.pagination .active .page-link {
+    background-color: #224488;
+    border-color: #224488;
+    color: #fff;
+}
+.pagination .page-link {
+    color: #224488;
+}
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #224488;
+}
+</style>
 </head>
 <body>
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">게시글 목록</h1>
-        <a class="btn btn-primary" href="hq-new-form.jsp">
+        <a class="btn btn-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
             <i class="bi bi-pencil-square"></i> 새 글 작성
         </a>
     </div>
-    <form action="hq-list.jsp" method="get" class="mb-4">
+    <form action="<%=request.getContextPath()%>/headquater.jsp" method="get" class="mb-4">
+        <input type="hidden" name="page" value="hqboard/hq-list.jsp">
         <div class="input-group">
             <input value="<%=keyword%>" type="text" name="keyword" class="form-control" placeholder="검색어 입력..."/>
             <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i> 검색</button>
@@ -107,7 +160,7 @@
                     <td><%=tmp.getNum()%></td>
                     <td><%=tmp.getWriter()%></td>
                     <td class="text-start">
-                        <a class="link-dark" href="hq-view.jsp?num=<%=tmp.getNum()%>">
+                        <a class="link-dark" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=tmp.getNum()%>">
                             <%=tmp.getTitle()%>
                         </a>
                     </td>
@@ -126,22 +179,21 @@
         <ul class="pagination justify-content-center">
         <% if(startPageNum != 1) { %>
             <li class="page-item">
-                <a class="page-link" href="hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">&lsaquo;</a>
+                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">&lsaquo;</a>
             </li>
         <% } %>
         <% for(int i=startPageNum; i<=endPageNum; i++){ %>
             <li class="page-item <%=i==pageNum ? "active" : ""%>">
-                <a class="page-link" href="hq-list.jsp?pageNum=<%=i%>&keyword=<%=keyword%>"><%=i%></a>
+                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=i%>&keyword=<%=keyword%>"><%=i%></a>
             </li>
         <% } %>
         <% if(endPageNum < totalPageCount) { %>
             <li class="page-item">
-                <a class="page-link" href="hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">&rsaquo;</a>
+                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">&rsaquo;</a>
             </li>
         <% } %>
         </ul>
     </nav>
 </div>
 </body>
-
 </html>

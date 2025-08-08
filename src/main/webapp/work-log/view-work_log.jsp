@@ -30,8 +30,50 @@ List<WorkLogDto> logs = dao.getLogsByBranch(branchId);
 <title><%= branchName %> 출퇴근 현황</title>
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <style>
-.big-table th, .big-table td { padding:8px; }
-select { font-size: 1.05em; padding: 4px 8px; }
+body {
+    background: #f8fbff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard', '맑은 고딕', Arial, sans-serif;
+    /* 기본 패딩 없이 꽉 채움 */
+}
+.big-table {
+    border-collapse: collapse;
+    width: 100vw;   /* 뷰포트 가로 전체 */
+    min-width: 900px;
+    background: #fff;
+    border-radius: 0;
+    overflow: visible;
+    box-shadow: 0 2px 16px rgba(33,100,180,0.06);
+}
+.big-table th, .big-table td {
+    border: 2px solid #136ec7;
+    padding: 10px 7px;
+    text-align: center;
+    font-size: 1em;
+    /* box-sizing 추가하면 td가 넘칠 때도 이쁘게 맞춰짐 */
+    box-sizing: border-box;
+}
+.big-table th {
+    background: #136ec7;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.09em;
+}
+.big-table tr:nth-child(even) td {
+    background: #e7f2fd;
+}
+.big-table tr:nth-child(odd) td {
+    background: #f4faff;
+}
+.big-table tr:hover td {
+    background: #c9e3fa;
+}
+/* 스크롤 대응: 모바일/작은화면에서 넘치면 가로스크롤 */
+.table-wrapper {
+    width: 100vw;
+    overflow-x: auto;
+}
 </style>
 </head>
 <body>
@@ -66,7 +108,7 @@ select { font-size: 1.05em; padding: 4px 8px; }
 <% } %>
 </table>
 <div style="margin-top: 18px; text-align: right;">
-    <a href="${pageContext.request.contextPath}/headquater.jsp?page=work-log/work_log.jsp">
+    <a href="${pageContext.request.contextPath}/branch.jsp?page=work-log/work_log.jsp">
         <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#695cff; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
             출퇴근 하러가기
         </button>

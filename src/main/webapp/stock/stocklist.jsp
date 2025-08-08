@@ -83,9 +83,9 @@
         <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">홈</a>
+                    <a href="${pageContext.request.contextPath }/headquater.jsp">홈</a>
                 </li>
-                <li class="breadcrumb-item"><a href="stock.jsp">재고 관리</a></li>
+                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
                 <li class="breadcrumb-item active" aria-current="page">재고 목록</li>
             </ol>
         </nav>
@@ -94,15 +94,16 @@
 
         <!-- 검색창 -->
         <div class="search-container">
-            <form action="stocklist.jsp" method="get" style="display: flex; gap: 8px;">
-                <input type="text" name="keyword" placeholder="상품명 검색" class="form-control"
-                       style="width: 200px;" value="<%= keyword %>" />
-                <button type="submit" class="btn btn-primary">검색</button>
-            </form>
-        </div>
+		    <form action="${pageContext.request.contextPath}/headquater.jsp" method="get" style="display: flex; gap: 8px;">
+		        <input type="hidden" name="page" value="/stock/stocklist.jsp" />
+		        <input type="text" name="keyword" placeholder="상품명 검색" class="form-control"
+		               style="width: 200px;" value="<%= keyword %>" />
+		        <button type="submit" class="btn btn-primary">검색</button>
+		    </form>
+		</div>
 
         <!-- 테이블 -->
-        <form action="stock_update.jsp" method="post">
+        <form action="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock_update.jsp" method="post">
             <table class="table table-bordered text-center align-middle" style="margin: 0 auto;">
                 <thead>
                     <tr>
@@ -156,7 +157,7 @@
                 <% if(i == currentPage) { %>
                     <span class="current"><%= i %></span>
                 <% } else { %>
-                    <a href="stocklist.jsp?page=<%= i %>&keyword=<%= keyword %>"><%= i %></a>
+                    <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp?page=<%= i %>&keyword=<%= keyword %>"><%= i %></a>
                 <% } %>
             <% } %>
         </div>

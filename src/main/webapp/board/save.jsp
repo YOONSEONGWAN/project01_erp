@@ -1,29 +1,43 @@
 <%@page import="dao.BoardDao"%>
 <%@page import="dto.BoardDto"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%
-System.out.println("✅ 세션 userId: " + session.getAttribute("userId"));
-System.out.println("✅ 세션 branchId: " + session.getAttribute("branchId"));
-%>
+
 <%
 	String title = request.getParameter("title");
 	String content = request.getParameter("content");
 	String writer = (String)session.getAttribute("userId");
-	String branchId = (String)session.getAttribute("branch_id");
+	String branchId = (String)session.getAttribute("branchId");
 	String board_type = request.getParameter("board_type");
-	System.out.println("📌 전달된 board_type: " + board_type);
-	System.out.println("📌 전달된 branch_id: " + branchId);
-	System.out.println("📌 전달된 writer: " + writer);
-	// 지점 회원인지 확인
-	if (branchId == null || branchId.trim().isEmpty()) {
-		board_type = "QNA";
+
+	// 접근 제한 로직: board_type에 따라 작성자 권한 제한
+	if ("NOTICE".equalsIgnoreCase(board_type)) {
+	    if (!"HQ".equalsIgnoreCase(branchId)) {
 %>
-	<script>
-	 alert("지점 회원만 글을 작성할 수 있습니다.");
-	 history.back();
-	</script>
+			<script>
+			  alert("공지사항은 본사 회원만 작성할 수 있습니다.");
+			  history.back();
+			</script>
 <%
-	return;
+			return;
+	    }
+	} else if ("QNA".equalsIgnoreCase(board_type)) {
+	    if ("HQ".equalsIgnoreCase(branchId)) {
+%>
+			<script>
+			  alert("문의사항은 지점 회원만 작성할 수 있습니다.");
+			  history.back();
+			</script>
+<%
+			return;
+	    }
+	} else {
+%>
+		<script>
+		  alert("잘못된 게시판 유형입니다.");
+		  history.back();
+		</script>
+<%
+		return;
 	}
 %>
 <% 
@@ -52,7 +66,13 @@ System.out.println("✅ 세션 branchId: " + session.getAttribute("branchId"));
 	<%if(isSuccess){%>
 		<script>
 			alert("저장했습니다");
-			location.href="view.jsp?num=<%=dto.getNum()%>&board_type=<%=dto.getBoard_type()%>";
+			location.href="<%= 
+		    	request.getContextPath() + (
+				        "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+				        ? "/headquater.jsp?page=board/list.jsp&board_type=" + board_type 
+				        : "/branch.jsp?page=board/list.jsp&board_type=" + board_type 
+				    )
+			    %>";
 		</script>
 	<%}else{%>
 		<p>글 저장실패! <a href="new-form.jsp">다시작성</a></p>

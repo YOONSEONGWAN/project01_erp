@@ -1,75 +1,88 @@
-<%@page import="dao.StockRequestDao"%>
 <%@page import="dao.IngredientDao"%>
+<%@page import="dao.StockRequestDao"%>
 <%@page import="dao.stock.PlaceOrderBranchDetailDao"%>
+<%@page import="dao.stock.InventoryDao"%>
 <%@page import="dto.stock.PlaceOrderBranchDetailDto"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%
 try {
     int detailId = Integer.parseInt(request.getParameter("detail_id"));
-    int orderId = Integer.parseInt(request.getParameter("order_id"));
-    int newRequestQty = Integer.parseInt(request.getParameter("request_quantity"));
-    String newApprovalStatus = request.getParameter("approval_status");
+    String newStatus = request.getParameter("approval_status");
 
-    // 기존 발주 상세 정보 조회
-    PlaceOrderBranchDetailDto oldDto = PlaceOrderBranchDetailDao.getInstance().getDetailById(detailId);
-    if (oldDto == null) {
+    PlaceOrderBranchDetailDao detailDao = PlaceOrderBranchDetailDao.getInstance();
+    StockRequestDao stockRequestDao = StockRequestDao.getInstance();
+    InventoryDao inventoryDao = InventoryDao.getInstance();
+    IngredientDao ingredientDao = IngredientDao.getInstance();
+
+    PlaceOrderBranchDetailDto dto = detailDao.getDetailById(detailId);
+    if (dto == null) {
 %>
         <script>alert("해당 발주 상세 정보가 없습니다."); history.back();</script>
 <%
         return;
     }
 
-    int oldRequestQty = oldDto.getRequest_quantity();
-    String oldApprovalStatus = oldDto.getApproval_status();
-    String branchId = oldDto.getBranch_id();
-    int inventoryId = oldDto.getInventory_id();
+    int orderId = dto.getOrder_id();
+    String oldStatus = dto.getApproval_status();
+    int inventoryId = dto.getInventory_id();
+    int requestQty = dto.getRequest_quantity();
+    String branchId = dto.getBranch_id();
 
-    StockRequestDao stockRequestDao = new StockRequestDao();
-    IngredientDao ingredientDao = new IngredientDao();
+    if (oldStatus.equals(newStatus)) {
+%>
+        <script>alert("현재 상태와 동일합니다."); history.back();</script>
+<%
+        return;
+    }
 
-    int requestNum = stockRequestDao.getNumByDetailId(detailId); // 이 메서드 구현 필요
+    if (!("승인".equals(newStatus) || "반려".equals(newStatus))) {
+%>
+        <script>alert("허용되지 않은 상태 값입니다."); history.back();</script>
+<%
+        return;
+    }
 
-    // 허용되지 않는 상태 변경 차단 (승인 → 승인)
-    if ("승인".equals(oldApprovalStatus) && "승인".equals(newApprovalStatus)) {
+    boolean inventoryResult = true;
+    boolean ingredientResult = true;
+
+    if ("승인".equals(oldStatus) && "반려".equals(newStatus)) {
+        // inventory 재고 증가
+        inventoryResult = inventoryDao.increaseQuantity2(inventoryId, requestQty);
+        // stock_request current_quantity 감소
+        ingredientResult = ingredientDao.decreaseCurrentQuantity2(branchId, inventoryId, requestQty);
+
+    } else if ("반려".equals(oldStatus) && "승인".equals(newStatus)) {
+        // inventory 재고 감소
+        inventoryResult = inventoryDao.decreaseQuantity2(inventoryId, requestQty);
+        // stock_request current_quantity 증가
+        ingredientResult = ingredientDao.increaseCurrentQuantity2(branchId, inventoryId, requestQty);
+    }
+
+    if (!inventoryResult || !ingredientResult) {
 %>
         <script>
-            alert("승인 상태에서 수량만 변경은 허용되지 않습니다.");
+            alert("재고 수량 변경에 실패했습니다. 재고 부족 또는 시스템 오류.");
             history.back();
         </script>
 <%
         return;
     }
 
-    // 상태 변경 처리
-    if ("승인".equals(oldApprovalStatus) && "반려".equals(newApprovalStatus)) {
-        // 승인 → 반려
-        ingredientDao.decreaseQuantity(branchId, inventoryId, oldRequestQty);       // 지점 재고 원복
-        stockRequestDao.increaseCurrentQuantity(requestNum, oldRequestQty);         // 창고 재고 원복
-        stockRequestDao.updateStatus(requestNum, "반려");
+    boolean detailUpdated = detailDao.updateApprovalStatus(detailId, requestQty, newStatus);
+    boolean stockUpdated = stockRequestDao.updateStatusByOrderId(orderId, newStatus);
 
-    } else if ("반려".equals(oldApprovalStatus) && "승인".equals(newApprovalStatus)) {
-        // 반려 → 승인
-        ingredientDao.increaseQuantity(branchId, inventoryId, newRequestQty);       // 지점 재고 증가
-        stockRequestDao.decreaseCurrentQuantity(requestNum, newRequestQty);         // 창고 재고 차감
-        stockRequestDao.updateStatus(requestNum, "승인");
-    }
-
-    // 상세 발주 업데이트
-    boolean result = PlaceOrderBranchDetailDao.getInstance()
-                        .update(detailId, newRequestQty, newApprovalStatus);
-
-    if (result) {
+    if (detailUpdated && stockUpdated) {
 %>
         <script>
-            alert("수정이 완료되었습니다.");
-            location.href = "placeorder_branch_detail.jsp?order_id=<%= orderId %>";
+            alert("상태 및 재고 변경이 완료되었습니다.");
+            location.href = "<%= request.getContextPath() %>/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%= orderId %>";
         </script>
 <%
     } else {
 %>
         <script>
-            alert("상세 정보 업데이트 실패. 다시 시도해주세요.");
+            alert("상태 변경 실패. 다시 시도해주세요.");
             history.back();
         </script>
 <%
@@ -78,7 +91,10 @@ try {
 } catch (Exception e) {
     e.printStackTrace();
 %>
-    <script>alert("처리 중 오류가 발생했습니다."); history.back();</script>
+    <script>
+        alert("처리 중 오류가 발생했습니다.");
+        history.back();
+    </script>
 <%
 }
 %>

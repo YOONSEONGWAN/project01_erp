@@ -12,26 +12,7 @@
       boardType = "NOTICE"; // 기본값
   }
 
-  List<BoardDto> list = BoardDao.getInstance().getListByType(boardType);
-  request.setAttribute("list", list);
- 
- String keyword=request.getParameter("keyword");
-	 if (keyword != null && !keyword.trim().isEmpty()) {
-	     BoardDto searchDto = new BoardDto();
-	     searchDto.setKeyword(keyword);
-	     searchDto.setBoard_type(boardType);
-	     searchDto.setStartRowNum(1); // 페이징 사용 시 계산
-	     searchDto.setEndRowNum(10);
-	
-	     list = BoardDao.getInstance().selectPageByKeyword(searchDto);
-	 } else {
-	     BoardDto pagingDto = new BoardDto();
-	     pagingDto.setBoard_type(boardType);
-	     pagingDto.setStartRowNum(1); // 페이징 계산
-	     pagingDto.setEndRowNum(10);
-	
-	     list = BoardDao.getInstance().selectPage(pagingDto);
-	 }
+  
 	//기본 페이지 번호는 1로 설정
 	int pageNum=1;
 	// 페이지 번호를 읽어와서
@@ -61,6 +42,8 @@
 	
 	// 전체 글의 갯수
 	int totalRow=0;
+	
+	String keyword = request.getParameter("keyword");
 	// 만일 전달된 keyword가 없다면
 	if(StringUtils.isEmpty(keyword)) {
 		// board_type별 글 수 계산 
@@ -85,18 +68,18 @@
 	dto.setBoard_type(boardType);
 	
 	// 만일 keyword 가 없다면
+	List<BoardDto> list = null;
 	if(StringUtils.isEmpty(keyword)){
 		list = BoardDao.getInstance().selectPage(dto);
-	}else{ // keyword 가 있다면
-		// dto 에 keyword 를 담고
+	}else{ 
 		dto.setKeyword(keyword);
-		// 키워드에 해당하는 글 목록을 얻어낸다. 
 		list = BoardDao.getInstance().selectPageByKeyword(dto);
 	}
   	
 	// 본사 회원인지 판별할 수 있는 정보
-	String branchId = (String) session.getAttribute("branch_id");
-	
+	String branchId = (String) session.getAttribute("branchId");
+	 boolean isBranchUser = branchId != null && !"HQ".equalsIgnoreCase(branchId);
+	 boolean isHQ = "HQ".equalsIgnoreCase(branchId);
 %>
 <!DOCTYPE html>
 <html>
@@ -106,52 +89,72 @@
   <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 <body>	
+
   <div class="container">
-    <h2 class="mb-4">종복치킨 게시판</h2>
-	
-	<%= "조회된 글 수: " + list.size() %><br>
-	
+  	
+    
+    <h2 class="mb-4 mt-3">종복치킨 게시판</h2>
+    
     <!-- 카테고리 탭 -->
     <ul class="nav nav-tabs mb-3">
-      <li class="nav-item">
-        <a class="nav-link <%= "NOTICE".equals(boardType) ? "active" : "" %>" 
-   			href="list.jsp?board_type=NOTICE">공지사항</a>
-      </li>
-      
-      <li class="nav-item">
-        <a class="nav-link <%= "QNA".equals(boardType) ? "active" : "" %>" 
-   			href="list.jsp?board_type=QNA">문의사항</a>
-      </li>
+		<li class="nav-item">
+		  <a class="nav-link <%= "NOTICE".equals(boardType) ? "active" : "" %>"
+		     href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+		              ? request.getContextPath() + "/headquater.jsp?page=board/list.jsp?board_type=NOTICE" 
+		              : request.getContextPath() + "/branch.jsp?page=board/list.jsp?board_type=NOTICE" %>">
+		    공지사항
+		  </a>
+		</li>
+
+		<li class="nav-item">
+		    <a class="nav-link <%= "QNA".equals(boardType) ? "active" : "" %>" 
+		       href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+		                ? request.getContextPath() + "/headquater.jsp?page=board/list.jsp?board_type=QNA" 
+		                : request.getContextPath() + "/branch.jsp?page=board/list.jsp?board_type=QNA" %>">
+		        문의사항
+		    </a>
+		</li>
     </ul>
     <!-- 본사회원만 등록 가능한 공지사항 새 글 작성 버튼 노출 -->
-    <%
-	if ("HQ".equalsIgnoreCase(branchId) && "NOTICE".equalsIgnoreCase(boardType)) {
+    <% if ("HQ".equalsIgnoreCase(branchId) && "NOTICE".equalsIgnoreCase(boardType)) {
 	%>
 	  <div class="mb-3 text-end">
-	    <a href="new-form.jsp?board_type=NOTICE" class="btn btn-success">+ 새 글 작성</a>
+	    <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+            ? request.getContextPath() + "/headquater.jsp?page=board/new-form.jsp&board_type=NOTICE" 
+            : request.getContextPath() + "/branch.jsp?page=board/new-form.jsp&board_type=NOTICE" %>" 
+   class="btn btn-success">+ 새 글 작성</a>
 	  </div>
 	<%}%>
     <!-- 공지사항 검색창 -->
 	<% if ("NOTICE".equalsIgnoreCase(boardType)) { %>
-	    <form action="list.jsp" method="get" class="d-flex mb-3">
-	        <input type="hidden" name="board_type" value="NOTICE">
-	        <input type="text" name="keyword" class="form-control me-2" placeholder="공지사항 검색">
-	        <button type="submit" class="btn btn-outline-success">검색</button>
-	    </form>
+	   <form action="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+					    ? request.getContextPath() + "/headquater.jsp" 
+					    : request.getContextPath() + "/branch.jsp" %>" method="get" class="d-flex mb-3">
+		    <input type="hidden" name="page" value="board/list.jsp">
+		    <input type="hidden" name="board_type" value="NOTICE">
+		    <input type="text" name="keyword" class="form-control me-2" placeholder="공지사항 검색">
+		    <button type="submit" class="btn btn-outline-success">검색</button>
+		</form>
 	<% } %>
 	<!-- 지점 회원만 등록 가능한 문의사항 새 글 작성 버튼 노출 -->
-    <% if ("QNA".equalsIgnoreCase(boardType)) { %>
-  	<div class="mb-3 text-end">
-    	<a href="new-form.jsp?board_type=QNA" class="btn btn-success">+ 새 글 작성</a>
+    <% if ("QNA".equalsIgnoreCase(boardType) && isBranchUser) { %>
+  <div class="mb-3 text-end">
+    <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+			        ? "headquater.jsp?page=board/new-form.jsp&board_type=QNA" 
+			        : "branch.jsp?page=board/new-form.jsp&board_type=QNA" 
+			%>" class="btn btn-success">+ 새 글 작성</a>
   	</div>
 	<% } %>
 	<!-- 문의사항 검색창 -->
 	<% if ("QNA".equalsIgnoreCase(boardType)) { %>
-	    <form action="list.jsp" method="get" class="d-flex mb-3">
-	        <input type="hidden" name="board_type" value="QNA">
-	        <input type="text" name="keyword" class="form-control me-2" placeholder="문의사항 검색">
-	        <button type="submit" class="btn btn-outline-primary">검색</button>
-	    </form>
+	    <form action="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+					    ? request.getContextPath() + "/headquater.jsp" 
+					    : request.getContextPath() + "/branch.jsp" %>" method="get" class="d-flex mb-3">
+		    <input type="hidden" name="page" value="board/list.jsp">
+		    <input type="hidden" name="board_type" value="QNA">
+		    <input type="text" name="keyword" class="form-control me-2" placeholder="문의사항 검색">
+		    <button type="submit" class="btn btn-outline-primary">검색</button>
+		</form>
 	<% } %>
     <!-- 게시글 목록 테이블 -->
     <table class="table table-bordered">
@@ -172,9 +175,11 @@
         <tr>
           <td><%= dto2.getNum() %></td>
           <td>
-		      <a href="view.jsp?num=<%= dto2.getNum() %>&board_type=<%= dto2.getBoard_type() %>">
+			<a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+			              ? "headquater.jsp?page=board/view.jsp&num=" + dto2.getNum() + "&board_type=" + dto2.getBoard_type()
+			              : "branch.jsp?page=board/view.jsp&num=" + dto2.getNum() + "&board_type=" + dto2.getBoard_type() %>">
 			    <%= dto2.getTitle() %>
-			  </a>
+			</a>
     	  </td>
           <td><%= dto2.getWriter() %></td>
            <td><%= dto2.getView_count() %></td>
@@ -188,29 +193,41 @@
 	  <% } %>
 </tbody>
     </table>
+    <!-- 페이징 처리 -->
     <ul class="pagination justify-content-center mt-2">
-				<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
-				<%if(startPageNum != 1){ %>
-					<li class="page-item">
-					  <a class="page-link text-light bg-success"
-					     href="list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword %>&board_type=<%=boardType %>">&lsaquo;</a>
-					</li>
-				<%} %>		
-					
-				<%for(int i=startPageNum; i<=endPageNum ; i++){ %>
-					<li class="page-item">
-						<a class="page-link text-light bg-success <%= i==pageNum ? "active":"" %>" href="list.jsp?pageNum=<%=i %>&keyword=<%=keyword %>&board_type=<%=boardType %>"><%=i %></a>
-					</li>
-				<%} %>
-				
-				<%-- endPageNum 이 totalPageCount 보다 작을때 다음 page 가 있다 --%>		
-				<%if(endPageNum < totalPageCount){ %>
-					<li class="page-item">
-				      <a class="page-link text-light bg-success"
-				         href="list.jsp?pageNum=<%=endPageNum + 1%>&keyword=<%=keyword%>&board_type=<%=boardType%>">&rsaquo;</a>
-				    </li>
-				<%} %>	
-			</ul>
+    <% if (startPageNum != 1) { %>
+    <li class="page-item">
+        <a class="page-link text-light bg-success"
+           href="<%= 
+               "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+                   ? "headquater.jsp?page=board/list.jsp&pageNum=" + (startPageNum - 1) + "&board_type=" + boardType + "&keyword=" + (keyword != null ? keyword : "") 
+                   : "branch.jsp?page=board/list.jsp&pageNum=" + (startPageNum - 1) + "&board_type=" + boardType + "&keyword=" + (keyword != null ? keyword : "") 
+           %>">&lsaquo;</a>
+    </li>
+	<% } %>
+	
+	<% for (int i = startPageNum; i <= endPageNum; i++) { %>
+	     <li class="page-item <%= i == pageNum ? "active" : "" %>">
+	        <a class="page-link <%= i == pageNum ? "text-white bg-success" : "text-success border border-success" %>"
+	           href="<%= 
+	               "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+	                   ? "headquater.jsp?page=board/list.jsp&pageNum=" + i + "&board_type=" + boardType + "&keyword=" + (keyword != null ? keyword : "") 
+	                   : "branch.jsp?page=board/list.jsp?pageNum=" + i + "&board_type=" + boardType + "&keyword=" + (keyword != null ? keyword : "") 
+	           %>"><%= i %></a>
+	    </li>
+	<% } %>
+	
+	<% if (endPageNum < totalPageCount) { %>
+	    <li class="page-item">
+	        <a class="page-link text-light bg-success"
+	           href="<%= 
+	               "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+	                   ? "headquater.jsp?page=board/list.jsp&pageNum=" + (endPageNum + 1) + "&board_type=" + boardType + "&keyword=" + (keyword != null ? keyword : "") 
+	                   : "branch.jsp?page=board/list.jsp?pageNum=" + (endPageNum + 1) + "&board_type=" + boardType + "&keyword=" + (keyword != null ? keyword : "") 
+	           %>">&rsaquo;</a>
+	    </li>
+	<% } %>
+	</ul>
   </div>
 </body>
 </html>
