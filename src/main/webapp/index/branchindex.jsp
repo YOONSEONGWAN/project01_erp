@@ -54,8 +54,7 @@
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-box-seam fs-3 me-3 text-primary"></i>
                         <div>
-                            <div class="fw-bold">오늘 발주 내역</div>
-                            <div class="text-muted small">신규: <span style="font-weight:600">3건</span></div>
+                            <div class="fw-bold">발주 내역</div>
                         </div>
                     </div>
                     <a href="<%=request.getContextPath()%>/branch.jsp?page=order/list.jsp" class="btn btn-link ps-0">자세히 보기 <i class="bi bi-arrow-right"></i></a>
@@ -66,8 +65,7 @@
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-graph-up-arrow fs-3 me-3 text-success"></i>
                         <div>
-                            <div class="fw-bold">오늘 매출</div>
-                            <div class="text-muted small">금액: <span style="font-weight:600">520,000원</span></div>
+                            <div class="fw-bold">매출</div>
                         </div>
                     </div>
                     <a href="<%=request.getContextPath()%>/branch.jsp?page=branch-sales/list.jsp" class="btn btn-link ps-0">매출 상세 <i class="bi bi-arrow-right"></i></a>
@@ -79,7 +77,6 @@
                         <i class="bi bi-calendar-check fs-3 me-3 text-info"></i>
                         <div>
                             <div class="fw-bold">출근 현황</div>
-                            <div class="text-muted small">출근: <span style="font-weight:600">2명</span></div>
                         </div>
                     </div>
                     <a href="<%=request.getContextPath()%>/branch.jsp?page=work-log/work_log.jsp" class="btn btn-link ps-0">출퇴근 관리 <i class="bi bi-arrow-right"></i></a>
@@ -91,7 +88,6 @@
                         <i class="bi bi-megaphone fs-3 me-3 text-warning"></i>
                         <div>
                             <div class="fw-bold">공지사항</div>
-                            <div class="text-muted small">2건</div>
                         </div>
                     </div>
                     <a href="<%=request.getContextPath()%>/branch.jsp?page=board/list.jsp" class="btn btn-link ps-0">게시판 바로가기 <i class="bi bi-arrow-right"></i></a>

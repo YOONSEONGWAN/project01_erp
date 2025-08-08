@@ -5,14 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>edit-password.jsp</title>
-
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons (선택) -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </head>
 <body>
 	<div class="container mt-5 mb-5">
@@ -23,7 +15,7 @@
 						<h5 class="mb-0">비밀번호 수정</h5>
 					</div>
 					<div class="card-body">
-						<form action="update-password.jsp" method="post" id="editForm">
+						<form action="<%=request.getContextPath()%>/branch.jsp?page=userp/update-password.jsp" method="post" id="editForm">
 							<div class="mb-3">
 								<label for="password" class="form-label">기존 비밀번호</label>
 								<input type="password" name="password" id="password" class="form-control" />
