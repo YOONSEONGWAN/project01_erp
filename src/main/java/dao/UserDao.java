@@ -34,7 +34,7 @@ private static UserDao dao;
 				String sql = """
 					UPDATE users_p
 					SET location=?, profile_image=?, phone=?, role=?, updated_at=SYSDATE
-					WHERE user_name=?
+					WHERE user_id=?
 				""";
 				pstmt = conn.prepareStatement(sql);
 				// ? 에 순서대로 필요한 값 바인딩
@@ -42,7 +42,7 @@ private static UserDao dao;
 				pstmt.setString(2, dto.getProfile_image());
 				pstmt.setString(3, dto.getPhone());
 				pstmt.setString(4, dto.getRole());
-				pstmt.setString(5, dto.getUser_name());
+				pstmt.setString(5, dto.getUser_id());
 				// sql 문 실행하고 변화된(추가된, 수정된, 삭제된) row 의 갯수 리턴받기
 				rowCount = pstmt.executeUpdate();
 			} catch (Exception e) {

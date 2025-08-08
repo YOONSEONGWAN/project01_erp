@@ -18,6 +18,7 @@
 <head>
 <meta charset="UTF-8">
 <title>/userp/userpinfo.jsp</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
@@ -25,10 +26,6 @@
 </head>
 
 <body>
-	 <jsp:include page="/WEB-INF/include/navbar.jsp">
-        <jsp:param value="index" name="thisPage"/>
-    </jsp:include>
-
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -61,7 +58,7 @@
                             <tr>
                                 <th>비밀번호</th>
                                 <td>
-                                    <a href="edit-password.jsp" class="btn btn-outline-secondary btn-sm">
+                                    <a href="<%=request.getContextPath()%>/branch.jsp?page=userp/edit-password.jsp" class="btn btn-outline-secondary btn-sm">
                                         비밀번호 수정
                                     </a>
                                 </td>
@@ -85,7 +82,7 @@
                         </table>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="edit.jsp" class="btn btn-primary">
+                        <a href="<%=request.getContextPath()%>/branch.jsp?page=userp/edit.jsp" class="btn btn-primary">
                             <i class="bi bi-person-lines-fill"></i> 개인 정보 수정
                         </a>
                         <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">

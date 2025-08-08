@@ -4,10 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <title>회원가입</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-
 <style>
     body {
         margin: 0;
@@ -83,7 +81,7 @@
 	                <input type="hidden" name="branchType" value="HQ">
 	                <div class="mb-3">
 	                    <label class="form-label">본사 코드 (branch_id)</label>
-	                    <input type="text" class="form-control" name="branchId" placeholder="예: HQ" required>
+	                    <input type="text" class="form-control" name="branchId" required>
 	                </div>
 	                <div class="mb-3">
 	                    <label class="form-label">아이디</label>
@@ -107,7 +105,7 @@
 	                <input type="hidden" name="branchType" value="BRANCH">
 	                <div class="mb-3">
 	                    <label class="form-label">지점 코드 (branch_id)</label>
-	                    <input type="text" class="form-control" name="branchId" placeholder="예: B001" required>
+	                    <input type="text" class="form-control" name="branchId" placeholder="BC" required>
 	                </div>
 	                <div class="mb-3">
 	                    <label class="form-label">아이디</label>

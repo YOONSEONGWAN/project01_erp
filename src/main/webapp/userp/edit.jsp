@@ -12,7 +12,6 @@
 	UserDto dto=UserDao.getInstance().getByUserId(userId);
 	
 	
-	
 %> 
 <!DOCTYPE html>
 <html>
@@ -52,7 +51,7 @@
                             <div class="mb-3">
     							<label class="form-label" for="userName">지점장 이름</label>
     							<input class="form-control bg-light border-0" type="text" name="userName" 
-          								value="<%=dto.getUser_id() %>" readonly style="pointer-events: none;" />
+          								value="<%=dto.getUser_name() %>" readonly style="pointer-events: none;" />
 							</div>
 
                             <div class="mb-3">

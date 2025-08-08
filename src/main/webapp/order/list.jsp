@@ -11,7 +11,7 @@ String branchId = (String)session.getAttribute("branchId");
 
 List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranch(branchId); // 발주 내역 리스트
 
-
+	
 
 
 %>
@@ -81,7 +81,8 @@ if (orderList == null || orderList.isEmpty()) {
             <% } %>
         </td>
         <td>
-            <form action="${pageContext.request.contextPath}/branch.jsp?page=order/update-form.jsp" method="get" style="margin:0;">
+           <form action="branch.jsp" method="get">
+    			<input type="hidden" name="page" value="order/update-form.jsp">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-update">수정</button>
