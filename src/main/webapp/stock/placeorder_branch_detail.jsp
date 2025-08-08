@@ -21,79 +21,121 @@
 <head>
     <meta charset="UTF-8">
     <title>지점 발주 상세 내역</title>
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS 포함 -->
+    <jsp:include page="/WEB-INF/include/resource.jsp"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        /* 화면 전체 높이 100%, flex로 세로/가로 중앙 정렬 */
-        html, body {
-            height: 100%;
-            margin: 0;
-            background-color: #f8f9fa;
-        }
         body {
-        background-color: #f8f9fa;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-    	}
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #212529;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
         .container {
             max-width: 960px;
             width: 100%;
-            max-height: calc(100vh - 80px); /* 화면 높이에서 패딩 제외 */
-            overflow-y: auto; /* 내용이 길면 스크롤 */
-            background: #fff;
-            padding: 20px 30px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            border-radius: 4px;
+            margin: 20px auto 40px auto;
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             box-sizing: border-box;
+            max-height: none; /* 세로스크롤 없도록 */
+            overflow-y: visible;
         }
+
         h2 {
-            text-align: center;
             margin-top: 0;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 1.8rem;
+            text-align: left;
         }
-        .table thead th {
-            background-color: #007bff !important;
-            color: white !important;
-            text-align: center;
+
+        nav.breadcrumb {
+            margin-bottom: 20px;
+            background: transparent;
+            padding: 0;
         }
-        .table tbody td {
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        thead th {
+            background-color: #e9ecef; /* Bootstrap table-secondary 배경색 */
+            color: #212529;
+            font-weight: 600;
             text-align: center;
+            padding: 12px 10px;
+            border-bottom: 3px solid #dee2e6;
+            user-select: none;
+        }
+
+        tbody td {
+            padding: 12px 10px;
             vertical-align: middle;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
         }
+
+        tbody tr:hover {
+            background-color: #f1f5fb;
+            transition: background-color 0.3s ease;
+        }
+
         a {
             color: #007bff;
             text-decoration: none;
+            font-weight: 500;
         }
+
         a:hover {
             text-decoration: underline;
         }
-        .table-container {
-            max-width: 900px;
-            margin: 0 auto 40px auto;
-        }
-        .text-center {
-            text-align: center;
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px 15px;
+                margin: 15px auto 30px auto;
+            }
+
+            thead th, tbody td {
+                padding: 8px 6px;
+                font-size: 0.85rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+    <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder.jsp">발주 관리</a></li>
         <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch.jsp">지점 발주</a></li>
-        <li class="breadcrumb-item active" aria-current="page"> 상세 발주 내역</li>
+        <li class="breadcrumb-item active" aria-current="page">상세 발주 내역</li>
       </ol>
     </nav>
 
     <h2>지점 발주 상세 내역 (Order ID: <%= orderId %>)</h2>
 
     <div class="table-container">
-        <table class="table table-bordered table-hover">
-            <thead>
+        <table class="table table-hover align-middle">
+            <thead class="table-secondary">
                 <tr>
                     <th>상세ID</th>
                     <th>지점ID</th>
@@ -124,12 +166,15 @@
                 <% } %>
             </tbody>
         </table>
+        <div class="text-center mt-4">
+	    	<a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/placeorder_branch.jsp" 
+	        	class="btn btn-secondary"><i class="bi bi-list"></i> 목록</a>
+	    </div>
     </div>
 
-    
 </div>
 
-<!-- Bootstrap 5 JS bundle (optional if you use JS components) -->
+<!-- Bootstrap JS bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

@@ -59,7 +59,7 @@ tr:nth-child(odd) td {
     <div class="col-6 d-grid">
         <form id="checkinForm" method="post">
             <button id="checkinBtn" type="submit" name="action" value="checkin" class="btn btn-lg fw-bold"
-                style="background:#00b894; color:#fff; border:none;">
+                style="background:#003366; color:#fff; border:none;">
                 출근
             </button>
         </form>
@@ -67,7 +67,7 @@ tr:nth-child(odd) td {
     <div class="col-6 d-grid text-end">
         <form id="checkoutForm" method="post">
             <button id="checkoutBtn" type="submit" name="action" value="checkout" class="btn btn-lg fw-bold"
-                style="background:#596275; color:#fff; border:none;">
+                style="background:#80deea; color:#fff; border:none;">
                 퇴근
             </button>
         </form>

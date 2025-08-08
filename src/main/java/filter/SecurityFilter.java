@@ -43,8 +43,8 @@ public class SecurityFilter implements Filter{
 		String path=uri.substring(cPath.length()); // "/index.jsp"
 				
 		//로그인 없이 접근 가능한 요청 경로면 필터링을 하지 않는다
-		// if(isWhiteList(path)) {
-		if(true) {
+		if(isWhiteList(path)) {
+		
 			chain.doFilter(request, response);
 			return; //메소드를 여기서 종료하기
 		}

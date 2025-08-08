@@ -78,7 +78,13 @@ body {
 </head>
 <body>
 <h3><%= branchName %> 출퇴근 현황</h3>
-
+<div style="margin-top: 18px; margin-bottom:18px; text-align: right;">
+    <a href="${pageContext.request.contextPath}/branch.jsp?page=work-log/work_log.jsp">
+        <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#695cff; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
+            돌아가기
+        </button>
+    </a>
+</div>
 <table border="1" class="big-table" style="width:100%;">
     <tr>
         <th>아이디</th>
@@ -107,12 +113,6 @@ body {
     </tr>
 <% } %>
 </table>
-<div style="margin-top: 18px; text-align: right;">
-    <a href="${pageContext.request.contextPath}/branch.jsp?page=work-log/work_log.jsp">
-        <button type="button" style="font-size:1.08em; font-weight:bold; color:#fff; background:#695cff; border:none; border-radius:7px; padding:10px 26px; cursor:pointer;">
-            출퇴근 하러가기
-        </button>
-    </a>
-</div>
+
 </body>
 </html>
