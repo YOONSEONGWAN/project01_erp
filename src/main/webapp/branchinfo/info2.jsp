@@ -22,11 +22,16 @@
 <title>info2</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
-    <div class="container mt-5">
+		 <jsp:include page="/WEB-INF/include/navbar.jsp">
+        <jsp:param value="index" name="thisPage"/>
+    </jsp:include>
+
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
@@ -72,7 +77,14 @@
                         <a href="edit2.jsp" class="btn btn-primary">
                             <i class="bi bi-gear"></i> 지점 정보 수정
                         </a>
+                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">
+                             지점으로가기<i class="bi bi-back"></i>
+                        </a>
                     </div>
+                    
+                    
+                    
+                    
                 </div>
             </div>
         </div>
