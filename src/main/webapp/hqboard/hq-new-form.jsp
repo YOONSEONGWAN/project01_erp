@@ -17,6 +17,26 @@
 <!-- 한국어 번역 파일 추가 -->
 <script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.js"></script>
 <style>
+	.btn-hq, .btn-hq:focus {
+	    background-color: #003366;
+	    border-color: #003366;
+	    color: #fff;
+	}
+	.btn-hq:hover {
+	    background-color: #002855;
+	    border-color: #002855;
+	    color: #fff;
+	}
+	.btn-soft-danger, .btn-soft-danger:focus {
+	    background-color: #ffe5e5;
+	    border-color: #ffa3a3;
+	    color: #e05252;
+	}
+	.btn-soft-danger:hover {
+	    background-color: #ffb3b3;
+	    border-color: #e05252;
+	    color: #a51212;
+	}
     .drop-zone {
         border: 2px dashed #0d6efd;
         cursor: pointer;
@@ -66,6 +86,12 @@
 	    background-color: #dc3545;
 	    color: white;
 	}
+	.h3.mb-4, h1.h3 {
+	    font-size: 2rem;
+	    font-weight: 600;
+	    color: #222 !important;
+	    margin-bottom: 1.5rem !important;
+	}
 </style>    
 </head>
 <body>
@@ -89,10 +115,11 @@
 	            </div>
 	            <div class="preview d-flex flex-wrap mt-3" id="preview"></div>
 	        </div>
-	        <div class="d-flex gap-2">
-	            <button class="btn btn-success" type="submit">저장</button>
-	            <a class="btn btn-secondary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp">취소</a>
-	        </div>
+	        <!-- 버튼은 (취소-저장) 순서로 HQ스타일 적용 -->
+			<div class="d-flex gap-2 justify-content-end">
+				<button class="btn btn-hq" type="submit">저장</button>
+			    <a class="btn btn-soft-danger" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp">취소</a>
+			</div>
 	    </form>
 	</div>
 	<script>
