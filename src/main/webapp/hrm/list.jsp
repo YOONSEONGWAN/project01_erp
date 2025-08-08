@@ -40,68 +40,92 @@
 <meta charset="UTF-8">
 <title>직원 목록</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	<style>
+<style>
+    button.btn-primary {
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+        color: white !important;
+        font-weight: 500;
+        border-radius: 6px;
+        height: 38px;
+    }
+    button.btn-primary:hover {
+        background-color: #002244 !important;
+        border-color: #002244 !important;
+        color: white !important;
+    }
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+    /* 검색 input, 버튼 크기 상품 관리 페이지와 동일하게 */
+    input.form-control {
+        height: 38px;
+        max-width: 300px;
+    }
+    button.btn-primary {
+        height: 38px;
+    }
+    /* 페이지네이션 기본 숫자 색깔 남색으로 */
+    .pagination .page-link {
+        color: #003366 !important;
+        border-color: #003366 !important;
+    }
+    /* 활성화된 페이지네이션(현재 페이지) 배경 남색, 글자 흰색 */
+    .pagination .page-item.active .page-link {
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+        color: white !important;
+    }
+    /* 페이지네이션 숫자 호버 시 진한 남색 배경, 글자 흰색 */
+    .pagination .page-link:hover {
+        background-color: #002244 !important;
+        border-color: #002244 !important;
+        color: white !important;
+    }
+    /* 상세, 삭제 파란 텍스트 버튼 스타일 */
+    .link-button {
+        color: #0d6efd;
+        text-decoration: none;
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+    }
+    .link-button:hover,
+    .link-button:focus {
+        text-decoration: underline;
+    }
+    
+    .table-bordered thead th {
+    background-color: #e9ecef !important;  /* 상품관리랑 똑같은 헤더 배경 */
+    color: #212529 !important;              /* 진한 회색 텍스트 */
+    border: 1px solid #dee2e6 !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+	}
 	
-		button.btn-primary {
-		    background-color: #003366 !important;
-		    border-color: #003366 !important;
-		    color: white !important;
-		    font-weight: 500;
-		    border-radius: 6px;
-		    height: 38px;
-		}
-		
-		button.btn-primary:hover {
-		    background-color: #002244 !important;
-		    border-color: #002244 !important;
-		    color: white !important;
-		}
-	    body {
-	        margin: 0;
-	        padding: 0;
-	        background-color: #f8f9fa;
-	    }
-	    /* 검색 input, 버튼 크기 상품 관리 페이지와 동일하게 */
-	    input.form-control {
-	        height: 38px;
-	        max-width: 300px;
-	    }
-	    button.btn-primary {
-	        height: 38px;
-	    }
-	
-	    /* 페이지네이션 기본 숫자 색깔 남색으로 */
-	    .pagination .page-link {
-	        color: #003366 !important;
-	        border-color: #003366 !important;
-	    }
-	
-	    /* 활성화된 페이지네이션(현재 페이지) 배경 남색, 글자 흰색 */
-	    .pagination .page-item.active .page-link {
-	        background-color: #003366 !important;
-	        border-color: #003366 !important;
-	        color: white !important;
-	    }
-	
-	    /* 페이지네이션 숫자 호버 시 진한 남색 배경, 글자 흰색 */
-	    .pagination .page-link:hover {
-	        background-color: #002244 !important;
-	        border-color: #002244 !important;
-	        color: white !important;
-	    }
-	</style>
-
+	.table-bordered tbody td {
+	    background-color: #fff !important;
+	    border: 1px solid #dee2e6 !important;
+	    vertical-align: middle !important;
+	    text-align: center !important;
+	}
+    
+</style>
 </head>
 <body>
 
-	<!-- breadcrumb -->
-	<nav aria-label="breadcrumb" class="mb-3" style="margin: 0 15px;">
-	  <ol class="breadcrumb">
-	    <li class="breadcrumb-item"><a href="<%=contextPath%>/headquater.jsp">홈</a></li>
-	    <li class="breadcrumb-item active" aria-current="page">직원 관리</li>
-	    <li class="breadcrumb-item active" aria-current="page"><%= "admin".equals(from) ? "본사 직원 목록" : "지점 직원 목록" %></li>
-	  </ol>
-	</nav>
+<!-- breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3" style="margin: 0 15px;">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="<%=contextPath%>/headquater.jsp">홈</a></li>
+    <li class="breadcrumb-item active" aria-current="page">직원 관리</li>
+    <li class="breadcrumb-item active" aria-current="page"><%= "admin".equals(from) ? "본사 직원 목록" : "지점 직원 목록" %></li>
+  </ol>
+</nav>
 
 <div class="container-fluid p-3">
 
@@ -142,10 +166,10 @@
             <td><%= dto.getName() %></td>
             <td><%= dto.getRole() %></td>
             <td>
-              <a class="btn btn-outline-primary btn-sm" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=admin">상세</a>
+              <a class="link-button" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=admin">상세</a>
             </td>
             <td>
-              <a class="btn btn-outline-danger btn-sm" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+              <a class="link-button" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
             </td>
           </tr>
         <% } %>
@@ -198,10 +222,10 @@
             <td><%= dto.getRole() %></td>
             <td><%= dto.getBranchName() %></td>
             <td>
-              <a class="btn btn-outline-primary btn-sm" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=branch">상세</a>
+              <a class="link-button" href="<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>&from=branch">상세</a>
             </td>
             <td>
-              <a class="btn btn-outline-danger btn-sm" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+              <a class="link-button" href="<%= contextPath %>/hrm/delete.jsp?num=<%= dto.getNum() %>" onclick="return confirm('삭제하시겠습니까?');">삭제</a>
             </td>
           </tr>
         <% } %>

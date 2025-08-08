@@ -9,7 +9,7 @@
 	
 	// 글 작성자와 로그인 된 userName 이 동일한지 비교해서 동일하지 않으면 에러를 응답
 	String writer=HqBoardDao.getInstance().getByNum(num).getWriter(); // 삭제할 글 작성자
-	String userName=(String)session.getAttribute("userId");
+	String userName=(String)session.getAttribute("userName");
 	if(!writer.equals(userName)){
 		// 에러 페이지 응답
 		response.sendError(HttpServletResponse.SC_FORBIDDEN, " 남의 글 지우지 말아주세요!");

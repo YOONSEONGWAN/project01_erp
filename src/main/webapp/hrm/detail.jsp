@@ -23,6 +23,9 @@
 <meta charset="UTF-8">
 <title>직원 상세 정보</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- ✅ Bootstrap Icons 추가 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 <style>
     body, html {
         margin: 0;
@@ -42,14 +45,14 @@
         object-fit: contain;
         display: inline-block;
     }
-	    .card-header {
+	.card-header {
 	    background-color: #003366 !important;
 	    color: white !important;
 	    font-weight: 600;
 	}
 	
 	.table-secondary {
-	    background-color: #e6ecf3 !important; /* 연한 남색 느낌 */
+	    background-color: #e6ecf3 !important;
 	    color: #003366 !important;
 	    font-weight: 600;
 	}
@@ -179,8 +182,11 @@
                     </div>
 
                     <div>
+                        <!-- ✅ 목록 버튼에 햄버거 아이콘 적용 -->
                         <a href="<%= request.getContextPath() %>/headquater.jsp?page=hrm/list.jsp&from=<%= from %>" 
-                           class="btn btn-secondary">← 목록으로</a>
+                           class="btn btn-secondary">
+                           <i class="bi bi-list"></i> 목록
+                        </a>
                     </div>
 
                     <div>
@@ -198,7 +204,7 @@
                 </div>
                 <div class="text-center">
                     <a href="<%= request.getContextPath() %>/headquater.jsp?page=hrm/list.jsp&from=<%= from %>" 
-                       class="btn btn-secondary">← 목록으로</a>
+                       class="btn btn-secondary"><i class="bi bi-list"></i> 목록</a>
                 </div>
             <% } %>
         </div>
