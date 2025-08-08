@@ -2,8 +2,7 @@
 <%@page import="dao.SalesDao"%>
 <%@page import="dto.SalesDto"%>
 <%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%
     request.setCharacterEncoding("utf-8");
@@ -11,52 +10,71 @@
     String start = request.getParameter("start");
     String end = request.getParameter("end");
 
+    int pageNum = 1;
+    if (request.getParameter("pageNum") != null) {
+        pageNum = Integer.parseInt(request.getParameter("pageNum"));
+    }
+
+    int pageSize = 10;
+    int startRow = (pageNum - 1) * pageSize + 1;
+    int endRow = pageNum * pageSize;
+
+    SalesDao dao = SalesDao.getInstance();
+
+    boolean hasFilter = start != null && end != null && !start.isEmpty() && !end.isEmpty();
+
     List<SalesDto> list;
-    if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
-        list = SalesDao.getInstance().getWeeklyStatsBetween(start, end);
+    int totalRows;
+
+    if (hasFilter) {
+        totalRows = dao.getWeeklySumCountBetween(start, end);
+        list = dao.getWeekySumPageBetween(start, end, startRow, endRow);
     } else {
-        list = SalesDao.getInstance().getWeeklyStats();
+        totalRows = dao.getWeeklySumCountBetween("2000-01-01", "2099-12-31");
+        list = dao.getWeekySumPageBetween("2000-01-01", "2099-12-31", startRow, endRow);
     }
 
+    int totalPages = (int)Math.ceil(totalRows / (double)pageSize);
     NumberFormat nf = NumberFormat.getInstance();
-
-    int totalSum = 0;
-    for (SalesDto dto : list) {
-        totalSum += dto.getTotalSales();
-    }
 %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>주간 매출 통계</title>
-    <!-- ✅ Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container mt-4">
+<h2 class="mb-2">주간 매출 합계</h2>
 
 
-    <h2 class="mb-4">주간 매출 통계</h2>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>주차</th>
-                <th>지점</th>
-                <th>매출 합계</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% for(SalesDto dto : list) { %>
-                <tr>
-                    <td><%= dto.getPeriod() %></td>
-                    <td><%= dto.getBranch_name() %></td>
-                    <td><%= nf.format(dto.getTotalSales()) %> 원</td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>번호</th>
+            <th>주차</th>
+            <th>지점</th>
+            <th>총 매출</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%
+            int index = startRow;
+            for (SalesDto dto : list) {
+        %>
+        <tr>
+            <td><%= index++ %></td>
+            <td><%= dto.getPeriod() %></td>
+            <td><%= dto.getBranch_name() %></td>
+            <td><%= nf.format(dto.getTotalSales()) %> 원</td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
 
-</body>
-</html>
+<nav>
+    <ul class="pagination justify-content-center">
+        <% for (int i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= i == pageNum ? "active" : "" %>">
+            <a class="page-link"
+               href="<%= request.getContextPath() %>/headquater.jsp?page=headquater/sales.jsp<%= start != null ? "&start=" + start : "" %><%= end != null ? "&end=" + end : "" %>&view=weekly&pageNum=<%=i%>">
+                <%= i %>
+            </a>
+        </li>
+        <% } %>
+    </ul>
+</nav>

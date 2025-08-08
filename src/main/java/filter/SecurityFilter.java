@@ -99,8 +99,8 @@ public class SecurityFilter implements Filter{
         if ("ROLE_KING".equals(role)) {
             return true; // 모든 경로 접근 허용
         } else if ("ROLE_ADMIN".equals(role)) {
-        	// "/index/branchindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/index/branchindex.jsp");
+        	// "/index/branchindex.jsp" 하위와 "/hrm/" 경로를 제외한 모든 경로 접근 허용
+            return !path.startsWith("/index/branchindex.jsp") && !path.startsWith("/hrm/");
         } else if ("ROLE_MANAGER".equals(role)) {
         	// "/index/headqueaterindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
             return !path.startsWith("/index/headquaterindex.jsp");

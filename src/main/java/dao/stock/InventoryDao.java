@@ -14,21 +14,21 @@ import dto.stock.InventoryDto;
 import util.DbcpBean;
 
 public class InventoryDao {
-	
-	private static InventoryDao dao;
-	
-	static {
-		dao=new InventoryDao();
-	}
-	
-	private InventoryDao() {}
-	
+   
+   private static InventoryDao dao;
+   
+   static {
+      dao=new InventoryDao();
+   }
+   
+   private InventoryDao() {}
+   
 
-	public static InventoryDao getInstance() {
-		return dao;
-	}
-	
-	public List<InventoryDto> selectAll() {
+   public static InventoryDao getInstance() {
+      return dao;
+   }
+   
+   public List<InventoryDto> selectAll() {
         List<InventoryDto> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -423,10 +423,10 @@ public class InventoryDao {
 
         return num;
     }
-	
-	
-	
-	
+   
+   
+   
+   
     public boolean updateQuantityByApproval(int num, int oldRequestQty, int newRequestQty, 
             String oldApprovalStatus, String newApprovalStatus,
             int currentQuantity) {

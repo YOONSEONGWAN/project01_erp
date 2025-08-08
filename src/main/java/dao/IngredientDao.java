@@ -7,57 +7,57 @@ import dto.StockRequestDto;
 import util.DbcpBean;
 
 public class IngredientDao {
-	
-	private static IngredientDao dao;
-	
-	static {
-		dao=new IngredientDao();
-	}
-	
-	private IngredientDao() {};
-	
-	public static IngredientDao getInstance() {
-		return dao;
-	}
-	
+   
+   private static IngredientDao dao;
+   
+   static {
+      dao=new IngredientDao();
+   }
+   
+   private IngredientDao() {};
+   
+   public static IngredientDao getInstance() {
+      return dao;
+   }
+   
 
-	public List<IngredientDto> selectAllProducts() {
-	    List<IngredientDto> list = new ArrayList<>();
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    String sql = """
-        		
-    			SELECT DISTINCT product, branch_num, branch_id, inventory_id, current_quantity 
-    		     FROM branch_stock ORDER BY product""";
-	    try {
-	        conn = new DbcpBean().getConn();
-	        
-	        pstmt = conn.prepareStatement(sql);
-	        rs = pstmt.executeQuery();
-	        while(rs.next()) {
-	            IngredientDto dto = new IngredientDto();
-	            dto.setProduct(rs.getString("product"));
-	            dto.setBranchNum(rs.getInt("branch_num"));
-	            dto.setBranchId(rs.getString("branch_id"));
-	            dto.setInventoryId(rs.getInt("inventory_id"));
-	            dto.setCurrentQuantity(rs.getInt("current_quantity"));
-	            list.add(dto);
-	        }
-	    } catch(Exception e) { e.printStackTrace(); }
-	    finally {
-	        try { if(rs!=null) rs.close(); } catch(Exception e){}
-	        try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
-	        try { if(conn!=null) conn.close(); } catch(Exception e){}
-	    }
-	    return list;
-	}
-	
-	
-	
-	
-	
-	  // 여러건 한번에 발주 요청 등록 (트랜잭션 적용)
+   public List<IngredientDto> selectAllProducts() {
+       List<IngredientDto> list = new ArrayList<>();
+       Connection conn = null;
+       PreparedStatement pstmt = null;
+       ResultSet rs = null;
+       String sql = """
+              
+             SELECT DISTINCT product, branch_num, branch_id, inventory_id, current_quantity 
+               FROM branch_stock ORDER BY product""";
+       try {
+           conn = new DbcpBean().getConn();
+           
+           pstmt = conn.prepareStatement(sql);
+           rs = pstmt.executeQuery();
+           while(rs.next()) {
+               IngredientDto dto = new IngredientDto();
+               dto.setProduct(rs.getString("product"));
+               dto.setBranchNum(rs.getInt("branch_num"));
+               dto.setBranchId(rs.getString("branch_id"));
+               dto.setInventoryId(rs.getInt("inventory_id"));
+               dto.setCurrentQuantity(rs.getInt("current_quantity"));
+               list.add(dto);
+           }
+       } catch(Exception e) { e.printStackTrace(); }
+       finally {
+           try { if(rs!=null) rs.close(); } catch(Exception e){}
+           try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
+           try { if(conn!=null) conn.close(); } catch(Exception e){}
+       }
+       return list;
+   }
+   
+   
+   
+   
+   
+     // 여러건 한번에 발주 요청 등록 (트랜잭션 적용)
     public boolean requestStock(List<StockRequestDto> requests) {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -108,8 +108,8 @@ public class IngredientDao {
         return isSuccess;
     }
 
-	
-	
+   
+   
     public List<IngredientDto> selectAll(String branchId) {
         List<IngredientDto> list = new ArrayList<>();
         Connection conn = null;
@@ -294,83 +294,83 @@ public class IngredientDao {
         }
     }
 
-	public boolean increaseCurrentQuantity2(String branchId, int inventoryId, int qty) {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    boolean result = false;
-	
-	    String sql = """
-	        UPDATE branch_stock 
-	        SET current_quantity = current_quantity + ? 
-	        WHERE branch_id = ? AND inventory_id = ?
-	        """;
-	
-	    try {
-	        conn = new DbcpBean().getConn();
-	        
-	
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setInt(1, qty);
-	        pstmt.setString(2, branchId);
-	        pstmt.setInt(3, inventoryId);
-	
-	        
-	        
-	        int affected = pstmt.executeUpdate();
-	        
-	
-	        result = affected > 0;
-	
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
-	    }
-	
-	    return result;
-	}
-	
-	public boolean decreaseCurrentQuantity2(String branchId, int inventoryId, int qty) {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    boolean result = false;
-	
-	    String sql = """
-	        UPDATE branch_stock 
-	        SET current_quantity = current_quantity - ? 
-	        WHERE branch_id = ? AND inventory_id = ? AND current_quantity >= ?
-	        """;
-	
-	    try {
-	        conn = new DbcpBean().getConn();
-	        
-	
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setInt(1, qty);
-	        pstmt.setString(2, branchId);
-	        pstmt.setInt(3, inventoryId);
-	        pstmt.setInt(4, qty);
-	
-	        
-	
-	        int affected = pstmt.executeUpdate();
-	        
-	
-	        result = affected > 0;
-	
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
-	    }
-	
-	    return result;
-	}
+   public boolean increaseCurrentQuantity2(String branchId, int inventoryId, int qty) {
+       Connection conn = null;
+       PreparedStatement pstmt = null;
+       boolean result = false;
+   
+       String sql = """
+           UPDATE branch_stock 
+           SET current_quantity = current_quantity + ? 
+           WHERE branch_id = ? AND inventory_id = ?
+           """;
+   
+       try {
+           conn = new DbcpBean().getConn();
+           
+   
+           pstmt = conn.prepareStatement(sql);
+           pstmt.setInt(1, qty);
+           pstmt.setString(2, branchId);
+           pstmt.setInt(3, inventoryId);
+   
+           
+           
+           int affected = pstmt.executeUpdate();
+           
+   
+           result = affected > 0;
+   
+       } catch (Exception e) {
+           e.printStackTrace();
+       } finally {
+           try {
+               if (pstmt != null) pstmt.close();
+               if (conn != null) conn.close();
+           } catch (Exception e) {}
+       }
+   
+       return result;
+   }
+   
+   public boolean decreaseCurrentQuantity2(String branchId, int inventoryId, int qty) {
+       Connection conn = null;
+       PreparedStatement pstmt = null;
+       boolean result = false;
+   
+       String sql = """
+           UPDATE branch_stock 
+           SET current_quantity = current_quantity - ? 
+           WHERE branch_id = ? AND inventory_id = ? AND current_quantity >= ?
+           """;
+   
+       try {
+           conn = new DbcpBean().getConn();
+           
+   
+           pstmt = conn.prepareStatement(sql);
+           pstmt.setInt(1, qty);
+           pstmt.setString(2, branchId);
+           pstmt.setInt(3, inventoryId);
+           pstmt.setInt(4, qty);
+   
+           
+   
+           int affected = pstmt.executeUpdate();
+           
+   
+           result = affected > 0;
+   
+       } catch (Exception e) {
+           e.printStackTrace();
+       } finally {
+           try {
+               if (pstmt != null) pstmt.close();
+               if (conn != null) conn.close();
+           } catch (Exception e) {}
+       }
+   
+       return result;
+   }
 }
 

@@ -66,7 +66,13 @@
 	<%if(isSuccess){%>
 		<script>
 			alert("저장했습니다");
-			location.href="view.jsp?num=<%=dto.getNum()%>&board_type=<%=dto.getBoard_type()%>";
+			location.href="<%= 
+			    request.getContextPath() + (
+			        "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+			        ? "/headquater.jsp?page=board/view.jsp&num=" + num + "&board_type=" + board_type
+			        : "/branch.jsp?page=board/view.jsp&num=" + num + "&board_type=" + board_type
+			    )
+			%>";
 		</script>
 	<%}else{%>
 		<p>글 저장실패! <a href="new-form.jsp">다시작성</a></p>
