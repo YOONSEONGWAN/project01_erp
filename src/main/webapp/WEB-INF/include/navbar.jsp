@@ -26,7 +26,8 @@
 	        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
 			    ? request.getContextPath() + "/headquater.jsp?page=userp/userpinfo.jsp"
 			    : request.getContextPath() + "/branch.jsp?page=userp/userpinfo.jsp" %>"
-			   class="navbar-user-link align-self-center">
+			   class="navbar-user-link align-self-center"
+			   style="color:white;">
 			   <%= userId %>님
 			</a>
 	
