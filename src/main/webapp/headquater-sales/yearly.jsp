@@ -38,20 +38,6 @@
 %>
 
 <h2 class="mb-2">지점별 연간 매출 총합</h2>
-
-<!-- 날짜 필터 -->
-<form method="get" action="yearly.jsp" class="row g-2 mb-3">
-    <div class="col-auto">
-        <input type="date" name="start" value="<%= start != null ? start : "" %>" class="form-control" />
-    </div>
-    <div class="col-auto">
-        <input type="date" name="end" value="<%= end != null ? end : "" %>" class="form-control" />
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">조회</button>
-    </div>
-</form>
-
 <table class="table table-bordered">
     <thead class="table-light">
         <tr>

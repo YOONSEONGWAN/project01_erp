@@ -47,21 +47,17 @@
 
 <div class="container-fluid">
     <div class="row">
-        <!-- ✅ 본문 시작 -->
         <main class="col-md-12 px-4">
-            <!-- ✅ 제목 영역 -->
            <div class="container-fluid">
                 <h1 class="fw-bold">지점별 매출 분석 대시보드</h1>
             </div>
-
-            <!-- ✅ 통계 필터 폼 -->
 				<form class="row g-3 align-items-end mb-4" method="get"
 					action="<%=request.getContextPath()%>/headquater.jsp">
 					<input type="hidden" name="page" value="headquater/sales.jsp" />
 					<div class="col-md-4">
 						<label class="form-label">통계 보기</label> <select name="view"
 							class="form-select">
-							<option value="">--선택--</option>
+							<option value="">통계 항목 선택</option>
 							<optgroup label="총 매출">
 								<option value="weekly"
 									<%= "weekly".equals(view) ? "selected" : "" %>>주간 총 매출</option>
@@ -160,7 +156,7 @@
 			<% if (view == null || view.isEmpty()) { %>
 			    <h4 class="mt-5">전체 매출 목록</h4>
 			    <div class="table-responsive">
-			        <table class="table table-bordered table-striped">
+			        <table class="table table-bordered">
 			            <thead class="table-light">
 			                <tr>
 			                    <th>매출 번호</th>
@@ -188,7 +184,6 @@
         </main>
     </div>
  <% if (view == null || view.isEmpty()) { %>
-    <!-- ✅ 전체 매출 페이징 UI -->
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             <% if (pageNum > 1) { %>
