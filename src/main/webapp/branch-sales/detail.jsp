@@ -48,10 +48,10 @@ String cpath = request.getContextPath();
 
     <!-- 버튼 영역 -->
     <div class="mt-3">
-        <a href="<%= cpath %>/branch.jsp?page=branch-sales/update-form.jsp?salesId=<%= dto.getSalesId() %>" class="btn btn-warning">수정</a>
+        <a href="<%= cpath %>/branch.jsp?page=branch-sales/update-form.jsp?salesId=<%= dto.getSalesId() %>" class="btn btn-primary" style="background-color:#003366; border-color:#003366;">수정</a>
         <a href="<%= cpath %>/branch.jsp?page=branch-sales/delete.jsp?salesId=<%= dto.getSalesId() %>" 
            class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-        <a href="<%= cpath %>/branch.jsp?page=branch-sales/list.jsp" class="btn btn-secondary">목록</a>
+        <a href="<%= cpath %>/branch.jsp?page=branch-sales/list.jsp" class="btn btn-secondary">취소</a>
     </div>
 
 </div>

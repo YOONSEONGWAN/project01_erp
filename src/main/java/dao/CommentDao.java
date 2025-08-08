@@ -122,10 +122,12 @@ public class CommentDao {
 	    try {
 	        conn = new DbcpBean().getConn();
 	        String sql = """
-	        	    SELECT num, writer, content, board_num, board_type, created_at, deleted, profile_image
-	        	    FROM comments_p
-	        	    WHERE board_num = ? AND board_type = ?
-	        	    ORDER BY num ASC
+	        	   SELECT c.num, c.writer, c.content, c.board_num, c.board_type, 
+					       c.created_at, c.deleted, u.PROFILE_IMAGE AS profile_image
+				   FROM comments_p c
+				   JOIN users_p u ON c.writer = u.user_id
+				   WHERE c.board_num = ? AND c.board_type = ?
+				   ORDER BY c.num ASC
 	        	""";
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setInt(1, parentNum);
@@ -138,6 +140,7 @@ public class CommentDao {
 	            dto.setWriter(rs.getString("writer"));
 	            dto.setContent(rs.getString("content"));
 	            dto.setBoardNum(rs.getInt("board_num"));
+	            dto.setBoard_type(rs.getString("board_type"));
 	            dto.setDeleted(rs.getString("deleted"));
 	            dto.setCreatedAt(rs.getString("created_at")); 
 	            dto.setProfileImage(rs.getString("profile_image")); 

@@ -54,7 +54,7 @@
         <li class="breadcrumb-item active" aria-current="page">상품 등록</li>
       </ol>
     </nav>
-    <!-- breadcrumb 추가 끝 -->
+<!-- breadcrumb 추가 끝 -->
 
 <div class="form-container">
     <h1>상품 등록</h1>
@@ -92,10 +92,12 @@
             <input type="file" name="imagePath" class="form-control" accept="image/*">
         </div>
 
-        <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-submit">등록</button>
+        <!-- 버튼 영역 수정 -->
+        <div class="d-flex justify-content-end gap-2">
             <button type="button" class="btn btn-cancel" onclick="window.location.href='<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp'">취소</button>
+            <button type="submit" class="btn btn-submit">등록</button>
         </div>
+
     </form>
 </div>
 

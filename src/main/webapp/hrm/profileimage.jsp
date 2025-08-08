@@ -109,9 +109,13 @@
             <input type="file" name="profile_image" accept="image/*" class="form-control">
         </div>
 
-        <div class="d-flex justify-content-between">
+        <!-- 버튼 오른쪽 정렬 + 수정확인 오른쪽 끝 -->
+        <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-cancel" 
+                onclick="location.href='<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>';">
+                취소
+            </button>
             <button type="submit" class="btn btn-primary">수정 확인</button>
-            <button type="button" class="btn btn-cancel" onclick="location.href='<%= contextPath %>/headquater.jsp?page=hrm/detail.jsp&num=<%= dto.getNum() %>';">취소</button>
         </div>
     </form>
 </div>
