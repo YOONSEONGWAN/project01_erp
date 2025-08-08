@@ -98,7 +98,7 @@
         <thead class="table-light">
             <tr>
                 <th>매출번호</th>
-                <th>지점</th>
+                <th>지점코드 / 지점명</th>
                 <th>날짜</th>
                 <th>총금액</th>
                 <th>상세보기</th>
@@ -108,7 +108,7 @@
         <% for(BranchSalesDto dto : salesList){ %>
             <tr>
                 <td><%=dto.getSalesId()%></td>
-                <td><%=dto.getBranchId()%></td>
+                <td><%= dto.getBranchId() + " / " + dto.getBranchName() %></td>
                 <td><%=dto.getCreated_at()%></td>
                 <td><%=df.format(dto.getTotalAmount())%></td>
                 <td>

@@ -12,24 +12,19 @@
 	//DB 에서 사용자 정보를 읽어온다.
 	BranchInfoDto dto=BranchInfoDao.getInstance().getByUserId(userId);
 %> 
-
-
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>info2</title>
 </head>
-
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         지점 정보
-                       
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">
@@ -69,7 +64,10 @@
                         <a href="<%=request.getContextPath()%>/branch.jsp?page=branchinfo/edit2.jsp" class="btn btn-primary">
                             <i class="bi bi-gear"></i> 지점 정보 수정
                         </a>
-                    </div>
+                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">
+                             지점으로가기<i class="bi bi-back"></i>
+                        </a>
+                    </div>          
                 </div>
             </div>
         </div>

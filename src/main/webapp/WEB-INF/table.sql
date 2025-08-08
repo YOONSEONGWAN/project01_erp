@@ -210,7 +210,7 @@ CREATE TABLE work_log (
   user_id    VARCHAR2(20)  NOT NULL,
   work_date  DATE          NOT NULL,
   start_time DATE          NOT NULL,
-  end_time   DATE          NOT NULL,
+  end_time   DATE          ,
   CONSTRAINT pk_work_log PRIMARY KEY (log_id),
   CONSTRAINT fk_work_log_branch FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
   CONSTRAINT fk_work_log_user   FOREIGN KEY (user_id)   REFERENCES users_p(user_id)
