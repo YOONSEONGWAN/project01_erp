@@ -26,7 +26,7 @@
 	final int PAGE_ROW_COUNT=10;
 	
 	// 하단 페이지를 몇개씩 표시할 것인지 표시
-	final int PAGE_DISPLAY_COUNT=5;
+	final int PAGE_DISPLAY_COUNT=1;
 	
 	// 보여줄 페이지의 시작 ROWNUM
 	int startRowNum=1+(pageNum-1)*PAGE_ROW_COUNT; // 공차수열
@@ -141,27 +141,33 @@
 	}
 	
 	/* 페이지네이션 HQ 컬러 */
-	.pagination .active .page-link {
-	    background-color: #003366;
-	    border-color: #003366;
-	    color: #fff;
-	}
+		/* 페이지네이션 기본 상태 */
 	.pagination .page-link {
-	    color: #003366;
-	    border-radius: 0.5rem !important;
-	    font-weight: 500;
+	    color: #003366 !important;        /* 남색 글자 */
+	    border-color: #003366 !important; /* 남색 테두리 */
 	}
+	
+	/* 활성화된 페이지네이션 */
+	.pagination .page-item.active .page-link {
+	    background-color: #003366 !important; /* 남색 배경 */
+	    border-color: #003366 !important;
+	    color: white !important;              /* 흰색 글자 */
+	}
+	
+	/* 페이지네이션 호버 상태 */
 	.pagination .page-link:hover {
-	    background-color: #eaf3fb;
-	    color: #003366;
+	    background-color: #003366 !important; /* 남색 배경 */
+	    border-color: #003366 !important;
+	    color: white !important;
 	}
 	
 	/* 비활성화 버튼 */
 	.disabled, .page-item.disabled .page-link {
 	    pointer-events: none;
 	    opacity: 0.6;
-	    color: #adb5bd !important;
+	    color: #003366 !important;
 	    background: #f8fafd !important;
+	    border-color: #003366 !important; /* 남색 테두리 */
 	}
 	
 	/* 마진, 컨테이너 */
@@ -194,7 +200,7 @@
 <div class="container my-5">
     <div class="row align-items-center mb-4">
         <div class="col-lg-6 col-md-6 col-12">
-            <h1 class="h3 mb-0">게시글 목록</h1>
+            <h1 class="h3 mb-0">본사 내부 게시판</h1>
         </div>
         <div class="col-lg-6 col-md-6 col-12 d-flex justify-content-lg-end justify-content-md-end justify-content-start mt-3 mt-md-0">
             <a class="btn btn-hq btn-new-post" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
@@ -251,21 +257,32 @@
     </div>
     <nav class="mb-5">
         <ul class="pagination justify-content-center">
-        <% if(startPageNum != 1) { %>
-            <li class="page-item">
-                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">&lsaquo;</a>
-            </li>
-        <% } %>
+        <% if (startPageNum != 1) { %>
+		  <li class="page-item">
+		    <a class="page-link"
+		       href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp&pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">이전</a>
+		  </li>
+		<% } else { %>
+		  <li class="page-item disabled">
+		    <span class="page-link">이전</span>
+		  </li>
+		<% } %>
         <% for(int i=startPageNum; i<=endPageNum; i++){ %>
             <li class="page-item <%=i==pageNum ? "active" : ""%>">
                 <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=i%>&keyword=<%=keyword%>"><%=i%></a>
             </li>
         <% } %>
-        <% if(endPageNum < totalPageCount) { %>
-            <li class="page-item">
-                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">&rsaquo;</a>
-            </li>
-        <% } %>
+        <% if (endPageNum < totalPageCount) { %>
+		  <li class="page-item">
+		    <a class="page-link"
+		       href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp&pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">다음</a>
+		  </li>
+		<% } else { %>
+		  <li class="page-item disabled">
+		    <span class="page-link">다음</span>
+		  </li>
+		<% } %>
+
         </ul>
     </nav>
 </div>
