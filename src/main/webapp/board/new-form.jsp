@@ -86,7 +86,26 @@
         height: '500px',
         initialEditType: 'wysiwyg',
         previewStyle: 'vertical',
-        language: 'ko'
+        language: 'ko',
+        hooks: {
+            addImageBlobHook: async (blob, callback) => {
+                const formData = new FormData();
+                formData.append('myFile', blob); // 서버에서 받을 이름: myFile
+
+                try {
+                    const response = await fetch('<%=request.getContextPath()%>/image-upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    callback(result.url, '업로드 이미지'); // 이미지 삽입
+                } catch (error) {
+                    alert('이미지 업로드 실패');
+                    console.error(error);
+                }
+            }
+        }
     });
 
     // 제출 시 content 내용을 textarea에 복사

@@ -625,7 +625,6 @@ public class BoardDao {
             pstmt.setString(7, dto.getUser_id());
 
             rowCount = pstmt.executeUpdate();
-            System.out.println("🟢 INSERT 실행 완료, rowCount = " + rowCount);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("insert 실패!", e);
@@ -674,8 +673,6 @@ public class BoardDao {
             try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
             try { if (conn != null) conn.close(); } catch (Exception e) {}
         }
-        System.out.println("📌 전달된 num: " + num);
-        System.out.println("📌 전달된 board_type: " + board_type);
         
         return dto;
         

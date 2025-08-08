@@ -525,7 +525,7 @@ public class StockRequestDao {
     }
 
 
-    public int getQuantityByOrderId(int OrderId) {
+    public int getQuantityByOrderId(int detailId) {
         int result = -1;
 
         Connection conn = null;
