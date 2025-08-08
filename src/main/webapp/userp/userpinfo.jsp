@@ -18,6 +18,11 @@
 <head>
 <meta charset="UTF-8">
 <title>/userp/userpinfo.jsp</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -25,7 +30,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #003366;">
                         <h4 class="mb-0">회원 가입 정보</h4>
                         
                     </div>
@@ -53,9 +58,13 @@
                             <tr>
                                 <th>비밀번호</th>
                                 <td>
-                                    <a href="<%=request.getContextPath()%>/branch.jsp?page=userp/edit-password.jsp" class="btn btn-outline-secondary btn-sm">
-                                        비밀번호 수정
-                                    </a>
+                                    <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
+									    ? request.getContextPath() + "/headquater.jsp?page=userp/edit-password.jsp" 
+									    : request.getContextPath() + "/branch.jsp?page=userp/edit-password.jsp" %>" 
+									   class="btn btn-outline-secondary btn-sm">
+									   비밀번호 변경
+									</a>
+									
                                 </td>
                             </tr>
                             <tr>
@@ -76,13 +85,22 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="card-footer text-end">
-                        <a href="<%=request.getContextPath()%>/branch.jsp?page=userp/edit.jsp" class="btn btn-primary">
-                            <i class="bi bi-person-lines-fill"></i> 개인 정보 수정
+                    <div class="card-footer text-end">       
+                        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
+									    ? request.getContextPath() + "/headquater.jsp?page=userp/edit.jsp" 
+									    : request.getContextPath() + "/branch.jsp?page=userp/edit.jsp" %>" 
+									   class="btn btn-outline-secondary btn-sm">
+									   개인 정보 수정
+									   <i class="bi bi-person-lines-fill"></i> 
+						</a>
+                             
                         </a>
-                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">
-                             지점으로가기<i class="bi bi-back"></i>
-                        </a>
+                         <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
+									    ? request.getContextPath() + "/headquater.jsp" 
+									    : request.getContextPath() + "/branch.jsp" %>" 
+									   class="btn btn-outline-secondary btn-sm">
+									되돌아가기<i class="bi bi-back"></i>
+						</a>
                     </div>
                 </div>
             </div>
