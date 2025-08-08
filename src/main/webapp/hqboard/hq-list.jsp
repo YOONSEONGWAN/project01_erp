@@ -198,15 +198,13 @@
 </head>
 <body>
 <div class="container my-5">
-    <div class="row align-items-center mb-4">
-        <div class="col-lg-6 col-md-6 col-12">
-            <h1 class="h3 mb-0">본사 내부 게시판</h1>
-        </div>
-        <div class="col-lg-6 col-md-6 col-12 d-flex justify-content-lg-end justify-content-md-end justify-content-start mt-3 mt-md-0">
-            <a class="btn btn-hq btn-new-post" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
-                <i class="bi bi-pencil-square"></i> 새 글 작성
-            </a>
-        </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">공지사항</h1>
+        <a class="btn btn-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
+            <i class="bi bi-pencil-square"></i> 새 글 작성
+        </a>
+
     </div>
     <div class="row justify-content-end mb-4">
         <div class="col-12 col-sm-8 col-md-6 col-lg-4 search-bar-col">
