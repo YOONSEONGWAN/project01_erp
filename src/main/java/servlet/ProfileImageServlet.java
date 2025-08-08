@@ -70,4 +70,5 @@ public class ProfileImageServlet extends HttpServlet {
 			response.getWriter().println("DB SAVE FAIL");
 		}
 	}
+
 }
