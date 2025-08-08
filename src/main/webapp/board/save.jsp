@@ -67,12 +67,12 @@
 		<script>
 			alert("저장했습니다");
 			location.href="<%= 
-		    	request.getContextPath() + (
-				        "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
-				        ? "/headquater.jsp?page=board/list.jsp&board_type=" + board_type 
-				        : "/branch.jsp?page=board/list.jsp&board_type=" + board_type 
-				    )
-			    %>";
+			    request.getContextPath() + (
+			        "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+			        ? "/headquater.jsp?page=board/view.jsp&num=" + num + "&board_type=" + board_type
+			        : "/branch.jsp?page=board/view.jsp&num=" + num + "&board_type=" + board_type
+			    )
+			%>";
 		</script>
 	<%}else{%>
 		<p>글 저장실패! <a href="new-form.jsp">다시작성</a></p>

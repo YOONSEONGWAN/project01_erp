@@ -26,7 +26,7 @@
 	final int PAGE_ROW_COUNT=10;
 	
 	// 하단 페이지를 몇개씩 표시할 것인지 표시
-	final int PAGE_DISPLAY_COUNT=5;
+	final int PAGE_DISPLAY_COUNT=1;
 	
 	// 보여줄 페이지의 시작 ROWNUM
 	int startRowNum=1+(pageNum-1)*PAGE_ROW_COUNT; // 공차수열
@@ -76,124 +76,214 @@
 <meta charset="UTF-8">
 <title>/hqboard/hq-list</title>
 <!-- Bootstrap CSS CDN -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <!-- Bootstrap Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<!-- "본사꾸미기" 커스텀 CSS (복붙만 하면 끝!) -->
 <style>
-.card-header.bg-light {
-    background-color: #f8f9fa !important;
-    font-weight: bold;
-    font-size: 1.15rem;
-}
-.btn-outline-primary, .btn-outline-danger {
-    border-radius: 0.5rem;
-    padding: 0.375rem 1rem;
-}
-.table th, .table td {
-    vertical-align: middle !important;
-}
-.my-5 {
-    margin-top: 3rem !important;
-    margin-bottom: 3rem !important;
-}
-.h3.mb-0 {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #224488;
-    margin-bottom: 1.5rem !important;
-}
-.mx-auto {
-    margin-left: auto !important;
-    margin-right: auto !important;
-}
-.gap-2 {
-    gap: 0.5rem !important;
-}
-.disabled {
-    pointer-events: none;
-    opacity: 0.6;
-}
-.pagination .active .page-link {
-    background-color: #224488;
-    border-color: #224488;
-    color: #fff;
-}
-.pagination .page-link {
-    color: #224488;
-}
-.pagination .page-link:hover {
-    background-color: #e9ecef;
-    color: #224488;
-}
+	/* ───────────── HQ List 스타일 (본사색 통일 & 추가 요청 반영) ───────────── */
+	
+	/* 본사색 버튼 (새 글 등) */
+	.btn-hq, .btn-hq:focus {
+	    background-color: #003366;
+	    border-color: #003366;
+	    color: #fff;
+	}
+	.btn-hq:hover {
+	    background-color: #002855;
+	    border-color: #002855;
+	    color: #fff;
+	}
+	
+	/* 검색 버튼 본사색 hover */
+	.btn-outline-secondary:hover, .btn-outline-secondary:focus {
+	    background-color: #003366 !important;
+	    border-color: #003366 !important;
+	    color: #fff !important;
+	}
+	
+	/* 테이블(리스트) 행, 열 */
+	.table th, .table td {
+	    vertical-align: middle !important;
+	    font-size: 1.02rem;
+	}
+	.table th {
+	    color: #003366;
+	    background: #f2f5fa;
+	    font-weight: 700;
+	}
+	.table-hover>tbody>tr:hover {
+	    background: #eaf3fb;
+	    transition: background 0.13s;
+	}
+	
+	/* 제목(h1/h3) - 검정색 */
+	.h3.mb-0 {
+	    font-size: 2rem;
+	    font-weight: 600;
+	    color: #111 !important;
+	    margin-bottom: 1.5rem !important;
+	}
+	
+	/* 새 글 버튼 */
+	.btn-new-post {
+	    min-width: 140px;
+	    font-size: 1.07rem;
+	    font-weight: 500;
+	}
+	
+	/* 검색폼 그룹 (검색창/버튼) */
+	.input-group .form-control {
+	    border-radius: 0.5rem 0 0 0.5rem;
+	    font-size: 1.02rem;
+	}
+	.input-group .btn {
+	    border-radius: 0 0.5rem 0.5rem 0;
+	}
+	
+	/* 페이지네이션 HQ 컬러 */
+		/* 페이지네이션 기본 상태 */
+	.pagination .page-link {
+	    color: #003366 !important;        /* 남색 글자 */
+	    border-color: #003366 !important; /* 남색 테두리 */
+	}
+	
+	/* 활성화된 페이지네이션 */
+	.pagination .page-item.active .page-link {
+	    background-color: #003366 !important; /* 남색 배경 */
+	    border-color: #003366 !important;
+	    color: white !important;              /* 흰색 글자 */
+	}
+	
+	/* 페이지네이션 호버 상태 */
+	.pagination .page-link:hover {
+	    background-color: #003366 !important; /* 남색 배경 */
+	    border-color: #003366 !important;
+	    color: white !important;
+	}
+	
+	/* 비활성화 버튼 */
+	.disabled, .page-item.disabled .page-link {
+	    pointer-events: none;
+	    opacity: 0.6;
+	    color: #003366 !important;
+	    background: #f8fafd !important;
+	    border-color: #003366 !important; /* 남색 테두리 */
+	}
+	
+	/* 마진, 컨테이너 */
+	.my-5 { margin-top: 3rem !important; margin-bottom: 3rem !important; }
+	.mx-auto { margin-left: auto !important; margin-right: auto !important; }
+	.mb-4 { margin-bottom: 1.5rem !important; }
+	.gap-2 { gap: 0.5rem !important; }
+	
+	/* 리스트 테이블과 페이지네이션 간격 */
+	.mb-5px { margin-bottom: 32px !important; }
+	
+	/* 검색폼 우측정렬 */
+	.search-bar-col {
+	    display: flex;
+	    justify-content: flex-end;
+	}
+	
+	/* 검색폼 길이(PC col-4), 모바일은 꽉 채움 */
+	@media (max-width: 991.98px) {
+	  .search-bar-col { justify-content: flex-end; }
+	}
+	@media (max-width: 600px) {
+	  .table th, .table td { font-size: 0.97rem; }
+	  .h3.mb-0 { font-size: 1.24rem; }
+	  .search-bar-col { justify-content: flex-end; }
+	}
 </style>
 </head>
 <body>
 <div class="container my-5">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">공지사항</h1>
         <a class="btn btn-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
             <i class="bi bi-pencil-square"></i> 새 글 작성
         </a>
+
     </div>
-    <form action="<%=request.getContextPath()%>/headquater.jsp" method="get" class="mb-4">
-        <input type="hidden" name="page" value="hqboard/hq-list.jsp">
-        <div class="input-group">
-            <input value="<%=keyword%>" type="text" name="keyword" class="form-control" placeholder="검색어 입력..."/>
-            <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i> 검색</button>
+    <div class="row justify-content-end mb-4">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4 search-bar-col">
+            <form action="<%=request.getContextPath()%>/headquater.jsp" method="get" style="width:100%;">
+                <input type="hidden" name="page" value="hqboard/hq-list.jsp">
+                <div class="input-group">
+                    <input value="<%=keyword%>" type="text" name="keyword" class="form-control" placeholder="검색어 입력..."/>
+                    <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i> 검색</button>
+                </div>
+            </form>
         </div>
-    </form>
-    <table class="table table-hover align-middle text-center">
-        <thead class="table-light">
-            <tr>
-                <th>글 번호</th>
-                <th>작성자</th>
-                <th>제목</th>
-                <th>조회수</th>
-                <th>작성일</th>
-            </tr>
-        </thead>
-        <tbody>
-        <% if(list != null && !list.isEmpty()) { %>
-            <% for(HqBoardDto tmp : list){ %>
-                <tr>
-                    <td><%=tmp.getNum()%></td>
-                    <td><%=tmp.getWriter()%></td>
-                    <td class="text-start">
-                        <a class="link-dark" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=tmp.getNum()%>">
-                            <%=tmp.getTitle()%>
-                        </a>
-                    </td>
-                    <td><%=tmp.getViewCount()%></td>
-                    <td><%=tmp.getCreatedAt()%></td>
-                </tr>
-            <% } %>
-        <% } else { %>
-            <tr>
-                <td colspan="5" class="text-secondary">등록된 글이 없습니다.</td>
-            </tr>
-        <% } %>
-        </tbody>
-    </table>
-    <nav>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover align-middle text-center mb-5px">
+                <thead class="table-light">
+                    <tr>
+                        <th>글 번호</th>
+                        <th>작성자</th>
+                        <th>제목</th>
+                        <th>조회수</th>
+                        <th>작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% if(list != null && !list.isEmpty()) { %>
+                    <% for(HqBoardDto tmp : list){ %>
+                        <tr>
+                            <td><%=tmp.getNum()%></td>
+                            <td><%=tmp.getWriter()%></td>
+                            <td class="text-start">
+                                <a class="link-dark" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=tmp.getNum()%>">
+                                    <%=tmp.getTitle()%>
+                                </a>
+                            </td>
+                            <td><%=tmp.getViewCount()%></td>
+                            <td><%=tmp.getCreatedAt()%></td>
+                        </tr>
+                    <% } %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" class="text-secondary">등록된 글이 없습니다.</td>
+                    </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <nav class="mb-5">
         <ul class="pagination justify-content-center">
-        <% if(startPageNum != 1) { %>
-            <li class="page-item">
-                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">&lsaquo;</a>
-            </li>
-        <% } %>
+        <% if (startPageNum != 1) { %>
+		  <li class="page-item">
+		    <a class="page-link"
+		       href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp&pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>">이전</a>
+		  </li>
+		<% } else { %>
+		  <li class="page-item disabled">
+		    <span class="page-link">이전</span>
+		  </li>
+		<% } %>
         <% for(int i=startPageNum; i<=endPageNum; i++){ %>
             <li class="page-item <%=i==pageNum ? "active" : ""%>">
                 <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=i%>&keyword=<%=keyword%>"><%=i%></a>
             </li>
         <% } %>
-        <% if(endPageNum < totalPageCount) { %>
-            <li class="page-item">
-                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp?pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">&rsaquo;</a>
-            </li>
-        <% } %>
+        <% if (endPageNum < totalPageCount) { %>
+		  <li class="page-item">
+		    <a class="page-link"
+		       href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp&pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>">다음</a>
+		  </li>
+		<% } else { %>
+		  <li class="page-item disabled">
+		    <span class="page-link">다음</span>
+		  </li>
+		<% } %>
+
         </ul>
     </nav>
 </div>
 </body>
 </html>
+    
