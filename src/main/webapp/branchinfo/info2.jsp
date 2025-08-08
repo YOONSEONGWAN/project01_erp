@@ -50,14 +50,7 @@
                                     <th scope="row">지점장 이름</th>
                                     <td><%= dto.getUser_name() %></td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">비밀번호</th>
-                                    <td>
-                                        <a href="edit-password2.jsp" class="btn btn-outline-secondary btn-sm">
-                                            비밀번호 수정
-                                        </a>
-                                    </td>
-                                </tr>
+                             
                                 <tr>
                                     <th scope="row">지점 주소</th>
                                     <td><%= dto.getBranch_address() %></td>
