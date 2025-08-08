@@ -41,67 +41,97 @@
     <meta charset="UTF-8">
     <title>상품 관리</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-   <style>
-   /* 주석 */
-   /* 상품명 링크 색깔 검은색으로 강제 */
-	a.text-primary {
-	    color: #000 !important;
-	    font-weight: 600;
-	}
-   
-    /* 검색 버튼, 상품 등록 버튼 남색으로 */
-   .btn-primary {
-    background-color: #003366 !important;
-    border-color: #003366 !important;
-    color: white !important;
-    font-weight: 500;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-	}
-	
-	.btn-primary:hover {
-	    background-color: #002244 !important;
-	    border-color: #002244 !important;
-	    color: white !important;
-	}
-	
-	/* 페이지네이션 숫자 기본 상태 */
-	.pagination .page-link {
-	    color: #003366 !important;  /* 남색으로 글자색 */
-	    border-color: #003366 !important; /* 테두리 남색 */
-	}
-	
-	/* 활성화된 페이지네이션 숫자 */
-	.pagination .page-item.active .page-link {
-	    background-color: #003366 !important; /* 남색 배경 */
-	    border-color: #003366 !important;
-	    color: white !important; /* 글자는 흰색 */
-	}
-	
-	/* 페이지네이션 숫자 호버 효과 */
-	.pagination .page-link:hover {
-	    background-color: #002244 !important; /* 진한 남색 배경 */
-	    border-color: #002244 !important;
-	    color: white !important;
-	}
-	</style>
+    <style>
+        a.text-primary {
+            color: #000 !important;
+            font-weight: 600;
+        }
 
+        .btn-primary {
+            background-color: #003366 !important;
+            border-color: #003366 !important;
+            color: white !important;
+            font-weight: 500;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #002244 !important;
+            border-color: #002244 !important;
+            color: white !important;
+        }
+
+        .pagination .page-link {
+            color: #003366 !important;
+            border-color: #003366 !important;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #003366 !important;
+            border-color: #003366 !important;
+            color: white !important;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #002244 !important;
+            border-color: #002244 !important;
+            color: white !important;
+        }
+
+        /* 링크 스타일 */
+        .link-button {
+            color: #0d6efd;
+            text-decoration: none;
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .link-button:hover,
+        .link-button:focus {
+            text-decoration: underline;
+        }
+
+        /* 테이블 전체 테두리, 접합부 모두 확실히 */
+        .table-bordered {
+            border: 1px solid #dee2e6 !important;
+            border-collapse: collapse !important;
+        }
+
+        /* 헤더 : hrm/list.jsp와 동일하게, 부트스트랩 기본 table-secondary 스타일 */
+       .table-bordered thead th {
+		    background-color: #e9ecef !important;  /* hrm/list.jsp와 동일한 부트스트랩 table-secondary 색상 */
+		    color: #212529 !important;              /* 진한 회색 (기본 텍스트색) */
+		    border: 1px solid #dee2e6 !important;
+		    vertical-align: middle !important;
+		    text-align: center !important;
+		}
+
+        }
+
+        /* 바디 : 흰 배경, 테두리 동일 */
+        .table-bordered tbody td {
+            background-color: #fff !important;
+            border: 1px solid #dee2e6 !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container-fluid bg-white p-4">
-    <!-- breadcrumb 추가 시작 -->
+    <!-- breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb">
-      
         <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp">홈</a></li>
         <li class="breadcrumb-item active" aria-current="page">상품 관리</li>
         <li class="breadcrumb-item active" aria-current="page">상품 목록</li>
-       
-        
       </ol>
     </nav>
-    <!-- breadcrumb 추가 끝 -->
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">상품 목록</h3>
@@ -113,7 +143,7 @@
         </form>
     </div>
 
-    <!-- 검색 폼 -->
+    <!-- 검색 -->
     <form action="<%=request.getContextPath()%>/headquater.jsp" method="get" class="d-flex justify-content-end mb-3">
         <input type="hidden" name="page" value="product/list.jsp" />
         <input type="hidden" name="pageNum" value="1" />
@@ -121,13 +151,13 @@
         <button type="submit" class="btn btn-primary">검색</button>
     </form>
 
-    <!-- 상품 테이블 -->
+    <!-- 상품 목록 테이블 -->
     <form action="<%=request.getContextPath()%>/product/delete_checked.jsp" method="post" onsubmit="return confirm('선택한 상품을 삭제하시겠습니까?');">
         <input type="hidden" name="pageNum" value="<%=pageNum%>">
         <input type="hidden" name="keyword" value="<%=keyword%>">
 
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table table-bordered table-hover align-middle text-center">
                 <thead class="table-secondary">
                     <tr>
                         <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"/></th>
@@ -136,58 +166,52 @@
                         <th>설명</th>
                         <th>가격</th>
                         <th>상태</th>
+                        <th>상세 보기</th>
                         <th>수정</th>
                         <th>삭제</th>
                     </tr>
                 </thead>
                 <tbody>
-                <%
-                    if(productList == null || productList.isEmpty()) {
-                %>
-                    <tr><td colspan="8" class="text-center text-muted py-4">검색 결과가 없습니다.</td></tr>
-                <%
-                    } else {
-                        int listSize = productList.size();
-                        for(int i = 0; i < listSize; i++) {
-                            ProductDto dto = productList.get(i);
-                            int number = totalCount - ((pageNum - 1) * pageSize + i);
-                %>
-                    <tr>
-                        <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
-                        <td><%= number %></td>
-                        <td>
-                            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/detail.jsp&num=<%= dto.getNum() %>" class="text-decoration-none fw-semibold text-primary">
-                                <%= dto.getName() %>
-                            </a>
-                        </td>
-                        <td class="text-muted"><%= dto.getDescription() %></td>
-                        <td><%= dto.getPrice() %>원</td>
-                        <td>
-                            <% if("판매중".equals(dto.getStatus())) { %>
-                                <span class="badge bg-success"><%= dto.getStatus() %></span>
-                            <% } else { %>
-                                <span class="badge bg-secondary"><%= dto.getStatus() %></span>
-                            <% } %>
-                        </td>
-                        <td>
-                            <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>" class="btn btn-sm btn-outline-warning">수정</a>
-                        </td>
-                        <td>
-                            <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" onclick="return confirm('삭제하시겠습니까?');" class="btn btn-sm btn-outline-danger">삭제</a>
-                        </td>
-                    </tr>
-                <%
-                        }
-                    }
-                %>
-                </tbody>
+    <%
+        if(productList == null || productList.isEmpty()) {
+    %>
+        <tr><td colspan="9" class="text-center text-muted py-4">검색 결과가 없습니다.</td></tr>
+    <%
+        } else {
+            int listSize = productList.size();
+            for(int i = 0; i < listSize; i++) {
+                ProductDto dto = productList.get(i);
+                int number = totalCount - ((pageNum - 1) * pageSize + i);
+    %>
+        <tr>
+            <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
+            <td><%= number %></td>
+            <td><%= dto.getName() %></td>
+            <td class="text-muted"><%= dto.getDescription() %></td>
+            <td><%= dto.getPrice() %>원</td>
+            <td style="color: black;"><%= dto.getStatus() %></td>
+            <td>
+                <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/detail.jsp&num=<%= dto.getNum() %>" class="link-button">상세</a>
+            </td>
+            <td>
+                <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>" class="link-button">수정</a>
+            </td>
+            <td>
+                <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" onclick="return confirm('삭제하시겠습니까?');" class="link-button">삭제</a>
+            </td>
+        </tr>
+    <%
+            }
+        }
+    %>
+    </tbody>
             </table>
         </div>
 
         <button type="submit" class="btn btn-danger btn-sm mt-2">선택 삭제</button>
     </form>
 
-    <!-- 페이지 네비게이션 -->
+    <!-- 페이지네이션 -->
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             <% if(pageNum > 1) { %>
@@ -225,8 +249,6 @@ function toggleAll(source) {
     checkboxes.forEach(cb => cb.checked = source.checked);
 }
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
 
 </body>
 </html>
