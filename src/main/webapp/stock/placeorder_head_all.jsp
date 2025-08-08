@@ -36,23 +36,22 @@
     <jsp:include page="/WEB-INF/include/resource.jsp"/>
 
     <style>
-        /* 화면 전체 높이, 플렉스박스 중앙 정렬 */
         html, body {
             height: 100%;
             margin: 0;
             background-color: #f8f9fa;
         }
         body {
-        background-color: #f8f9fa;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-    	}
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
         .container {
             max-width: 960px;
             width: 100%;
-            max-height: calc(100vh - 80px); /* padding 위아래 40px씩 빼고 남은 공간 */
-            overflow-y: auto; /* 내용이 길면 스크롤 */
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
             background: #fff;
             padding: 20px 30px;
             box-shadow: 0 0 8px rgba(0,0,0,0.1);
@@ -60,108 +59,123 @@
             box-sizing: border-box;
         }
         h2 {
-            text-align: center;
+            text-align: left;
             font-weight: bold;
             margin-bottom: 20px;
+            font-size: 24px;
+            color: #212529;
         }
         .search-bar {
             display: flex;
             justify-content: flex-end;
             margin-bottom: 10px;
+            gap: 8px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        table th {
-            background-color: #007bff !important;
-            color: white !important;
-            text-align: center;
-            padding: 8px;
+        thead tr {
+            background-color: #e1e4e8;
         }
-        table td {
+        thead th {
+            color: #212529;
+            padding: 0.5rem 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        tbody td {
+            padding: 0.45rem 0.75rem;
+            border-top: 1px solid #dee2e6;
             text-align: center;
             vertical-align: middle;
-            padding: 6px;
         }
         .btn {
             cursor: pointer;
             border: 1px solid transparent;
-            padding: 0.25rem 0.5rem;
+            padding: 0.25rem 0.6rem;
             font-size: 0.875rem;
-            border-radius: 0.2rem;
-            transition: background-color 0.15s ease-in-out;
-            display: inline-block;
+            border-radius: 4px;
+            transition: all 0.2s ease-in-out;
             text-decoration: none;
+            display: inline-block;
         }
         .btn-primary {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
+            background-color: #003366 !important;
+            border-color: #003366 !important;
+            color: white !important;
+            font-weight: 500;
         }
         .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-            color: white;
+            background-color: #002244 !important;
+            border-color: #002244 !important;
+            color: white !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         .btn-outline-primary {
-            color: #007bff;
-            border-color: #007bff;
+            color: #003366;
+            border-color: #003366;
             background-color: transparent;
         }
         .btn-outline-primary:hover {
-            background-color: #007bff;
+            background-color: #003366;
             color: white;
         }
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #6c757d;
-            background-color: transparent;
-        }
-        .btn-outline-secondary:hover {
-            background-color: #6c757d;
-            color: white;
-        }
-        /* 페이지네비게이션 스타일 */
+
         .pagination {
-            display: flex;
-            list-style: none;
-            padding-left: 0;
-            justify-content: center;
-            gap: 5px;
-            margin-top: 15px;
-        }
-        .pagination .page-item {
-            display: inline;
-        }
-        .pagination .page-link {
-            color: #007bff;
-            text-decoration: none;
-            padding: 4px 8px;
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            user-select: none;
-            display: inline-block;
-        }
-        .pagination .page-item.disabled .page-link,
-        .pagination .page-item.disabled .page-link:hover {
-            color: #6c757d;
-            pointer-events: none;
-            background-color: #fff;
-            border-color: #dee2e6;
-            cursor: default;
-        }
-        .pagination .page-item.active .page-link {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: white;
-            cursor: default;
-        }
-        .text-center {
-            text-align: center;
-            margin-top: 20px;
-        }
+		    display: inline-flex;        /* 버튼들이 한 줄에 붙게 */
+		    border: 1px solid #1a2c49;  /* 전체 테두리 */
+		    border-radius: 6px;          /* 전체 둥근 테두리 */
+		    overflow: hidden;            /* 둥근 테두리에서 버튼 넘치지 않도록 */
+		    padding: 0;
+		    margin-top: 20px;
+		    justify-content: center !important;
+		}
+		
+		.pagination .page-item {
+		    margin: 0;                   /* 버튼 사이 간격 제거 */
+		}
+		
+		.pagination .page-link {
+		    border: none;                /* 개별 버튼 테두리 제거 */
+		    padding: 6px 16px;
+		    font-size: 14px;
+		    color: #1a2c49;
+		    background-color: white;
+		    cursor: pointer;
+		    user-select: none;
+		    display: block;
+		    transition: background-color 0.2s ease;
+		}
+		
+		.pagination .page-item.active .page-link {
+		    background-color: #1a2c49;
+		    color: white;
+		    cursor: default;
+		    pointer-events: none;
+		}
+		
+		.pagination .page-item.disabled .page-link {
+		    color: #6c757d;
+		    background-color: white;
+		    cursor: default;
+		    pointer-events: none;
+		}
+		
+		.pagination .page-link:hover:not(.disabled):not(.active) {
+		    background-color: #e9ecef;
+		    color: #1a2c49;
+		}
+		
+		/* 버튼들 사이에만 좌우 구분선 추가 */
+		.pagination .page-item:not(:last-child) .page-link {
+		    border-right: 1px solid #1a2c49;
+		}
+		.pagination .page-item:first-child .page-link,
+		.pagination .page-item:last-child .page-link {
+    		color: #1a2c49 !important;
+		}
     </style>
 </head>
 <body>
@@ -171,22 +185,23 @@
             <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
             <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder.jsp">발주 관리</a></li>
             <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head.jsp">본사 발주</a></li>
-            <li class="breadcrumb-item active" aria-current="page"> 전체 발주 내역</li>
+            <li class="breadcrumb-item active" aria-current="page">전체 발주 내역</li>
         </ol>
     </nav>
-    <h2>전체 발주 내역</h2>
+
+    <h2>전체 발주 내역(본사)</h2>
 
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/headquater.jsp">
-	    <input type="hidden" name="page" value="/stock/placeorder_head_all.jsp" />
-	    <input type="text" name="managerKeyword" class="form-control form-control-sm me-2"
-	           style="max-width: 200px;"
-	           placeholder="담당자 검색" value="<%= managerKeyword %>">
-	    <button type="submit" class="btn btn-primary btn-sm">검색</button>
-	</form>
+        <input type="hidden" name="page" value="/stock/placeorder_head_all.jsp" />
+        <input type="text" name="managerKeyword" class="form-control form-control-sm me-2"
+               style="max-width: 200px;"
+               placeholder="담당자 검색" value="<%= managerKeyword %>">
+        <button type="submit" class="btn btn-primary btn-sm">검색</button>
+    </form>
 
     <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead>
+        <table class="table table-hover">
+            <thead class="table-secondary">
                 <tr>
                     <th>발주 ID</th>
                     <th>발주일</th>
@@ -200,12 +215,15 @@
                 <% } else {
                     for (PlaceOrderHeadDto order : list) { %>
                     <tr>
-                        <td><%= order.getOrder_id() %></td>
+                    	<td>
+                            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_detail.jsp?order_id=<%= order.getOrder_id() %>"
+                               ><%= order.getOrder_id() %></a>
+                        </td>
                         <td><%= order.getOrder_date() %></td>
                         <td><%= order.getManager() %></td>
                         <td>
                             <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_detail.jsp?order_id=<%= order.getOrder_id() %>"
-                               class="btn btn-sm btn-outline-primary">상세 보기</a>
+                               >상세</a>
                         </td>
                     </tr>
                 <% }} %>
@@ -213,12 +231,12 @@
         </table>
     </div>
 
-    <!-- 페이지네비게이션 -->
-    <nav aria-label="Page navigation">
+     <!-- 페이지네비게이션 -->
+    <nav aria-label="Page navigation" style="text-align: center;">
         <ul class="pagination pagination-sm">
             <% if (currentPage > 1) { %>
                 <li class="page-item">
-                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_all.jsp?page=<%= currentPage -1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
+                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_all.jsp&page=<%= currentPage -1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
                 </li>
             <% } else { %>
                 <li class="page-item disabled"><span class="page-link">이전</span></li>
@@ -229,21 +247,19 @@
                     <li class="page-item active"><span class="page-link"><%= i %></span></li>
                 <% } else { %>
                     <li class="page-item">
-                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_all.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
+                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_all.jsp&page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
                     </li>
             <% }} %>
 
             <% if (currentPage < totalPages) { %>
                 <li class="page-item">
-                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_all.jsp?page=<%= currentPage +1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
+                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_head_all.jsp&page=<%= currentPage + 1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
                 </li>
             <% } else { %>
                 <li class="page-item disabled"><span class="page-link">다음</span></li>
             <% } %>
         </ul>
     </nav>
-
-    
 </div>
 </body>
 </html>

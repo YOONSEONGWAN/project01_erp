@@ -18,6 +18,7 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
 <!DOCTYPE html>
 <html>
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>발주 현황</title>
 
@@ -25,8 +26,8 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
         table { border-collapse: collapse; width: 850px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
         .btn { padding: 4px 14px; border-radius: 5px; font-size: 0.95em; }
-        .btn-update { background: #695cff; color: #fff; border: none; }
-        .btn-delete { background: #ff8b8b; color: #fff; border: none; }
+        .btn-update { background: #003366; color: #fff; border: none; }
+        
     </style>
 </head>
 <body>
@@ -92,7 +93,10 @@ if (orderList == null || orderList.isEmpty()) {
             <form action="${pageContext.request.contextPath}/branch.jsp?page=order/delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
-                <button type="submit" class="btn btn-delete">삭제</button>
+                <button type="submit" class="btn btn-secondary">삭제</button>
+                
+                
+                
             </form>
         </td>
     </tr>
