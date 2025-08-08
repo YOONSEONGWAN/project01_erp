@@ -2,66 +2,76 @@
 <%@page import="dao.SalesDao"%>
 <%@page import="dto.SalesDto"%>
 <%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
     request.setCharacterEncoding("utf-8");
 
     String start = request.getParameter("start");
     String end = request.getParameter("end");
 
-    List<SalesDto> list;
-    if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
-        list = SalesDao.getInstance().getMonthlyAvgStatsBetween(start, end);
-    } else {
-        list = SalesDao.getInstance().getMonthlyAvgStats();
+    int pageNum = 1;
+    if (request.getParameter("pageNum") != null) {
+        pageNum = Integer.parseInt(request.getParameter("pageNum"));
     }
 
+    int pageSize = 10;
+    int startRow = (pageNum - 1) * pageSize + 1;
+    int endRow = pageNum * pageSize;
+
+    SalesDao dao = SalesDao.getInstance();
+
+    boolean hasFilter = start != null && end != null && !start.isEmpty() && !end.isEmpty();
+
+    List<SalesDto> list;
+    int totalRows;
+
+    if (hasFilter) {
+        totalRows = dao.getMonthlyStatsCountBetween(start, end);
+        list = dao.getMonthlyAvgStatsPageBetween(start, end, startRow, endRow);
+    } else {
+        totalRows = dao.getMonthlyStatsCountBetween("2000-01-01", "2099-12-31");
+        list = dao.getMonthlyAvgStatsPageBetween("2000-01-01", "2099-12-31", startRow, endRow);
+    }
+
+    int totalPages = (int)Math.ceil(totalRows / (double)pageSize);
     NumberFormat nf = NumberFormat.getInstance();
 %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>/headquater-sales/monthly-avg.jsp</title>
-</head>
-<body>
-    <h1>월 평균 매출 통계</h1>
 
-    <!-- 날짜 필터
-    <form method="get" action="<%=request.getContextPath()%>/sales/monthly-avg.jsp">
-        시작일: <input type="date" name="start" value="<%=start != null ? start : ""%>">
-        종료일: <input type="date" name="end" value="<%=end != null ? end : ""%>">
-        <button type="submit">조회</button>
-         -->
-    </form>
+<h2 class="mb-2">월간 평균 매출</h2>
 
-    <br />
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>번호</th>
+            <th>월</th>
+            <th>지점</th>
+            <th>총 매출</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%
+            int index = startRow;
+            for (SalesDto dto : list) {
+        %>
+        <tr>
+            <td><%= index++ %></td>
+            <td><%= dto.getPeriod() %></td>
+            <td><%= dto.getBranch_name() %></td>
+            <td><%= nf.format(dto.getTotalSales()) %> 원</td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
 
-	<table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>번호</th>
-                <th>기간</th>
-                <th>지점</th>
-                <th>총 매출</th>
-                <th>평균 매출</th>
-            </tr>
-        </thead>
-        <tbody>
-            <%
-                int index = 1;
-                for(SalesDto dto : list) {
-            %>
-                <tr>
-                    <td><%= index++ %></td>
-                    <td><%= dto.getPeriod() %></td>
-                    <td><%= dto.getBranch_name() %></td>
-                    <td><%= nf.format(dto.getTotalSales()) %> 원</td>
-                    <td><%= nf.format(dto.getAverageSales()) %> 원</td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
-</body>
-</html>
+<nav>
+    <ul class="pagination justify-content-center">
+        <% for (int i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= i == pageNum ? "active" : "" %>">
+            <a class="page-link"
+               href="<%= request.getContextPath() %>/headquater.jsp?page=headquater/sales.jsp<%= start != null ? "&start=" + start : "" %><%= end != null ? "&end=" + end : "" %>&view=monthly-avg&pageNum=<%=i%>">
+                <%= i %>
+            </a>
+        </li>
+        <% } %>
+    </ul>
+</nav>

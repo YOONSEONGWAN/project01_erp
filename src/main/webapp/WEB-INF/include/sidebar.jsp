@@ -15,6 +15,86 @@
 
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
 %>
+
+<style>
+  .submenu {
+    width: 180px;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  /* 서버에서 open 클래스 붙은 건 바로 보이게 height auto 처리 */
+  .submenu.open {
+    height: auto !important;
+  }
+
+  .submenu li {
+    white-space: normal;
+  }
+
+  .submenu li a.nav-link {
+    padding-left: 0.5rem;
+  }
+
+  #toggleProductMenu.active {
+    font-weight: 700;
+    color: #0d6efd;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('toggleProductMenu');
+    const submenu = document.getElementById('productMenu');
+
+    // 초기 열림 상태는 서버에서 결정해서 open 클래스 붙여놨음
+    const isOpen = submenu.classList.contains('open');
+
+    function openMenu() {
+      submenu.style.height = submenu.scrollHeight + 'px';
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      toggleBtn.classList.add('active');
+      submenu.classList.add('open');
+
+      setTimeout(() => {
+        submenu.style.height = 'auto';
+      }, 300);
+    }
+
+    function closeMenu() {
+      submenu.style.height = submenu.scrollHeight + 'px';
+      submenu.offsetHeight; // 강제 리플로우
+      submenu.style.height = '0';
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleBtn.classList.remove('active');
+      submenu.classList.remove('open');
+    }
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (submenu.classList.contains('open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    // 초기 로딩 시 active 상태 세팅
+    if (isOpen) {
+      toggleBtn.classList.add('active');
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      submenu.style.height = 'auto';
+    } else {
+      toggleBtn.classList.remove('active');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      submenu.style.height = '0';
+    }
+  });
+</script>
 	
 	<nav id="sidebar" class="bg-light border-end" style="width: 250px; min-height: 100vh; flex-shrink: 0;">
 	  <div class="p-3">
@@ -108,13 +188,13 @@
 	           onclick="event.preventDefault(); toggleSubmenu('salesMenu', this);">
 	          <i class="bi <%= isSalesPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
 	          <i class="bi <%= isSalesPage ? "bi-folder2-open" : "bi-folder" %>"></i>
-	          매출/회계
+	          매출 관리
 	        </a>
 	        <ul id="salesMenu" class="submenu <%= isSalesPage ? "open" : "" %>" style="padding-left: 3rem;">
 	          <li>
 	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/sales.jsp"
 	               class="nav-link <%= isSalesPage ? "active" : "" %>">
-	              <i class="bi bi-folder"></i> 매출/회계 페이지
+	              <i class="bi bi-folder"></i> 매출 페이지
 	            </a>
 	          </li>
 	        </ul>

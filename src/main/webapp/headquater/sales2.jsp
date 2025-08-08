@@ -39,24 +39,9 @@
 <head>
     <meta charset="UTF-8">
     <title>매출 통계 통합 페이지</title>
+    <!-- ✅ Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-		.btn-primary {
-			background-color: #003366 !important;
-			border-color: #003366 !important;
-			color: #fff !important;
-			font-weight: 500;
-			border-radius: 6px;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
-		}
-		
-		.btn-primary:hover {
-			background-color: #002244 !important;
-			border-color: #002244 !important;
-			color: #fff !important;
-		}
-</style>
-    
+    <jsp:include page="/WEB-INF/include/resource.jsp" />
 </head>
 <body>
 
@@ -64,7 +49,7 @@
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=index/headquaterindex.jsp">Home</a></li>
-		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/slaes.jsp">매출 관리</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/slaes.jsp">매출/회계 관리</a></li>
 		    <li class="breadcrumb-item active" aria-current="page">매출 목록</li>
 		  </ol>
 		</nav>
@@ -78,7 +63,7 @@
 					<input type="hidden" name="page" value="headquater/sales.jsp" />
 					<div class="col-md-4">
 						<label class="form-label">통계 보기</label> <select name="view"
-							class="form-select stat-select">
+							class="form-select">
 							<option value="">통계 항목 선택</option>
 							<optgroup label="총 매출">
 								<option value="weekly"
@@ -145,13 +130,16 @@
 							name="end" value="<%=end != null ? end : ""%>"
 							class="form-control">
 					</div>
-						<div class="col-md-2">
-						  <button type="submit" class="btn btn-primary w-100 mt-2">조회</button>
-						  <a href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/sales.jsp"
-						     class="btn btn-primary w-100 mt-2">초기화</a>
-						</div>
+					<div class="col-md-2">
+						<button type="submit" class="btn btn-outline-secondary w-100 mt-2">조회</button>
+						<a
+							href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/sales.jsp"
+							class="btn btn-outline-secondary w-100 mt-2">초기화</a>
+					</div>
+
 				</form>
 
+				<!-- ✅ 통계 요약 정보 -->
             <% if (dto != null) { %>
                 <div class="alert alert-light border">
                     <strong>조회 범위:</strong> <%=start%> ~ <%=end%><br/>
@@ -175,8 +163,8 @@
 			<% if (view == null || view.isEmpty()) { %>
 			    <h4 class="mt-5">전체 매출 목록</h4>
 			    <div class="table-responsive">
-			        <table class="table table-hover align-middle">
-			            <thead class="table-secondary">
+			        <table class="table table-bordered">
+			            <thead class="table-light">
 			                <tr>
 			                    <th>매출 번호</th>
 			                    <th>지점 이름</th>
