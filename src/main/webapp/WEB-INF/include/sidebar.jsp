@@ -60,9 +60,21 @@
 	        </a>
 	        <ul id="branchMenu" class="submenu <%= isBranchPage ? "open" : "" %>" style="padding-left: 3rem;">
 	          <li>
+	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/insert-form.jsp"
+	               class="nav-link <%= "branch-admin/insert-form.jsp".equals(pageParam) ? "active" : "" %>">
+	              <i class="bi bi-folder"></i> 지점 등록
+	            </a>
+	          </li>
+	          <li>
 	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp"
 	               class="nav-link <%= "branch-admin/list.jsp".equals(pageParam) ? "active" : "" %>">
 	              <i class="bi bi-folder"></i> 지점 목록
+	            </a>
+	          </li>
+	          <li>
+	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp"
+	               class="nav-link <%= "branch-admin/user-list.jsp".equals(pageParam) ? "active" : "" %>">
+	              <i class="bi bi-folder"></i> 등급 관리
 	            </a>
 	          </li>
 	        </ul>
