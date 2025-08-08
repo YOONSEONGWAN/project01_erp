@@ -22,9 +22,7 @@
     <meta charset="UTF-8">
     <title>기간별 매출 통계</title>
 </head>
-<body>
-    <h1>📆 날짜 범위 기반 매출 통계</h1>
-
+<body class="container-fluid px-0">
    	<form method="get" action="<%= request.getContextPath() %>/sales/sales-range.jsp">
 
 

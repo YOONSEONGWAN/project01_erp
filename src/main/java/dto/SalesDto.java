@@ -22,6 +22,9 @@ public class SalesDto {
 
     private String topBranchName;
     private int topBranchSales;
+
+    private String month;
+    private String sales_date;
     
 	public int getSales_id() {
 		return sales_id;
@@ -125,7 +128,20 @@ public class SalesDto {
 	public void setTopBranchSales(int topBranchSales) {
 		this.topBranchSales = topBranchSales;
 	}
+	public String getMonth() {
+		return month;
+	}
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	public String getSales_date() {
+		return sales_date;
+	}
+	public void setSales_date(String sales_date) {
+		this.sales_date = sales_date;
+	}
     
+  
     
     
 }

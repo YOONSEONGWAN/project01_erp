@@ -18,14 +18,9 @@
 <head>
 <meta charset="UTF-8">
 <title>/userp/userpinfo.jsp</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 </head>
 
 <body>
-	 <jsp:include page="/WEB-INF/include/navbar.jsp">
-        <jsp:param value="index" name="thisPage"/>
-    </jsp:include>
-
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -58,7 +53,7 @@
                             <tr>
                                 <th>비밀번호</th>
                                 <td>
-                                    <a href="edit-password.jsp" class="btn btn-outline-secondary btn-sm">
+                                    <a href="<%=request.getContextPath()%>/branch.jsp?page=userp/edit-password.jsp" class="btn btn-outline-secondary btn-sm">
                                         비밀번호 수정
                                     </a>
                                 </td>
@@ -82,7 +77,7 @@
                         </table>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="edit.jsp" class="btn btn-primary">
+                        <a href="<%=request.getContextPath()%>/branch.jsp?page=userp/edit.jsp" class="btn btn-primary">
                             <i class="bi bi-person-lines-fill"></i> 개인 정보 수정
                         </a>
                         <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">

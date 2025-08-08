@@ -17,8 +17,9 @@
     <meta charset="UTF-8">
     <title>상품 상세</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- ✅ Bootstrap Icons 추가 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        /* 화면 꽉 채우기 위해 기본 여백 제거 */
         html, body {
             margin: 0;
             padding: 0;
@@ -29,11 +30,10 @@
             padding: 0 !important;
         }
         .container {
-            max-width: 600px !important;  /* 화면 가로폭 600px로 제한 */
-            margin: 0 auto !important;    /* 좌우 중앙 정렬 */
-            padding: 0 15px !important;   /* 좌우 여백 유지 */
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            padding: 0 15px !important;
         }
-
         .card {
             margin: 0;
             border-radius: 0;
@@ -55,13 +55,11 @@
 		    color: white !important;
 		    font-weight: 600;
 		}
-		
 		.table-secondary {
-		    background-color: #e6ecf3 !important; /* 연한 남색 느낌 */
+		    background-color: #e6ecf3 !important;
 		    color: #003366 !important;
 		    font-weight: 600;
 		}
-		
 		.btn-primary, .btn-outline-primary {
 		    background-color: #003366 !important;
 		    border-color: #003366 !important;
@@ -72,25 +70,21 @@
 		    box-shadow: 0 2px 6px rgba(0, 51, 102, 0.5);
 		    transition: background-color 0.3s ease, border-color 0.3s ease;
 		}
-		
 		.btn-primary:hover, .btn-outline-primary:hover {
 		    background-color: #002244 !important;
 		    border-color: #002244 !important;
 		    color: white !important;
 		    text-decoration: none;
 		}
-		
 		.btn-outline-primary {
 		    background-color: transparent !important;
 		    color: #003366 !important;
 		    box-shadow: none;
 		}
-		
 		.btn-outline-primary:hover {
 		    background-color: #003366 !important;
 		    color: white !important;
 		}
-		
 		.btn-secondary {
 		    background-color: #5a6978 !important;
 		    border-color: #5a6978 !important;
@@ -100,13 +94,11 @@
 		    height: 38px;
 		    box-shadow: none;
 		}
-		
 		.btn-secondary:hover {
 		    background-color: #434f60 !important;
 		    border-color: #434f60 !important;
 		    color: white !important;
-		}
-		        
+		}	        
     </style>
 </head>
 <body>
@@ -174,7 +166,10 @@
                     </div>
 
                     <div>
-                        <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp" class="btn btn-secondary">← 목록으로</a>
+                        <!-- ✅ 목록 버튼 햄버거 아이콘 적용 -->
+                        <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp" class="btn btn-secondary">
+                            <i class="bi bi-list"></i> 목록
+                        </a>
                     </div>
 
                     <div>
@@ -191,7 +186,9 @@
                     존재하지 않는 상품입니다.
                 </div>
                 <div class="text-center">
-                    <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp" class="btn btn-secondary">← 목록으로</a>
+                    <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/list.jsp" class="btn btn-secondary">
+                        <i class="bi bi-list"></i> 목록
+                    </a>
                 </div>
             <% } %>
         </div>
