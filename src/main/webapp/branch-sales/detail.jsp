@@ -4,41 +4,37 @@
 <%
 request.setCharacterEncoding("UTF-8");
 
-    // 로그인 세션 확인
-    String branchId = (String)session.getAttribute("branchId");
-    if(branchId == null){
-        response.sendRedirect(request.getContextPath() + "/userp/branchlogin-form.jsp");
-        return;
-    }
+// 로그인 세션 확인
+String branchId = (String)session.getAttribute("branchId");
+if(branchId == null){
+    response.sendRedirect(request.getContextPath() + "/userp/branchlogin-form.jsp");
+    return;
+}
 
-    // 매출 ID 파라미터
-    int salesId = Integer.parseInt(request.getParameter("salesId"));
+// 매출 ID 파라미터
+int salesId = Integer.parseInt(request.getParameter("salesId"));
 
-    // 매출 정보 조회
-    BranchSalesDto dto = BranchSalesDao.getInstance().getById(salesId, branchId);
+// 매출 정보 조회
+BranchSalesDto dto = BranchSalesDao.getInstance().getById(salesId, branchId);
 
-    String cpath = request.getContextPath();
+String cpath = request.getContextPath();
 %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>/branch-sales/detail.jsp</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<jsp:include page="/WEB-INF/include/resource.jsp"/>
 </head>
 <body>
 <div class="container mt-3">
 
-<%
-    if(dto == null){
-%>
+<% if(dto == null){ %>
     <script>
         alert("권한이 없거나 존재하지 않는 매출입니다.");
         history.back();
     </script>
-<%
-    } else {
-%>
+<% return; } %>
 
     <h2>매출 상세 보기</h2>
 
@@ -52,15 +48,11 @@ request.setCharacterEncoding("UTF-8");
 
     <!-- 버튼 영역 -->
     <div class="mt-3">
-        <a href="<%= cpath %>/branch-sales/update-form.jsp?salesId=<%= dto.getSalesId() %>" class="btn btn-warning">수정</a>
-        <a href="<%= cpath %>/branch-sales/delete.jsp?salesId=<%= dto.getSalesId() %>&branchId=<%= dto.getBranchId() %>" 
+        <a href="<%= cpath %>/branch.jsp?page=branch-sales/update-form.jsp?salesId=<%= dto.getSalesId() %>" class="btn btn-warning">수정</a>
+        <a href="<%= cpath %>/branch.jsp?page=branch-sales/delete.jsp?salesId=<%= dto.getSalesId() %>" 
            class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-        <a href="<%= cpath %>/branch-sales/list.jsp" class="btn btn-secondary">목록</a>
+        <a href="<%= cpath %>/branch.jsp?page=branch-sales/list.jsp" class="btn btn-secondary">목록</a>
     </div>
-
-<%
-    }
-%>
 
 </div>
 </body>

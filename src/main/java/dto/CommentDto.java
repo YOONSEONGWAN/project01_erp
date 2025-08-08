@@ -5,9 +5,6 @@ public class CommentDto {
 	private int num;
 	private String writer;
 	private String content;
-	private String targetUserId;
-	private int groupNum;
-	private int parentNum;
 	private String deleted;
 	private String createdAt;
 	private String profileImage; // 프로필이미지를 출력하기 위한 필드 
@@ -46,25 +43,6 @@ public class CommentDto {
 	}
 	public void setContent(String content) {
 		this.content = content;
-	}
-	public String getTargetUserId() {
-	    return targetUserId;
-	}
-	public void setTargetUserId(String targetUserId) {
-	    this.targetUserId = targetUserId;
-	}
-	
-	public int getGroupNum() {
-		return groupNum;
-	}
-	public void setGroupNum(int groupNum) {
-		this.groupNum = groupNum;
-	}
-	public int getParentNum() {
-		return parentNum;
-	}
-	public void setParentNum(int parentNum) {
-		this.parentNum = parentNum;
 	}
 	public String getDeleted() {
 		return deleted;

@@ -185,18 +185,20 @@ public class InventoryDao {
 	}
 	
 	public boolean increaseQuantity(int num, int amount) {
-        String sql = "UPDATE Inventory SET quantity = quantity + ? WHERE num = ?";
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, amount);
-            pstmt.setInt(2, num);
-            int count = pstmt.executeUpdate();
-            return count > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	    String sql = "UPDATE Inventory SET quantity = quantity + ? WHERE num = ?";
+	    boolean success = false;
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, amount);
+	        pstmt.setInt(2, num);
+	        int updated = pstmt.executeUpdate();
+	        success = updated > 0;
+	        System.out.println("DEBUG increaseQuantity - num: " + num + ", amount: " + amount + ", updated: " + updated);
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return success;
+	}
 	
 	public boolean updateApproval(int num, String approvalStatus) {
 	    String sql = "UPDATE Inventory SET is_approval = ?, isPlaceOrder = ? WHERE num = ?";
@@ -473,35 +475,22 @@ public class InventoryDao {
 	        } catch (Exception ignored) {}
 	    }
 	}
-	public boolean decreaseQuantity(int inventoryId, int amount) {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    boolean success = false;  // 결과 변수 미리 선언
-	    String sql = """
-	        UPDATE inventory
-	        SET quantity = quantity - ?
-	        WHERE num = ? AND quantity >= ?
-	    """;
-	    try {
-	        conn = new DbcpBean().getConn();
-	        pstmt = conn.prepareStatement(sql);
+	public boolean decreaseQuantity(int num, int amount) {
+	    String sql = "UPDATE Inventory SET quantity = quantity - ? WHERE num = ?";
+	    boolean success = false;
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 	        pstmt.setInt(1, amount);
-	        pstmt.setInt(2, inventoryId);
-	        pstmt.setInt(3, amount);
+	        pstmt.setInt(2, num);
 	        int updated = pstmt.executeUpdate();
-	        success = updated > 0;  // 성공 여부 세팅
+	        success = updated > 0;
+	        System.out.println("DEBUG decreaseQuantity - num: " + num + ", amount: " + amount + ", updated: " + updated);
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if(pstmt != null) pstmt.close();
-	        } catch(Exception e) {}
-	        try {
-	            if(conn != null) conn.close();
-	        } catch(Exception e) {}
 	    }
-	    return success;  // try-catch-finally 밖에서 한 번만 리턴
+	    return success;
 	}
+	
 	public int getCountByKeyword(String keyword) {
 	    int count = 0;
 	    Connection conn = null;
@@ -588,5 +577,103 @@ public class InventoryDao {
 	        }
 	    }
 	    return list;
+	}
+	
+	public boolean increaseQuantity2(int inventoryId, int qty) {
+	    boolean result = false;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+
+	        // 현재 재고량 조회
+	        String selectSql = "SELECT quantity FROM inventory WHERE num = ?";
+	        pstmt = conn.prepareStatement(selectSql);
+	        pstmt.setInt(1, inventoryId);
+	        rs = pstmt.executeQuery();
+
+	        if (!rs.next()) {
+	            // 해당 재고 없음
+	            return false;
+	        }
+
+	        int currentQty = rs.getInt("quantity");
+	        rs.close();
+	        pstmt.close();
+
+	        int newQty = currentQty + qty;
+
+	        // 재고량 업데이트
+	        String updateSql = "UPDATE inventory SET quantity = ? WHERE num = ?";
+	        pstmt = conn.prepareStatement(updateSql);
+	        pstmt.setInt(1, newQty);
+	        pstmt.setInt(2, inventoryId);
+
+	        int updateCount = pstmt.executeUpdate();
+	        result = (updateCount == 1);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if(rs != null) rs.close();
+	            if(pstmt != null) pstmt.close();
+	            if(conn != null) conn.close();
+	        } catch(Exception e) {}
+	    }
+	    return result;
+	}
+
+	public boolean decreaseQuantity2(int inventoryId, int qty) {
+	    boolean result = false;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+
+	        // 현재 재고량 조회
+	        String selectSql = "SELECT quantity FROM inventory WHERE num = ?";
+	        pstmt = conn.prepareStatement(selectSql);
+	        pstmt.setInt(1, inventoryId);
+	        rs = pstmt.executeQuery();
+
+	        if (!rs.next()) {
+	            // 해당 재고 없음
+	            return false;
+	        }
+
+	        int currentQty = rs.getInt("quantity");
+	        if (currentQty < qty) {
+	            // 재고 부족
+	            return false;
+	        }
+	        rs.close();
+	        pstmt.close();
+
+	        int newQty = currentQty - qty;
+
+	        // 재고량 업데이트
+	        String updateSql = "UPDATE inventory SET quantity = ? WHERE num = ?";
+	        pstmt = conn.prepareStatement(updateSql);
+	        pstmt.setInt(1, newQty);
+	        pstmt.setInt(2, inventoryId);
+
+	        int updateCount = pstmt.executeUpdate();
+	        result = (updateCount == 1);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if(rs != null) rs.close();
+	            if(pstmt != null) pstmt.close();
+	            if(conn != null) conn.close();
+	        } catch(Exception e) {}
+	    }
+	    return result;
 	}
 }

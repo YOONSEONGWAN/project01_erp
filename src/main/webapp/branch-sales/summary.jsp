@@ -37,7 +37,7 @@ request.setCharacterEncoding("UTF-8");
 <head>
 <meta charset="UTF-8">
 <title>/branch-sales/summary.jsp</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<jsp:include page="/WEB-INF/include/resource.jsp"/>
 </head>
 <body>
 <div class="container mt-3">
@@ -54,7 +54,7 @@ request.setCharacterEncoding("UTF-8");
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-outline-primary">조회</button>
-            <a href="<%=cpath%>/branch-sales/summary.jsp" class="btn btn-outline-secondary">전체보기</a>
+            <a href="<%=cpath%>/branch.jsp?page=branch-sales/summary.jsp" class="btn btn-outline-secondary">전체보기</a>
         </div>
     </form>
 

@@ -377,7 +377,7 @@ public class HqBoardDao {
 	        String sql = """
 	            SELECT b.num, u.user_name AS writer, b.title, b.content, b.view_count, 
 	                   TO_CHAR(b.created_at, 'YY\"년\" MM\"월\" DD\"일\" HH24:MI') AS created_at,
-	                   u.profile_image AS profileImage,
+	                   u.profile_image AS profileImage, u.role,
                        (SELECT MAX(num) FROM hqboard WHERE num < b.num) AS prevNum,
 	        		   (SELECT MIN(num) FROM hqboard WHERE num > b.num) AS nextNum
 	            FROM hqboard b
@@ -391,6 +391,7 @@ public class HqBoardDao {
 	            dto = new HqBoardDto();
 	            dto.setNum(num);
 	            dto.setWriter(rs.getString("writer"));
+	            dto.setRole(rs.getString("role"));
 	            dto.setTitle(rs.getString("title"));
 	            dto.setContent(rs.getString("content"));
 	            dto.setViewCount(rs.getInt("view_count"));

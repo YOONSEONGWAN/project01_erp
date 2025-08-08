@@ -11,6 +11,7 @@
 
     // 현재 로그인 사용자 ID
     String userId = (String) session.getAttribute("userId");
+    String branchId = (String) session.getAttribute("branchId");
 
     // 글 정보 불러오기
     BoardDto dto = BoardDao.getInstance().getData(num, board_type);
@@ -42,10 +43,16 @@
 </head>
 <body>
 <% if (isDeleted) { %>
-    <script>
-        alert("삭제되었습니다.");
-        location.href = "list.jsp?board_type=<%=board_type%>";
-    </script>
+	<script>
+	    alert("삭제되었습니다.");
+	    location.href = "<%= 
+	    	request.getContextPath() + (
+		        "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+		        ? "/headquater.jsp?page=board/list.jsp&board_type=" + board_type 
+		        : "/branch.jsp?page=board/list.jsp&board_type=" + board_type 
+		    )
+	    %>";
+	</script>
 <% } else { %>
     <p>삭제 실패. <a href="view.jsp?num=<%=num%>&board_type=<%=board_type%>">돌아가기</a></p>
 <% } %>
