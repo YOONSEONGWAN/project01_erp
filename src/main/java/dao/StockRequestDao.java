@@ -525,7 +525,7 @@ public class StockRequestDao {
     }
 
 
-    public int getQuantityByOrderId(int detailId) {
+    public int getQuantityByOrderId(int OrderId) {
         int result = -1;
 
         Connection conn = null;
@@ -539,7 +539,7 @@ public class StockRequestDao {
                  WHERE detail_id = ?
             """;
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, detailId);
+            pstmt.setInt(1, OrderId);
 
             rs = pstmt.executeQuery();
             if (rs.next()) {
