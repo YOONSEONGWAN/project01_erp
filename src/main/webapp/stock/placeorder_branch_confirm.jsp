@@ -86,7 +86,7 @@
                 String product = stockRequestDao.getProductByOrderId(currentOrderId);
                 int currentQty = stockRequestDao.getQuantityByOrderId(currentOrderId);
                 String branchId = stockRequestDao.getBranchIdByOrderId(currentOrderId);
-                int inventoryId = stockRequestDao.getInventoryIdByNum(currentOrderId);
+                int inventoryId = stockRequestDao.getInventoryIdByOrderId(currentOrderId);
 
                 if ("YES".equals(approval)) {
                     boolean decreased = inventoryDao.decreaseQuantity(inventoryId, requestQuantity);

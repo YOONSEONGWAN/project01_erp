@@ -17,57 +17,97 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>입고 상세 내역</title>
-
     <jsp:include page="/WEB-INF/include/resource.jsp"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
         body {
-		    background-color: #f8f9fa;
-		    min-height: 100vh;
-		
-		    margin: 0;
-		    padding: 20px;
-		
-		    /* flex 제거 */
-		    /* display: flex; */
-		    /* flex-direction: column; */
-		    /* justify-content: center; */
-		    /* align-items: center; */
-		}
-        h2 {
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: bold;
+            background-color: #f8f9fa;
         }
-        .table-container {
+
+        .container {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
             max-width: 900px;
-            width: 100%;
+            margin: 0 auto;
         }
-        /* 재고 목록 페이지와 동일한 테이블 헤더 스타일 */
-        table thead th {
-            background-color: #007bff !important;
-            color: white !important;
+
+        nav.breadcrumb {
+            margin-bottom: 16px;
+        }
+
+        nav.breadcrumb .breadcrumb-item {
+            font-size: 0.9rem;
+        }
+
+        nav.breadcrumb .breadcrumb-item a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        nav.breadcrumb .breadcrumb-item.active {
+            color: #6c757d;
+            cursor: default;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 28px;
+            color: #212529;
+            text-align: left;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        thead th {
+            background-color: #e1e4e8;
+            color: #212529;
+            padding: 0.5rem 0.75rem;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+        }
+
+        tbody td {
+            padding: 0.45rem 0.75rem;
+            border-top: none;
+        }
+
+        .table-container {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <nav aria-label="breadcrumb" style="width: 100%; max-width: 900px; margin-bottom: 20px;">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
-        <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp">입고/출고</a></li>
-        <li class="breadcrumb-item active" aria-current="page"> 입고 상세 내역</li>
-      </ol>
+
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp">홈</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp">입고/출고</a></li>
+            <li class="breadcrumb-item active" aria-current="page">입고 상세 내역</li>
+        </ol>
     </nav>
+
+    <!-- 제목 -->
     <h2>입고 상세 내역 (Order ID: <%= orderId %>)</h2>
 
+    <!-- 테이블 -->
     <div class="table-container">
-        <table class="table table-bordered table-hover text-center align-middle">
-            <thead>
+        <table class="table  table-hover text-center align-middle">
+            <thead class="table-secondary">
                 <tr>
                     <th>상품명</th>
                     <th>현재 수량</th>
@@ -88,9 +128,12 @@
                 <% } %>
             </tbody>
         </table>
-
-       
+        <div class="text-center mt-4">
+	    	<a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/inandout.jsp" 
+	        	class="btn btn-secondary"><i class="bi bi-list"></i> 목록</a>
+	    </div>
     </div>
+</div>
 
 </body>
 </html>

@@ -10,7 +10,7 @@
     boolean isBranchPage = pageParam != null && pageParam.startsWith("branch-admin/");
     boolean isBoardPage = pageParam != null && pageParam.startsWith("board/");
     boolean isSalesPage = "headquater/sales.jsp".equals(pageParam);
-    boolean isStockPage = "headquater/stock.jsp".equals(pageParam);
+    boolean isStockPage = pageParam != null && pageParam.contains("stock/");
     boolean isHqBoardPage = pageParam != null && pageParam.startsWith("hqboard/");
 
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");

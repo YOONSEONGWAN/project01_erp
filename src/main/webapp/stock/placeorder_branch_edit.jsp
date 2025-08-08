@@ -80,7 +80,7 @@ try {
         </script>
 <%
     } else {
-%>
+%>S
         <script>
             alert("상태 변경 실패. 다시 시도해주세요.");
             history.back();
