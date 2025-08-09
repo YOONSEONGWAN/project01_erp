@@ -209,7 +209,7 @@
         		</li>
         	<%} %>
 				<li class="page-item">
-					<a class="page-link" href=""><%=pageNum %></a>
+					<a class="page-link" href="#"><%=pageNum %></a>
 				</li>
 			<%if(pageNum != totalPageCount){ %>
 				<li class="page-item">
