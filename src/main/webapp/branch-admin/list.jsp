@@ -31,7 +31,7 @@
 	final int PAGE_ROW_COUNT=10;
 	
 	//하단 페이지를 몇개씩 표시할 것인지
-	final int PAGE_DISPLAY_COUNT=5;
+	final int PAGE_DISPLAY_COUNT=1;
 
 	//보여줄 페이지의 시작 ROWNUM
 	int startRowNum=1+(pageNum-1)*PAGE_ROW_COUNT; //공차수열
@@ -203,6 +203,20 @@
     <!-- 페이지네이션 -->
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
+        	<%if(pageNum != 1){ %>
+        		<li class="page-item">
+        			<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp&pageNum=<%=pageNum-1%>&keyword=<%=keyword%>&status=<%=status%>">이전</a>
+        		</li>
+        	<%} %>
+				<li class="page-item">
+					<a class="page-link" href="#"><%=pageNum %></a>
+				</li>
+			<%if(pageNum != totalPageCount){ %>
+				<li class="page-item">
+					<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp&pageNum=<%=pageNum+1%>&keyword=<%=keyword%>&status=<%=status%>">다음</a>
+				</li>
+			<%} %>
+<%--         
             <% if(startPageNum != 1) { %>
                 <li class="page-item">
                     <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp&pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>&status=<%=status%>">&lsaquo;</a>
@@ -220,6 +234,7 @@
                     <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp&pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>&status=<%=status%>">&rsaquo;</a>
                 </li>
             <% } %>
+--%>
         </ul>
     </nav>
 </div>
