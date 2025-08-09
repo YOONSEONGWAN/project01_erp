@@ -14,666 +14,684 @@ import dto.stock.InventoryDto;
 import util.DbcpBean;
 
 public class InventoryDao {
-	
-	private static InventoryDao dao;
-	
-	static {
-		dao=new InventoryDao();
-	}
-	
-	private InventoryDao() {}
-	
+   
+   private static InventoryDao dao;
+   
+   static {
+      dao=new InventoryDao();
+   }
+   
+   private InventoryDao() {}
+   
 
-	public static InventoryDao getInstance() {
-		return dao;
-	}
-	
-	public List<InventoryDto> selectAll() {
-	    List<InventoryDto> list = new ArrayList<>();
+   public static InventoryDao getInstance() {
+      return dao;
+   }
+   
+   public List<InventoryDto> selectAll() {
+        List<InventoryDto> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = """
+                SELECT num, branch_id, product, quantity,
+                       isDisposal, isPlaceOrder, is_approval
+                FROM Inventory
+                ORDER BY branch_id ASC, product ASC
+            """;
 
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
 
-	    try {
-	        conn = new DbcpBean().getConn();
+            while (rs.next()) {
+                InventoryDto dto = new InventoryDto();
+                dto.setNum(rs.getInt("num"));
+                dto.setBranch_id(rs.getInt("branch_id"));
+                dto.setProduct(rs.getString("product"));
+                dto.setQuantity(rs.getInt("quantity"));
+                dto.setDisposal(rs.getBoolean("isDisposal"));
+                dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
+                dto.setIsApproval(rs.getString("is_approval"));
+                list.add(dto);
+            }
 
-	        String sql = """
-	            SELECT num ,branch_id, product, quantity,
-	                   isDisposal, isPlaceOrder, is_approval
-	            FROM Inventory
-	            ORDER BY branch_id ASC, product ASC
-	        """;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	        pstmt = conn.prepareStatement(sql);
-	        rs = pstmt.executeQuery();
+        return list;
+    }
 
-	        while (rs.next()) {
-	            InventoryDto dto = new InventoryDto();
-	            
-	            dto.setNum(rs.getInt("num"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
-	            dto.setProduct(rs.getString("product"));
-	            dto.setQuantity(rs.getInt("quantity"));
-	            dto.setDisposal(rs.getBoolean("isDisposal"));
-	            dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
-	            dto.setIsApproval(rs.getString("is_approval"));
-	            
+    public List<InventoryDto> selectByInventoryId() {
+        List<InventoryDto> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = """
+                SELECT num, branch_id, product, quantity,
+                       isDisposal, isPlaceOrder, is_approval
+                FROM Inventory
+                WHERE branch_id = 1
+                ORDER BY product ASC
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
 
-	            list.add(dto);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+            while (rs.next()) {
+                InventoryDto dto = new InventoryDto();
+                dto.setNum(rs.getInt("num"));
+                dto.setBranch_id(rs.getInt("branch_id"));
+                dto.setProduct(rs.getString("product"));
+                dto.setQuantity(rs.getInt("quantity"));
+                dto.setDisposal(rs.getBoolean("isDisposal"));
+                dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
+                dto.setIsApproval(rs.getString("is_approval"));
+                list.add(dto);
+            }
 
-	    return list;
-	}
-	
-	public List<InventoryDto> selectByInventoryId() {
-	    List<InventoryDto> list = new ArrayList<>();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	    
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+        return list;
+    }
 
-	    try {
-	        conn = new DbcpBean().getConn();
+    public boolean updateDisposal(int num, boolean disposal) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int rowCount = 0;
+        String sql = """
+                UPDATE Inventory 
+                SET isDisposal = ? 
+                WHERE num = ?
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setBoolean(1, disposal);
+            pstmt.setInt(2, num);
+            rowCount = pstmt.executeUpdate();
 
-	        String sql = """
-	            SELECT num ,branch_id, product, quantity,
-	                   isDisposal, isPlaceOrder, is_approval
-	            FROM Inventory
-	            WHERE branch_id = 1
-	            ORDER BY product ASC
-	        """;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	        pstmt = conn.prepareStatement(sql);
-	        rs = pstmt.executeQuery();
+        return rowCount > 0;
+    }
 
-	        while (rs.next()) {
-	            InventoryDto dto = new InventoryDto();
-	            
-	            dto.setNum(rs.getInt("num"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
-	            dto.setProduct(rs.getString("product"));
-	            dto.setQuantity(rs.getInt("quantity"));
-	            dto.setDisposal(rs.getBoolean("isDisposal"));
-	            dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
-	            dto.setIsApproval(rs.getString("is_approval"));
-	            
+    public boolean updateOrder(int num, boolean isPlaceOrder) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int rowCount = 0;
+        String sql = """
+                UPDATE Inventory
+                SET isPlaceOrder = ?
+                WHERE num = ?
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setBoolean(1, isPlaceOrder);
+            pstmt.setInt(2, num);
+            rowCount = pstmt.executeUpdate();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	            list.add(dto);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+        return rowCount > 0;
+    }
 
-	    return list;
-	}
-	
-	public boolean updateDisposal(int num, boolean disposal) {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    int rowCount = 0;
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-	        		UPDATE Inventory 
-	        		SET isDisposal=? 
-	        		WHERE num=?
-	        		""";
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setBoolean(1, disposal);
-	        pstmt.setInt(2, num);
-	        rowCount = pstmt.executeUpdate();
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
-	    }
-	    return rowCount > 0;
-	}
-	
-	public boolean updateOrder(int num, boolean isPlaceOrder) {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    int rowCount = 0;
+    public boolean increaseQuantity(int num, int amount) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int updated = 0;
+        String sql = "UPDATE Inventory SET quantity = quantity + ? WHERE num = ?";
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, num);
+            updated = pstmt.executeUpdate();
 
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-	            UPDATE Inventory
-	            SET isPlaceOrder=?
-	            WHERE num=?
-	        """;
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setBoolean(1, isPlaceOrder);
-	        pstmt.setInt(2, num);
+            
 
-	        rowCount = pstmt.executeUpdate();
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
-	    }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	    return rowCount > 0;
-	}
-	
-	public boolean increaseQuantity(int num, int amount) {
-	    String sql = "UPDATE Inventory SET quantity = quantity + ? WHERE num = ?";
-	    boolean success = false;
-	    try (Connection conn = new DbcpBean().getConn();
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, amount);
-	        pstmt.setInt(2, num);
-	        int updated = pstmt.executeUpdate();
-	        success = updated > 0;
-	        System.out.println("DEBUG increaseQuantity - num: " + num + ", amount: " + amount + ", updated: " + updated);
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return success;
-	}
-	
-	public boolean updateApproval(int num, String approvalStatus) {
-	    String sql = "UPDATE Inventory SET is_approval = ?, isPlaceOrder = ? WHERE num = ?";
-	    try (Connection conn = new DbcpBean().getConn();
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setString(1, approvalStatus);  // "승인", "반려" 등
-	        pstmt.setInt(2, 0);  // 승인/반려 처리 후 발주신청 해제
-	        pstmt.setInt(3, num);
-	        int count = pstmt.executeUpdate();
-	        return count > 0;
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    }
-	}
+        return updated > 0;
+    }
+
+    public boolean updateApproval(int num, String approvalStatus) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int count = 0;
+        String sql = """
+                UPDATE Inventory
+                SET is_approval = ?, isPlaceOrder = 0
+                WHERE num = ?
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, approvalStatus); // "승인", "반려" 등
+            pstmt.setInt(2, num);
+            count = pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+
+        return count > 0;
+    }
 
 
-    
-	
-	public void setZeroQuantity(int num) {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
+    public void setZeroQuantity(int num) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = """
+                UPDATE Inventory
+                SET quantity = 0
+                WHERE num = ?
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, num);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+    }
 
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-	            UPDATE inventory
-	            SET quantity = 0
-	            WHERE num = ?
-	        """;
+    public List<InventoryDto> selectPlaceOrderList() {
+        List<InventoryDto> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = """
+                SELECT num, branch_id, product, quantity, isDisposal, isPlaceOrder, is_approval
+                FROM Inventory
+                WHERE isPlaceOrder = 1 AND is_approval = '대기'
+                ORDER BY num DESC
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
 
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setInt(1, num);
-	        pstmt.executeUpdate();
+            while (rs.next()) {
+                InventoryDto dto = new InventoryDto();
+                dto.setNum(rs.getInt("num"));
+                dto.setBranch_id(rs.getInt("branch_id"));
+                dto.setProduct(rs.getString("product"));
+                dto.setQuantity(rs.getInt("quantity"));
+                dto.setDisposal(rs.getBoolean("isDisposal"));
+                dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
+                dto.setIsApproval(rs.getString("is_approval"));
+                list.add(dto);
+            }
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
-	    }
-	}
-	
-	public List<InventoryDto> selectPlaceOrderList() {
-	    List<InventoryDto> list = new ArrayList<>();
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-	            SELECT num, branch_id, product, quantity, isDisposal, isPlaceOrder, is_approval
-				FROM inventory
-				WHERE isPlaceOrder = '1'
-				AND is_approval = '대기'
-				ORDER BY num DESC
-	        """;
-	        pstmt = conn.prepareStatement(sql);
-	        rs = pstmt.executeQuery();
+        return list;
+    }
 
-	        while (rs.next()) {
-	            InventoryDto dto = new InventoryDto();
-	            dto.setNum(rs.getInt("num"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
-	            dto.setProduct(rs.getString("product"));
-	            dto.setQuantity(rs.getInt("quantity"));
-	            dto.setDisposal(rs.getBoolean("isDisposal"));
-	            dto.setPlaceOrder(rs.getBoolean("isPlaceOrder"));
-	            dto.setIsApproval(rs.getString("is_approval"));
-	            list.add(dto);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {}
-	    }
+    public InventoryDto getByNum(int num) {
+        InventoryDto dto = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = """
+                SELECT num, product, quantity
+                FROM Inventory
+                WHERE num = ?
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, num);
+            rs = pstmt.executeQuery();
 
-	    return list;
-	}
-	
-	
-	
-	public InventoryDto getByNum(int num) {
-	    // InventoryDto 객체의 참조값을 담을 지역변수를 미리 만든다.
-	    InventoryDto dto = null;
+            if (rs.next()) {
+                dto = new InventoryDto();
+                dto.setNum(num);
+                dto.setProduct(rs.getString("product"));
+                dto.setQuantity(rs.getInt("quantity"));
+            }
 
-	    // 필요한 객체를 담을 지역변수를 미리 만든다
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	    try {
-	        conn = new DbcpBean().getConn();
-	        // 실행할 SQL문
-	        String sql = """
-	            SELECT num, product, quantity
-	            FROM Inventory
-	            WHERE num = ?
-	        """;
-	        pstmt = conn.prepareStatement(sql);
-	        // ? 에 값 바인딩
-	        pstmt.setInt(1, num);
-	        // SELECT 문 실행하고 결과를 ResultSet 으로 받아온다
-	        rs = pstmt.executeQuery();
-	        // 만일 select된 row가 있다면
-	        if (rs.next()) {
-	            // 객체 생성 후
-	            dto = new InventoryDto();
-	            // 한 개의 재고 정보를 dto에 담는다
-	            dto.setNum(num); // 번호는 매개변수에서 그대로 사용
-	            dto.setProduct(rs.getString("product"));
-	            dto.setQuantity(rs.getInt("quantity"));
-	            
-	        }
+        return dto;
+    }
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+    public String getProductByNum(int num) {
+        String product = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT product FROM Inventory WHERE num = ?";
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, num);
+            rs = pstmt.executeQuery();
 
-	    return dto;
-	}
-	
-	public String getProductByNum(int num) {
-	    String product = null;
-	    String sql = "SELECT product FROM inventory WHERE num = ?";
-	    try (
-	        Connection conn = new DbcpBean().getConn();
-	        PreparedStatement pstmt = conn.prepareStatement(sql);
-	    ) {
-	        pstmt.setInt(1, num);
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            if (rs.next()) {
-	                product = rs.getString("product");
-	            }
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return product;
-	}
+            if (rs.next()) {
+                product = rs.getString("product");
+            }
 
-	public int getQuantityByNum(int num) {
-	    int quantity = 0;
-	    String sql = "SELECT quantity FROM inventory WHERE num = ?";
-	    try (
-	        Connection conn = new DbcpBean().getConn();
-	        PreparedStatement pstmt = conn.prepareStatement(sql);
-	    ) {
-	        pstmt.setInt(1, num);
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            if (rs.next()) {
-	                quantity = rs.getInt("quantity");
-	            }
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return quantity;
-	}
-	
-	public boolean updatePlaceOrder(int num, boolean placeOrder) {
-	    String sql = "UPDATE Inventory SET isPlaceOrder = ?, is_approval = ? WHERE num = ?";
-	    try (Connection conn = new DbcpBean().getConn();
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, placeOrder ? 1 : 0);
-	        pstmt.setString(2, placeOrder ? "대기" : null);  // 신청 시 대기 상태로 초기화
-	        pstmt.setInt(3, num);
-	        int count = pstmt.executeUpdate();
-	        return count > 0;
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    }
-	}
-	
-	public int getNumByProduct(String product) {
-	    String sql = "SELECT num FROM Inventory WHERE product = ?";
-	    try (Connection conn = new DbcpBean().getConn();
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setString(1, product);
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            if (rs.next()) {
-	                return rs.getInt("num");
-	            }
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return -1;
-	}
-	
-	
-	public boolean updateQuantityByApproval(int num, int oldRequestQty, int newRequestQty, 
-	        String oldApprovalStatus, String newApprovalStatus,
-	        int currentQuantity) {
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	    try {
-	        conn = new DbcpBean().getConn();
-	        conn.setAutoCommit(false);  // 트랜잭션 처리 시작
+        return product;
+    }
 
-	        // 1. 현재 재고 수량 조회
-	        String selectSql = "SELECT quantity FROM Inventory WHERE num = ?";
-	        pstmt = conn.prepareStatement(selectSql);
-	        pstmt.setInt(1, num);
-	        rs = pstmt.executeQuery();
+    public int getQuantityByNum(int num) {
+        int quantity = 0;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT quantity FROM Inventory WHERE num = ?";
+        try {
+            conn = new DbcpBean().getConn();
+           
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, num);
+            rs = pstmt.executeQuery();
 
-	        int currentQty = 0;
-	        if (rs.next()) {
-	            currentQty = rs.getInt("quantity");
-	        }
-	        rs.close();
-	        pstmt.close();
+            if (rs.next()) {
+                quantity = rs.getInt("quantity");
+            }
 
-	        int adjustedQty = currentQty;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	        // 2. 승인 상태에 따라 재고 수량 계산
-	        if ("승인".equals(oldApprovalStatus) && "반려".equals(newApprovalStatus)) {
-	            // 승인 → 반려: quantity를 placeorder_head_detail.current_quantity 로 무조건 맞춤
-	            adjustedQty = currentQuantity;
-	        } else if ("승인".equals(oldApprovalStatus)) {
-	            // 기존 승인 상태였으므로 변경 수량만큼 차감하거나 증가
-	            adjustedQty = currentQty + (newRequestQty - oldRequestQty);
-	        } else if ("승인".equals(newApprovalStatus) && !"승인".equals(oldApprovalStatus)) {
-	            // 반려 → 승인: 새 요청 수량 만큼 증가
-	            adjustedQty = currentQty + newRequestQty;
-	        }
-	        if (adjustedQty < 0) adjustedQty = 0; // 음수 재고 방지
+        return quantity;
+    }
 
-	        // 3. 재고, 승인 상태, 발주 신청 상태 모두 업데이트
-	        String updateSql = "UPDATE Inventory SET quantity = ?, is_approval = ?, isPlaceOrder = ? WHERE num = ?";
-	        pstmt = conn.prepareStatement(updateSql);
-	        pstmt.setInt(1, adjustedQty);
-	        pstmt.setString(2, "대기");  // 여기서 무조건 '대기'로 설정
-	        pstmt.setInt(3, 0); // 발주 신청 해제
-	        pstmt.setInt(4, num);
+    public boolean updatePlaceOrder(int num, boolean placeOrder) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String sql = """
+                UPDATE Inventory
+                SET isPlaceOrder = ?, is_approval = ?
+                WHERE num = ?
+            """;
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, placeOrder ? 1 : 0);
+            pstmt.setString(2, placeOrder ? "대기" : null);
+            pstmt.setInt(3, num);
+            int count = pstmt.executeUpdate();
+            return count > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+    }
 
-	        int updateCount = pstmt.executeUpdate();
+    public int getNumByProduct(String product) {
+        int num = -1;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT num FROM Inventory WHERE product = ?";
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, product);
+            rs = pstmt.executeQuery();
 
-	        if (updateCount == 1) {
-	            conn.commit();
-	            return true;
-	        } else {
-	            conn.rollback();
-	            return false;
-	        }
+            if (rs.next()) {
+                num = rs.getInt("num");
+            }
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        try { if (conn != null) conn.rollback(); } catch (Exception ignored) {}
-	        return false;
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception ignored) {}
-	    }
-	}
-	public boolean decreaseQuantity(int num, int amount) {
-	    String sql = "UPDATE Inventory SET quantity = quantity - ? WHERE num = ?";
-	    boolean success = false;
-	    try (Connection conn = new DbcpBean().getConn();
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, amount);
-	        pstmt.setInt(2, num);
-	        int updated = pstmt.executeUpdate();
-	        success = updated > 0;
-	        System.out.println("DEBUG decreaseQuantity - num: " + num + ", amount: " + amount + ", updated: " + updated);
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return success;
-	}
-	
-	public int getCountByKeyword(String keyword) {
-	    int count = 0;
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-	            SELECT COUNT(*) AS count
-	            FROM Inventory
-	            WHERE product LIKE ?
-	            """;
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setString(1, "%" + keyword + "%");
-	        rs = pstmt.executeQuery();
-	        if(rs.next()) {
-	            count = rs.getInt("count");
-	        }
-	    } catch(Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if(rs != null) rs.close();
-	            if(pstmt != null) pstmt.close();
-	            if(conn != null) conn.close();
-	        } catch(Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    return count;
-	}
-	public List<InventoryDto> selectByKeywordWithPaging(String keyword, int startRow, int itemsPerPage) {
-	    List<InventoryDto> list = new ArrayList<>();
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-	            SELECT * FROM (
-	                SELECT a.*, ROWNUM rnum FROM (
-	                    SELECT num, branch_id, product, quantity, isDisposal, isPlaceOrder, is_approval
-	                    FROM Inventory
-	                    WHERE product LIKE ?
-	                    ORDER BY num
-	                ) a
-	                WHERE ROWNUM <= ?
-	            )
-	            WHERE rnum >= ?
-	            """;
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setString(1, "%" + keyword + "%");
-	        pstmt.setInt(2, startRow + itemsPerPage - 1);  // endRow
-	        pstmt.setInt(3, startRow);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
 
-	        rs = pstmt.executeQuery();
-	        while(rs.next()) {
-	            InventoryDto dto = new InventoryDto();
-	            dto.setNum(rs.getInt("num"));
-	            dto.setBranch_id(rs.getInt("branch_id"));
-	            dto.setProduct(rs.getString("product"));
-	            dto.setQuantity(rs.getInt("quantity"));
-	            
-	            // 문자열 값을 boolean으로 변환
-	            String disposalStr = rs.getString("isDisposal");
-	            dto.setDisposal("YES".equalsIgnoreCase(disposalStr));
-	            
-	            String placeOrderStr = rs.getString("isPlaceOrder");
-	            dto.setPlaceOrder("YES".equalsIgnoreCase(placeOrderStr));
-	            
-	            dto.setIsApproval(rs.getString("is_approval"));
+        return num;
+    }
+   
+   
+   
+   
+    public boolean updateQuantityByApproval(int num, int oldRequestQty, int newRequestQty, 
+            String oldApprovalStatus, String newApprovalStatus,
+            int currentQuantity) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean result = false;
+        String selectSql = "SELECT quantity FROM Inventory WHERE num = ?";
+        String updateSql = "UPDATE Inventory SET quantity = ?, is_approval = ?, isPlaceOrder = ? WHERE num = ?";
+        try {
+            conn = new DbcpBean().getConn();
+            conn.setAutoCommit(false);
 
-	            list.add(dto);
-	        }
-	    } catch(Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if(rs != null) rs.close();
-	            if(pstmt != null) pstmt.close();
-	            if(conn != null) conn.close();
-	        } catch(Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    return list;
-	}
-	
-	public boolean increaseQuantity2(int inventoryId, int qty) {
-	    boolean result = false;
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+            
+            pstmt = conn.prepareStatement(selectSql);
+            pstmt.setInt(1, num);
+            rs = pstmt.executeQuery();
 
-	    try {
-	        conn = new DbcpBean().getConn();
+            int currentQty = 0;
+            if (rs.next()) {
+                currentQty = rs.getInt("quantity");
+            } else {
+                conn.rollback();
+                return false;
+            }
+            rs.close();
+            pstmt.close();
 
-	        // 현재 재고량 조회
-	        String selectSql = "SELECT quantity FROM inventory WHERE num = ?";
-	        pstmt = conn.prepareStatement(selectSql);
-	        pstmt.setInt(1, inventoryId);
-	        rs = pstmt.executeQuery();
+            int adjustedQty = currentQty;
+            if ("승인".equals(oldApprovalStatus) && "반려".equals(newApprovalStatus)) {
+                adjustedQty = currentQuantity;
+            } else if ("승인".equals(oldApprovalStatus)) {
+                adjustedQty = currentQty + (newRequestQty - oldRequestQty);
+            } else if ("승인".equals(newApprovalStatus) && !"승인".equals(oldApprovalStatus)) {
+                adjustedQty = currentQty + newRequestQty;
+            }
+            if (adjustedQty < 0) adjustedQty = 0;
 
-	        if (!rs.next()) {
-	            // 해당 재고 없음
-	            return false;
-	        }
+            
+            pstmt = conn.prepareStatement(updateSql);
+            pstmt.setInt(1, adjustedQty);
+            pstmt.setString(2, "대기");
+            pstmt.setInt(3, 0);
+            pstmt.setInt(4, num);
 
-	        int currentQty = rs.getInt("quantity");
-	        rs.close();
-	        pstmt.close();
+            int updateCount = pstmt.executeUpdate();
+            if (updateCount == 1) {
+                conn.commit();
+                result = true;
+            } else {
+                conn.rollback();
+                result = false;
+            }
 
-	        int newQty = currentQty + qty;
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                if (conn != null) conn.rollback();
+            } catch (Exception ex) {}
+            result = false;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return result;
+    }
 
-	        // 재고량 업데이트
-	        String updateSql = "UPDATE inventory SET quantity = ? WHERE num = ?";
-	        pstmt = conn.prepareStatement(updateSql);
-	        pstmt.setInt(1, newQty);
-	        pstmt.setInt(2, inventoryId);
+    public boolean decreaseQuantity(int num, int amount) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        boolean success = false;
+        String sql = "UPDATE Inventory SET quantity = quantity - ? WHERE num = ?";
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, amount);
+            pstmt.setInt(2, num);
 
-	        int updateCount = pstmt.executeUpdate();
-	        result = (updateCount == 1);
+            int updated = pstmt.executeUpdate();
+            success = updated > 0;
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if(rs != null) rs.close();
-	            if(pstmt != null) pstmt.close();
-	            if(conn != null) conn.close();
-	        } catch(Exception e) {}
-	    }
-	    return result;
-	}
+            
 
-	public boolean decreaseQuantity2(int inventoryId, int qty) {
-	    boolean result = false;
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return success;
+    }
 
-	    try {
-	        conn = new DbcpBean().getConn();
+    public int getCountByKeyword(String keyword) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int count = 0;
+        String sql = "SELECT COUNT(*) AS count FROM Inventory WHERE product LIKE ?";
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, "%" + keyword + "%");
+            rs = pstmt.executeQuery();
 
-	        // 현재 재고량 조회
-	        String selectSql = "SELECT quantity FROM inventory WHERE num = ?";
-	        pstmt = conn.prepareStatement(selectSql);
-	        pstmt.setInt(1, inventoryId);
-	        rs = pstmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return count;
+    }
 
-	        if (!rs.next()) {
-	            // 해당 재고 없음
-	            return false;
-	        }
+    public List<InventoryDto> selectByKeywordWithPaging(String keyword, int startRow, int itemsPerPage) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<InventoryDto> list = new ArrayList<>();
+        String sql = """
+                SELECT * FROM (
+                    SELECT a.*, ROWNUM rnum FROM (
+                        SELECT num, branch_id, product, quantity, isDisposal, isPlaceOrder, is_approval
+                        FROM Inventory
+                        WHERE product LIKE ?
+                        ORDER BY num
+                    ) a
+                    WHERE ROWNUM <= ?
+                )
+                WHERE rnum >= ?
+            """;
 
-	        int currentQty = rs.getInt("quantity");
-	        if (currentQty < qty) {
-	            // 재고 부족
-	            return false;
-	        }
-	        rs.close();
-	        pstmt.close();
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, "%" + keyword + "%");
+            pstmt.setInt(2, startRow + itemsPerPage - 1);
+            pstmt.setInt(3, startRow);
 
-	        int newQty = currentQty - qty;
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                InventoryDto dto = new InventoryDto();
+                dto.setNum(rs.getInt("num"));
+                dto.setBranch_id(rs.getInt("branch_id"));
+                dto.setProduct(rs.getString("product"));
+                dto.setQuantity(rs.getInt("quantity"));
 
-	        // 재고량 업데이트
-	        String updateSql = "UPDATE inventory SET quantity = ? WHERE num = ?";
-	        pstmt = conn.prepareStatement(updateSql);
-	        pstmt.setInt(1, newQty);
-	        pstmt.setInt(2, inventoryId);
+                dto.setDisposal("YES".equalsIgnoreCase(rs.getString("isDisposal")));
+                dto.setPlaceOrder("YES".equalsIgnoreCase(rs.getString("isPlaceOrder")));
+                dto.setIsApproval(rs.getString("is_approval"));
 
-	        int updateCount = pstmt.executeUpdate();
-	        result = (updateCount == 1);
+                list.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return list;
+    }
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if(rs != null) rs.close();
-	            if(pstmt != null) pstmt.close();
-	            if(conn != null) conn.close();
-	        } catch(Exception e) {}
-	    }
-	    return result;
-	}
+    public boolean increaseQuantity2(int inventoryId, int qty) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean result = false;
+        String selectSql = "SELECT quantity FROM inventory WHERE num = ?";
+        String updateSql = "UPDATE inventory SET quantity = ? WHERE num = ?";
+
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(selectSql);
+            pstmt.setInt(1, inventoryId);
+            rs = pstmt.executeQuery();
+
+            if (!rs.next()) {
+                return false;
+            }
+            int currentQty = rs.getInt("quantity");
+            rs.close();
+            pstmt.close();
+
+            int newQty = currentQty + qty;
+
+            
+            pstmt = conn.prepareStatement(updateSql);
+            pstmt.setInt(1, newQty);
+            pstmt.setInt(2, inventoryId);
+
+            int updateCount = pstmt.executeUpdate();
+            result = (updateCount == 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return result;
+    }
+
+    public boolean decreaseQuantity2(int inventoryId, int qty) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean result = false;
+        String selectSql = "SELECT quantity FROM inventory WHERE num = ?";
+        String updateSql = "UPDATE inventory SET quantity = ? WHERE num = ?";
+        try {
+            conn = new DbcpBean().getConn();
+            
+            pstmt = conn.prepareStatement(selectSql);
+            pstmt.setInt(1, inventoryId);
+            rs = pstmt.executeQuery();
+
+            if (!rs.next()) {
+                return false;
+            }
+            int currentQty = rs.getInt("quantity");
+            if (currentQty < qty) {
+                return false;
+            }
+            rs.close();
+            pstmt.close();
+
+            int newQty = currentQty - qty;
+
+            
+            pstmt = conn.prepareStatement(updateSql);
+            pstmt.setInt(1, newQty);
+            pstmt.setInt(2, inventoryId);
+
+            int updateCount = pstmt.executeUpdate();
+            result = (updateCount == 1);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {}
+        }
+        return result;
+    }
 }

@@ -32,9 +32,9 @@
         </table>
 
         <div class="mt-3">
-            <button type="submit" class="btn btn-primary">등록</button>
-            <a href="<%=cpath%>/branch-sales/list.jsp" class="btn btn-secondary">취소</a>
-        </div>
+    		<a href="<%=cpath%>/branch.jsp?page=branch-sales/list.jsp" class="btn btn-secondary">취소</a>
+    		<button type="submit" class="btn btn-primary" style="background-color:#003366; border-color:#003366;">등록</button>
+		</div>
     </form>
 
 </div>

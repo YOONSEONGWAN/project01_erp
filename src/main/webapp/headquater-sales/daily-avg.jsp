@@ -39,34 +39,33 @@
 %>
 
 <h2 class="mb-2">일 평균 매출 (지점별)</h2>
-
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>번호</th>
-            <th>지점</th>
-            <th>총 매출</th>
-            <th>활동 일수</th>
-            <th>일 평균 매출</th>
-        </tr>
-    </thead>
-    <tbody>
-        <%
-            int index = startRow;
-            for (SalesDto dto : list) {
-        %>
-        <tr>
-            <td><%= index++ %></td>
-            <td><%= dto.getBranch_name() %></td>
-            <td><%= nf.format(dto.getTotalSales()) %> 원</td>
-            <td><%= dto.getDayCount() %> 일</td>
-            <td><%= nf.format(dto.getAverageSalesPerDay()) %> 원</td>
-        </tr>
-        <% } %>
-    </tbody>
-</table>
-
-<!-- ✔ 페이지 네비게이션 -->
+<div class="table-responsive">
+	<table class="table table-hover align-middle">
+	    <thead class="table-secondary">
+	        <tr>
+	            <th>번호</th>
+	            <th>지점</th>
+	            <th>총 매출</th>
+	            <th>활동 일수</th>
+	            <th>일 평균 매출</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	        <%
+	            int index = startRow;
+	            for (SalesDto dto : list) {
+	        %>
+	        <tr>
+	            <td><%= index++ %></td>
+	            <td><%= dto.getBranch_name() %></td>
+	            <td><%= nf.format(dto.getTotalSales()) %> 원</td>
+	            <td><%= dto.getDayCount() %> 일</td>
+	            <td><%= nf.format(dto.getAverageSalesPerDay()) %> 원</td>
+	        </tr>
+	        <% } %>
+	    </tbody>
+	</table>
+</div>
 <nav>
     <ul class="pagination justify-content-center">
         <% for (int i = 1; i <= totalPages; i++) { %>

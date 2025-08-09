@@ -26,11 +26,11 @@
     int totalRows;
 
     if (hasFilter) {
-        totalRows = dao.getMonthlyMaxStatsCountBetween(start, end);
-        list = dao.getMonthlyMaxStatsPageBetween(start, end, startRow, endRow);
+        totalRows = dao.getMonthlyMaxCountBetween(start, end);
+        list = dao.getMonthlyMaxSalesDatesBetween(start, end, startRow, endRow);
     } else {
-        totalRows = dao.getMonthlyMaxStatsCountBetween("2000-01-01", "2099-12-31");
-        list = dao.getMonthlyMaxStatsPageBetween("2000-01-01", "2099-12-31", startRow, endRow);
+        totalRows = dao.getMonthlyMaxCountBetween("2000-01-01", "2099-12-31");
+        list = dao.getMonthlyMaxSalesDatesBetween("2000-01-01", "2099-12-31", startRow, endRow);
     }
 
     int totalPages = (int)Math.ceil(totalRows / (double)pageSize);
@@ -38,34 +38,34 @@
 %>
 
 <h2 class="mb-2">월간 최고 매출일</h2>
-
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>번호</th>
-            <th>월</th>
-            <th>지점</th>
-            <th>매출일자</th>
-            <th>매출금액</th>
-        </tr>
-    </thead>
-    <tbody>
-        <%
-            int index = startRow;
-            for (SalesDto dto : list) {
-        %>
-			<tr>
-			    <td><%= index++ %></td>
-			    <td><%= dto.getPeriod() %></td>
-			    <td><%= dto.getBranch_name() %></td>
-			    <td><%= dto.getCreated_at() %></td> 
-			    <td><%= nf.format(dto.getTotalSales()) %> 원</td>
-			</tr>
-
-        <% } %>
-    </tbody>
-</table>
-
+	<div class="table-responsive">
+		<table class="table table-hover align-middle">
+		    <thead class="table-secondary">
+		        <tr>
+		            <th>번호</th>
+		            <th>월</th>
+		            <th>지점</th>
+		            <th>매출일자</th>
+		            <th>매출금액</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <%
+		            int index = startRow;
+		            for (SalesDto dto : list) {
+		        %>
+					<tr>
+					    <td><%= index++ %></td>
+					    <td><%= dto.getPeriod() %></td>
+					    <td><%= dto.getBranch_name() %></td>
+					    <td><%= dto.getMaxSalesDate() %></td> 
+					    <td><%= nf.format(dto.getTotalSales()) %> 원</td>
+					</tr>
+		
+		        <% } %>
+		    </tbody>
+		</table>
+	</div>
 <nav>
     <ul class="pagination justify-content-center">
         <% for (int i = 1; i <= totalPages; i++) { %>
