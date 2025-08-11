@@ -14,30 +14,19 @@
 %> 
 
 
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>info2</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-
 </head>
-
 <body>
-		 <jsp:include page="/WEB-INF/include/navbar.jsp">
-        <jsp:param value="index" name="thisPage"/>
-    </jsp:include>
-
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header text-white" style="background-color: #003366;">
                         지점 정보
-                       
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">
@@ -50,14 +39,7 @@
                                     <th scope="row">지점장 이름</th>
                                     <td><%= dto.getUser_name() %></td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">비밀번호</th>
-                                    <td>
-                                        <a href="edit-password2.jsp" class="btn btn-outline-secondary btn-sm">
-                                            비밀번호 수정
-                                        </a>
-                                    </td>
-                                </tr>
+                             
                                 <tr>
                                     <th scope="row">지점 주소</th>
                                     <td><%= dto.getBranch_address() %></td>
@@ -74,17 +56,13 @@
                         </table>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="edit2.jsp" class="btn btn-primary">
+                        <a href="<%=request.getContextPath()%>/branch.jsp?page=branchinfo/edit2.jsp" class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-gear"></i> 지점 정보 수정
                         </a>
-                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">
+                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-outline-secondary btn-sm">
                              지점으로가기<i class="bi bi-back"></i>
                         </a>
-                    </div>
-                    
-                    
-                    
-                    
+                    </div>          
                 </div>
             </div>
         </div>

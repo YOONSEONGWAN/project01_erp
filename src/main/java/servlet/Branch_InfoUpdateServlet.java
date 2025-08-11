@@ -58,9 +58,9 @@ public class Branch_InfoUpdateServlet extends HttpServlet {
 		// 결과에 따른 리다이렉트
 		String cPath = req.getContextPath();
 		if (isSuccess) {
-			resp.sendRedirect(cPath + "/branchinfo/info2.jsp?success=1");
+			resp.sendRedirect(cPath + "/branch.jsp?page=branchinfo/info2.jsp?success=1");
 		} else {
-			resp.sendRedirect(cPath + "/branchinfo/info2.jsp?error=1");
+			resp.sendRedirect(cPath + "/branch.jsp?page=branchinfo/info2.jsp?error=1");
 		}
 	}
 }

@@ -12,21 +12,23 @@
 	UserDto dto=UserDao.getInstance().getByUserId(userId);
 	
 	
-	
 %> 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>/user/edit.jsp</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+
 </head>
 <body>
 	 <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header text-white" style="background-color: #003366;">
                         <h4 class="mb-0">가입정보 수정 양식</h4>
                     </div>
                     <div class="card-body">
@@ -49,7 +51,7 @@
                             <div class="mb-3">
     							<label class="form-label" for="userName">지점장 이름</label>
     							<input class="form-control bg-light border-0" type="text" name="userName" 
-          								value="<%=dto.getUser_id() %>" readonly style="pointer-events: none;" />
+          								value="<%=dto.getUser_name() %>" readonly style="pointer-events: none;" />
 							</div>
 
                             <div class="mb-3">
@@ -64,7 +66,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label" for="userRole">직급</label>
-                                <input class="form-control" type="text" name="userRole" value="<%= (dto.getRole() != null && !dto.getRole().isEmpty()) ? dto.getRole() : "" %>" />
+                                <input class="form-control" type="text" name="userRole" value="<%= (dto.getRole() != null && !dto.getRole().isEmpty()) ? dto.getRole() : "" %>" readonly style="pointer-events: none;" />
                             </div>
 
                            <div class="mb-3">
@@ -74,10 +76,10 @@
 							</div>
 
                             <div class="text-end">
-                                <button class="btn btn-primary" type="submit">
+                                <button class="btn btn-outline-secondary btn-sm" type="submit">
                                     <i class="bi bi-check-circle"></i> 수정확인
                                 </button>
-                                <button class="btn btn-secondary" type="reset">
+                                <button class="btn btn-outline-secondary btn-sm" type="reset">
                                     <i class="bi bi-x-circle"></i> 취소
                                 </button>
                             </div>

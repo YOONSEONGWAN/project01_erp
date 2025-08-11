@@ -5,25 +5,20 @@
 <head>
 <meta charset="UTF-8">
 <title>edit-password.jsp</title>
-
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons (선택) -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </head>
 <body>
 	<div class="container mt-5 mb-5">
 		<div class="row justify-content-center">
 			<div class="col-md-6">
 				<div class="card shadow">
-					<div class="card-header bg-primary text-white">
+					<div class="card-header text-white" style="background-color: #003366;">
 						<h5 class="mb-0">비밀번호 수정</h5>
 					</div>
 					<div class="card-body">
-						<form action="update-password.jsp" method="post" id="editForm">
+						<form action="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
+        								? request.getContextPath() + "/headquater.jsp?page=userp/update-password.jsp"
+       							 	: request.getContextPath() + "/branch.jsp?page=userp/update-password.jsp" %>" method="post" id="editForm">
+							
 							<div class="mb-3">
 								<label for="password" class="form-label">기존 비밀번호</label>
 								<input type="password" name="password" id="password" class="form-control" />
@@ -37,7 +32,7 @@
 								<input type="password" name="newPassword2" id="newPassword2" class="form-control" />
 							</div>
 							<div class="text-end">
-								<button type="submit" class="btn btn-primary">
+								<button type="submit" class="btn btn-outline-secondary btn-sm">
 									<i class="bi bi-shield-lock-fill"></i> 수정하기
 								</button>
 							</div>

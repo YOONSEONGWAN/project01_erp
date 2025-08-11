@@ -142,6 +142,7 @@ public class UserDaoAdmin {
 				String sql = """
 						SELECT MAX(ROWNUM) AS count
 						FROM users_p
+						WHERE role='manager' or role='clerk' or role='unapproved'
 						""";
 				pstmt = conn.prepareStatement(sql);
 				// ? 에 값 바인딩
