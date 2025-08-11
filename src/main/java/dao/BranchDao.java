@@ -303,6 +303,7 @@ public class BranchDao {
 			String sql = """
 					SELECT COUNT(*) AS count
 					FROM branches
+					WHERE branch_id <> 'HQ'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -339,15 +340,9 @@ public class BranchDao {
 			conn = new DbcpBean().getConn();
 			//실행할 sql문
 			String sql = """
-<<<<<<< HEAD
-					SELECT COUNT(*) AS count
-					FROM branches
-					WHERE name LIKE '%'||?||'%' or branch_id LIKE '%'||?||'%'
-=======
 					SELECT MAX(ROWNUM) AS count
 					FROM branches b
-					WHERE name LIKE '%'||?||'%' or b.branch_id LIKE '%'||UPPER(?)||'%'
->>>>>>> main
+					WHERE (name LIKE '%'||?||'%' or b.branch_id LIKE '%'||UPPER(?)||'%') AND b.branch_id <> 'HQ'
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -403,9 +398,10 @@ public class BranchDao {
 							LEFT OUTER JOIN  (
 								SELECT * FROM users_p WHERE role = 'manager'
 							) u ON b.branch_id = u.branch_id
+							WHERE b.branch_id <> 'HQ'
 							GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
 							ORDER BY b.branch_id DESC) result1)
-					WHERE rnum BETWEEN ? AND ?
+					WHERE rnum BETWEEN ? AND ? 
 					""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩
@@ -470,7 +466,7 @@ public class BranchDao {
 							LEFT OUTER JOIN  (
 								SELECT * FROM users_p WHERE role = 'manager'
 							) u ON b.branch_id = u.branch_id
-							WHERE b.name LIKE '%'||?||'%' or b.branch_id LIKE '%'||UPPER(?)||'%'
+							WHERE (b.name LIKE '%'||?||'%' OR b.branch_id LIKE '%'||UPPER(?)||'%') AND b.branch_id <> 'HQ'
 							GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
 							ORDER BY b.branch_id DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
@@ -523,7 +519,7 @@ public class BranchDao {
             String sql = """
                     SELECT COUNT(*) AS count
                     FROM branches
-                    WHERE status=?
+                    WHERE status=? AND branch_id <> 'HQ'
                     """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, status);
@@ -554,7 +550,7 @@ public class BranchDao {
             String sql = """
                     SELECT COUNT(*) AS count
                     FROM branches
-                    WHERE (name LIKE '%'||?||'%' OR branch_id LIKE '%'||UPPER(?)||'%') AND status=?
+                    WHERE (name LIKE '%'||?||'%' OR branch_id LIKE '%'||UPPER(?)||'%') AND status=? AND branch_id <> 'HQ'
                     """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, keyword);
@@ -601,7 +597,7 @@ public class BranchDao {
                             LEFT OUTER JOIN  (
                                 SELECT * FROM users_p WHERE role = 'manager'
                             ) u ON b.branch_id = u.branch_id
-                            WHERE b.status = ?
+                            WHERE b.status = ? AND b.branch_id <> 'HQ'
                             GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
                             ORDER BY b.branch_id DESC) result1)
                     WHERE rnum BETWEEN ? AND ?
@@ -659,7 +655,7 @@ public class BranchDao {
                             LEFT OUTER JOIN  (
                                 SELECT * FROM users_p WHERE role = 'manager'
                             ) u ON b.branch_id = u.branch_id
-                            WHERE (b.name LIKE '%'||?||'%' OR b.branch_id LIKE '%'||UPPER(?)||'%') AND b.status = ?
+                            WHERE (b.name LIKE '%'||?||'%' OR b.branch_id LIKE '%'||UPPER(?)||'%') AND b.status = ? AND b.branch_id <> 'HQ'
                             GROUP BY b.num, b.branch_id, b.name, b.address, b.phone, b.status
                             ORDER BY b.branch_id DESC) result1)
                     WHERE rnum BETWEEN ? AND ?

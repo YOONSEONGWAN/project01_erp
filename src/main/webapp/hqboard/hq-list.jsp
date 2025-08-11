@@ -129,6 +129,7 @@
 	    min-width: 140px;
 	    font-size: 1.07rem;
 	    font-weight: 500;
+	    color: #003366;
 	}
 	
 	/* 검색폼 그룹 (검색창/버튼) */
@@ -201,7 +202,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">공지사항</h1>
-        <a class="btn btn-primary" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
+        <a class="btn" style="background:#003366; color:#ffffff" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-new-form.jsp">
             <i class="bi bi-pencil-square"></i> 새 글 작성
         </a>
 

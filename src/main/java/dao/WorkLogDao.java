@@ -23,7 +23,274 @@ public class WorkLogDao{
 	public static WorkLogDao getInstance() {
 		return dao;
 	}
+	//08-11 페이지 기능을 위해 추가됨
 
+	// 지점 전체 카운트
+	public int getCountByBranch(String branchId) {
+	    int count = 0;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT COUNT(*) AS count
+	            FROM work_log
+	            WHERE branch_id = ?
+	        """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, branchId);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            count = rs.getInt("count");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return count;
+	}
+
+	
+	// 지점 + user_id 키워드 카운트
+	public int getCountByBranchAndKeyword(String branchId, String keyword) {
+	    int count = 0;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        String sql = """
+	            SELECT COUNT(*) AS count
+	            FROM work_log
+	            WHERE branch_id = ?
+	              AND user_id LIKE '%' || ? || '%'
+	        """;
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, branchId);
+	        pstmt.setString(2, keyword);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            count = rs.getInt("count");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (pstmt != null) pstmt.close();
+	            if (conn != null) conn.close();
+	        } catch (Exception e) {}
+	    }
+	    return count;
+	}
+		//08-11 추가함
+		public int getCount() {
+			
+			int count=0;
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try {
+				conn = new DbcpBean().getConn();
+				// 실행할 sql문
+				String sql = """
+						SELECT MAX(ROWNUM) AS count
+						FROM work_log
+						
+
+						""";
+
+				pstmt = conn.prepareStatement(sql);
+				// ? 에 값 바인딩
+
+				// select 문 실행하고 결과를 ResultSet 으로 받아온다
+				rs = pstmt.executeQuery();
+				// 반복문 돌면서 ResultSet 에 담긴 데이터를 추출해서 리턴해줄 객체에 담는다
+				if (rs.next()) {
+
+					
+					count=rs.getInt("count");
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+					if (pstmt != null)
+						pstmt.close();
+					if (conn != null)
+						conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			return count;
+			
+			
+		}
+		// 지점 페이지(필요한 컬럼만)
+		public List<WorkLogDto> selectPage(WorkLogDto dto) {
+		    List<WorkLogDto> list = new ArrayList<>();
+		    Connection conn = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
+		    try {
+		        conn = new DbcpBean().getConn();
+		        String sql = """
+		            SELECT user_id, work_date, start_time, end_time
+		            FROM (
+		                SELECT result1.*, ROWNUM AS rnum
+		                FROM (
+		                    SELECT user_id, work_date, start_time, end_time
+		                    FROM work_log
+		                    WHERE branch_id = ?
+		                   ORDER BY work_date DESC, start_time DESC, NVL(end_time, start_time) DESC
+		                ) result1
+		            )
+		            WHERE rnum BETWEEN ? AND ?
+		        """;
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, dto.getBranchId());
+		        pstmt.setInt(2, dto.getStartRowNum());
+		        pstmt.setInt(3, dto.getEndRowNum());
+		        rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		            WorkLogDto tmp = new WorkLogDto();
+		            tmp.setUserId(rs.getString("user_id"));
+		            tmp.setWorkDate(rs.getDate("work_date"));
+		            tmp.setStartTime(rs.getTimestamp("start_time"));
+		            tmp.setEndTime(rs.getTimestamp("end_time"));
+		            list.add(tmp);
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try {
+		            if (rs != null) rs.close();
+		            if (pstmt != null) pstmt.close();
+		            if (conn != null) conn.close();
+		        } catch (Exception e) {}
+		    }
+		    return list;
+		}
+		// 지점 + 키워드 페이지
+		public List<WorkLogDto> selectPageByKeyword(WorkLogDto dto) {
+		    List<WorkLogDto> list = new ArrayList<>();
+		    Connection conn = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
+		    try {
+		        conn = new DbcpBean().getConn();
+		        String sql = """
+		            SELECT user_id, work_date, start_time, end_time
+		            FROM (
+		                SELECT result1.*, ROWNUM AS rnum
+		                FROM (
+		                    SELECT user_id, work_date, start_time, end_time
+		                    FROM work_log
+		                    WHERE branch_id = ?
+		                      AND user_id LIKE '%' || ? || '%'
+		                   ORDER BY work_date DESC, start_time DESC, NVL(end_time, start_time) DESC
+		                ) result1
+		            )
+		            WHERE rnum BETWEEN ? AND ?
+		        """;
+		        pstmt = conn.prepareStatement(sql);
+		        pstmt.setString(1, dto.getBranchId());
+		        pstmt.setString(2, dto.getKeyword());
+		        pstmt.setInt(3, dto.getStartRowNum());
+		        pstmt.setInt(4, dto.getEndRowNum());
+		        rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		            WorkLogDto tmp = new WorkLogDto();
+		            tmp.setUserId(rs.getString("user_id"));
+		            tmp.setWorkDate(rs.getDate("work_date"));
+		            tmp.setStartTime(rs.getTimestamp("start_time"));
+		            tmp.setEndTime(rs.getTimestamp("end_time"));
+		            list.add(tmp);
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try {
+		            if (rs != null) rs.close();
+		            if (pstmt != null) pstmt.close();
+		            if (conn != null) conn.close();
+		        } catch (Exception e) {}
+		    }
+		    return list;
+		}
+		
+		public List<WorkLogDto> getLogsByBranch(String branchId, int startRow, int endRow, String keyword) {
+		    List<WorkLogDto> list = new ArrayList<>();
+		    Connection conn = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
+
+		    String cond = (keyword == null || keyword.trim().isEmpty())
+		        ? ""
+		        : " AND w.user_id LIKE '%' || ? || '%'";
+
+		    try {
+		        conn = new DbcpBean().getConn();
+		        String sql = """
+		            SELECT * FROM (
+		              SELECT result1.*, ROWNUM rnum FROM (
+		                SELECT w.log_id, w.branch_id, w.user_id, w.work_date, w.start_time, w.end_time
+		                FROM work_log w
+		                WHERE w.branch_id = ?""" + cond + """
+		                ORDER BY w.work_date DESC,
+		                         w.start_time DESC,
+		                         NVL(w.end_time, w.start_time) DESC,
+		                         w.user_id ASC
+		              ) result1
+		            )
+		            WHERE rnum BETWEEN ? AND ?
+		        """;
+		        pstmt = conn.prepareStatement(sql);
+
+		        int i = 1;
+		        pstmt.setString(i++, branchId);
+		        if (!cond.isEmpty()) {
+		            pstmt.setString(i++, keyword.trim());
+		        }
+		        pstmt.setInt(i++, startRow);
+		        pstmt.setInt(i,   endRow);
+
+		        rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		            WorkLogDto dto = new WorkLogDto();
+		            dto.setLogId(rs.getInt("log_id"));
+		            dto.setBranchId(rs.getString("branch_id"));
+		            dto.setUserId(rs.getString("user_id"));
+		            dto.setWorkDate(rs.getDate("work_date"));
+		            dto.setStartTime(rs.getTimestamp("start_time"));
+		            dto.setEndTime(rs.getTimestamp("end_time"));
+		            list.add(dto);
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try { if (rs != null) rs.close(); } catch (Exception e) {}
+		        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+		        try { if (conn != null) conn.close(); } catch (Exception e) {}
+		    }
+
+		    return list;
+		}
+		
+		
+	
+	
 	public boolean insertStartTime(String branchId, String userId){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -33,9 +300,9 @@ public class WorkLogDao{
 			conn = new DbcpBean().getConn();
 			String sql = """
 						 INSERT INTO work_log
-       (log_id, branch_id, user_id, work_date, start_time)
-       VALUES(work_log_seq.NEXTVAL, ?, ?, TRUNC(SYSDATE), SYSTIMESTAMP)
-					""";
+					       (log_id, branch_id, user_id, work_date, start_time)
+					       VALUES(work_log_seq.NEXTVAL, ?, ?, TRUNC(SYSDATE), SYSTIMESTAMP)
+						""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
 			pstmt.setString(1, branchId);
@@ -164,7 +431,7 @@ public class WorkLogDao{
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 	    String sql = """
-	       SELECT w.log_id, w.branch_id, w.user_id, w.work_date, w.start_time, w.end_time,
+	       SELECT w.log_id, w.branch_id, w.user_id, w.work_date, w.start_time, w.end_time
                  
             FROM work_log w
             JOIN users_p u ON w.user_id = u.user_id
@@ -235,9 +502,15 @@ public class WorkLogDao{
 	        }
 	    } catch (Exception e) { e.printStackTrace(); }
 	    finally {
-	        try { if (rs != null) rs.close(); } catch (Exception e) {}
-	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+	        try {
+	        	if (rs != null) rs.close(); }
+	        catch (Exception e) {}
+	        try {
+	        	if (pstmt != null) pstmt.close(); }
+	        catch (Exception e) {}
+	        try {
+	        	if (conn != null) conn.close(); }
+	        catch (Exception e) {}
 	    }
 	    return list;
 	}
@@ -248,20 +521,32 @@ public class WorkLogDao{
 	    ResultSet rs = null;
 	    try {
 	        conn = new DbcpBean().getConn();
-	        String sql = "SELECT DISTINCT branch_id FROM work_log ORDER BY branch_id";
+	        String sql = """
+	            SELECT DISTINCT branch_id
+	            FROM work_log
+	            ORDER BY branch_id
+	        """;
 	        pstmt = conn.prepareStatement(sql);
 	        rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	            list.add(rs.getString("branch_id"));
 	        }
-	    } catch (Exception e) { e.printStackTrace(); }
-	    finally {
-	        try { if (rs != null) rs.close(); } catch (Exception e) {}
-	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	        	if (rs != null) rs.close(); } 
+	        catch (Exception e) {}
+	        try {
+	        	if (pstmt != null) pstmt.close(); } 
+	        catch (Exception e) {}
+	        try {
+	        	if (conn != null) conn.close(); }
+	        catch (Exception e) {}
 	    }
 	    return list;
 	}
+
 	public String getBranchName(String branchId) {
 	    String name = "";
 	    Connection conn = null;
@@ -269,20 +554,24 @@ public class WorkLogDao{
 	    ResultSet rs = null;
 	    try {
 	        conn = new DbcpBean().getConn();
-	        String sql = "SELECT name FROM branches WHERE branch_id = ?";
+	        String sql = """
+	            SELECT name
+	            FROM branches
+	            WHERE branch_id = ?
+	        """;
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setString(1, branchId);
 	        rs = pstmt.executeQuery();
-	        if(rs.next()) {
+	        if (rs.next()) {
 	            name = rs.getString("name");
 	        }
-	    } catch(Exception e) { e.printStackTrace(); }
-	    finally {
-	        try { if(rs!=null) rs.close(); } catch(Exception e){}
-	        try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
-	        try { if(conn!=null) conn.close(); } catch(Exception e){}
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch (Exception e) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+	        try { if (conn != null) conn.close(); } catch (Exception e) {}
 	    }
 	    return name;
 	}
 }
-

@@ -1,3 +1,4 @@
+<%@page import="java.text.NumberFormat"%>
 <%@ page import="java.util.List" %>
 <%@ page import="dto.ProductDto" %>
 <%@ page import="dao.ProductDao" %>
@@ -33,6 +34,8 @@
     } catch (Exception e) {
         encodedKeyword = keyword;
     }
+    
+    NumberFormat nf = NumberFormat.getInstance();
 %>
 
 <!DOCTYPE html>
@@ -188,13 +191,13 @@
             <td><%= number %></td>
             <td><%= dto.getName() %></td>
             <td class="text-muted"><%= dto.getDescription() %></td>
-            <td><%= dto.getPrice() %>원</td>
+            <td><%= nf.format(dto.getPrice()) %> 원</td>
             <td style="color: black;"><%= dto.getStatus() %></td>
             <td>
                 <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/detail.jsp&num=<%= dto.getNum() %>" class="link-button">상세</a>
             </td>
             <td>
-                <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>" class="link-button">수정</a>
+               <a href="<%=request.getContextPath()%>/product/updateform?num=<%= dto.getNum() %>" class="link-button">수정</a>
             </td>
             <td>
                 <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" onclick="return confirm('삭제하시겠습니까?');" class="link-button">삭제</a>

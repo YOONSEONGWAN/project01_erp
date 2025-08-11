@@ -111,7 +111,6 @@ public class UserDaoAdmin {
 				dto.setCreated_at(rs.getString("created_at"));
 				dto.setUpdated_at(rs.getString("updated_at"));
 				dto.setBranch_num(rs.getInt("branch_num"));
-				dto.setRole(rs.getNString("role"));
 
 			}
 		} catch (Exception e) {
@@ -141,7 +140,10 @@ public class UserDaoAdmin {
 				//실행할 sql문
 				String sql = """
 						SELECT MAX(ROWNUM) AS count
-						FROM users_p
+						FROM users_p u
+						LEFT JOIN branches b
+						ON u.branch_id=b.branch_id
+						WHERE (u.role='manager' or u.role='clerk' or u.role='unapproved') AND u.branch_id<>'HQ'
 						""";
 				pstmt = conn.prepareStatement(sql);
 				// ? 에 값 바인딩
@@ -180,7 +182,10 @@ public class UserDaoAdmin {
 				String sql = """
 						SELECT MAX(ROWNUM) AS count
 						FROM (
-							SELECT * FROM users_p WHERE role='manager' or role='clerk' or role='unapproved'
+							SELECT * FROM users_p u
+							LEFT JOIN branches b
+							ON u.branch_id=b.branch_id
+							WHERE (role='manager' or role='clerk' or role='unapproved') AND u.branch_id<>'HQ'
 							)
 						WHERE user_name LIKE '%'||?||'%' or user_id LIKE '%'||?||'%'
 						""";
@@ -233,7 +238,7 @@ public class UserDaoAdmin {
 									u.user_name,
 									u.role								
 								FROM (
-									SELECT * FROM users_p WHERE role='manager' or role='clerk' or role='unapproved'
+									SELECT * FROM users_p WHERE (role='manager' or role='clerk' or role='unapproved') AND branch_id <> 'HQ'
 									) u
 								LEFT OUTER JOIN branches b
 								ON b.branch_id = u.branch_id
@@ -298,7 +303,7 @@ public class UserDaoAdmin {
 							FROM users_p u
 							LEFT OUTER JOIN branches b
 							ON b.branch_id = u.branch_id
-							WHERE user_name LIKE '%'||?||'%' or user_id LIKE '%'||?||'%'
+							WHERE (user_name LIKE '%'||?||'%' or user_id LIKE '%'||?||'%') AND u.branch_id <> 'HQ'
 							ORDER BY u.created_at DESC) result1)
 					WHERE rnum BETWEEN ? AND ?
 					""";
@@ -348,7 +353,7 @@ public class UserDaoAdmin {
             String sql = """
                     SELECT COUNT(*) AS count
                     FROM users_p
-                    WHERE role=?
+                    WHERE (role=?) AND branch_id <> 'HQ'
                     """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, role);
@@ -379,7 +384,7 @@ public class UserDaoAdmin {
             String sql = """
                     SELECT COUNT(*) AS count
                     FROM users_p
-                    WHERE (user_name LIKE '%'||?||'%' OR user_id LIKE '%'||?||'%') AND role=?
+                    WHERE (user_name LIKE '%'||?||'%' OR user_id LIKE '%'||?||'%') AND role=? AND branch_id <> 'HQ'
                     """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, keyword);
@@ -424,7 +429,7 @@ public class UserDaoAdmin {
 							FROM users_p u
 							LEFT OUTER JOIN branches b
 							ON b.branch_id = u.branch_id
-                            WHERE u.role = ?
+                            WHERE u.role = ? AND u.branch_id <> 'HQ'
                             ORDER BY b.branch_id DESC) result1)
                     WHERE rnum BETWEEN ? AND ?
                     """;
@@ -436,7 +441,7 @@ public class UserDaoAdmin {
             while (rs.next()) {
             	UserDtoAdmin dto2=new UserDtoAdmin();
                 dto2.setNum(rs.getInt("num"));
-                dto2.setBranch_id(rs.getString("user_id"));
+                dto2.setUser_id(rs.getString("user_id"));
                 dto2.setBranch_name(rs.getNString("branch_name"));
                 dto2.setUser_name(rs.getString("user_name"));
                 dto2.setRole(rs.getString("role"));
@@ -466,23 +471,25 @@ public class UserDaoAdmin {
             conn = new DbcpBean().getConn();
             String sql = """
                     SELECT *
-                    FROM
-                        (SELECT result1.*, ROWNUM AS rnum
-                        FROM
-                            (SELECT
-								u.num,
-								u.user_id,
-								b.name AS branch_name,
-								u.role,
-								b.branch_id,							
-                                MAX(u.user_name) AS user_name
-                            FROM branches b
-                            LEFT OUTER JOIN  users_p u 
-                            ON b.branch_id = u.branch_id
-                            WHERE (u.user_name LIKE '%'||?||'%' OR u.user_id LIKE '%'||?||'%') AND u.role = ?
-                            GROUP BY u.num, u.user_id, b.name, u.role, b.branch_id, u.user_name
-                            ORDER BY b.branch_id DESC) result1)
-                    WHERE rnum BETWEEN ? AND ?
+						FROM (
+						  SELECT result1.*, ROWNUM AS rnum
+						  FROM (
+						    SELECT
+						      u.num,
+						      u.user_id,
+						      b.name AS branch_name,
+						      u.role,
+						      b.branch_id,
+						      u.user_name
+						    FROM users_p u
+						    LEFT JOIN branches b ON b.branch_id = u.branch_id
+						    WHERE (u.user_name LIKE '%'||?||'%' OR u.user_id LIKE '%'||?||'%')
+						      AND u.role = ?
+                              AND u.branch_id <> 'HQ'
+						    ORDER BY b.branch_id DESC
+						  ) result1
+						) result2
+						WHERE result2.rnum BETWEEN ? AND ?
                     """;
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, dto.getKeyword());
@@ -498,7 +505,7 @@ public class UserDaoAdmin {
                 dto2.setUser_id(rs.getString("user_id"));
                 dto2.setBranch_name(rs.getString("branch_name"));
                 dto2.setUser_name(rs.getString("user_name"));
-                
+                dto2.setRole(rs.getString("role"));
                 list.add(dto2);
             }
         } catch (Exception e) {

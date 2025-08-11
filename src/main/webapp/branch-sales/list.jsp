@@ -63,6 +63,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+	/* 비활성 페이지 번호 색상 */
+	.page-link {
+   		color: #003366; /* 글자색 */
+	}
+
+	/* 활성(현재) 페이지 번호 색상 */
+	.page-item.active .page-link {
+    	background-color: #003366; /* 배경 */
+    	border-color: #003366;     /* 테두리 */
+    	color: #fff;               /* 글자색 */
+	}
+</style>
 <meta charset="UTF-8">
 <title>/branch-sales/list.jsp</title>
 <jsp:include page="/WEB-INF/include/resource.jsp"/>
@@ -84,7 +97,8 @@
         <div class="col-auto">
             <button type="submit" class="btn btn-outline-primary">조회</button>
             <a href="<%=cpath%>/branch.jsp?page=branch-sales/list.jsp" class="btn btn-outline-secondary">전체보기</a>
-            <a href="<%=cpath%>/branch.jsp?page=branch-sales/insert-form.jsp" class="btn btn-primary">매출 등록</a>
+            <a href="<%=cpath%>/branch.jsp?page=branch-sales/insert-form.jsp" 
+            	class="btn btn-primary" style="background-color:#003366; border-color:#003366;">매출 등록</a>
         </div>
     </form>
 

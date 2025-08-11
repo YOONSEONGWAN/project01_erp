@@ -6,13 +6,13 @@
     String pageParam = request.getParameter("page");
 
     boolean isProductPage = pageParam != null && pageParam.startsWith("product/");
-
     boolean isBranchPage = pageParam != null && pageParam.startsWith("branch-admin/");
     boolean isBoardPage = pageParam != null && pageParam.startsWith("board/");
     boolean isSalesPage = "headquater/sales.jsp".equals(pageParam);
-    boolean isStockPage = pageParam != null && pageParam.contains("stock/");
+    boolean isStockPage = pageParam != null && pageParam.startsWith("stock/"); // 그룹 열림용
+    boolean isStockManagePage = "stock/stock.jsp".equals(pageParam);
+    boolean isPlaceOrderPage = "stock/placeorder.jsp".equals(pageParam);
     boolean isHqBoardPage = pageParam != null && pageParam.startsWith("hqboard/");
-
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
 %>
    
@@ -59,12 +59,24 @@
              지점관리
            </a>
            <ul id="branchMenu" class="submenu <%= isBranchPage ? "open" : "" %>" style="padding-left: 3rem;">
-             <li>
-               <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp"
-                  class="nav-link <%= "branch-admin/list.jsp".equals(pageParam) ? "active" : "" %>">
-                 <i class="bi bi-folder"></i> 지점 목록
-               </a>
-             </li>
+	          <li>
+	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/insert-form.jsp"
+	               class="nav-link <%= "branch-admin/insert-form.jsp".equals(pageParam) ? "active" : "" %>">
+	              <i class="bi bi-folder"></i> 지점 등록
+	            </a>
+	          </li>
+	          <li>
+	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp"
+	               class="nav-link <%= "branch-admin/list.jsp".equals(pageParam) ? "active" : "" %>">
+	              <i class="bi bi-folder"></i> 지점 목록
+	            </a>
+	          </li>
+	          <li>
+	            <a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp"
+	               class="nav-link <%= "branch-admin/user-list.jsp".equals(pageParam) ? "active" : "" %>">
+	              <i class="bi bi-folder"></i> 등급 관리
+	            </a>
+	          </li>
            </ul>
          </li>
    
@@ -108,31 +120,29 @@
            </ul>
          </li>
    
-         <!-- 재고 -->
-         <li class="nav-item">
-           <a href="#"
-              class="nav-link d-flex align-items-center gap-2"
-              id="toggleStockMenu"
-              onclick="event.preventDefault(); toggleSubmenu('stockMenu', this);">
-             <i class="bi <%= isStockPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
-             <i class="bi <%= isStockPage ? "bi-folder2-open" : "bi-folder" %>"></i>
-             재고
-           </a>
-           <ul id="stockMenu" class="submenu <%= isStockPage ? "open" : "" %>" style="padding-left: 3rem;">
-           <li>
-             <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/stock.jsp"
-                class="nav-link <%= isStockPage ? "active" : "" %>">
-               <i class="bi bi-folder"></i> 재고 관리
-             </a>
-           </li>
-           <li>
-             <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/placeorder.jsp"
-                class="nav-link <%= isStockPage ? "active" : "" %>">
-               <i class="bi bi-folder"></i> 발주 관리
-             </a>
-           </li>
-         </ul>
-            </li>
+          <!-- 재고 -->
+      <li class="nav-item">
+        <a href="#" class="nav-link d-flex align-items-center gap-2"
+           onclick="event.preventDefault(); toggleSubmenu('stockMenu', this);">
+          <i class="bi <%= isStockPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
+          <i class="bi <%= isStockPage ? "bi-folder2-open" : "bi-folder" %>"></i>
+          재고
+        </a>
+        <ul id="stockMenu" class="submenu <%= isStockPage ? "open" : "" %>" style="padding-left: 3rem;">
+          <li>
+            <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/stock.jsp"
+               class="nav-link <%= isStockManagePage ? "active" : "" %>">
+              <i class="bi bi-folder"></i> 재고 관리
+            </a>
+          </li>
+          <li>
+            <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/placeorder.jsp"
+               class="nav-link <%= isPlaceOrderPage ? "active" : "" %>">
+              <i class="bi bi-folder"></i> 발주 관리
+            </a>
+          </li>
+        </ul>
+      </li>
    
          <!-- 본사 내부 게시판 -->
          <li class="nav-item">
