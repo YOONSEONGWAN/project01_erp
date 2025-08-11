@@ -7,7 +7,6 @@
 <%
     request.setCharacterEncoding("utf-8");
 
-    // 1) 날짜 파라미터 정규화 (빈값/형식불일치 방지)
     String startRaw = request.getParameter("start");
     String endRaw   = request.getParameter("end");
 
@@ -16,11 +15,9 @@
 
     boolean hasFilter = (start != null && end != null);
 
-    // 필터 없을 때 안전 기본값
     String startSafe = hasFilter ? start : "2000-01-01";
     String endSafe   = hasFilter ? end   : "2099-12-31";
 
-    // 2) 페이징 변수
     int pageNum = 1;
     try {
         if (request.getParameter("pageNum") != null) {
@@ -31,7 +28,6 @@
     int startRow = (pageNum - 1) * pageSize + 1;
     int endRow   = pageNum * pageSize;
 
-    // 3) DAO 호출
     SalesDao dao = SalesDao.getInstance();
     int totalRows = dao.getWeeklySumCountBetween(startSafe, endSafe);
     List<SalesDto> list = dao.getWeekySumPageBetween(startSafe, endSafe, startRow, endRow);
@@ -39,7 +35,6 @@
     int totalPages = Math.max(1, (int)Math.ceil(totalRows / (double)pageSize));
     NumberFormat nf = NumberFormat.getInstance();
 
-    // 4) 랩퍼(sales.jsp) 경유 링크 (CSS 유지용)
     String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp&view=weekly";
     String extra = hasFilter ? "&start=" + start + "&end=" + end : "";
 %>

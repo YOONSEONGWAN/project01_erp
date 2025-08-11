@@ -7,7 +7,6 @@
 <%
     request.setCharacterEncoding("utf-8");
 
-    // 날짜 정규화 (빈값/형식불일치 방지)
     String startRaw = request.getParameter("start");
     String endRaw   = request.getParameter("end");
     String start = (startRaw != null && !startRaw.isEmpty() && startRaw.matches("\\d{4}-\\d{2}-\\d{2}")) ? startRaw : null;
@@ -17,7 +16,6 @@
     String startSafe  = hasFilter ? start : "2000-01-01";
     String endSafe    = hasFilter ? end   : "2099-12-31";
 
-    // 페이징
     int pageNum = 1;
     try { if (request.getParameter("pageNum") != null) pageNum = Integer.parseInt(request.getParameter("pageNum")); } catch(Exception ignore){}
     int pageSize = 10;
@@ -31,7 +29,6 @@
     int totalPages = Math.max(1, (int)Math.ceil(totalRows / (double)pageSize));
     NumberFormat nf = NumberFormat.getInstance();
 
-    // ✅ 랩퍼(sales.jsp) 경유 링크 (CSS 유지) + view=yearly
     String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp&view=yearly";
     String extra = hasFilter ? "&start=" + start + "&end=" + end : "";
 %>
