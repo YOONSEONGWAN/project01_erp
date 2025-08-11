@@ -1,3 +1,5 @@
+<%@page import="dao.BoardFileDao"%>
+<%@page import="dto.BoardFileDto"%>
 <%@page import="dao.CommentDao"%>
 <%@page import="dto.CommentDto"%>
 <%@page import="java.util.List"%>
@@ -61,6 +63,20 @@
     } else if ("QNA".equalsIgnoreCase(board_type)) {
         contentHeaderText = "문의내용";
     }
+    
+	 // 첨부파일 목록 불러오기
+    List<BoardFileDto> fileList = BoardFileDao.getInstance()
+        .getList(dto.getNum(), dto.getBoard_type());
+	 
+ 	// 첨부파일 삭제 권한(작성자 or NOTICE&HQ)
+    boolean canDeleteFile = false;
+    if (isLogin) {
+        if ("NOTICE".equalsIgnoreCase(board_type)) {
+            canDeleteFile = isHQ || (user_name != null && user_name.equals(dto.getUser_id()));
+        } else {
+            canDeleteFile = (user_name != null && user_name.equals(dto.getUser_id()));
+        }
+    }
 %>
 
 <!DOCTYPE html>
@@ -92,6 +108,12 @@
 	  background-color: #003366;
 	  color: white;
 	}
+	/* 첨부파일 카드 위 여백 */
+  	.attachment-card { 
+  		margin-top: 20px !important; }
+  	/* 파일명 길 때 줄바꿈 */
+  	.file-title { 
+  		overflow-wrap: anywhere; }
 	</style>
 </head>
 <body>
@@ -115,7 +137,42 @@
       <strong><%= contentHeaderText %></strong>
     </div>
     <div class="card-body p-2 mb-3"><%= dto.getContent() %></div>
-  </div>
+    
+    <!-- 첨부파일 목록 -->
+	<% if (fileList != null && !fileList.isEmpty()) { %>
+	<div class="card mb-3 attachment-card">
+	  <div class="card-header text-white" style="background-color:#003366;">
+	    <strong>첨부파일</strong>
+	  </div>
+	
+	  <ul class="list-group list-group-flush">
+	    <% for (BoardFileDto f : fileList) { %>
+	      <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+	        <div class="file-title">
+	          <a href="<%= request.getContextPath() %>/board/file-download?fileId=<%= f.getNum() %>">
+	            <i class="bi bi-paperclip"></i>
+	            <%= f.getOrgFileName() %>
+	          </a>
+	        </div>
+	
+	        <div class="d-flex align-items-center gap-3">
+	          <small class="text-muted"><%= f.getFileSize() %> bytes</small>
+	
+	          <% if (canDeleteFile) { %>
+	            <a href="<%= request.getContextPath() %>/board/file-delete?fileId=<%= f.getNum() %>&boardNum=<%= dto.getNum() %>&boardType=<%= dto.getBoard_type() %>"
+	               class="btn btn-sm btn-danger"
+	               onclick="return confirm('첨부파일을 삭제하시겠습니까?');">
+	              삭제
+	            </a>
+	          <% } %>
+	        </div>
+	      </li>
+	    <% } %>
+	  </ul>
+	</div>
+	<% } %>
+  
+  
 
   <!-- 수정/삭제 버튼 -->
   <div class="text-end">
@@ -217,32 +274,39 @@
                 <div class="mt-1" style="white-space: pre-wrap;"><%= tmp.getContent() %></div>
 
                 <% if (tmp.getWriter().equals(user_name)) { %>
-                  <div class="mt-2">
-                    <form action="<%= request.getContextPath() %>/board/comment-delete.jsp" method="post" class="d-inline">
-                      <input type="hidden" name="num" value="<%= tmp.getNum() %>">
-                      <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
-                      <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
-                      <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
-                    </form>
-                    <button class="btn btn-sm btn-outline-navy edit-btn">수정</button>
-                  </div>
-
+                  <div class="mt-2 text-end">
+					  <!-- 수정 버튼 -->
+					  <button type="button" class="btn btn-sm btn-outline-navy edit-btn">수정</button>
+					
+					  <!-- 삭제 버튼 (별도 폼) -->
+					  <form action="<%= request.getContextPath() %>/board/comment-delete.jsp" method="post" class="d-inline">
+					    <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+					    <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+					    <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+					    <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+					  </form>
+				  </div>
+	
                   <!-- 수정 폼 -->
-                  <div class="form-div d-none mt-2">
-                    <form action="<%= request.getContextPath() %>/board/comment-update.jsp" method="post">
-                      <input type="hidden" name="num" value="<%= tmp.getNum() %>">
-                      <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
-                      <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
-                      <textarea name="content" class="form-control mb-2" rows="2"><%= tmp.getContent() %></textarea>
-                      <button type="submit" class="btn btn-sm btn-outline-navy">수정 완료</button>
-                      <button type="reset" class="btn btn-sm btn-secondary cancel-edit-btn">취소</button>
-                    </form>
-                    <form action="<%= request.getContextPath() %>/board/comment-delete.jsp" method="post" class="mt-2">
-                      <input type="hidden" name="num" value="<%= tmp.getNum() %>">
-                      <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
-                      <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
-                    </form>
-                  </div>
+				  <div class="form-div d-none mt-2">
+				    <form action="<%= request.getContextPath() %>/board/comment-update.jsp" method="post">
+				      <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+				      <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+				      <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+				      <textarea name="content" class="form-control mb-2" rows="2"><%= tmp.getContent() %></textarea>
+				
+			  	      <div class="text-end">
+				        <button type="submit" class="btn btn-sm btn-outline-navy">수정 완료</button>
+				        <button type="reset" class="btn btn-sm btn-secondary cancel-edit-btn">취소</button>
+				      </div>
+				    </form>
+				
+				    <form action="<%= request.getContextPath() %>/board/comment-delete.jsp" method="post" class="mt-2">
+				      <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+				      <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+				      <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+				    </form>
+				  </div>
                 <% } %>
               </div>
             </div>

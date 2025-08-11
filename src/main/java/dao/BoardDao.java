@@ -579,6 +579,7 @@ public class BoardDao {
     }
     
     // 글 저장 메서드
+    
     public boolean insert(BoardDto dto) {
         Connection conn = null;
         PreparedStatement pstmt = null;

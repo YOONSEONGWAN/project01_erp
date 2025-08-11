@@ -41,11 +41,14 @@
 <body>
 <div class="container mt-4">
     <h3 class="mb-4">새 글 작성</h3>
-
-    <form action="${pageContext.request.contextPath}/board/save.jsp" method="post" id="saveForm">
-        <input type="hidden" name="board_type" value="<%=boardType %>" />
-        <input type="hidden" name="branch_id" value="<%=branchId %>" />
-        <input type="hidden" name="user_id" value="<%=writer %>" />
+	
+    <form action="${pageContext.request.contextPath}/board/save"
+	      method="post"
+	      id="saveForm"
+	      enctype="multipart/form-data">
+	    <input type="hidden" name="board_type" value="<%=boardType %>" />
+	    <input type="hidden" name="branch_id" value="<%=branchId %>" />
+	    <input type="hidden" name="user_id" value="<%=writer %>" />
 
         <!-- 작성자 -->
         <div class="mb-3">
@@ -66,7 +69,13 @@
             <!-- Toast UI Editor → 실제 서버로 전송될 값 -->
             <textarea name="content" id="hiddencontent" class="form-control" rows="10" style="display:none;"></textarea>
         </div>
-
+		
+		<!-- 파일 첨부(다중 가능) -->
+	    <div class="mb-3">
+	        <label class="form-label">첨부 파일</label>
+	        <input type="file" name="files" class="form-control" multiple>
+	    </div>
+		
         <!-- 버튼 -->
         <button type="submit" class="btn" style="background-color: #003366; color: white;">등록</button>
         <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
