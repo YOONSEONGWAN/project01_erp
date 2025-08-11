@@ -24,7 +24,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header text-white" style="background-color: #003366;">
                         <h4 class="mb-0">가입정보 수정 양식</h4>
                     </div>
                     <div class="card-body">
@@ -55,14 +55,14 @@
 
                             <div class="mb-3">
                                 <label for="userRole" class="form-label">직급</label>
-                                <input type="text" class="form-control" name="userRole" value="<%=dto.getUser_role() %>" />
+                                <input type="text" class="form-control" name="userRole" value="<%=dto.getUser_role() %>" readonly style="pointer-events: none;" />
                             </div>
 
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-check-circle"></i> 수정확인
                                 </button>
-                                <button type="reset" class="btn btn-secondary">
+                                <button type="reset" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-x-circle"></i> 취소
                                 </button>
                             </div>
