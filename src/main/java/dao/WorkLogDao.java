@@ -153,7 +153,7 @@ public class WorkLogDao{
 		                    SELECT user_id, work_date, start_time, end_time
 		                    FROM work_log
 		                    WHERE branch_id = ?
-		                    ORDER BY work_date DESC, user_id, start_time
+		                   ORDER BY work_date DESC, start_time DESC, NVL(end_time, start_time) DESC
 		                ) result1
 		            )
 		            WHERE rnum BETWEEN ? AND ?
@@ -199,7 +199,7 @@ public class WorkLogDao{
 		                    FROM work_log
 		                    WHERE branch_id = ?
 		                      AND user_id LIKE '%' || ? || '%'
-		                    ORDER BY work_date DESC, user_id, start_time
+		                   ORDER BY work_date DESC, start_time DESC, NVL(end_time, start_time) DESC
 		                ) result1
 		            )
 		            WHERE rnum BETWEEN ? AND ?
