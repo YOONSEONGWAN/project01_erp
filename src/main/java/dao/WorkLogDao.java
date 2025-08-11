@@ -232,40 +232,59 @@ public class WorkLogDao{
 		
 		public List<WorkLogDto> getLogsByBranch(String branchId, int startRow, int endRow, String keyword) {
 		    List<WorkLogDto> list = new ArrayList<>();
-		    String cond = (keyword == null || keyword.trim().isEmpty()) ? "" : " AND w.user_id LIKE '%' || ? || '%'";
-		    String sql = """
-		        SELECT * FROM (
-		          SELECT x.*, ROWNUM rnum FROM (
-		            SELECT w.log_id, w.branch_id, w.user_id, w.work_date, w.start_time, w.end_time
-		            FROM work_log w
-		            WHERE w.branch_id = ?""" + cond + """
-		            ORDER BY w.work_date DESC, w.user_id, w.start_time
-		          ) x
-		        ) WHERE rnum BETWEEN ? AND ?
-		    """;
+		    Connection conn = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
 
-		    try (Connection conn = new DbcpBean().getConn();
-		         PreparedStatement ps = conn.prepareStatement(sql)) {
+		    String cond = (keyword == null || keyword.trim().isEmpty())
+		        ? ""
+		        : " AND w.user_id LIKE '%' || ? || '%'";
+
+		    try {
+		        conn = new DbcpBean().getConn();
+		        String sql = """
+		            SELECT * FROM (
+		              SELECT result1.*, ROWNUM rnum FROM (
+		                SELECT w.log_id, w.branch_id, w.user_id, w.work_date, w.start_time, w.end_time
+		                FROM work_log w
+		                WHERE w.branch_id = ?""" + cond + """
+		                ORDER BY w.work_date DESC,
+		                         w.start_time DESC,
+		                         NVL(w.end_time, w.start_time) DESC,
+		                         w.user_id ASC
+		              ) result1
+		            )
+		            WHERE rnum BETWEEN ? AND ?
+		        """;
+		        pstmt = conn.prepareStatement(sql);
 
 		        int i = 1;
-		        ps.setString(i++, branchId);
-		        if (!cond.isEmpty()) ps.setString(i++, keyword.trim());
-		        ps.setInt(i++, startRow);
-		        ps.setInt(i,   endRow);
-
-		        try (ResultSet rs = ps.executeQuery()) {
-		            while (rs.next()) {
-		                WorkLogDto dto = new WorkLogDto();
-		                dto.setLogId(rs.getInt("log_id"));
-		                dto.setBranchId(rs.getString("branch_id"));
-		                dto.setUserId(rs.getString("user_id"));
-		                dto.setWorkDate(rs.getDate("work_date"));
-		                dto.setStartTime(rs.getTimestamp("start_time"));
-		                dto.setEndTime(rs.getTimestamp("end_time"));
-		                list.add(dto);
-		            }
+		        pstmt.setString(i++, branchId);
+		        if (!cond.isEmpty()) {
+		            pstmt.setString(i++, keyword.trim());
 		        }
-		    } catch (Exception e) { e.printStackTrace(); }
+		        pstmt.setInt(i++, startRow);
+		        pstmt.setInt(i,   endRow);
+
+		        rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		            WorkLogDto dto = new WorkLogDto();
+		            dto.setLogId(rs.getInt("log_id"));
+		            dto.setBranchId(rs.getString("branch_id"));
+		            dto.setUserId(rs.getString("user_id"));
+		            dto.setWorkDate(rs.getDate("work_date"));
+		            dto.setStartTime(rs.getTimestamp("start_time"));
+		            dto.setEndTime(rs.getTimestamp("end_time"));
+		            list.add(dto);
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    } finally {
+		        try { if (rs != null) rs.close(); } catch (Exception e) {}
+		        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+		        try { if (conn != null) conn.close(); } catch (Exception e) {}
+		    }
+
 		    return list;
 		}
 		
@@ -281,9 +300,9 @@ public class WorkLogDao{
 			conn = new DbcpBean().getConn();
 			String sql = """
 						 INSERT INTO work_log
-       (log_id, branch_id, user_id, work_date, start_time)
-       VALUES(work_log_seq.NEXTVAL, ?, ?, TRUNC(SYSDATE), SYSTIMESTAMP)
-					""";
+					       (log_id, branch_id, user_id, work_date, start_time)
+					       VALUES(work_log_seq.NEXTVAL, ?, ?, TRUNC(SYSDATE), SYSTIMESTAMP)
+						""";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 순서대로 필요한 값 바인딩
 			pstmt.setString(1, branchId);
@@ -483,9 +502,15 @@ public class WorkLogDao{
 	        }
 	    } catch (Exception e) { e.printStackTrace(); }
 	    finally {
-	        try { if (rs != null) rs.close(); } catch (Exception e) {}
-	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+	        try {
+	        	if (rs != null) rs.close(); }
+	        catch (Exception e) {}
+	        try {
+	        	if (pstmt != null) pstmt.close(); }
+	        catch (Exception e) {}
+	        try {
+	        	if (conn != null) conn.close(); }
+	        catch (Exception e) {}
 	    }
 	    return list;
 	}
@@ -496,20 +521,32 @@ public class WorkLogDao{
 	    ResultSet rs = null;
 	    try {
 	        conn = new DbcpBean().getConn();
-	        String sql = "SELECT DISTINCT branch_id FROM work_log ORDER BY branch_id";
+	        String sql = """
+	            SELECT DISTINCT branch_id
+	            FROM work_log
+	            ORDER BY branch_id
+	        """;
 	        pstmt = conn.prepareStatement(sql);
 	        rs = pstmt.executeQuery();
 	        while (rs.next()) {
 	            list.add(rs.getString("branch_id"));
 	        }
-	    } catch (Exception e) { e.printStackTrace(); }
-	    finally {
-	        try { if (rs != null) rs.close(); } catch (Exception e) {}
-	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	        	if (rs != null) rs.close(); } 
+	        catch (Exception e) {}
+	        try {
+	        	if (pstmt != null) pstmt.close(); } 
+	        catch (Exception e) {}
+	        try {
+	        	if (conn != null) conn.close(); }
+	        catch (Exception e) {}
 	    }
 	    return list;
 	}
+
 	public String getBranchName(String branchId) {
 	    String name = "";
 	    Connection conn = null;
@@ -517,20 +554,24 @@ public class WorkLogDao{
 	    ResultSet rs = null;
 	    try {
 	        conn = new DbcpBean().getConn();
-	        String sql = "SELECT name FROM branches WHERE branch_id = ?";
+	        String sql = """
+	            SELECT name
+	            FROM branches
+	            WHERE branch_id = ?
+	        """;
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setString(1, branchId);
 	        rs = pstmt.executeQuery();
-	        if(rs.next()) {
+	        if (rs.next()) {
 	            name = rs.getString("name");
 	        }
-	    } catch(Exception e) { e.printStackTrace(); }
-	    finally {
-	        try { if(rs!=null) rs.close(); } catch(Exception e){}
-	        try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
-	        try { if(conn!=null) conn.close(); } catch(Exception e){}
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch (Exception e) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+	        try { if (conn != null) conn.close(); } catch (Exception e) {}
 	    }
 	    return name;
 	}
 }
-
