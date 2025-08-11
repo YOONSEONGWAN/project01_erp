@@ -12,6 +12,8 @@
 	//DB 에서 사용자 정보를 읽어온다.
 	BranchInfoDto dto=BranchInfoDao.getInstance().getByUserId(userId);
 %> 
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +25,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header text-white" style="background-color: #003366;">
                         지점 정보
                     </div>
                     <div class="card-body">
@@ -37,14 +39,7 @@
                                     <th scope="row">지점장 이름</th>
                                     <td><%= dto.getUser_name() %></td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">비밀번호</th>
-                                    <td>
-                                        <a href="edit-password2.jsp" class="btn btn-outline-secondary btn-sm">
-                                            비밀번호 수정
-                                        </a>
-                                    </td>
-                                </tr>
+                             
                                 <tr>
                                     <th scope="row">지점 주소</th>
                                     <td><%= dto.getBranch_address() %></td>
@@ -61,10 +56,10 @@
                         </table>
                     </div>
                     <div class="card-footer text-end">
-                        <a href="<%=request.getContextPath()%>/branch.jsp?page=branchinfo/edit2.jsp" class="btn btn-primary">
+                        <a href="<%=request.getContextPath()%>/branch.jsp?page=branchinfo/edit2.jsp" class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-gear"></i> 지점 정보 수정
                         </a>
-                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-primary">
+                        <a href="${pageContext.request.contextPath}/branch.jsp" class="btn btn-outline-secondary btn-sm">
                              지점으로가기<i class="bi bi-back"></i>
                         </a>
                     </div>          

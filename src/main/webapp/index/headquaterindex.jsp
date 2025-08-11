@@ -38,7 +38,7 @@
 
   .dashboard-card {
     border-radius: 1rem;
-    background: #fff;
+    background: #eceff1;
     padding: 2rem 1rem;
     box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     color: inherit;
