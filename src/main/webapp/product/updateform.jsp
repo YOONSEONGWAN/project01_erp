@@ -141,9 +141,12 @@ function validateForm() {
         alert("상태를 선택해주세요.");
         return false;
     }
-    return true;
+
+    // 여기서 수정 확인창 추가
+    return confirm("수정 하시겠습니까?");
 }
 </script>
+
 
 </body>
 </html>
