@@ -21,37 +21,49 @@ public class IngredientDao {
    }
    
 
-   public List<IngredientDto> selectAllProducts() {
-       List<IngredientDto> list = new ArrayList<>();
-       Connection conn = null;
-       PreparedStatement pstmt = null;
-       ResultSet rs = null;
-       String sql = """
-              
-             SELECT DISTINCT product, branch_num, branch_id, inventory_id, current_quantity 
-               FROM branch_stock ORDER BY product""";
-       try {
-           conn = new DbcpBean().getConn();
-           
-           pstmt = conn.prepareStatement(sql);
-           rs = pstmt.executeQuery();
-           while(rs.next()) {
-               IngredientDto dto = new IngredientDto();
-               dto.setProduct(rs.getString("product"));
-               dto.setBranchNum(rs.getInt("branch_num"));
-               dto.setBranchId(rs.getString("branch_id"));
-               dto.setInventoryId(rs.getInt("inventory_id"));
-               dto.setCurrentQuantity(rs.getInt("current_quantity"));
-               list.add(dto);
-           }
-       } catch(Exception e) { e.printStackTrace(); }
-       finally {
-           try { if(rs!=null) rs.close(); } catch(Exception e){}
-           try { if(pstmt!=null) pstmt.close(); } catch(Exception e){}
-           try { if(conn!=null) conn.close(); } catch(Exception e){}
-       }
-       return list;
-   }
+   public List<IngredientDto> selectAllProducts(String branchId) {
+	    List<IngredientDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+
+	    String sql = """
+	        SELECT product, branch_num, branch_id, inventory_id, current_quantity
+	        FROM (
+	          SELECT bs.*,
+	                 ROW_NUMBER() OVER (
+	                   PARTITION BY bs.branch_id, bs.product
+	                   ORDER BY bs.updatedat DESC, bs.inventory_id
+	                 ) rn
+	          FROM branch_stock bs
+	          WHERE TRIM(bs.branch_id) = TRIM(?)
+	        )
+	        WHERE rn = 1
+	        ORDER BY product
+	    """;
+
+	    try {
+	        conn = new DbcpBean().getConn();
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, branchId);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            IngredientDto dto = new IngredientDto();
+	            dto.setProduct(rs.getString("product"));
+	            dto.setBranchNum(rs.getInt("branch_num"));
+	            dto.setBranchId(rs.getString("branch_id"));
+	            dto.setInventoryId(rs.getInt("inventory_id"));
+	            dto.setCurrentQuantity(rs.getInt("current_quantity"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) { e.printStackTrace(); }
+	    finally {
+	        try { if (rs != null) rs.close(); } catch (Exception e) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+	    }
+	    return list;
+	}
    
    
    
@@ -148,7 +160,11 @@ public class IngredientDao {
     public boolean increaseQuantity(String branchId, int inventoryId, int quantity) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String sql = "UPDATE branch_stock SET current_quantity = current_quantity + ? WHERE branch_id = ? AND inventory_id = ?";
+        String sql = """
+        		
+        		UPDATE branch_stock SET current_quantity = current_quantity + ? 
+        		 WHERE branch_id = ? AND inventory_id = ?"
+        		 """;
         try {
             conn = new DbcpBean().getConn();
             
@@ -175,7 +191,9 @@ public class IngredientDao {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT num FROM ingredient WHERE product = ?";
+        String sql = """
+        			SELECT num FROM ingredient WHERE product = ?
+        			""";
         try {
             conn = new DbcpBean().getConn();
             
