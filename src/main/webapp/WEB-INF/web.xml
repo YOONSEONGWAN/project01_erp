@@ -33,7 +33,7 @@
 		<description>업로드된 파일을 저장할 경로</description>
 		<param-name>fileLocation</param-name>
 
-		<param-value>/Users/dohyun/project01_erp/src/main/webapp/images</param-value>
+		<param-value>c:/playground/upload</param-value>
 	</context-param>
 
 
