@@ -14,6 +14,14 @@ public class WorkLogDto {
 	    private Date workDate;      // 근무 날짜
 	    private Timestamp startTime;// 출근 시간
 	    private Timestamp endTime;  // 퇴근 시간
+	    
+	  //08-11 검색기능을 위한 추가
+	  //검색 키워드를 담기 위한 필드
+		private String keyword;
+		//페이징 처리를 위한 필드
+		private int startRowNum;
+		private int endRowNum;
+		
 		public int getLogId() {
 			return logId;
 		}
@@ -51,6 +59,23 @@ public class WorkLogDto {
 			this.endTime = endTime;
 		}
 	
-		
+		public String getKeyword() {
+			return keyword;
+		}
 
+		public void setKeyword(String keyword) {
+			this.keyword = keyword;
+		}
+		public int getStartRowNum() {
+			return startRowNum;
+		}
+		public void setStartRowNum(int startRowNum) {
+			this.startRowNum = startRowNum;
+		}
+		public int getEndRowNum() {
+			return endRowNum;
+		}
+		public void setEndRowNum(int endRowNum) {
+			this.endRowNum = endRowNum;
+		}
 	}
