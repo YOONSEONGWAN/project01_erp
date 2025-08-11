@@ -27,7 +27,9 @@ List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranc
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
         .btn { padding: 4px 14px; border-radius: 5px; font-size: 0.95em; }
         .btn-update { background: #003366; color: #fff; border: none; }
+         th {
         
+    }
     </style>
 </head>
 <body>

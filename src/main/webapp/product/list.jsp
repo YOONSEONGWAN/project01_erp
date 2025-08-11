@@ -183,7 +183,7 @@
                 ProductDto dto = productList.get(i);
                 int number = totalCount - ((pageNum - 1) * pageSize + i);
     %>
-        <tr>
+              <tr>
             <td><input type="checkbox" name="productNums" value="<%= dto.getNum() %>"></td>
             <td><%= number %></td>
             <td><%= dto.getName() %></td>
@@ -194,12 +194,13 @@
                 <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/detail.jsp&num=<%= dto.getNum() %>" class="link-button">상세</a>
             </td>
             <td>
-                <a href="<%=request.getContextPath()%>/headquater.jsp?page=product/updateform.jsp&num=<%= dto.getNum() %>" class="link-button">수정</a>
+               <a href="<%=request.getContextPath()%>/product/updateform?num=<%= dto.getNum() %>" class="link-button">수정</a>
             </td>
             <td>
                 <a href="<%=request.getContextPath()%>/product/delete.jsp?num=<%= dto.getNum() %>&pageNum=<%= pageNum %>&keyword=<%= encodedKeyword %>" onclick="return confirm('삭제하시겠습니까?');" class="link-button">삭제</a>
             </td>
         </tr>
+
     <%
             }
         }
