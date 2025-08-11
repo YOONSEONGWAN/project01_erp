@@ -27,6 +27,8 @@ private static SalesDao dao;
 		
 	}
 	
+	
+	
 	public int getWeeklyMinStatsCountBetween(String start, String end) {
 	    int count = 0;
 	    try (Connection conn = new DbcpBean().getConn();
@@ -102,7 +104,7 @@ private static SalesDao dao;
 	                SalesDto dto = new SalesDto();
 	                dto.setPeriod(rs.getString("period"));
 	                dto.setBranch_id(rs.getString("branch_id"));
-	                dto.setBranch_name(rs.getString("branch_name"));    // alias로 채워짐
+	                dto.setBranch_name(rs.getString("branch_name"));  
 	                dto.setMinSalesDate(rs.getString("sales_date"));
 	                dto.setTotalSales(rs.getInt("total_sales"));
 	                list.add(dto);
@@ -3216,13 +3218,3 @@ public int getWeeklyMaxCountBetween(String start, String end) {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
