@@ -37,8 +37,6 @@
 
     NumberFormat nf = NumberFormat.getInstance();
     
-    // ✅ sales.jsp와 같은 방식의 base/extra 구성
-    // 단독 실행(권장): 이 JSP를 직접 요청하도록 링크 구성
     String base  = request.getContextPath() + "/headquater-sales/daily-avg.jsp";
     String extra = "";
     if (hasFilter) {

@@ -5,41 +5,37 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%
-request.setCharacterEncoding("utf-8");
-
-// 1) 날짜 정규화
-String startRaw = request.getParameter("start");
-String endRaw   = request.getParameter("end");
-
-String start = (startRaw != null && !startRaw.isEmpty() && startRaw.matches("\\d{4}-\\d{2}-\\d{2}")) ? startRaw : null;
-String end   = (endRaw   != null && !endRaw.isEmpty()   && endRaw.matches("\\d{4}-\\d{2}-\\d{2}"))   ? endRaw   : null;
-
-boolean hasFilter = (start != null && end != null);
-
-// 2) 페이징
-int pageNum = 1;
-try {
-    if (request.getParameter("pageNum") != null) pageNum = Integer.parseInt(request.getParameter("pageNum"));
-} catch (NumberFormatException ignore) {}
-
-int pageSize = 10;
-int startRow = (pageNum - 1) * pageSize + 1;
-int endRow   = pageNum * pageSize;
-
-// 3) DAO 호출은 안전 기본값으로 통일
-String startSafe = hasFilter ? start : "2000-01-01";
-String endSafe   = hasFilter ? end   : "2099-12-31";
-
-SalesDao dao = SalesDao.getInstance();
-int totalRows = dao.getMonthlyStatsCountBetween(startSafe, endSafe);
-List<SalesDto> list = dao.getMonthlyStatsPageBetween(startSafe, endSafe, startRow, endRow);
-
-int totalPages = Math.max(1, (int)Math.ceil(totalRows / (double)pageSize));
-NumberFormat nf = NumberFormat.getInstance();
-
-// 4) 랩퍼(sales.jsp) 경유 링크 (CSS 유지)
-String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp&view=monthly";
-String extra = hasFilter ? "&start=" + start + "&end=" + end : "";
+	request.setCharacterEncoding("utf-8");
+	
+	String startRaw = request.getParameter("start");
+	String endRaw   = request.getParameter("end");
+	
+	String start = (startRaw != null && !startRaw.isEmpty() && startRaw.matches("\\d{4}-\\d{2}-\\d{2}")) ? startRaw : null;
+	String end   = (endRaw   != null && !endRaw.isEmpty()   && endRaw.matches("\\d{4}-\\d{2}-\\d{2}"))   ? endRaw   : null;
+	
+	boolean hasFilter = (start != null && end != null);
+	
+	int pageNum = 1;
+	try {
+	    if (request.getParameter("pageNum") != null) pageNum = Integer.parseInt(request.getParameter("pageNum"));
+	} catch (NumberFormatException ignore) {}
+	
+	int pageSize = 10;
+	int startRow = (pageNum - 1) * pageSize + 1;
+	int endRow   = pageNum * pageSize;
+	
+	String startSafe = hasFilter ? start : "2000-01-01";
+	String endSafe   = hasFilter ? end   : "2099-12-31";
+	
+	SalesDao dao = SalesDao.getInstance();
+	int totalRows = dao.getMonthlyStatsCountBetween(startSafe, endSafe);
+	List<SalesDto> list = dao.getMonthlyStatsPageBetween(startSafe, endSafe, startRow, endRow);
+	
+	int totalPages = Math.max(1, (int)Math.ceil(totalRows / (double)pageSize));
+	NumberFormat nf = NumberFormat.getInstance();
+	
+	String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp&view=monthly";
+	String extra = hasFilter ? "&start=" + start + "&end=" + end : "";
 %>
 
 <h2 class="mb-2">지점별 월간 매출 총합</h2>
