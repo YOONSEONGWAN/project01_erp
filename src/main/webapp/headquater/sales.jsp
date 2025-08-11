@@ -7,32 +7,60 @@
 <%
     request.setCharacterEncoding("utf-8");
 
-    String start = request.getParameter("start");
-    String end   = request.getParameter("end");
-    String view  = request.getParameter("view");
+    String viewRaw  = request.getParameter("view");
+    String startRaw = request.getParameter("start");
+    String endRaw   = request.getParameter("end");
 
-    SalesDto dto = null;
-    if (start != null && end != null && !start.isEmpty() && !end.isEmpty()) {
-        dto = SalesDao.getInstance().getStatsBetweenDates(start, end);
-    }
+    String start = (startRaw != null && !startRaw.isEmpty() && startRaw.matches("\\d{4}-\\d{2}-\\d{2}")) ? startRaw : null;
+    String end   = (endRaw   != null && !endRaw.isEmpty()   && endRaw.matches("\\d{4}-\\d{2}-\\d{2}"))   ? endRaw   : null;
+
+    boolean hasFilter = (start != null && end != null);
+    String view = (viewRaw != null) ? viewRaw : "";
+
+    String startSafe = hasFilter ? start : "2000-01-01";
+    String endSafe   = hasFilter ? end   : "2099-12-31";
 
     NumberFormat nf = NumberFormat.getInstance();
 
-    // 페이징 처리
-    int pageNum  = 1;
+    SalesDto dto = null;
+    try {
+        dto = SalesDao.getInstance().getStatsBetweenDates(startSafe, endSafe);
+    } catch (Exception ignore) {  }
+
+    int pageNum = 1;
+    try {
+        if (request.getParameter("pageNum") != null) {
+            pageNum = Integer.parseInt(request.getParameter("pageNum"));
+        }
+    } catch (NumberFormatException ignore) {}
+
     int pageSize = 10;
-
-    if (request.getParameter("pageNum") != null) {
-        pageNum = Integer.parseInt(request.getParameter("pageNum"));
-    }
-
     int startRow = 1 + (pageNum - 1) * pageSize;
     int endRow   = pageNum * pageSize;
 
     int totalRow  = SalesDao.getInstance().getTotalCount();
-    int totalPage = (int) Math.ceil(totalRow / (double) pageSize);
+    int totalPage = Math.max(1, (int)Math.ceil(totalRow / (double)pageSize));
 
-    List<SalesDto> list = SalesDao.getInstance().selectPage(startRow, endRow);
+    String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp";
+    StringBuilder extraSB = new StringBuilder();
+    if (!view.isEmpty()) extraSB.append("&view=").append(view);
+    if (hasFilter) { 
+        extraSB.append("&start=").append(start);
+        extraSB.append("&end=").append(end);
+    }
+    String extra = extraSB.toString();
+
+    List<SalesDto> list = null;
+    if (view.isEmpty()) {
+        list = SalesDao.getInstance().selectPage(startRow, endRow);
+    }
+
+    String includeUrl = null;
+    if (!view.isEmpty()) {
+        String includePath = "/headquater-sales/" + view + ".jsp";
+        String qs = "pageNum=" + pageNum + (hasFilter ? "&start=" + start + "&end=" + end : "");
+        includeUrl = includePath + "?" + qs; 
+    }
 %>
 
 <!DOCTYPE html>
@@ -60,13 +88,15 @@
 </head>
 <body>
 <div class="container-fluid">
+   
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="<%=request.getContextPath()%>/headquater.jsp?page=index/headquaterindex.jsp">Home</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/slaes.jsp">매출 관리</a>
+                
+                <a href="<%=request.getContextPath()%>/headquater.jsp?page=headquater/sales.jsp">매출 관리</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">매출 목록</li>
         </ol>
@@ -78,6 +108,7 @@
                 <h1 class="fw-bold">지점별 매출 분석 대시보드</h1>
             </div>
 
+            
             <form class="row g-3 align-items-end mb-4" method="get"
                   action="<%=request.getContextPath()%>/headquater.jsp">
                 <input type="hidden" name="page" value="headquater/sales.jsp"/>
@@ -121,12 +152,12 @@
 
                 <div class="col-md-3">
                     <label class="form-label">시작일</label>
-                    <input type="date" name="start" value="<%= start != null ? start : "" %>" class="form-control">
+                    <input type="date" name="start" value="<%= (start != null) ? start : "" %>" class="form-control">
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label">종료일</label>
-                    <input type="date" name="end" value="<%= end != null ? end : "" %>" class="form-control">
+                    <input type="date" name="end" value="<%= (end != null) ? end : "" %>" class="form-control">
                 </div>
 
                 <div class="col-md-2">
@@ -136,7 +167,7 @@
                 </div>
             </form>
 
-            <% if (dto != null) { %>
+            <% if (dto != null && hasFilter) { %>
                 <div class="alert alert-light border">
                     <strong>조회 범위:</strong> <%= start %> ~ <%= end %><br/>
                     <strong>총 일수:</strong> <%= dto.getDayCount() %>일 /
@@ -144,18 +175,13 @@
                 </div>
             <% } %>
 
-            <%
-                if (view != null && !view.isEmpty()) {
-                    String includePath = "/headquater-sales/" + view + ".jsp";
-            %>
-                <jsp:include page="<%= includePath %>">
-                    <jsp:param name="start"   value="<%= start %>"   />
-                    <jsp:param name="end"     value="<%= end %>"     />
-                    <jsp:param name="pageNum" value="<%= pageNum %>" />
-                </jsp:include>
+            
+            <% if (!view.isEmpty()) { %>
+                <jsp:include page="<%= includeUrl %>" flush="true" />
             <% } %>
 
-            <% if (view == null || view.isEmpty()) { %>
+           
+            <% if (view.isEmpty()) { %>
                 <h4 class="mt-5">전체 매출 목록</h4>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
@@ -168,53 +194,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% for (SalesDto tmp : list) { %>
-                                <tr>
-                                    <td><%= tmp.getSales_id() %></td>
-                                    <td><%= tmp.getBranch_name() %></td>
-                                    <td><%= tmp.getCreated_at() %></td>
-                                    <td><%= nf.format(tmp.getTotalamount()) %> 원</td>
-                                </tr>
-                            <% } %>
+                        <% if (list != null) {
+                               for (SalesDto tmp : list) { %>
+                            <tr>
+                                <td><%= tmp.getSales_id() %></td>
+                                <td><%= tmp.getBranch_name() %></td>
+                                <td><%= tmp.getCreated_at() %></td>
+                                <td><%= nf.format(tmp.getTotalamount()) %> 원</td>
+                            </tr>
+                        <%     }
+                           } else { %>
+                            <tr><td colspan="4" class="text-center text-muted">데이터가 없습니다.</td></tr>
+                        <% } %>
                         </tbody>
                     </table>
                 </div>
-            <% } else if (dto == null) { %>
             <% } %>
         </main>
     </div>
 
-    <% if (view == null || view.isEmpty()) { %>
+    <% if (view.isEmpty()) { %>
         <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <% if (pageNum > 1) { %>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=headquater/sales.jsp&pageNum=<%= pageNum - 1 %>">이전</a>
-                    </li>
-                <% } else { %>
-                    <li class="page-item disabled"><span class="page-link">이전</span></li>
-                <% } %>
-
-                <%
-                    int blockSize = 5;
-                    int startPage = ((pageNum - 1) / blockSize) * blockSize + 1;
-                    int endPage   = Math.min(startPage + blockSize - 1, totalPage);
-
-                    for (int i = startPage; i <= endPage; i++) {
-                %>
-                    <li class="page-item <%= (i == pageNum) ? "active" : "" %>">
-                        <a class="page-link" href="?page=headquater/sales.jsp&pageNum=<%= i %>"><%= i %></a>
-                    </li>
-                <% } %>
-
-                <% if (pageNum < totalPage) { %>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=headquater/sales.jsp&pageNum=<%= pageNum + 1 %>">다음</a>
-                    </li>
-                <% } else { %>
-                    <li class="page-item disabled"><span class="page-link">다음</span></li>
-                <% } %>
-            </ul>
+          <ul class="pagination justify-content-center">
+            <li class="page-item <%= (pageNum <= 1 ? "disabled" : "") %>">
+              <a class="page-link" href="<%= base + extra %>&pageNum=<%= Math.max(1, pageNum - 1) %>">이전</a>
+            </li>
+            <li class="page-item active"><span class="page-link"><%= pageNum %></span></li>
+            <li class="page-item <%= (pageNum >= totalPage ? "disabled" : "") %>">
+              <a class="page-link" href="<%= base + extra %>&pageNum=<%= Math.min(totalPage, pageNum + 1) %>">다음</a>
+            </li>
+          </ul>
         </nav>
     <% } %>
 </div>

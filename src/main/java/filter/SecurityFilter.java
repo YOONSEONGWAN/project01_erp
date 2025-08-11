@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 //들어오는 모든 요청에 대해서 필터링을 하겠다는 의미
-@WebFilter("/*")
+@WebFilter("/*")	
 public class SecurityFilter implements Filter{
 	//로그인 없이 접근 가능한 경로 목록
 	Set<String> whiteList = Set.of(
@@ -36,11 +36,11 @@ public class SecurityFilter implements Filter{
 		//HttpSession 객체의 참조값 얻어내기
 		HttpSession session=req.getSession();
 		//context path
-		String cPath=req.getContextPath(); // "/Step02DataBase"
+		String cPath=req.getContextPath(); // 예: "/project01_erp"
 		//클라이언트의 요청경로 얻어내기(context path가 포함되어 있음)
-		String uri=req.getRequestURI(); // "/Step02DataBase/index.jsp"
+		String uri=req.getRequestURI(); // 예: "/project01_erp/index.jsp"
 		//uri 에서 context path 를 제거한 순수 경로를 얻어낸다
-		String path=uri.substring(cPath.length()); // "/index.jsp"
+		String path=uri.substring(cPath.length()); // 예: "/index.jsp"
 				
 		//로그인 없이 접근 가능한 요청 경로면 필터링을 하지 않는다
 		if(isWhiteList(path)) {
@@ -106,13 +106,13 @@ public class SecurityFilter implements Filter{
             return true; // 모든 경로 접근 허용
         } else if ("admin".equals(role)) {
         	// "/index/branchindex.jsp" 하위와 "/hrm/" 경로를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/index/branchindex.jsp") && !path.startsWith("/hrm/");
+            return !path.startsWith("/index/branch.jsp") && !path.startsWith("/hrm/");
         } else if ("manager".equals(role)) {
         	// "/index/headqueaterindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/index/headquaterindex.jsp") && !path.startsWith("/branch-admin/");
+            return !path.startsWith("/index/headquater.jsp") && !path.startsWith("/branch-admin/");
         } else if ("clerk".equals(role)) {
         	// "/index/headquaterindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/index/headquaterindex.jsp");
+            return !path.startsWith("/index/headquater.jsp");
         } else if ("unapproved".equals(role)) {
         	// "/index/" 하위를 제외한 모든 경로 접근 허용
             return !path.startsWith("/index/");
