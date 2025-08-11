@@ -206,6 +206,22 @@
 	
 	<nav class="mt-4">
 	    <ul class="pagination justify-content-center">
+	    
+	    	<%if(pageNum != 1){ %>
+        		<li class="page-item">
+        			<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=pageNum-1%>&keyword=<%=keyword%>&role=<%=role%>">이전</a>
+        		</li>
+        	<%} %>
+				<li class="page-item">
+					<a class="page-link" href="#"><%=pageNum %></a>
+				</li>
+			<%if(pageNum != totalPageCount){ %>
+				<li class="page-item">
+					<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=pageNum+1%>&keyword=<%=keyword%>&role=<%=role%>">다음</a>
+				</li>
+			<%} %>
+	    
+<%--
 	        <% if(startPageNum != 1) { %>
 	            <li class="page-item">
 	                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>&role=<%=role%>">&lsaquo;</a>
@@ -223,6 +239,7 @@
 	                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>&role=<%=role%>">&rsaquo;</a>
 	            </li>
 	        <% } %>
+ --%>
 	    </ul>
 	</nav>
 	
