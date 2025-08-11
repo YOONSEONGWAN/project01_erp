@@ -3,17 +3,18 @@
 <%@page import="dao.stock.InventoryDao"%>
 <%@page import="dto.stock.InventoryDto"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%
     String keyword = request.getParameter("keyword");
     if (keyword == null) keyword = "";
 
     int currentPage = 1;
-    String pageParam = request.getParameter("page");
+    String pageParam = request.getParameter("pageNum");  // ✅ 변경: page → pageNum
     if (pageParam != null && !pageParam.isEmpty()) {
         try {
             currentPage = Integer.parseInt(pageParam);
-            if(currentPage < 1) currentPage = 1;
-        } catch(Exception e) {
+            if (currentPage < 1) currentPage = 1;
+        } catch (Exception e) {
             currentPage = 1;
         }
     }
@@ -24,13 +25,15 @@
     int start = (currentPage - 1) * itemsPerPage;
 
     List<InventoryDto> list = InventoryDao.getInstance().selectByKeywordWithPaging(keyword, start, itemsPerPage);
+
     String encodedKeyword = "";
     try {
         encodedKeyword = URLEncoder.encode(keyword, "UTF-8");
-    } catch(Exception e) {
+    } catch (Exception e) {
         encodedKeyword = keyword;
     }
 %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -219,46 +222,46 @@
     </form>
 
     <!-- 페이징 -->
-<div class="pagination-wrapper">
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination">
-            <% if (currentPage > 1) { %>
-                <li class="page-item">
-                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp&page=<%= currentPage - 1 %>&keyword=<%= encodedKeyword %>">이전</a>
-                </li>
-            <% } else { %>
-                <li class="page-item disabled"><span class="page-link">이전</span></li>
-            <% } %>
+    <div class="pagination-wrapper">
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp&pageNum=<%= currentPage - 1 %>&keyword=<%= encodedKeyword %>">이전</a>
+                    </li>
+                <% } else { %>
+                    <li class="page-item disabled"><span class="page-link">이전</span></li>
+                <% } %>
 
-            <%
-                int pageBlock = 5;
-                int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
-                int endPage = Math.min(startPage + pageBlock - 1, totalPages);
-                for (int i = startPage; i <= endPage; i++) {
-                    if (i == currentPage) {
-            %>
-                        <li class="page-item active"><span class="page-link"><%= i %></span></li>
-            <%
-                    } else {
-            %>
-                        <li class="page-item">
-                            <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp&page=<%= i %>&keyword=<%= encodedKeyword %>"><%= i %></a>
-                        </li>
-            <%
+                <%
+                    int pageBlock = 5;
+                    int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
+                    int endPage = Math.min(startPage + pageBlock - 1, totalPages);
+                    for (int i = startPage; i <= endPage; i++) {
+                        if (i == currentPage) {
+                %>
+                            <li class="page-item active"><span class="page-link"><%= i %></span></li>
+                <%
+                        } else {
+                %>
+                            <li class="page-item">
+                                <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp&pageNum=<%= i %>&keyword=<%= encodedKeyword %>"><%= i %></a>
+                            </li>
+                <%
+                        }
                     }
-                }
-            %>
+                %>
 
-            <% if (currentPage < totalPages) { %>
-                <li class="page-item">
-                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp&page=<%= currentPage + 1 %>&keyword=<%= encodedKeyword %>">다음</a>
-                </li>
-            <% } else { %>
-                <li class="page-item disabled"><span class="page-link">다음</span></li>
-            <% } %>
-        </ul>
-    </nav>
-</div>
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp&pageNum=<%= currentPage + 1 %>&keyword=<%= encodedKeyword %>">다음</a>
+                    </li>
+                <% } else { %>
+                    <li class="page-item disabled"><span class="page-link">다음</span></li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
 
 </div>
 
