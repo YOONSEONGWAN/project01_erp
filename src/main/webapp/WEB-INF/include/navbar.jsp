@@ -23,9 +23,9 @@
 	
 	    <div class="d-flex justify-content-end align-items-center" style="gap: 1rem;">
 	      <% if(userId != null) { %>
-<<<<<<< HEAD
-	        <a href="<%=request.getContextPath()%>/branch.jsp?page=userp/userpinfo.jsp"  style="color: white;" class="navbar-user-link align-self-center "><%= userId %>님</a>
-=======
+
+	        
+
 	        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
 			    ? request.getContextPath() + "/headquater.jsp?page=userp/userpinfo.jsp"
 			    : request.getContextPath() + "/branch.jsp?page=userp/userpinfo.jsp" %>"
@@ -33,7 +33,7 @@
 			   style="color:white;">
 			   <%= userId %>님
 			</a>
->>>>>>> 820ce0fbe4172f88a611e461d26aad0dfc57e8e2
+
 	
 	        <% if(branchId != null && branchId.startsWith("BC")) { %>
 	          <a class="btn btn-outline-warning btn-sm" href="<%=request.getContextPath()%>/branch.jsp?page=branchinfo/info2.jsp">지점 정보수정</a>
