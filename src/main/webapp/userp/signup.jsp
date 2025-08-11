@@ -6,66 +6,75 @@
 <%
     request.setCharacterEncoding("UTF-8");
 
-    // 📌 입력값 수신
+    // 입력값 수신
     String branchId = request.getParameter("branchId");
-    String userId = request.getParameter("userId");
+    String userId   = request.getParameter("userId");
     String password = request.getParameter("password");
     String userName = request.getParameter("userName");
 
-    System.out.println("📌 signup.jsp 진입");
-    System.out.println("📌 userId = " + userId);
-    System.out.println("📌 branchId = " + branchId);
-
     boolean isSuccess = false;
 
-    // 입력값 모두 존재할 때만 실행
     if (branchId != null && userId != null && password != null && userName != null) {
         try {
-            // 비밀번호 암호화
             String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
-            System.out.println("📌 비밀번호 암호화 성공");
-
-            // 회원 DTO 생성
             UserDto dto = new UserDto();
             dto.setBranch_id(branchId);
             dto.setUser_id(userId);
             dto.setPassword(hashed);
             dto.setUser_name(userName);
 
-            // DB에 insert 시도
             isSuccess = UserDao.getInstance().insert(dto);
-            System.out.println("📌 INSERT 결과: " + isSuccess);
         } catch (Exception e) {
-            e.printStackTrace(); // 콘솔에 예외 출력
+            e.printStackTrace();
         }
-    } else {
-        System.out.println("❌ 입력값 누락: branchId/userId/password/userName 중 하나 이상 null");
     }
 
     String branchType = "HQ".equalsIgnoreCase(branchId) ? "본사" : "지점";
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>/userp/signup.jsp</title>
+<meta charset="UTF-8" />
+<title>/userp/signup.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+<style>
+  body { background:#e9edf0; }
+  .card-wrap { width:min(520px, 92vw); border-radius:12px; }
+  .logo { width:200px; height:auto; }
+  .btn-primary { background:#003366; border-color:#003366; }
+  .btn-primary:hover { background:#002244; border-color:#002244; }
+</style>
 </head>
-<body>
-    <div class="container">
-        <% if (isSuccess) { %>
-            <p>
-                <strong><%= userId %>님 <%= branchType %> (<%= branchId %>) 회원가입 되었습니다.</strong><br>
-                <a href="loginform.jsp">로그인 하러가기</a>
-            </p>
-        <% } else { %>
-            <p style="color:red;">
-                가입 실패: 입력값 누락 또는 DB 오류<br>
-                📌 userId: <%= userId %><br>
-                📌 branchId: <%= branchId %><br>
-                <a href="signup-form.jsp">다시 회원가입</a>
-            </p>
-        <% } %>
+<body class="min-vh-100 d-flex align-items-center justify-content-center">
+  <main class="card shadow-sm p-4 p-md-5 card-wrap">
+    <div class="text-center mb-3">
+      <img src="${pageContext.request.contextPath}/images/JB_logo.png" alt="종복치킨 ERP 로고" class="logo mb-2">
+      <h1 class="h5 fw-bold mb-1">회원가입 결과</h1>
+      <div class="text-muted small">ERP 시스템 포털</div>
     </div>
+
+    <% if (isSuccess) { %>
+      <div class="alert alert-success text-nowrap" role="alert">
+        <strong><%= userId %></strong>님, <%= branchType %> (<%= branchId %>) 회원가입이 완료되었습니다.
+      </div>
+      <div class="d-grid gap-2">
+        <a href="${pageContext.request.contextPath}/userp/loginform.jsp" class="btn btn-primary">로그인 하러가기</a>
+        <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-outline-primary">메인으로</a>
+      </div>
+    <% } else { %>
+      <div class="alert alert-danger" role="alert">
+        가입에 실패했습니다.
+        <div class="small mt-2">
+          <div>📌 아이디: <%= userId %></div>
+          <div>📌 지점 코드: <%= branchId %></div>
+        </div>
+      </div>
+      <div class="d-grid gap-2">
+        <a href="${pageContext.request.contextPath}/userp/signup-form.jsp" class="btn btn-primary">다시 회원가입</a>
+        <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-outline-primary">메인으로</a>
+      </div>
+    <% } %>
+  </main>
 </body>
 </html>
