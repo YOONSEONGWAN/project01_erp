@@ -29,13 +29,24 @@
         totalRows = dao.getDailyAvgCountBetween(start, end);
         list = dao.getDailyAvgSalesPageBetween(start, end, startRow, endRow);
     } else {
-        totalRows = dao.getDailyAvgCount(); // ← 구현 필요
-        list = dao.getDailyAvgSalesPage(startRow, endRow); // ← 구현 필요
+        totalRows = dao.getDailyAvgCount(); 
+        list = dao.getDailyAvgSalesPage(startRow, endRow); 
     }
 
     int totalPages = (int)Math.ceil(totalRows / (double)pageSize);
 
     NumberFormat nf = NumberFormat.getInstance();
+    
+    // ✅ sales.jsp와 같은 방식의 base/extra 구성
+    // 단독 실행(권장): 이 JSP를 직접 요청하도록 링크 구성
+    String base  = request.getContextPath() + "/headquater-sales/daily-avg.jsp";
+    String extra = "";
+    if (hasFilter) {
+        extra += "?start=" + start + "&end=" + end;
+    } else {
+        extra += "?";
+    }
+
 %>
 
 <h2 class="mb-2">일 평균 매출 (지점별)</h2>
@@ -66,14 +77,17 @@
 	    </tbody>
 	</table>
 </div>
-<nav>
-    <ul class="pagination justify-content-center">
-        <% for (int i = 1; i <= totalPages; i++) { %>
-            <li class="page-item <%= i == pageNum ? "active" : "" %>">
-                <a class="page-link" href="?view=daily-avg
-<%= hasFilter ? "&start=" + start + "&end=" + end : "" %>
-&pageNum=<%=i%>"><%=i%></a>
-            </li>
-        <% } %>
-    </ul>
+<!-- ✅ sales.jsp 스타일: "이전 [현재] 다음" 형태 -->
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    <li class="page-item <%= (pageNum <= 1 ? "disabled" : "") %>">
+      <a class="page-link" href="<%= base + extra %><%= extra.endsWith("?") ? "" : "&" %>pageNum=<%= Math.max(1, pageNum - 1) %>">이전</a>
+    </li>
+
+    <li class="page-item active"><span class="page-link"><%= pageNum %></span></li>
+
+    <li class="page-item <%= (pageNum >= totalPages ? "disabled" : "") %>">
+      <a class="page-link" href="<%= base + extra %><%= extra.endsWith("?") ? "" : "&" %>pageNum=<%= Math.min(totalPages, pageNum + 1) %>">다음</a>
+    </li>
+  </ul>
 </nav>
