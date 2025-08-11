@@ -9,12 +9,27 @@
     boolean isBranchPage = pageParam != null && pageParam.startsWith("branch-admin/");
     boolean isBoardPage = pageParam != null && pageParam.startsWith("board/");
     boolean isSalesPage = "headquater/sales.jsp".equals(pageParam);
-    boolean isStockPage = pageParam != null && pageParam.startsWith("stock/"); // 그룹 열림용
-    boolean isStockManagePage = "stock/stock.jsp".equals(pageParam);
-    boolean isPlaceOrderPage = "stock/placeorder.jsp".equals(pageParam);
+    
     boolean isHqBoardPage = pageParam != null && pageParam.startsWith("hqboard/");
     boolean isHrmPage = pageParam != null && pageParam.startsWith("hrm/");
+
+ 	// 재고 관리 관련 페이지
+    boolean isStockManagePage = pageParam != null && (
+        pageParam.contains("stock/stock.jsp") ||
+        pageParam.contains("stock/stock_update.jsp") ||
+        pageParam.contains("stock/stocklist.jsp") ||
+        pageParam.contains("stock/inbound") ||
+        pageParam.contains("stock/outbound") ||
+        pageParam.contains("stock/inandout")
+    );
+
+    // 발주 관리 관련 페이지
+      boolean isPlaceOrderPage = pageParam != null && pageParam.contains("stock/placeorder");
+
+    // 재고 서브메뉴 열림 여부
+     boolean isStockPage = isStockManagePage || isPlaceOrderPage;
 %>
+
    
    <nav id="sidebar" class="bg-light border-end" style="width: 250px; min-height: 100vh; flex-shrink: 0;">
      <div class="p-3">
@@ -116,33 +131,34 @@
                   class="nav-link <%= isSalesPage ? "active" : "" %>">
                  <i class="bi bi-folder"></i> 매출/회계 페이지
                </a>
+               
              </li>
            </ul>
          </li>
    
-          <!-- 재고 -->
-      <li class="nav-item">
-        <a href="#" class="nav-link d-flex align-items-center gap-2"
-           onclick="event.preventDefault(); toggleSubmenu('stockMenu', this);">
-          <i class="bi <%= isStockPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
-          <i class="bi <%= isStockPage ? "bi-folder2-open" : "bi-folder" %>"></i>
-          재고
-        </a>
-        <ul id="stockMenu" class="submenu <%= isStockPage ? "open" : "" %>" style="padding-left: 3rem;">
-          <li>
-            <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/stock.jsp"
-               class="nav-link <%= isStockManagePage ? "active" : "" %>">
-              <i class="bi bi-folder"></i> 재고 관리
-            </a>
-          </li>
-          <li>
-            <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/placeorder.jsp"
-               class="nav-link <%= isPlaceOrderPage ? "active" : "" %>">
-              <i class="bi bi-folder"></i> 발주 관리
-            </a>
-          </li>
-        </ul>
-      </li>
+   		<!-- 재고 -->
+        <li class="nav-item">
+		  <a href="#" class="nav-link d-flex align-items-center gap-2"
+		     onclick="event.preventDefault(); toggleSubmenu('stockMenu', this);">
+		    <i class="bi <%= isStockPage ? "bi-caret-down-fill" : "bi-caret-right-fill" %>"></i>
+		    <i class="bi <%= isStockPage ? "bi-folder2-open" : "bi-folder" %>"></i>
+		    재고
+		  </a>
+		  <ul id="stockMenu" class="submenu <%= isStockPage ? "open" : "" %>" style="padding-left: 3rem;">
+		    <li>
+		      <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/stock.jsp"
+		         class="nav-link <%= isStockManagePage ? "active" : "" %>">
+		        <i class="bi bi-folder"></i> 재고 관리
+		      </a>
+		    </li>
+		    <li>
+		      <a href="<%=request.getContextPath()%>/headquater.jsp?page=stock/placeorder.jsp"
+		         class="nav-link <%= isPlaceOrderPage ? "active" : "" %>">
+		        <i class="bi bi-folder"></i> 발주 관리
+		      </a>
+		    </li>
+		  </ul>
+		</li>
    
          <!-- 본사 내부 게시판 -->
          <li class="nav-item">
