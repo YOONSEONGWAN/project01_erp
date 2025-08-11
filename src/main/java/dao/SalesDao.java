@@ -1239,23 +1239,27 @@ public int getWeeklyMaxCountBetween(String start, String end) {
 
 	    try {
 	        conn = new DbcpBean().getConn();
-	        String sql = """
-					SELECT * FROM (
-					    SELECT ROWNUM rn, data.* FROM (
-					        SELECT TO_CHAR(s.created_at, 'YYYY-MM') AS period,
-					               s.branch_id,
-					               b.name AS branch_name,
-					               SUM(s.totalamount) AS totalSales,
-					               RANK() OVER (PARTITION BY TO_CHAR(s.created_at, 'YYYY-MM') ORDER BY SUM(s.totalamount) DESC) AS rank
-					        FROM sales s
-					        JOIN branches b ON s.branch_id = b.branch_id
-					        WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
-					        GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), s.branch_id, b.name
-					        ORDER BY period DESC, rank
-					    ) data
-					)
-					WHERE rn BETWEEN ? AND ?
-	        """;
+	        String sql =
+	            "SELECT * FROM ( " +
+	            "  SELECT ROWNUM rn, r.* FROM ( " +
+	            "    WITH agg AS ( " +
+	            "      SELECT TO_CHAR(s.created_at, 'YYYY-MM') AS period, " +
+	            "             s.branch_id, b.name AS branch_name, " +
+	            "             SUM(s.totalamount) AS total_sales " +
+	            "      FROM sales s " +
+	            "      JOIN branches b ON s.branch_id = b.branch_id " +
+	            "      WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD') " +
+	            "      GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), s.branch_id, b.name " +
+	            "    ), ranked AS ( " +
+	            "      SELECT period, branch_id, branch_name, total_sales, " +
+	            "             DENSE_RANK() OVER (PARTITION BY period ORDER BY total_sales DESC) AS rnk " +
+	            "      FROM agg " +
+	            "    ) " +
+	            "    SELECT period, branch_id, branch_name, total_sales, rnk " +
+	            "    FROM ranked " +
+	            "    ORDER BY period DESC, rnk ASC, branch_name ASC " +
+	            "  ) r " +
+	            ") WHERE rn BETWEEN ? AND ?";
 
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setString(1, start);
@@ -1269,24 +1273,19 @@ public int getWeeklyMaxCountBetween(String start, String end) {
 	            dto.setPeriod(rs.getString("period"));
 	            dto.setBranch_id(rs.getString("branch_id"));
 	            dto.setBranch_name(rs.getString("branch_name"));
-	            dto.setTotalSales(rs.getInt("totalSales"));
+	            dto.setTotalSales(rs.getInt("total_sales"));
+	            dto.setRank(rs.getInt("rnk"));
 	            list.add(dto);
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
+	        try { if (rs != null) rs.close(); } catch (Exception ignore) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception ignore) {}
+	        try { if (conn != null) conn.close(); } catch (Exception ignore) {}
 	    }
-
 	    return list;
 	}
-	
 	
 	
 	public int getMonthlyRankStatsCountBetween(String start, String end) {
@@ -1297,37 +1296,40 @@ public int getWeeklyMaxCountBetween(String start, String end) {
 
 	    try {
 	        conn = new DbcpBean().getConn();
-	        String sql = """
-					SELECT COUNT(*) FROM (
-					    SELECT TO_CHAR(s.created_at, 'YYYY-MM') AS period, s.branch_id
-					    FROM sales s
-					    WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
-					    GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), s.branch_id
-					)
-	        """;
+	        String sql =
+	            "SELECT COUNT(*) FROM ( " +
+	            "  WITH agg AS ( " +
+	            "    SELECT TO_CHAR(s.created_at, 'YYYY-MM') AS period, s.branch_id, b.name AS branch_name, " +
+	            "           SUM(s.totalamount) AS total_sales " +
+	            "    FROM sales s " +
+	            "    JOIN branches b ON s.branch_id = b.branch_id " +
+	            "    WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD') " +
+	            "    GROUP BY TO_CHAR(s.created_at, 'YYYY-MM'), s.branch_id, b.name " +
+	            "  ), ranked AS ( " +
+	            "    SELECT period, branch_id, branch_name, total_sales, " +
+	            "           DENSE_RANK() OVER (PARTITION BY period ORDER BY total_sales DESC) AS rnk " +
+	            "    FROM agg " +
+	            "  ) " +
+	            "  SELECT 1 FROM ranked " +
+	            ")";
 
 	        pstmt = conn.prepareStatement(sql);
 	        pstmt.setString(1, start);
 	        pstmt.setString(2, end);
 
 	        rs = pstmt.executeQuery();
-	        if (rs.next()) {
-	            count = rs.getInt(1);
-	        }
+	        if (rs.next()) count = rs.getInt(1);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
+	        try { if (rs != null) rs.close(); } catch (Exception ignore) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception ignore) {}
+	        try { if (conn != null) conn.close(); } catch (Exception ignore) {}
 	    }
-
 	    return count;
 	}
+
+
 	
 	
 	
