@@ -432,7 +432,6 @@ public class WorkLogDao{
 	    ResultSet rs = null;
 	    String sql = """
 	       SELECT w.log_id, w.branch_id, w.user_id, w.work_date, w.start_time, w.end_time
-                 
             FROM work_log w
             JOIN users_p u ON w.user_id = u.user_id
             JOIN branches b ON w.branch_id = b.branch_id

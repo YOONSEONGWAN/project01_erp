@@ -3,7 +3,8 @@
 <%@page import="dao.IngredientDao"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-    List<IngredientDto> allIngredients = IngredientDao.getInstance().selectAllProducts();
+String branchId = (String)session.getAttribute("branchId");
+List<IngredientDto> allIngredients = IngredientDao.getInstance().selectAllProducts(branchId);
 %>
 <!DOCTYPE html>
 <html>
