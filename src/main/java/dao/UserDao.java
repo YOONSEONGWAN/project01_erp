@@ -217,8 +217,8 @@ private static UserDao dao;
 
 	        String sql = """
 	            INSERT INTO users_p
-	            (num, branch_id, user_id, password, user_name, role, updated_at, created_at)
-	            VALUES(users_p_seq.NEXTVAL, ?, ?, ?, ?, ?, SYSDATE, SYSDATE)
+	            (num, branch_id, user_id, password, user_name, updated_at, created_at)
+	            VALUES(users_p_seq.NEXTVAL, ?, ?, ?, ?, SYSDATE, SYSDATE)
 	        """;
 	        System.out.println("▶ SQL 준비 완료");
 
@@ -237,7 +237,6 @@ private static UserDao dao;
 	        psmt.setString(2, dto.getUser_id());
 	        psmt.setString(3, dto.getPassword());
 	        psmt.setString(4, dto.getUser_name());
-	        psmt.setString(5, "unapproved");
 
 	        System.out.println("▶ executeUpdate() 호출 전");
 	        rowCount = psmt.executeUpdate();
