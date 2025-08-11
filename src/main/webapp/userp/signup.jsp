@@ -22,7 +22,11 @@
             dto.setUser_id(userId);
             dto.setPassword(hashed);
             dto.setUser_name(userName);
-
+            
+		if ("HQ".equals(branchId)) {
+        	dto.setRole("admin");
+        }
+		
             isSuccess = UserDao.getInstance().insert(dto);
         } catch (Exception e) {
             e.printStackTrace();
