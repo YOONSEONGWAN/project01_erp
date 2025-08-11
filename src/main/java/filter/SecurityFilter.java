@@ -96,18 +96,18 @@ public class SecurityFilter implements Filter{
     // 역할 기반 권한 검사
     // 클라이언트 요청경로와 role 정보를 넣어서 접근 가능한지 여부를 리턴하는 메소드
     private boolean isAuthorized(String path, String role) {
-        if ("ROLE_KING".equals(role)) {
+        if ("king".equals(role)) {
             return true; // 모든 경로 접근 허용
-        } else if ("ROLE_ADMIN".equals(role)) {
+        } else if ("admin".equals(role)) {
         	// "/index/branchindex.jsp" 하위와 "/hrm/" 경로를 제외한 모든 경로 접근 허용
             return !path.startsWith("/index/branchindex.jsp") && !path.startsWith("/hrm/");
-        } else if ("ROLE_MANAGER".equals(role)) {
+        } else if ("manager".equals(role)) {
         	// "/index/headqueaterindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
             return !path.startsWith("/index/headquaterindex.jsp");
-        } else if ("ROLE_CLERK".equals(role)) {
+        } else if ("clerk".equals(role)) {
         	// "/index/headquaterindex.jsp" 하위 경로를 제외한 모든 경로 접근 허용
             return !path.startsWith("/index/headquaterindex.jsp");
-        } else if ("ROLE_UNAPPROVED".equals(role)) {
+        } else if ("unapproved".equals(role)) {
         	// "/index/" 하위를 제외한 모든 경로 접근 허용
             return !path.startsWith("/index/");
         }

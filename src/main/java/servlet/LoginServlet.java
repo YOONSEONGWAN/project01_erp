@@ -34,5 +34,15 @@ public class LoginServlet extends HttpServlet {
 			request.setAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
 			request.getRequestDispatcher("/userp/loginform.jsp").forward(request, response);
 		}
+		
 	}
+	
+	@Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        // JSP 위치에 맞춰 경로 지정
+        req.getRequestDispatcher("/board/view.jsp").forward(req, resp);
+        // 또는 req.getRequestDispatcher("/login.jsp").forward(req, resp);
+    }
+    // doPost는 기존 로그인 처리 그대로
 }
