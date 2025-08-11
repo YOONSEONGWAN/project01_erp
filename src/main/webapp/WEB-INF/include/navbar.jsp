@@ -24,6 +24,7 @@
 	    <div class="d-flex justify-content-end align-items-center" style="gap: 1rem;">
 	      <% if(userId != null) { %>
 
+
 	        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
 			    ? request.getContextPath() + "/headquater.jsp?page=userp/userpinfo.jsp"
 			    : request.getContextPath() + "/branch.jsp?page=userp/userpinfo.jsp" %>"
