@@ -40,11 +40,8 @@
             <div class="col-md-8">
                 <h2 class="dashboard-title mb-0">
                     <i class="bi bi-house-fill"></i>
-                    <%= branchId != null ? branchId : "지점" %> 대시보드
+                    지점 대시보드
                 </h2>
-                <div class="mt-1 text-secondary" style="font-size: 1.1rem;">
-                    <%= userId %>님, 환영합니다!
-                </div>
             </div>
         </div>
 
