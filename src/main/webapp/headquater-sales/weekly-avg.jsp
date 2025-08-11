@@ -2,7 +2,32 @@
 <%@ page import="dao.SalesDao" %>
 <%@ page import="dto.SalesDto" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.*" %>
+<%@ page import="java.time.temporal.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%!
+    private String formatWeekLabel(String isoYearWeek) {
+        try {
+            String[] parts = isoYearWeek.split("-");
+            int y = Integer.parseInt(parts[0]);
+            int w = Integer.parseInt(parts[1]);
+
+            LocalDate weekStart = LocalDate.now()
+                    .with(IsoFields.WEEK_BASED_YEAR, y)
+                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, w)
+                    .with(ChronoField.DAY_OF_WEEK, 1);
+
+            WeekFields wf = WeekFields.ISO;
+            int month = weekStart.getMonthValue();
+            int weekOfMonth = weekStart.get(wf.weekOfMonth());
+
+            return String.format("%d년 %d월 %d주차", y, month, weekOfMonth);
+        } catch (Exception e) {
+            return isoYearWeek;
+        }
+    }
+%>
 
 <%
 	request.setCharacterEncoding("utf-8");
@@ -52,7 +77,7 @@
       %>
       <tr>
         <td><%= index++ %></td>
-        <td><%= dto.getPeriod() %></td>
+        <td><%= formatWeekLabel(dto.getPeriod()) %></td>
         <td><%= dto.getBranch_name() %></td>
         <td><%= nf.format(dto.getAverageSalesPerDay()) %> 원</td>
         <td><%= nf.format(dto.getTotalSales()) %> 원</td>

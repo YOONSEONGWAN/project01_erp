@@ -2,34 +2,72 @@
 <%@ page import="dao.SalesDao" %>
 <%@ page import="dto.SalesDto" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.*" %>
+<%@ page import="java.time.temporal.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
+<%!
+    private String formatWeekLabel(String raw) {
+        try {
+            String y, ww;
+
+            if (raw.matches("\\d{4}-W\\d{2}")) { 
+                String[] p = raw.split("-W");
+                y = p[0]; ww = p[1];
+            } else if (raw.matches("\\d{4}-\\d{2}")) { 
+                String[] p = raw.split("-");
+                y = p[0]; ww = p[1];
+            } else {
+                return raw; 
+            }
+
+            int year = Integer.parseInt(y);
+            int week = Integer.parseInt(ww);
+
+            LocalDate weekStart = LocalDate.now()
+                    .with(IsoFields.WEEK_BASED_YEAR, year)
+                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+                    .with(ChronoField.DAY_OF_WEEK, 1);
+
+            WeekFields wf = WeekFields.ISO;
+            int month = weekStart.getMonthValue();
+            int weekOfMonth = weekStart.get(wf.weekOfMonth());
+
+            return String.format("%d년 %d월 %d주차", year, month, weekOfMonth);
+        } catch (Exception e) {
+            return raw;
+        }
+    }
+%>
+
 <%
-	request.setCharacterEncoding("utf-8");
-	
-	String startRaw = request.getParameter("start");
-	String endRaw   = request.getParameter("end");
-	String start = (startRaw != null && !startRaw.isEmpty() && startRaw.matches("\\d{4}-\\d{2}-\\d{2}")) ? startRaw : null;
-	String end   = (endRaw   != null && !endRaw.isEmpty()   && endRaw.matches("\\d{4}-\\d{2}-\\d{2}"))   ? endRaw   : null;
-	boolean hasFilter = (start != null && end != null);
-	String startSafe = hasFilter ? start : "2000-01-01";
-	String endSafe   = hasFilter ? end   : "2099-12-31";
-	
-	int pageNum = 1;
-	try { if (request.getParameter("pageNum") != null) pageNum = Integer.parseInt(request.getParameter("pageNum")); } catch(Exception ignore){}
-	int pageSize = 10;
-	int startRow = (pageNum - 1) * pageSize + 1;
-	int endRow   = pageNum * pageSize;
-	
-	SalesDao dao = SalesDao.getInstance();
-	int totalRows = dao.getWeeklyRankStatsCountBetween(startSafe, endSafe);
-	List<SalesDto> list = dao.getWeeklyRankStatsPageBetween(startSafe, endSafe, startRow, endRow);
-	
-	int totalPages = Math.max(1, (int)Math.ceil(totalRows / (double)pageSize));
-	NumberFormat nf = NumberFormat.getInstance();
-	
-	String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp&view=weekly-rank";
-	String extra = hasFilter ? "&start=" + start + "&end=" + end : "";
+    request.setCharacterEncoding("utf-8");
+    
+    String startRaw = request.getParameter("start");
+    String endRaw   = request.getParameter("end");
+    String start = (startRaw != null && !startRaw.isEmpty() && startRaw.matches("\\d{4}-\\d{2}-\\d{2}")) ? startRaw : null;
+    String end   = (endRaw   != null && !endRaw.isEmpty()   && endRaw.matches("\\d{4}-\\d{2}-\\d{2}"))   ? endRaw : null;
+    boolean hasFilter = (start != null && end != null);
+    String startSafe = hasFilter ? start : "2000-01-01";
+    String endSafe   = hasFilter ? end   : "2099-12-31";
+    
+    int pageNum = 1;
+    try { 
+        if (request.getParameter("pageNum") != null) pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+    } catch(Exception ignore){}
+    int pageSize = 10;
+    int startRow = (pageNum - 1) * pageSize + 1;
+    int endRow   = pageNum * pageSize;
+    
+    SalesDao dao = SalesDao.getInstance();
+    int totalRows = dao.getWeeklyRankStatsCountBetween(startSafe, endSafe);
+    List<SalesDto> list = dao.getWeeklyRankStatsPageBetween(startSafe, endSafe, startRow, endRow);
+    
+    int totalPages = Math.max(1, (int)Math.ceil(totalRows / (double)pageSize));
+    NumberFormat nf = NumberFormat.getInstance();
+    
+    String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp&view=weekly-rank";
+    String extra = hasFilter ? "&start=" + start + "&end=" + end : "";
 %>
 
 <h2 class="mb-2">지점별 주간 매출 순위</h2>
@@ -51,7 +89,7 @@
       %>
       <tr>
         <td><%= dto.getRank() %></td>
-        <td><%= dto.getPeriod() %></td>
+        <td><%= formatWeekLabel(dto.getPeriod()) %></td>
         <td><%= dto.getBranch_name() %></td>
         <td><%= nf.format(dto.getTotalSales()) %> 원</td>
       </tr>

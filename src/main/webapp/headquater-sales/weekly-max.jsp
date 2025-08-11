@@ -2,11 +2,32 @@
 <%@ page import="dao.SalesDao" %>
 <%@ page import="dto.SalesDto" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.*" %>
+<%@ page import="java.time.temporal.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%!
+    private String formatWeekLabel(String isoYearWeek) {
+        try {
+            String[] parts = isoYearWeek.split("-");
+            int y = Integer.parseInt(parts[0]);
+            int w = Integer.parseInt(parts[1]);
+            LocalDate weekStart = LocalDate.now()
+                    .with(IsoFields.WEEK_BASED_YEAR, y)
+                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, w)
+                    .with(ChronoField.DAY_OF_WEEK, 1);
+            WeekFields wf = WeekFields.ISO;
+            int month = weekStart.getMonthValue();
+            int weekOfMonth = weekStart.get(wf.weekOfMonth());
+            return String.format("%d년 %d월 %d주차", y, month, weekOfMonth);
+        } catch (Exception e) {
+            return isoYearWeek;
+        }
+    }
+%>
 
 <%
 	request.setCharacterEncoding("utf-8");
-	
 	String startRaw = request.getParameter("start");
 	String endRaw   = request.getParameter("end");
 	String start = (startRaw != null && !startRaw.isEmpty() && startRaw.matches("\\d{4}-\\d{2}-\\d{2}")) ? startRaw : null;
@@ -14,20 +35,16 @@
 	boolean hasFilter = (start != null && end != null);
 	String startSafe = hasFilter ? start : "2000-01-01";
 	String endSafe   = hasFilter ? end   : "2099-12-31";
-	
 	int pageNum = 1;
 	try { if (request.getParameter("pageNum") != null) pageNum = Integer.parseInt(request.getParameter("pageNum")); } catch (Exception ignore) {}
 	int pageSize = 10;
 	int startRow = (pageNum - 1) * pageSize + 1;
 	int endRow   = pageNum * pageSize;
-	
 	SalesDao dao = SalesDao.getInstance();
 	int totalRows = dao.getWeeklyMaxCountBetween(startSafe, endSafe);
 	List<SalesDto> list = dao.getWeeklyMaxSalesDatesBetween(startSafe, endSafe, startRow, endRow);
-	
 	int totalPages = Math.max(1, (int) Math.ceil(totalRows / (double) pageSize));
 	NumberFormat nf = NumberFormat.getInstance();
-	
 	String base  = request.getContextPath() + "/headquater.jsp?page=headquater/sales.jsp&view=weekly-max";
 	String extra = hasFilter ? "&start=" + start + "&end=" + end : "";
 %>
@@ -53,7 +70,7 @@
       %>
       <tr>
         <td><%= index++ %></td>
-        <td><%= dto.getPeriod() %></td>
+        <td><%= formatWeekLabel(dto.getPeriod()) %></td>
         <td><%= dto.getBranch_name() %></td>
         <td><%= dto.getMaxSalesDate() %></td>
         <td><%= nf.format(dto.getTotalSales()) %> 원</td>
