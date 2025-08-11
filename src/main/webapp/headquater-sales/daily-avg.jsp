@@ -77,7 +77,7 @@
 	    </tbody>
 	</table>
 </div>
-<!-- ✅ sales.jsp 스타일: "이전 [현재] 다음" 형태 -->
+
 <nav aria-label="Page navigation">
   <ul class="pagination justify-content-center">
     <li class="page-item <%= (pageNum <= 1 ? "disabled" : "") %>">

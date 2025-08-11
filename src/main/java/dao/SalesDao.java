@@ -160,7 +160,7 @@ private static SalesDao dao;
 	            dto.setBranch_id(rs.getString("branch_id"));
 	            dto.setBranch_name(rs.getString("branch_name"));
 	            dto.setTotalSales(rs.getInt("totalSales"));
-	            dto.setRank(rs.getInt("rank"));  // ✅ 순위 설정 추가
+	            dto.setRank(rs.getInt("rank")); 
 	            list.add(dto);
 	        }
 	    } catch (Exception e) {
@@ -731,13 +731,6 @@ private static SalesDao dao;
     return list;
 }
 
-/**
- * 특정 기간 동안의 지점별 주간 최고 매출일 항목의 총 개수를 가져오는 메소드
- * (페이징을 위한 총 행 수 계산)
- * @param start 시작일 (YYYY-MM-DD)
- * @param end 종료일 (YYYY-MM-DD)
- * @return 조건에 맞는 주간 최고 매출일 항목의 총 개수
- */
 public int getWeeklyMaxCountBetween(String start, String end) {
     int count = 0;
     Connection conn = null;
@@ -783,12 +776,12 @@ public int getWeeklyMaxCountBetween(String start, String end) {
     return count;
 }
 
-	    // ✅ 전체 기간에 대한 주간 최고 매출일 데이터를 페이징하여 가져오는 메소드
+	    // 전체 기간에 대한 주간 최고 매출일 데이터를 페이징하여 가져오는 메소드
 	    public List<SalesDto> getWeeklyMaxSalesDates(String start, String end, int startRow, int endRow) {
 	        return getWeeklyMaxSalesDatesBetween(start, end, startRow, endRow);
 	    }
 
-	    // ... (나머지 SalesDao 메소드들은 기존대로 유지) ...
+	   
 	
 
 	
@@ -850,49 +843,6 @@ public int getWeeklyMaxCountBetween(String start, String end) {
 	    return list;
 	}
 
-	
-	 /* public int getWeeklyMaxCountBetween(String start, String end) {
-	    int count = 0;
-	    Connection conn = null;
-	    PreparedStatement pstmt = null;
-	    ResultSet rs = null;
-
-	    try {
-	        conn = new DbcpBean().getConn();
-	        String sql = """
-				SELECT COUNT(*) FROM (
-				    SELECT 
-				        TO_CHAR(s.created_at, 'IYYY-IW') AS period,
-				        s.branch_id,
-				        COUNT(DISTINCT TO_CHAR(s.created_at, 'YYYY-MM-DD')) AS dayCount
-				    FROM sales s
-				    WHERE s.created_at BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
-				    GROUP BY TO_CHAR(s.created_at, 'IYYY-IW'), s.branch_id
-				)
-	        """;
-
-	        pstmt = conn.prepareStatement(sql);
-	        pstmt.setString(1, start);
-	        pstmt.setString(2, end);
-
-	        rs = pstmt.executeQuery();
-	        if (rs.next()) {
-	            count = rs.getInt(1);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rs != null) rs.close();
-	            if (pstmt != null) pstmt.close();
-	            if (conn != null) conn.close();
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-
-	    return count;
-	} */
 	
 	// weekly-max 주간별 최고 매출일 페이징 메소드 ------------------------------------------------------------
 	
@@ -1441,7 +1391,7 @@ public int getWeeklyMaxCountBetween(String start, String end) {
 	            SalesDto dto = new SalesDto();
 	            dto.setPeriod(rs.getString("period"));
 	            dto.setBranch_name(rs.getString("branch_name"));
-	            dto.setMaxSalesDate(rs.getString("sales_date")); // ✅ JSP에서 사용
+	            dto.setMaxSalesDate(rs.getString("sales_date")); 
 	            dto.setTotalSales(rs.getInt("totalamount"));
 	            list.add(dto);
 	        }
