@@ -22,8 +22,13 @@
     <!-- 메인 컨텐츠 -->
     <main class="flex-grow-1 p-3">
       <%
-        String pages = request.getParameter("page");
-        String branchId = (String)session.getAttribute("branchId");
+        // request attribute 'page' 우선 사용, 없으면 파라미터 'page' 사용
+        String pages = (String) request.getAttribute("page");
+        if (pages == null || pages.isEmpty()) {
+            pages = request.getParameter("page");
+        }
+
+        String branchId = (String) session.getAttribute("branchId");
 
         if (pages == null || pages.isEmpty()) {
             if ("HQ".equals(branchId)) {
@@ -37,7 +42,6 @@
             pages = "/" + pages;
         }
 
-        // 컨텐츠 페이지 include
         pageContext.include(pages);
       %>
     </main>

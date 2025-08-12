@@ -65,10 +65,10 @@ public class BoardDownloadServlet extends HttpServlet {
         boardType = boardType.trim().toUpperCase();
 
         // 정책: 공지사항(NOTICE)은 HQ/지점 모두 허용, 그 외는 HQ만 허용
-        if (!"NOTICE".equals(boardType) && (branchId == null || !"HQ".equals(branchId))) {
+        /*if (!"NOTICE".equals(boardType) && (branchId == null || !"HQ".equals(branchId))) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "다운로드 권한이 없습니다.");
             return;
-        }
+        }*/
         /* ===== 권한 체크 끝 ===== */
         
         // 3) 실제 파일 존재 확인

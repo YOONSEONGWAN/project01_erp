@@ -23,7 +23,7 @@ public class SecurityFilter implements Filter{
 		"/userp/signup-form.jsp", "/userp/signup.jsp",
 		"/userp/hqlogin-form.jsp", "/userp/hqlogin.jsp",
 		"/userp/branchlogin-form.jsp", "/userp/branchlogin.jsp",
-		"/images/", "/userp/loginform.jsp"
+		"/images/", "/userp/loginform.jsp", "/board/file-download"
 	);
 	
 	@Override
@@ -115,7 +115,8 @@ public class SecurityFilter implements Filter{
             return !path.startsWith("/index/headquater.jsp");
         } else if ("unapproved".equals(role)) {
         	// "/index/" 하위를 제외한 모든 경로 접근 허용
-            return !path.startsWith("/index/");
+        	//return false;
+            return isWhiteList(path);
         }
         return false; // unknown role
     }

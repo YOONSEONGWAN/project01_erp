@@ -25,6 +25,8 @@
             
 		if ("HQ".equals(branchId)) {
         	dto.setRole("admin");
+        }else{
+        	dto.setRole("unapproved");
         }
             isSuccess = UserDao.getInstance().insert(dto);
         } catch (Exception e) {
