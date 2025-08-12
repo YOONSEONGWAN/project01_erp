@@ -195,11 +195,11 @@
                 <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/headquater.jsp">홈</a></li>
                 <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stock.jsp">재고 관리</a></li>
                 <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp">입고 / 출고</a></li>
-                <li class="breadcrumb-item active" aria-current="page">전체 입고 내역</li>
+                <li class="breadcrumb-item active" aria-current="page">전체 출고 내역</li>
             </ol>
         </nav>
 
-        <h2 class="mb-4 fw-bold">전체 입고 내역</h2>
+        <h2 class="mb-4 fw-bold">전체 출고 내역</h2>
     </div>
 
     <!-- 본문영역: 검색창, 테이블, 페이징 -->

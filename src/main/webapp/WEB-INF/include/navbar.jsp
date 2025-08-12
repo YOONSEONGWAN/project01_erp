@@ -22,9 +22,7 @@
 		</a>
 	
 	    <div class="d-flex justify-content-end align-items-center" style="gap: 1rem;">
-	      <% if(userId != null) { %>
-
-
+	      <% if(userId != null) { %>\
 	        <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId"))
 			    ? request.getContextPath() + "/headquater.jsp?page=userp/userpinfo.jsp"
 			    : request.getContextPath() + "/branch.jsp?page=userp/userpinfo.jsp" %>"
@@ -32,7 +30,6 @@
 			   style="color:white;">
 			   <%= userId %>님
 			</a>
-
 	
 	        <% if(branchId != null && branchId.startsWith("BC")) { %>
 	          <a class="btn btn-outline-warning btn-sm" href="<%=request.getContextPath()%>/branch.jsp?page=branchinfo/info2.jsp">지점 정보수정</a>
