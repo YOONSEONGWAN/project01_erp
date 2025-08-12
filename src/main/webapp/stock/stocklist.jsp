@@ -187,7 +187,7 @@
             <tbody>
                 <%
                     for (InventoryDto tmp : list) {
-                        boolean isQuantityLow = tmp.getQuantity() < 10;
+                        boolean isQuantityLow = tmp.getQuantity() < 100;
                         boolean needOrder = isQuantityLow;
                 %>
                 <tr>

@@ -38,7 +38,7 @@
         body {
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 0px;
         }
         h2 {
             text-align: left; /* 좌측 정렬 */

@@ -19,105 +19,114 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>지점 발주 상세 내역</title>
+<style>
+  body {
+      background-color: #f8f9fa;
+      font-family: "Malgun Gothic", "맑은 고딕", "Segoe UI", "Noto Sans KR", sans-serif;
+      color: #212529;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+  }
 
-    <!-- Bootstrap CSS 포함 -->
-    <jsp:include page="/WEB-INF/include/resource.jsp"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  .container {
+      max-width: 960px;
+      width: 100%;
+      margin: 20px auto 40px auto;
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+  }
 
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #212529;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
+  nav.breadcrumb {
+      margin-bottom: 20px;
+      background: transparent;
+      padding: 0;
+      font-size: 0.9rem;
+      color: #212529;
+  }
 
-        .container {
-            max-width: 960px;
-            width: 100%;
-            margin: 20px auto 40px auto;
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            box-sizing: border-box;
-            max-height: none; /* 세로스크롤 없도록 */
-            overflow-y: visible;
-        }
+  nav.breadcrumb .breadcrumb-item a {
+      color: #0d6efd;
+      text-decoration: none;
+  }
 
-        h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-weight: 700;
-            font-size: 1.8rem;
-            text-align: left;
-        }
+  nav.breadcrumb .breadcrumb-item.active {
+      color: #6c757d;
+      cursor: default;
+  }
 
-        nav.breadcrumb {
-            margin-bottom: 20px;
-            background: transparent;
-            padding: 0;
-        }
+  h2 {
+      margin-top: 0;
+      margin-bottom: 25px;
+      font-weight: 700;
+      font-size: 1.8rem;
+      text-align: left;
+  }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+  }
 
-        thead th {
-            background-color: #e9ecef; /* Bootstrap table-secondary 배경색 */
-            color: #212529;
-            font-weight: 600;
-            text-align: center;
-            padding: 12px 10px;
-            border-bottom: 3px solid #dee2e6;
-            user-select: none;
-        }
+  thead th {
+      background-color: #e9ecef;
+      color: #212529;
+      font-weight: 600;
+      text-align: center;
+      padding: 12px 10px;
+      border-bottom: 3px solid #dee2e6;
+      user-select: none;
+  }
 
-        tbody td {
-            padding: 12px 10px;
-            vertical-align: middle;
-            text-align: center;
-            border-bottom: 1px solid #dee2e6;
-        }
+  tbody td {
+      padding: 12px 10px;
+      vertical-align: middle;
+      text-align: center;
+      border-bottom: 1px solid #dee2e6;
+  }
 
-        tbody tr:hover {
-            background-color: #f1f5fb;
-            transition: background-color 0.3s ease;
-        }
+  tbody tr:hover {
+      background-color: #f1f5fb;
+      transition: background-color 0.3s ease;
+  }
 
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: 500;
-        }
+  a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+  }
 
-        a:hover {
-            text-decoration: underline;
-        }
+  a:hover {
+      text-decoration: underline;
+  }
 
-        @media (max-width: 576px) {
-            .container {
-                padding: 20px 15px;
-                margin: 15px auto 30px auto;
-            }
+  @media (max-width: 576px) {
+      .container {
+          padding: 20px 15px;
+          margin: 15px auto 30px auto;
+      }
 
-            thead th, tbody td {
-                padding: 8px 6px;
-                font-size: 0.85rem;
-            }
+      thead th, tbody td {
+          padding: 8px 6px;
+          font-size: 0.85rem;
+      }
 
-            h2 {
-                font-size: 1.4rem;
-                margin-bottom: 20px;
-            }
-        }
-    </style>
+      h2 {
+          font-size: 1.4rem;
+          margin-bottom: 20px;
+      }
+  }
+  .navbar-user-link {
+    color: white !important;
+    text-decoration: underline; /* 밑줄 */
+    
+}
+  
+</style>
 </head>
 <body>
 

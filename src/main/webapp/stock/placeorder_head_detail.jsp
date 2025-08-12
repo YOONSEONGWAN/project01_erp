@@ -19,107 +19,121 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <title>발주 상세 내역</title>
+<meta charset="UTF-8" />
+<title>발주 상세 내역</title>
 
     <!-- Bootstrap CSS 포함 -->
-    <jsp:include page="/WEB-INF/include/resource.jsp"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<jsp:include page="/WEB-INF/include/resource.jsp"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #212529;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
+<style>
+  body {
+      background-color: #f8f9fa;
+      font-family: "Malgun Gothic", "맑은 고딕", "Segoe UI", "Noto Sans KR", sans-serif;
+      color: #212529;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+  }
 
-        .container {
-            max-width: 960px;
-            width: 100%;
-            margin: 20px auto 40px auto;
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            box-sizing: border-box;
-        }
+  .container {
+      max-width: 960px;
+      width: 100%;
+      margin: 20px auto 40px auto;
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+  }
 
-        /* 제목 좌측 정렬로 변경 */
-        h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-weight: 700;
-            font-size: 1.8rem;
-            text-align: left; /* 변경된 부분 */
-        }
+  nav.breadcrumb {
+      margin-bottom: 20px;
+      background: transparent;
+      padding: 0;
+      font-size: 0.9rem;
+      color: #212529;
+  }
 
-        nav.breadcrumb {
-            margin-bottom: 20px;
-            background: transparent;
-            padding: 0;
-        }
+  nav.breadcrumb .breadcrumb-item a {
+      color: #0d6efd;
+      text-decoration: none;
+  }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
+  nav.breadcrumb .breadcrumb-item.active {
+      color: #6c757d;
+      cursor: default;
+  }
 
-        /* thead에 Bootstrap table-secondary 클래스가 있으므로 별도 색상 지정 지움 */
-        thead th {
-            text-align: center;
-            padding: 12px 10px;
-            user-select: none;
-        }
+  h2 {
+      margin-top: 0;
+      margin-bottom: 25px;
+      font-weight: 700;
+      font-size: 1.8rem;
+      text-align: left;
+  }
 
-        tbody td {
-            padding: 12px 10px;
-            vertical-align: middle;
-            text-align: center;
-            border-bottom: 1px solid #dee2e6;
-        }
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+  }
 
-        tbody tr:hover {
-            background-color: #f1f5fb;
-            transition: background-color 0.3s ease;
-        }
+  thead th {
+      background-color: #e9ecef;
+      color: #212529;
+      font-weight: 600;
+      text-align: center;
+      padding: 12px 10px;
+      border-bottom: 3px solid #dee2e6;
+      user-select: none;
+  }
 
-        .btn-outline-primary {
-            color: #007bff;
-            border-color: #007bff;
-            font-size: 0.85rem;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
+  tbody td {
+      padding: 12px 10px;
+      vertical-align: middle;
+      text-align: center;
+      border-bottom: 1px solid #dee2e6;
+  }
 
-        .btn-outline-primary:hover {
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-        }
+  tbody tr:hover {
+      background-color: #f1f5fb;
+      transition: background-color 0.3s ease;
+  }
 
-        @media (max-width: 576px) {
-            .container {
-                padding: 20px 15px;
-                margin: 15px auto 30px auto;
-            }
+  a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+  }
 
-            thead th, tbody td {
-                padding: 8px 6px;
-                font-size: 0.85rem;
-            }
+  a:hover {
+      text-decoration: underline;
+  }
 
-            h2 {
-                font-size: 1.4rem;
-                margin-bottom: 20px;
-            }
-        }
-    </style>
+  @media (max-width: 576px) {
+      .container {
+          padding: 20px 15px;
+          margin: 15px auto 30px auto;
+      }
+
+      thead th, tbody td {
+          padding: 8px 6px;
+          font-size: 0.85rem;
+      }
+
+      h2 {
+          font-size: 1.4rem;
+          margin-bottom: 20px;
+      }
+  }
+  .navbar-user-link {
+    color: white !important;
+    text-decoration: underline; /* 밑줄 */
+    
+}
+  
+</style>
 </head>
 <body>
 

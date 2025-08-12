@@ -31,152 +31,165 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>전체 발주 내역</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"/>
+<meta charset="UTF-8">
+<title>전체 발주 내역</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"/>
 
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            background-color: #f8f9fa;
-        }
-        body {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 960px;
-            width: 100%;
-            max-height: calc(100vh - 80px);
-            overflow-y: auto;
-            background: #fff;
-            padding: 20px 30px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        h2 {
-            text-align: left;
-            font-weight: bold;
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #212529;
-        }
-        .search-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 10px;
-            gap: 8px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        thead tr {
-            background-color: #e1e4e8;
-        }
-        thead th {
-            color: #212529;
-            padding: 0.5rem 0.75rem;
-            text-align: center;
-            font-weight: 600;
-            border-bottom: 2px solid #dee2e6;
-        }
-        tbody td {
-            padding: 0.45rem 0.75rem;
-            border-top: 1px solid #dee2e6;
-            text-align: center;
-            vertical-align: middle;
-        }
-        .btn {
-            cursor: pointer;
-            border: 1px solid transparent;
-            padding: 0.25rem 0.6rem;
-            font-size: 0.875rem;
-            border-radius: 4px;
-            transition: all 0.2s ease-in-out;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-primary {
-            background-color: #003366 !important;
-            border-color: #003366 !important;
-            color: white !important;
-            font-weight: 500;
-        }
-        .btn-primary:hover {
-            background-color: #002244 !important;
-            border-color: #002244 !important;
-            color: white !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-        .btn-outline-primary {
-            color: #003366;
-            border-color: #003366;
-            background-color: transparent;
-        }
-        .btn-outline-primary:hover {
-            background-color: #003366;
-            color: white;
-        }
-
-        .pagination {
-		    display: inline-flex;        /* 버튼들이 한 줄에 붙게 */
-		    border: 1px solid #1a2c49;  /* 전체 테두리 */
-		    border-radius: 6px;          /* 전체 둥근 테두리 */
-		    overflow: hidden;            /* 둥근 테두리에서 버튼 넘치지 않도록 */
-		    padding: 0;
-		    margin-top: 20px;
-		    justify-content: center !important;
-		}
-		
-		.pagination .page-item {
-		    margin: 0;                   /* 버튼 사이 간격 제거 */
-		}
-		
-		.pagination .page-link {
-		    border: none;                /* 개별 버튼 테두리 제거 */
-		    padding: 6px 16px;
-		    font-size: 14px;
-		    color: #1a2c49;
-		    background-color: white;
-		    cursor: pointer;
-		    user-select: none;
-		    display: block;
-		    transition: background-color 0.2s ease;
-		}
-		
-		.pagination .page-item.active .page-link {
-		    background-color: #1a2c49;
-		    color: white;
-		    cursor: default;
-		    pointer-events: none;
-		}
-		
-		.pagination .page-item.disabled .page-link {
-		    color: #6c757d;
-		    background-color: white;
-		    cursor: default;
-		    pointer-events: none;
-		}
-		
-		.pagination .page-link:hover:not(.disabled):not(.active) {
-		    background-color: #e9ecef;
-		    color: #1a2c49;
-		}
-		
-		/* 버튼들 사이에만 좌우 구분선 추가 */
-		.pagination .page-item:not(:last-child) .page-link {
-		    border-right: 1px solid #1a2c49;
-		}
-		.pagination .page-item:first-child .page-link,
-		.pagination .page-item:last-child .page-link {
-    		color: #1a2c49 !important;
-		}
-    </style>
+<style>
+   html, body {
+     height: 100%;
+     margin: 0;
+     background-color: #f8f9fa;
+ }
+ body {
+     background-color: #f8f9fa;
+     min-height: 100vh;
+     margin: 0;
+     padding: 0px;
+ }
+ .container {
+     max-width: 960px;
+     width: 100%;
+     max-height: calc(100vh - 80px);
+     overflow-y: auto;
+     background: #fff;
+     padding: 20px 30px;
+     box-shadow: 0 0 8px rgba(0,0,0,0.1);
+     border-radius: 4px;
+     box-sizing: border-box;
+ }
+ h2 {
+     text-align: left;
+     font-weight: bold;
+     margin-bottom: 20px;
+     font-size: 24px;
+     color: #212529;
+ }
+ .search-bar {
+     display: flex;
+     justify-content: flex-end;
+     margin-bottom: 10px;
+     gap: 8px;
+ }
+ table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+ thead tr {
+     background-color: #e1e4e8;
+ }
+ thead th {
+     color: #212529;
+     padding: 0.5rem 0.75rem;
+     text-align: center;
+     font-weight: 600;
+     border-bottom: 2px solid #dee2e6;
+ }
+ tbody td {
+     padding: 0.45rem 0.75rem;
+     border-top: 1px solid #dee2e6;
+     text-align: center;
+     vertical-align: middle;
+ }
+ .btn {
+     cursor: pointer;
+     border: 1px solid transparent;
+     padding: 0.25rem 0.6rem;
+     font-size: 0.875rem;
+     border-radius: 4px;
+     transition: all 0.2s ease-in-out;
+     text-decoration: none;
+     display: inline-block;
+ }
+ .btn-primary {
+     background-color: #003366 !important;
+     border-color: #003366 !important;
+     color: white !important;
+     font-weight: 500;
+ }
+ .btn-primary:hover {
+     background-color: #002244 !important;
+     border-color: #002244 !important;
+     color: white !important;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+ }
+ .btn-outline-primary {
+     color: #003366;
+     border-color: #003366;
+     background-color: transparent;
+ }
+ .btn-outline-primary:hover {
+     background-color: #003366;
+     color: white;
+ }
+ 
+ .pagination {
+     display: inline-flex;        /* 버튼들이 한 줄에 붙게 */
+     border: 1px solid #1a2c49;  /* 전체 테두리 */
+     border-radius: 6px;          /* 전체 둥근 테두리 */
+     overflow: hidden;            /* 둥근 테두리에서 버튼 넘치지 않도록 */
+     padding: 0;
+     margin-top: 20px;
+     justify-content: center !important;
+ }
+ 
+ .pagination .page-item {
+     margin: 0;                   /* 버튼 사이 간격 제거 */
+ }
+ 
+ .pagination .page-link {
+     border: none;                /* 개별 버튼 테두리 제거 */
+     padding: 6px 16px;
+     font-size: 14px;
+     color: #1a2c49;
+     background-color: white;
+     cursor: pointer;
+     user-select: none;
+     display: block;
+     transition: background-color 0.2s ease;
+ }
+ 
+ .pagination .page-item.active .page-link {
+     background-color: #1a2c49;
+     color: white;
+     cursor: default;
+     pointer-events: none;
+ }
+ 
+ .pagination .page-item.disabled .page-link {
+     color: #6c757d;
+     background-color: white;
+     cursor: default;
+     pointer-events: none;
+ }
+ 
+ .pagination .page-link:hover:not(.disabled):not(.active) {
+     background-color: #e9ecef;
+     color: #1a2c49;
+ }
+ 
+ /* 버튼들 사이에만 좌우 구분선 추가 */
+ .pagination .page-item:not(:last-child) .page-link {
+     border-right: 1px solid #1a2c49;
+ }
+ .pagination .page-item:first-child .page-link,
+ .pagination .page-item:last-child .page-link {
+     color: #1a2c49 !important;
+ }
+ 
+ .btn-outline-light {
+     color: white !important;
+     border-color: white !important;
+     background-color: transparent !important;
+     transition: all 0.2s ease-in-out;
+ }
+ 
+ .btn-outline-light:hover {
+     background-color: white !important;
+     color: #003366 !important;
+     border-color: white !important;
+ }
+</style>
 </head>
 <body>
 <div class="container">
