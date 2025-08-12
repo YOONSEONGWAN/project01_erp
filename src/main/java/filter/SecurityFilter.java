@@ -23,7 +23,7 @@ public class SecurityFilter implements Filter{
 		"/userp/signup-form.jsp", "/userp/signup.jsp",
 		"/userp/hqlogin-form.jsp", "/userp/hqlogin.jsp",
 		"/userp/branchlogin-form.jsp", "/userp/branchlogin.jsp",
-		"/images/", "/userp/loginform.jsp"
+		"/images/", "/userp/loginform.jsp", "/board/file-download"
 	);
 	
 	@Override

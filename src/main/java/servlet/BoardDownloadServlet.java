@@ -45,32 +45,7 @@ public class BoardDownloadServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        
-        /* ===== STEP 2.5) 권한 체크 추가 ===== */
-        jakarta.servlet.http.HttpSession session = req.getSession(false);
-        String branchId = null;
-        if (session != null) {
-            branchId = (String) session.getAttribute("branchId"); // 세션 키 프로젝트 기준
-        }
-        if (branchId != null) branchId = branchId.trim().toUpperCase();
 
-        // 파일이 속한 게시판 타입 얻기 (파일 DTO에 boardType이 저장되어 있다면 그걸 사용)
-        String boardType = f.getBoardType();
-        if (boardType == null || boardType.isBlank()) {
-            // 만약 파일 테이블에 boardType을 안 넣었다면, 글에서 조회 (선택)
-            // BoardDto post = BoardDao.getInstance().getData(f.getBoardNum(), null);
-            // boardType = post != null ? post.getBoard_type() : null;
-        }
-        if (boardType == null) boardType = "QNA"; 
-        boardType = boardType.trim().toUpperCase();
-
-        // 정책: 공지사항(NOTICE)은 HQ/지점 모두 허용, 그 외는 HQ만 허용
-        if (!"NOTICE".equals(boardType) && (branchId == null || !"HQ".equals(branchId))) {
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN, "다운로드 권한이 없습니다.");
-            return;
-        }
-        /* ===== 권한 체크 끝 ===== */
-        
         // 3) 실제 파일 존재 확인
         File file = new File(fileLocation, f.getSaveFileName());
         if (!file.exists() || !file.isFile()) {
@@ -84,24 +59,20 @@ public class BoardDownloadServlet extends HttpServlet {
         resp.setContentType(mime);
         resp.setHeader("X-Content-Type-Options", "nosniff");
 
-        // 원본 파일명
         String original = (f.getOrgFileName() != null && !f.getOrgFileName().isBlank())
-                ? f.getOrgFileName()
-                : file.getName();
+                ? f.getOrgFileName() : file.getName();
 
-        // ✅ ASCII fallback (UUID 등 저장파일명이 ASCII라면 그걸 써도 됨)
-        String asciiFallback = f.getSaveFileName().replaceAll("[^\\x20-\\x7E]", "_"); // 공백~~ 표시 가능한 ASCII만
-
-        // RFC 5987 UTF-8 percent-encoding
+        String asciiFallback = f.getSaveFileName().replaceAll("[^\\x20-\\x7E]", "_");
         String encoded = java.net.URLEncoder
                 .encode(original, java.nio.charset.StandardCharsets.UTF_8)
                 .replace("+", "%20");
 
-        // 최종 Content-Disposition
         String contentDisp = "attachment; filename=\"" + asciiFallback.replace("\"", "'") + "\"; " +
                              "filename*=UTF-8''" + encoded;
         resp.setHeader("Content-Disposition", contentDisp);
 
+        // (선택) 용량 알려주기
+        resp.setContentLengthLong(file.length());
 
         // 5) 스트리밍
         try (FileInputStream fis = new FileInputStream(file);
