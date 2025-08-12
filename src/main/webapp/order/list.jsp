@@ -11,27 +11,30 @@ String branchId = (String)session.getAttribute("branchId");
 
 List<StockRequestDto> orderList = StockRequestDao.getInstance().selectAllByBranch(branchId); // 발주 내역 리스트
 
-
+	
 
 
 %>
 <!DOCTYPE html>
 <html>
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>발주 현황</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+
     <style>
         table { border-collapse: collapse; width: 850px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
         .btn { padding: 4px 14px; border-radius: 5px; font-size: 0.95em; }
-        .btn-update { background: #695cff; color: #fff; border: none; }
-        .btn-delete { background: #ff8b8b; color: #fff; border: none; }
+        .btn-update { background: #003366; color: #fff; border: none; }
+         th {
+        
+    }
     </style>
 </head>
 <body>
-<h3>발주 현황</h3>
-<table>
+<h3 class="ms-4 mt-4 mb-3">발주 현황</h3>
+<table class="ms-4">
     <tr>
         <th>발주번호</th>
      <%--   <th>branch_stock번호</th>    branch_num 추가, 관리용 --%>
@@ -81,17 +84,21 @@ if (orderList == null || orderList.isEmpty()) {
             <% } %>
         </td>
         <td>
-            <form action="update-form.jsp" method="get" style="margin:0;">
+           <form action="branch.jsp" method="get">
+    			<input type="hidden" name="page" value="order/update-form.jsp">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
                 <button type="submit" class="btn btn-update">수정</button>
             </form>
         </td>
         <td>
-            <form action="delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <form action="${pageContext.request.contextPath}/branch.jsp?page=order/delete.jsp" method="post" style="margin:0;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                 <input type="hidden" name="orderId" value="<%= dto.getOrderId() %>">
                 <input type="hidden" name="branchNum" value="<%= dto.getBranchNum() %>">
-                <button type="submit" class="btn btn-delete">삭제</button>
+                <button type="submit" class="btn btn-secondary">삭제</button>
+                
+                
+                
             </form>
         </td>
     </tr>
@@ -101,10 +108,9 @@ if (orderList == null || orderList.isEmpty()) {
 %>
 </table>
 <div style="margin-top:18px;">
-    <a href="insert.jsp" style="text-decoration:none;">
-        <button class="btn btn-update" type="button">새 발주 요청</button>
+    <a href="<%=request.getContextPath()%>/branch.jsp?page=order/insert.jsp" style="text-decoration:none;">
+        <button class="btn btn-update ms-4" type="button">새 발주 요청</button>
     </a>
 </div>
-<h3>branchId: <%= branchId %></h3>
 </body>
 </html>

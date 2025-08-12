@@ -30,7 +30,7 @@
 <body>
 	<script>
 		alert("삭제 완료! ");
-		location.href="${pageContext.request.contextPath }/hqboard/hq-list.jsp";
+		location.href="${pageContext.request.contextPath }/headquater.jsp?page=/hqboard/hq-list.jsp";
 	</script>
 </body>
 </html>

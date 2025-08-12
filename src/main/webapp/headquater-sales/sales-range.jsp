@@ -1,10 +1,11 @@
-<%@page import="java.text.NumberFormat"%>
-<%@page import="dao.SalesDao"%>
-<%@page import="dto.SalesDto"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page import="java.text.NumberFormat" %>
+<%@ page import="dao.SalesDao" %>
+<%@ page import="dto.SalesDto" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <%
     request.setCharacterEncoding("utf-8");
+
     String start = request.getParameter("start");
     String end = request.getParameter("end");
 
@@ -22,16 +23,15 @@
     <meta charset="UTF-8">
     <title>기간별 매출 통계</title>
 </head>
-<body>
-    <h1>📆 날짜 범위 기반 매출 통계</h1>
+<body class="container-fluid px-0">
 
-   	<form method="get" action="<%= request.getContextPath() %>/sales/sales-range.jsp">
-
-
+    <form method="get" action="<%= request.getContextPath() %>/sales/sales-range.jsp">
         <label>시작일: </label>
         <input type="date" name="start" value="<%= start != null ? start : "" %>">
+
         <label>종료일: </label>
         <input type="date" name="end" value="<%= end != null ? end : "" %>">
+
         <button type="submit">조회</button>
     </form>
 
@@ -50,5 +50,6 @@
             </ul>
         <% } %>
     <% } %>
+
 </body>
 </html>

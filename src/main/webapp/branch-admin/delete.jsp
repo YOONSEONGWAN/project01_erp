@@ -19,10 +19,10 @@
 	<script>
 		<%if(isSuccess){%>
 			alert("삭제 했습니다!");
-			location.href="${pageContext.request.contextPath }/branch-admin/list.jsp";
+			location.href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp";
 		<%}else{%>
 			alert("삭제 실패했습니다!");
-			location.href="${pageContext.request.contextPath }/branch-admin/detail.jsp?num=<%=num%>";
+			location.href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/detail.jsp?num=<%=num%>";
 		<%}%>
 		
 		

@@ -16,14 +16,14 @@
 <head>
 <meta charset="UTF-8">
 <title>/branch-sales/insert-form.jsp</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<jsp:include page="/WEB-INF/include/resource.jsp"/>
 </head>
 <body>
 <div class="container mt-3">
 
     <h2>매출 등록</h2>
 
-    <form action="<%=cpath%>/branch-sales/save.jsp" method="post" class="mt-3">
+    <form action="<%=cpath%>/branch.jsp?page=branch-sales/insert.jsp" method="post" class="mt-3">
         <table class="table table-bordered" style="max-width: 400px;">
             <tr>
                 <th class="table-light" style="width:150px;">총 매출 금액</th>
@@ -32,9 +32,9 @@
         </table>
 
         <div class="mt-3">
-            <button type="submit" class="btn btn-primary">등록</button>
-            <a href="<%=cpath%>/branch-sales/list.jsp" class="btn btn-secondary">취소</a>
-        </div>
+    		<a href="<%=cpath%>/branch.jsp?page=branch-sales/list.jsp" class="btn btn-secondary">취소</a>
+    		<button type="submit" class="btn btn-primary" style="background-color:#003366; border-color:#003366;">등록</button>
+		</div>
     </form>
 
 </div>

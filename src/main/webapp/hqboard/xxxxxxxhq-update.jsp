@@ -40,7 +40,7 @@
 <body>
 	<script>
 		alert("수정을 완료했습니다.")
-		location.href="${pageContext.request.contextPath }/hqboard/hq-view.jsp?num=<%=num%>";
+		location.href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-view.jsp?num=<%=num%>";
 	</script>
 </body>
 </html>

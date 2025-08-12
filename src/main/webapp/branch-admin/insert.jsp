@@ -30,12 +30,12 @@
 		<%if(isSuccess){%>
 			<p>
 				<strong><%=name %></strong> 등록 완료되었습니다.
-				<a href="list.jsp">지점 목록 가기</a>
+				<a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/list.jsp">지점 목록 가기</a>
 			</p>
 		<%}else{ %>
 			<p>
 				등록 실패!
-				<a href="insert-form.jsp">다시 등록하기</a>
+				<a href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/insert-form.jsp">다시 등록하기</a>
 			</p>
 		<%} %>
 	</div>

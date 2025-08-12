@@ -99,86 +99,149 @@
 <meta charset="UTF-8">
 <title>/branch-admin/user-list.jsp</title>
 <jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+<style>
+    .btn-primary {
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+        color: white !important;
+        font-weight: 500;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary:hover {
+        background-color: #002244 !important;
+        border-color: #002244 !important;
+        color: white !important;
+    }
+
+    .pagination .page-link {
+        color: #003366 !important;
+        border-color: #003366 !important;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #003366 !important;
+        border-color: #003366 !important;
+        color: white !important;
+    }
+    .pagination .page-link:hover {
+        background-color: #002244 !important;
+        border-color: #002244 !important;
+        color: white !important;
+    }
+
+    a.text-primary {
+        color: #003366 !important;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>
 </head>
 <body>
-<div class="container">
+	<div class="container">
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/index/headquaterindex.jsp">Home</a></li>
-		    <li class="breadcrumb-item"><a href="${pageContext.request.contextPath }/branch-admin/main.jsp">지점 관리</a></li>
+		    <li class="breadcrumb-item"><a href="<%=request.getContextPath()%>/headquater.jsp?page=index/headquaterindex.jsp">Home</a></li>
+		    <li class="breadcrumb-item active" aria-current="page">지점 관리</li>
 		    <li class="breadcrumb-item active" aria-current="page">직원 목록</li>
 		  </ol>
 		</nav>
-		
-		<h1 class="text-center">직원 목록</h1>
-		<div class="row">
-			<div class="col-lg-4 col-md-6 w-75 mx-auto text-end mb-3">
-				<form action="user-list.jsp" method="get">
-					 <input type="hidden" name="returnUrl" value="user-list.jsp">
-					<div>
-						<select name="role">
-							<option value="all" <%= "all".equals(role) ? "selected" : "" %>>전체</option>
-							<option value="manager" <%= "manager".equals(role) ? "selected" : "" %>>사장님</option>
-							<option value="clerk" <%= "clerk".equals(role) ? "selected" : "" %>>직원</option>
-							<option value="unapproved" <%= "unapproved".equals(role) ? "selected" : "" %>>미등록</option>
-						</select>
-						<input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword" placeholder="아이디 or 이름 입력..." />
-						<button class="btn btn-sm btn-primary" type="submit">검색</button>
-						<a class="btn btn-sm btn-primary" href="user-list.jsp">초기화</a>
-					</div>
-				</form>
-			</div>
-		</div>		
-		<table class="table table-bordered w-75 mx-auto">
-			<tr>
-				<th>회원 아이디</th>
-				<th>지점명</th>
-				<th>이름</th>
-				<th>등급</th>
-				<th>등급 수정</th>
-			</tr>
-			<%for(UserDtoAdmin tmp:list){ %>
-				<tr>
-					<form action="roleupdate.jsp" method="get">
-						<input type="hidden" name="num" value="<%=tmp.getNum() %>">
-						<td><%=tmp.getUser_id() %></td>
-						<td><%=tmp.getBranch_name() %></td>
-						<td><%=tmp.getUser_name() %></td>					
-						<td>
-							<select name="role" id="role">
-								<option value="manager" <%= tmp.getRole().equals("manager") ? "selected" : "" %>>사장님</option>
-								<option value="clerk" <%= tmp.getRole().equals("clerk") ? "selected" : "" %>>직원</option>
-								<option value="unapproved" <%= tmp.getRole().equals("unapproved") ? "selected" : "" %>>미등록</option>
-							</select>
-						</td>
-						<td>
-							<button class="btn btn-primary btn-sm" type="submit">등급 수정</button>
-						</td>
-					</form>					
-				</tr>
-			<%} %>
+
+		<div class="d-flex justify-content-between align-items-center mb-3">
+		    <h3 class="fw-bold">직원 등급 관리</h3>
+		    <form action="<%=request.getContextPath()%>/headquater.jsp" method="get" class="d-flex align-items-center">
+		        <input type="hidden" name="page" value="branch-admin/user-list.jsp" />
+		        <select name="role" class="form-select me-2" style="max-width: 120px;">
+		            <option value="all" <%= "all".equals(role) ? "selected" : "" %>>전체</option>
+		            <option value="manager" <%= "manager".equals(role) ? "selected" : "" %>>사장님</option>
+		            <option value="clerk" <%= "clerk".equals(role) ? "selected" : "" %>>직원</option>
+		            <option value="unapproved" <%= "unapproved".equals(role) ? "selected" : "" %>>미등록</option>
+		        </select>
+		        <input value="<%=StringUtils.isEmpty(keyword) ? "" : keyword %>" type="text" name="keyword"
+		               class="form-control me-2" placeholder="아이디 or 이름 입력..." style="max-width: 220px;" />
+		        <button type="submit"
+		                class="btn btn-primary me-1 d-inline-block text-nowrap"
+		                style="height: 38px; min-width: 72px; padding-top: 6px; padding-bottom: 6px; font-size: 14px;">
+		            검색
+		        </button>
+		        <a class="btn btn-outline-secondary px-3 py-2 d-inline-block text-nowrap"
+		           style="height: 38px;"
+		           href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp">초기화</a>
+		    </form>
+		</div>
+		<table class="table table-hover align-middle">
+		    <thead class="table-secondary">
+		        <tr>
+		            <th>회원 아이디</th>
+		            <th>지점명</th>
+		            <th>이름</th>
+		            <th>등급</th>
+		            <th>등급 수정</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		        <% for(UserDtoAdmin tmp : list) { %>
+		        <tr>
+		            <form action="${pageContext.request.contextPath }/branch-admin/roleupdate.jsp" method="get">
+		                <input type="hidden" name="returnUrl" value="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp">
+		                <input type="hidden" name="num" value="<%=tmp.getNum() %>">
+		                <td><%=tmp.getUser_id() %></td>
+		                <td><%=tmp.getBranch_name() %></td>
+		                <td><%=tmp.getUser_name() %></td>					
+		                <td>
+		                    <select name="role" class="form-select form-select-sm">
+		                        <option value="manager" <%= tmp.getRole().equals("manager") ? "selected" : "" %>>사장님</option>
+		                        <option value="clerk" <%= tmp.getRole().equals("clerk") ? "selected" : "" %>>직원</option>
+		                        <option value="unapproved" <%= tmp.getRole().equals("unapproved") ? "selected" : "" %>>미등록</option>
+		                    </select>
+		                </td>
+		                <td>
+		                    <button class="btn btn-primary btn-sm" type="submit">등급 수정</button>
+		                </td>
+		            </form>
+		        </tr>
+		        <% } %>
+		    </tbody>
 		</table>
 	</div>
 	
-	<ul class="pagination d-flex justify-content-center">
-		<%-- startPageNum 이 1이 아닐때 이전 page 가 존재하기 때문에... --%>
-		<%if(startPageNum != 1){ %>
-			<li class="page-item">
-				<a class="page-link" href="user-list.jsp?pageNum=<%=startPageNum-1 %>&keyword=<%=keyword%>&role=<%=role%>">&lsaquo;</a>
-			</li>
-		<%} %>			
-		<%for(int i=startPageNum; i<=endPageNum ; i++){ %>
-			<li class="page-item">
-				<a class="page-link <%= i==pageNum ? "active":"" %>" href="user-list.jsp?pageNum=<%=i %>&keyword=<%=keyword%>&role=<%=role%>"><%=i %></a>
-			</li>
-		<%} %>
-		<%-- endPageNum 이 totalPageCount 보다 작을때 다음 page 가 있다 --%>		
-		<%if(endPageNum < totalPageCount){ %>
-			<li class="page-item">
-				<a class="page-link" href="user-list.jsp?pageNum=<%=endPageNum+1 %>&keyword=<%=keyword%>&role=<%=role%>">&rsaquo;</a>
-			</li>
-		<%} %>
-	</ul>
+	<nav class="mt-4">
+	    <ul class="pagination justify-content-center">
+	    
+	    	<%if(pageNum != 1){ %>
+        		<li class="page-item">
+        			<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=pageNum-1%>&keyword=<%=keyword%>&role=<%=role%>">이전</a>
+        		</li>
+        	<%} %>
+				<li class="page-item">
+					<a class="page-link" href="#"><%=pageNum %></a>
+				</li>
+			<%if(pageNum != totalPageCount){ %>
+				<li class="page-item">
+					<a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=pageNum+1%>&keyword=<%=keyword%>&role=<%=role%>">다음</a>
+				</li>
+			<%} %>
+	    
+<%--
+	        <% if(startPageNum != 1) { %>
+	            <li class="page-item">
+	                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=startPageNum-1%>&keyword=<%=keyword%>&role=<%=role%>">&lsaquo;</a>
+	            </li>
+	        <% } %>
+	
+	        <% for(int i = startPageNum; i <= endPageNum; i++) { %>
+	            <li class="page-item <%= i == pageNum ? "active" : "" %>">
+	                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=i%>&keyword=<%=keyword%>&role=<%=role%>"><%=i%></a>
+	            </li>
+	        <% } %>
+	
+	        <% if(endPageNum < totalPageCount) { %>
+	            <li class="page-item">
+	                <a class="page-link" href="<%=request.getContextPath()%>/headquater.jsp?page=branch-admin/user-list.jsp&pageNum=<%=endPageNum+1%>&keyword=<%=keyword%>&role=<%=role%>">&rsaquo;</a>
+	            </li>
+	        <% } %>
+ --%>
+	    </ul>
+	</nav>
 	
 	<%
 		String alertMsg = (String) session.getAttribute("alertMsg");

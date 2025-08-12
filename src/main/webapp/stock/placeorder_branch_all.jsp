@@ -34,163 +34,190 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>전체 발주 내역 (지점)</title>
-    <jsp:include page="/WEB-INF/include/resource.jsp"/>
+<meta charset="UTF-8">
+<title>전체 발주 내역 (지점)</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"/>
 
-    <style>
-        /* 전체 화면 높이와 플렉스 박스로 중앙 정렬 */
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center; /* 가로 중앙 */
-            align-items: center;     /* 세로 중앙 */
-            padding: 20px;
-            box-sizing: border-box;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 960px;
-            width: 100%;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            border-radius: 4px;
-            box-sizing: border-box;
-            /* 내용이 너무 길 때 스크롤 가능하도록 제한 높이 지정 (옵션) */
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        h2 {
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .search-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table th {
-            background-color: #007bff !important;
-            color: white !important;
-            text-align: center;
-            padding: 8px;
-        }
-        table td {
-            text-align: center;
-            vertical-align: middle;
-            padding: 6px;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .btn {
-            cursor: pointer;
-            border: 1px solid transparent;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-            border-radius: 0.2rem;
-            transition: background-color 0.15s ease-in-out;
-            display: inline-block;
-            text-decoration: none;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-            color: white;
-        }
-        .btn-outline-primary {
-            color: #007bff;
-            border-color: #007bff;
-            background-color: transparent;
-        }
-        .btn-outline-primary:hover {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #6c757d;
-            background-color: transparent;
-        }
-        .btn-outline-secondary:hover {
-            background-color: #6c757d;
-            color: white;
-        }
-        /* 페이징 스타일 */
-        .pagination {
-            display: flex;
-            list-style: none;
-            padding-left: 0;
-            justify-content: center;
-            gap: 5px;
-        }
-        .pagination .page-item {
-            display: inline;
-        }
-        .pagination .page-link {
-            color: #007bff;
-            text-decoration: none;
-            padding: 4px 8px;
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            user-select: none;
-            display: inline-block;
-        }
-        .pagination .page-item.disabled .page-link,
-        .pagination .page-item.disabled .page-link:hover {
-            color: #6c757d;
-            pointer-events: none;
-            background-color: #fff;
-            border-color: #dee2e6;
-            cursor: default;
-        }
-        .pagination .page-item.active .page-link {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: white;
-            cursor: default;
-        }
-    </style>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    background-color: #f8f9fa;
+}
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0px;
+}
+.container {
+    max-width: 960px;
+    width: 100%;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    background: #fff;
+    padding: 20px 30px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+h2 {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #212529;
+}
+.search-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+thead tr {
+    background-color: #e1e4e8;
+}
+thead th {
+    color: #212529;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+tbody td {
+    padding: 0.45rem 0.75rem;
+    border-top: 1px solid #dee2e6;
+    text-align: center;
+    vertical-align: middle;
+}
+.btn {
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-primary {
+    background-color: #003366 !important;
+    border-color: #003366 !important;
+    color: white !important;
+    font-weight: 500;
+}
+.btn-primary:hover {
+    background-color: #002244 !important;
+    border-color: #002244 !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.btn-outline-primary {
+    color: #003366;
+    border-color: #003366;
+    background-color: transparent;
+}
+.btn-outline-primary:hover {
+    background-color: #003366;
+    color: white;
+}
+
+.pagination {
+    display: inline-flex;        /* 버튼들이 한 줄에 붙게 */
+    border: 1px solid #1a2c49;  /* 전체 테두리 */
+    border-radius: 6px;          /* 전체 둥근 테두리 */
+    overflow: hidden;            /* 둥근 테두리에서 버튼 넘치지 않도록 */
+    padding: 0;
+    margin-top: 20px;
+    justify-content: center !important;
+}
+
+.pagination .page-item {
+    margin: 0;                   /* 버튼 사이 간격 제거 */
+}
+
+.pagination .page-link {
+    border: none;                /* 개별 버튼 테두리 제거 */
+    padding: 6px 16px;
+    font-size: 14px;
+    color: #1a2c49;
+    background-color: white;
+    cursor: pointer;
+    user-select: none;
+    display: block;
+    transition: background-color 0.2s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #1a2c49;
+    color: white;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: white;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination .page-link:hover:not(.disabled):not(.active) {
+    background-color: #e9ecef;
+    color: #1a2c49;
+}
+
+/* 버튼들 사이에만 좌우 구분선 추가 */
+.pagination .page-item:not(:last-child) .page-link {
+    border-right: 1px solid #1a2c49;
+}
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    color: #1a2c49 !important;
+}
+
+.btn-outline-light {
+    color: white !important;
+    border-color: white !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-light:hover {
+    background-color: white !important;
+    color: #003366 !important;
+    border-color: white !important;
+}
+</style>
 </head>
 <body>
 
 <div class="container">
     <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/index/headquaterindex.jsp">홈</a></li>
-            <li class="breadcrumb-item"><a href="placeorder.jsp">발주 관리</a></li>
-            <li class="breadcrumb-item"><a href="placeorder_branch.jsp">지점 발주</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp">홈</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder.jsp">발주 관리</a></li>
+            <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch.jsp">지점 발주</a></li>
             <li class="breadcrumb-item active" aria-current="page">전체 발주 내역</li>
         </ol>
     </nav>
 
     <h2>전체 발주 내역 (지점)</h2>
 
-    <form method="get" action="placeorder_branch_all.jsp" class="search-bar">
-        <input type="text" name="managerKeyword" class="form-control form-control-sm me-2"
-               placeholder="담당자 검색" style="max-width:200px;" value="<%= managerKeyword %>">
-        <button type="submit" class="btn btn-primary btn-sm">검색</button>
-    </form>
+    <form method="get" action="${pageContext.request.contextPath}/headquater.jsp" class="search-bar">
+	    <input type="hidden" name="page" value="/stock/placeorder_branch_all.jsp" />
+	    <input type="text" name="managerKeyword" class="form-control form-control-sm me-2"
+	           placeholder="담당자 검색" style="max-width:200px;" value="<%= managerKeyword %>">
+	    <button type="submit" class="btn btn-primary btn-sm">검색</button>
+	</form>
 
     <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead>
+        <table class="table  table-hover">
+            <thead class="table-secondary">
                 <tr>
                     <th>발주 ID</th>
                     <th>발주일</th>
@@ -205,15 +232,15 @@
                     for (PlaceOrderBranchDto dto : list) { %>
                     <tr>
                         <td>
-                            <a href="placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>">
+                            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>">
                                 <%= dto.getOrder_id() %>
                             </a>
                         </td>
                         <td><%= dto.getDate() %></td>
                         <td><%= dto.getManager() %></td>
                         <td>
-                            <a href="placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>"
-                               class="btn btn-sm btn-outline-primary">상세 보기</a>
+                            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%= dto.getOrder_id() %>"
+                               >상세</a>
                         </td>
                     </tr>
                 <% }} %>
@@ -221,12 +248,12 @@
         </table>
     </div>
 
-    <!-- 페이징 -->
-    <nav aria-label="Page navigation">
+     <!-- 페이징 -->
+    <nav aria-label="Page navigation" style="text-align: center;">
         <ul class="pagination pagination-sm">
             <% if (currentPage > 1) { %>
                 <li class="page-item">
-                    <a class="page-link" href="placeorder_branch_all.jsp?page=<%= currentPage-1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
+                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp&page=<%= currentPage-1 %>&managerKeyword=<%= managerKeyword %>">이전</a>
                 </li>
             <% } else { %>
                 <li class="page-item disabled"><span class="page-link">이전</span></li>
@@ -237,13 +264,13 @@
                     <li class="page-item active"><span class="page-link"><%= i %></span></li>
                 <% } else { %>
                     <li class="page-item">
-                        <a class="page-link" href="placeorder_branch_all.jsp?page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
+                        <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp&page=<%= i %>&managerKeyword=<%= managerKeyword %>"><%= i %></a>
                     </li>
             <% }} %>
 
             <% if (currentPage < totalPages) { %>
                 <li class="page-item">
-                    <a class="page-link" href="placeorder_branch_all.jsp?page=<%= currentPage+1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
+                    <a class="page-link" href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_all.jsp&page=<%= currentPage+1 %>&managerKeyword=<%= managerKeyword %>">다음</a>
                 </li>
             <% } else { %>
                 <li class="page-item disabled"><span class="page-link">다음</span></li>
@@ -251,10 +278,7 @@
         </ul>
     </nav>
 
-    <div class="text-center mt-3">
-        <a href="placeorder_branch.jsp" class="btn btn-outline-secondary btn-sm">돌아가기</a>
-    </div>
+    
 </div>
 
 </body>
-</html>

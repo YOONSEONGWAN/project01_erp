@@ -8,9 +8,10 @@ public class BoardDto {
 	private int view_count;
 	private String created_at;
 	private String board_type;
-    private Long parent_num; // null 허용
-    private String target_user_id;
     private String user_id;
+	private int boardNum;
+	
+	
 	
     // 페이징 처리를 위한 필드
  	private int startRowNum;
@@ -29,6 +30,13 @@ public class BoardDto {
  	// 지점 회원코드를 공유하기 위한 필드
  	private String branch_id;
  	
+ 	
+ 	public void setBoardNum(int boardNum) {
+		this.boardNum = boardNum;
+	}
+	public int getBoardNum() {
+		return boardNum;
+	}
  	public String getBranch_id() {
  	    return branch_id;
  	}
@@ -92,23 +100,6 @@ public class BoardDto {
 	public void setBoard_type(String board_type) {
 		this.board_type = board_type;
 	}
-
-	public Long getParent_num() {
-		return parent_num;
-	}
-
-	public void setParent_num(Long parent_num) {
-		this.parent_num = parent_num;
-	}
-
-	public String getTarget_user_id() {
-		return target_user_id;
-	}
-
-	public void setTarget_user_id(String target_user_id) {
-		this.target_user_id = target_user_id;
-	}
-
 	public String getUser_id() {
 		return user_id;
 	}

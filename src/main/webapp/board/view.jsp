@@ -1,3 +1,7 @@
+<%@page import="dao.BoardFileDao"%>
+<%@page import="dto.BoardFileDto"%>
+<%@page import="dao.CommentDao"%>
+<%@page import="dto.CommentDto"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -5,112 +9,338 @@
 <%@ page import="dto.BoardDto" %>
 
 <%
-	
     int num = Integer.parseInt(request.getParameter("num"));
-	String board_type = request.getParameter("board_type");
-	
-	// board_type이 null이면 기본값으로 "QNA" 넣기
+    String board_type = request.getParameter("board_type");
+
     if (board_type == null || board_type.trim().isEmpty()) {
-        board_type = "QNA"; // 게시판 타입 중 기본값으로 사용
+        board_type = "QNA";
     }
-	
-    // 글 상세정보 가져오기
+
     BoardDto dto = BoardDao.getInstance().getData(num, board_type);
     if (dto == null) {
-    %>
-	   	<script>
-	    	alert("존재하지 않는 글입니다.");
-	    	history.back();
-	    </script>
-    <%
-    	return;
+%>
+    <script>
+        alert("존재하지 않는 글입니다.");
+        history.back();
+    </script>
+<%
+        return;
+    }
+
+    String user_name = (String) session.getAttribute("userId");
+    String branchId = (String) session.getAttribute("branchId");
+    boolean isLogin = user_name != null;
+    boolean isHQ = "HQ".equalsIgnoreCase(branchId);
+
+    if(dto.getWriter() != null && !dto.getWriter().equals(user_name)) {
+        BoardDao.getInstance().addViewCount(num);
+    }
+
+    List<CommentDto> commentList = CommentDao.getInstance().selectList(num, board_type);
+    request.setAttribute("commentList", commentList);
+
+    boolean canWriteComment = false;
+    if (isLogin) {
+        if ("QNA".equalsIgnoreCase(board_type)) {
+            canWriteComment = true;
+        } else if ("NOTICE".equalsIgnoreCase(board_type) && isHQ) {
+            canWriteComment = true;
+        }
+    }
+
+    String commentHeaderText = "댓글 작성";
+    if ("QNA".equalsIgnoreCase(board_type)) {
+        commentHeaderText = "\uD83D\uDCAC 문의하기";
     }
     
- 	// 로그인된 userName(null 일 가능성이 있음), session 영역에 userName 이 있는지 읽어와서
- 	String user_name=(String)session.getAttribute("userId");
- 	// 만일 본인 글 자세히 보기가 아니면 조회수 1을 증가시킨다
- 	if(dto.getWriter() != null && !dto.getWriter().equals(user_name)) {
- 		BoardDao.getInstance().addViewCount(num);
- 	}
- 	// 댓글 목록을 DB 에서 읽어오기
- 	//List<CommentDto> commentList=CommentDao.getInstance().selectList(num);
- 	
- 	// 클라이언트가 로그인 했는지 여부 알아내기
- 	boolean isLogin = user_name == null ? false: true;
-%>
-<%
-    String loginUserId = (String) session.getAttribute("userId");
-    String writerId = dto.getUser_id(); // 또는 dto.getWriter() – 실제 로그인 ID가 저장된 필드를 확인하세요
+    Integer prevNum = BoardDao.getInstance().getPrevNum(dto.getNum(), board_type);
+    Integer nextNum = BoardDao.getInstance().getNextNum(dto.getNum(), board_type);
+    
+    String contentHeaderText = "본문 내용"; 
+    
+    if ("NOTICE".equalsIgnoreCase(board_type)) {
+        contentHeaderText = "공지내용";
+    } else if ("QNA".equalsIgnoreCase(board_type)) {
+        contentHeaderText = "문의내용";
+    }
+    
+	 // 첨부파일 목록 불러오기
+    List<BoardFileDto> fileList = BoardFileDao.getInstance()
+        .getList(dto.getNum(), dto.getBoard_type());
+	 
+ 	// 첨부파일 삭제 권한(작성자 or NOTICE&HQ)
+    boolean canDeleteFile = false;
+    if (isLogin) {
+        if ("NOTICE".equalsIgnoreCase(board_type)) {
+            canDeleteFile = isHQ || (user_name != null && user_name.equals(dto.getUser_id()));
+        } else {
+            canDeleteFile = (user_name != null && user_name.equals(dto.getUser_id()));
+        }
+    }
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
     <title>글 상세보기</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
+	
+	<style>
+	.small-close-btn {
+		  width: 0.75rem;
+		  height: 0.75rem;
+		  font-size: 0.75rem;
+	}
+	.comment-date {
+	  margin-top: 12px;
+	  display: inline-block;
+	}
+	.btn-outline-navy {
+	  border: 1px solid #003366;
+	  color: #003366;
+	  background-color: transparent;
+	  transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.btn-outline-navy:hover {
+	  background-color: #003366;
+	  color: white;
+	}
+	/* 첨부파일 카드 위 여백 */
+  	.attachment-card { 
+  		margin-top: 20px !important; }
+  	/* 파일명 길 때 줄바꿈 */
+  	.file-title { 
+  		overflow-wrap: anywhere; }
+	</style>
 </head>
-<body class="p-4">
-<div class="container">
-    <h2> 글 상세보기</h2>
-    <table class="table table-bordered">
-        <tr>
-            <th>번호</th>
-            <td><%= dto.getNum() %></td>
-        </tr>
-        <tr>
-            <th>제목</th>
-            <td><%= dto.getTitle() %></td>
-        </tr>
-        <tr>
-            <th>작성자</th>
-            <td><%= dto.getWriter() != null ? dto.getWriter() : "알 수 없음" %></td>
-        </tr>
-        <tr>
-            <th>작성일</th>
-            <td><%= dto.getCreated_at() %></td>
-        </tr>
-        <tr>
-            <th>게시판 유형</th>
-            <td><%= dto.getBoard_type() %></td>
-        </tr>
-    </table>
-	<div class="card mt-4">
-			<div class="card-header bg-success">
-				<strong>본문 내용</strong>
-			</div>
-			<div class="card-body p-1"><%=dto.getContent() %></div>
-	</div>
-		
-		
-    <div class="text-end">
-        <a href="list.jsp?boardType=<%= dto.getBoard_type() %>" class="btn btn-secondary">목록</a>
-		
-		<%-- 수정 버튼: 작성자면 공통으로 노출 --%>
-		<% if (loginUserId != null && loginUserId.equals(writerId)) { %>
-		    <a href="update.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>" class="btn btn-warning">수정</a>
-		<% } %>
-		
-		<%-- 삭제 버튼 분기 처리 --%>
-		<%
-		    String branchId = dto.getBranch_id(); // 글 작성자의 소속 (HQ 또는 지점)
-		    boolean isWriter = loginUserId != null && loginUserId.equals(writerId);
-		%>
-		
-		<%-- 문의사항: 작성자면 삭제 가능 --%>
-		<% if ("QNA".equalsIgnoreCase(board_type) && isWriter) { %>
-		    <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
-		       onclick="return confirm('정말 삭제하시겠습니까?');"
-		       class="btn btn-danger">삭제</a>
-		<% } %>
-		
-		<%-- 공지사항: 본사 작성자만 삭제 가능 --%>
-		<% if ("NOTICE".equalsIgnoreCase(board_type) && isWriter && "HQ".equalsIgnoreCase(branchId)) { %>
-		    <a href="delete.jsp?num=<%= dto.getNum() %>&board_type=<%= dto.getBoard_type() %>"
-		       onclick="return confirm('공지사항을 삭제하시겠습니까?');"
-		       class="btn btn-danger">삭제</a>
-		<% } %>
+<body>
+<div class="container mt-3">
+
+  <!-- 게시글 정보 -->
+  <div class="border-bottom pb-2 mb-3">
+    <h2 class="fw-bold fs-3 mb-1"><%= dto.getTitle() %></h2>
+  </div>
+
+  <!-- 글 정보 -->
+  <div class="d-flex flex-wrap mb-3 text-muted small">
+    <div class="me-3">글 번호: <%= dto.getNum() %></div>
+    <div class="me-3">작성자: <%= dto.getWriter() != null ? dto.getWriter() : "알 수 없음" %></div>
+    <div class="me-3">작성일: <%= dto.getCreated_at() %></div>
+  </div>
+
+  <!-- 본문 내용 카드 -->
+  <div class="card mt-3 mb-3">
+    <div class="card-header text-white" style="background-color: #003366;">
+      <strong><%= contentHeaderText %></strong>
     </div>
-</div>
+    <div class="card-body p-2 mb-3"><%= dto.getContent() %></div>
+    
+    <!-- 첨부파일 목록 -->
+	<% if (fileList != null && !fileList.isEmpty()) { %>
+	<div class="card mb-3 attachment-card">
+	  <div class="card-header text-white" style="background-color:#003366;">
+	    <strong>첨부파일</strong>
+	  </div>
+	
+	  <ul class="list-group list-group-flush">
+	    <% for (BoardFileDto f : fileList) { %>
+	      <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+	        <div class="file-title">
+	          <a href="<%= request.getContextPath() %>/board/file-download?fileId=<%= f.getNum() %>">
+	            <i class="bi bi-paperclip"></i>
+	            <%= f.getOrgFileName() %>
+	          </a>
+	        </div>
+	
+	        <div class="d-flex align-items-center gap-3">
+	          <small class="text-muted"><%= f.getFileSize() %> bytes</small>
+	
+	          <% if (canDeleteFile) { %>
+	            <a href="<%= request.getContextPath() %>/board/file-delete?fileId=<%= f.getNum() %>&boardNum=<%= dto.getNum() %>&boardType=<%= dto.getBoard_type() %>"
+	               class="btn btn-sm btn-danger"
+	               onclick="return confirm('첨부파일을 삭제하시겠습니까?');">
+	              삭제
+	            </a>
+	          <% } %>
+	        </div>
+	      </li>
+	    <% } %>
+	  </ul>
+	</div>
+	<% } %>
+  
+  
+
+  <!-- 수정/삭제 버튼 -->
+  <div class="text-end">
+    <%-- 수정 버튼 --%>
+    <% if (user_name != null && user_name.equals(dto.getUser_id())) { %>
+      <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+          ? request.getContextPath() + "/headquater.jsp?page=board/edit-form.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type() 
+          : request.getContextPath() + "/branch.jsp?page=board/edit-form.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type() %>" 
+         class="btn" style="background-color: #003366 !important; color: white;">수정</a>
+    <% } %>
+
+    <%-- QNA 삭제 --%>
+    <% if ("QNA".equalsIgnoreCase(board_type) && user_name != null && user_name.equals(dto.getUser_id())) { %>
+      <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+          ? request.getContextPath() + "/headquater.jsp?page=board/delete.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type()
+          : request.getContextPath() + "/branch.jsp?page=board/delete.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type()
+         %>" 
+         onclick="return confirm('정말 삭제하시겠습니까?');" class="btn btn-danger">삭제</a>
+    <% } %>
+
+    <%-- 공지사항 삭제 --%>
+    <% if ("NOTICE".equalsIgnoreCase(board_type) && user_name != null && user_name.equals(dto.getUser_id()) && isHQ) { %>
+      <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+          ? request.getContextPath() + "/headquater.jsp?page=board/delete.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type()
+          : request.getContextPath() + "/branch.jsp?page=board/delete.jsp&num=" + dto.getNum() + "&board_type=" + dto.getBoard_type()
+         %>" 
+         onclick="return confirm('공지사항을 삭제하시겠습니까?');" class="btn btn-danger">삭제</a>
+    <% } %>
+    <hr class="my-4" style="border-top: 1px solid #dee2e6;">
+  </div>
+
+  <!-- 댓글 작성 + 목록 -->
+  <div class="comment-box p-3 mb-2 bg-light border-bottom">
+
+    <% if (canWriteComment) { %>
+      <!-- 댓글 작성 카드 -->
+      <div class="card mt-4">
+        <div class="card-header text-white fw-bold" style="background-color: #003366;"><%= commentHeaderText %></div>
+        <div class="card-body p-3">
+          <form action="<%= request.getContextPath() %>/board/save-comment.jsp" method="post">
+            <input type="hidden" name="writer" value="<%= user_name %>">
+            <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+            <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+            <textarea class="form-control mb-2" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
+            <div class="text-end">
+              <button type="submit" class="btn" style="background-color: #003366; color: white;">등록</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Prev / 목록 / Next 버튼 -->
+      <div class="d-flex justify-content-between align-items-center mt-5 px-5">
+        <% if (prevNum != null) { %>
+          <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+              ? "headquater.jsp?page=board/view.jsp&num=" + prevNum + "&board_type=" + board_type 
+              : "branch.jsp?page=board/view.jsp&num=" + prevNum + "&board_type=" + board_type%>" class="btn btn-outline-secondary">&larr; Prev</a>
+        <% } else { %>
+          <button class="btn btn-outline-secondary" disabled>&larr; Prev</button>
+        <% } %>
+
+        <a href="<%= isHQ
+            ? request.getContextPath() + "/headquater.jsp?page=board/list.jsp&board_type=" + board_type
+            : request.getContextPath() + "/branch.jsp?page=board/list.jsp&board_type=" + board_type
+        %>" class="btn btn-dark btn-md px-4" style="background-color: #003366; color: white;"><i class="bi bi-list"></i>목록으로</a>
+
+        <% if (nextNum != null) { %>
+          <a href="<%= "HQ".equalsIgnoreCase((String)session.getAttribute("branchId")) 
+              ? "headquater.jsp?page=board/view.jsp&num=" + nextNum + "&board_type=" + board_type 
+              : "branch.jsp?page=board/view.jsp&num=" + nextNum + "&board_type=" + board_type %>" class="btn btn-outline-secondary">Next &rarr;</a>
+        <% } else { %>
+          <button class="btn btn-outline-secondary" disabled>Next &rarr;</button>
+        <% } %>
+      </div>
+    <% } else if (isLogin) { %>
+      <p class="text-muted mt-4">※ 이 게시판에서는 댓글 작성 권한이 없습니다.</p>
+    <% } else { %>
+      <p class="text-muted mt-4">※ 댓글을 작성하려면 로그인해주세요.</p>
+    <% } %>
+
+     <!-- 댓글 목록 -->
+    <div class="comment-list">
+      <% for (CommentDto tmp : commentList) { %>
+        <div class="border-bottom py-3">
+          <% if ("yes".equals(tmp.getDeleted())) { %>
+            <p class="text-muted">삭제된 댓글입니다</p>
+          <% } else { %>
+            <div class="d-flex align-items-start mb-2">
+              <% if (tmp.getProfileImage() == null) { %>
+                <i class="bi bi-person-circle fs-3 me-2"></i>
+              <% } else { %>
+                <img class="rounded-circle me-2" src="${pageContext.request.contextPath}/upload/<%= tmp.getProfileImage() %>" style="width: 40px; height: 40px;" alt="프로필">
+              <% } %>
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between">
+                  <strong><%= tmp.getWriter() %></strong>
+                  <small class="text-muted"><%= tmp.getCreatedAt() %></small>
+                </div>
+                <div class="mt-1" style="white-space: pre-wrap;"><%= tmp.getContent() %></div>
+
+                <% if (tmp.getWriter().equals(user_name)) { %>
+                  <div class="mt-2 text-end">
+					  <!-- 수정 버튼 -->
+					  <button type="button" class="btn btn-sm btn-outline-navy edit-btn">수정</button>
+					
+					  <!-- 삭제 버튼 (별도 폼) -->
+					  <form action="<%= request.getContextPath() %>/board/comment-delete.jsp" method="post" class="d-inline">
+					    <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+					    <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+					    <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+					    <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+					  </form>
+				  </div>
+	
+                  <!-- 수정 폼 -->
+				  <div class="form-div d-none mt-2">
+				    <form action="<%= request.getContextPath() %>/board/comment-update.jsp" method="post">
+				      <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+				      <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+				      <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+				      <textarea name="content" class="form-control mb-2" rows="2"><%= tmp.getContent() %></textarea>
+				
+			  	      <div class="text-end">
+				        <button type="submit" class="btn btn-sm btn-outline-navy">수정 완료</button>
+				        <button type="reset" class="btn btn-sm btn-secondary cancel-edit-btn">취소</button>
+				      </div>
+				    </form>
+				
+				    <form action="<%= request.getContextPath() %>/board/comment-delete.jsp" method="post" class="mt-2">
+				      <input type="hidden" name="num" value="<%= tmp.getNum() %>">
+				      <input type="hidden" name="board_num" value="<%= dto.getNum() %>">
+				      <input type="hidden" name="board_type" value="<%= dto.getBoard_type() %>">
+				    </form>
+				  </div>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+	
+  </div> <!-- comment-box -->
+</div> <!-- container 전체 감쌈 -->
+
+<script>
+  document.querySelectorAll(".edit-btn").forEach(item => {
+    item.addEventListener("click", () => {
+      item.classList.add("d-none");
+
+      // 가장 가까운 부모인 댓글 블록을 기준으로 수정 폼을 찾는다
+      const commentItem = item.closest(".comment-list div.py-3");
+      const formDiv = commentItem.querySelector(".form-div");
+      formDiv.classList.remove("d-none");
+    });
+  });
+
+  document.querySelectorAll(".cancel-edit-btn").forEach(item => {
+    item.addEventListener("click", () => {
+      const formDiv = item.closest(".form-div");
+      formDiv.classList.add("d-none");
+
+      // 숨겨진 수정 버튼 다시 표시
+      const commentItem = formDiv.closest(".comment-list div.py-3");
+      const editBtn = commentItem.querySelector(".edit-btn");
+      editBtn.classList.remove("d-none");
+    });
+  });
+</script>
 </body>
 </html>

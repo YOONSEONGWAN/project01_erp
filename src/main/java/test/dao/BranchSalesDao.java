@@ -62,13 +62,15 @@ public class BranchSalesDao {
         try {
             conn = new DbcpBean().getConn();
             String sql = """
-                SELECT sales_id, branch_id,
-                       TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at,
-                       totalamount
-                FROM sales
-                WHERE branch_id = ?
-                ORDER BY sales_id DESC
-            """;
+            	    SELECT s.sales_id, s.branch_id,
+            	           TO_CHAR(s.created_at, 'YYYY-MM-DD') AS created_at,
+            	           s.totalamount,
+            	           b.name AS branch_name
+            	    FROM sales s
+            	    JOIN branches b ON s.branch_id = b.branch_id
+            	    WHERE s.branch_id = ?
+            	    ORDER BY s.sales_id DESC
+            	""";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, branchId);
 
@@ -79,6 +81,7 @@ public class BranchSalesDao {
                 dto.setBranchId(rs.getString("branch_id"));
                 dto.setCreated_at(rs.getString("created_at"));
                 dto.setTotalAmount(rs.getInt("totalamount"));
+                dto.setBranchName(rs.getString("branch_name"));
                 list.add(dto);
             }
         } catch (Exception e) {
@@ -296,14 +299,16 @@ public class BranchSalesDao {
         try {
             conn = new DbcpBean().getConn();
             String sql = """
-                SELECT sales_id, branch_id,
-                       TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at,
-                       totalamount
-                FROM sales
-                WHERE branch_id = ?
-                  AND TRUNC(created_at) BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
-                ORDER BY sales_id DESC
-            """;
+            	    SELECT s.sales_id, s.branch_id,
+            	           TO_CHAR(s.created_at, 'YYYY-MM-DD') AS created_at,
+            	           s.totalamount,
+            	           b.name AS branch_name
+            	    FROM sales s
+            	    JOIN branches b ON s.branch_id = b.branch_id
+            	    WHERE s.branch_id = ?
+            	      AND TRUNC(s.created_at) BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')
+            	    ORDER BY s.sales_id DESC
+            	""";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, branchId);
             pstmt.setString(2, startDate);
@@ -316,6 +321,7 @@ public class BranchSalesDao {
                 dto.setBranchId(rs.getString("branch_id"));
                 dto.setCreated_at(rs.getString("created_at"));
                 dto.setTotalAmount(rs.getInt("totalamount"));
+                dto.setBranchName(rs.getString("branch_name"));
                 list.add(dto);
             }
         } catch (Exception e) {

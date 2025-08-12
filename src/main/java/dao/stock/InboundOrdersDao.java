@@ -24,353 +24,344 @@ public class InboundOrdersDao {
 		return dao;
 	}
 	
-	 // 전체 목록 조회
-    public List<InboundOrdersDto> selectAll() {
-        List<InboundOrdersDto> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "SELECT order_id, branch_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC";
-            pstmt = conn.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                InboundOrdersDto dto = new InboundOrdersDto();
-                dto.setOrder_id(rs.getInt("order_id"));
-                dto.setBranch_id(rs.getInt("branch_id"));
-                dto.setApproval(rs.getString("approval"));
-                dto.setIn_date(rs.getString("in_date"));
-                dto.setManager(rs.getString("manager"));
-                list.add(dto);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if(rs != null) rs.close();
-                if(pstmt != null) pstmt.close();
-                if(conn != null) conn.close();
-            } catch(Exception e) {}
-        }
-        return list;
-    }
+	public List<InboundOrdersDto> selectAll() {
+	    List<InboundOrdersDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = "SELECT order_id, branch_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC";
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            InboundOrdersDto dto = new InboundOrdersDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setApproval(rs.getString("approval"));
+	            dto.setIn_date(rs.getString("in_date"));
+	            dto.setManager(rs.getString("manager"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if(rs != null) rs.close(); } catch (Exception e) { }
+	        try { if(pstmt != null) pstmt.close(); } catch (Exception e) { }
+	        try { if(conn != null) conn.close(); } catch (Exception e) { }
+	    }
+	    return list;
+	}
 
-    // 최근 N건 조회
-    public List<InboundOrdersDto> selectLatest(int limit) {
-        List<InboundOrdersDto> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "SELECT * FROM (SELECT order_id, branch_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC) WHERE ROWNUM <= ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, limit);
-            rs = pstmt.executeQuery();
-            while(rs.next()) {
-                InboundOrdersDto dto = new InboundOrdersDto();
-                dto.setOrder_id(rs.getInt("order_id"));
-                dto.setBranch_id(rs.getInt("branch_id"));
-                dto.setApproval(rs.getString("approval"));
-                dto.setIn_date(rs.getString("in_date"));
-                dto.setManager(rs.getString("manager"));
-                list.add(dto);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if(rs != null) rs.close();
-                if(pstmt != null) pstmt.close();
-                if(conn != null) conn.close();
-            } catch(Exception e) {}
-        }
-        return list;
-    }
-    
-    public List<InboundOrdersDto> selectByApproval(String approval) {
-        List<InboundOrdersDto> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "SELECT * FROM inbound_orders WHERE approval = ? ORDER BY in_date DESC";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, approval);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                InboundOrdersDto dto = new InboundOrdersDto();
-                dto.setOrder_id(rs.getInt("order_id"));
-                dto.setBranch_id(rs.getInt("branch_id"));
-                dto.setApproval(rs.getString("approval"));
-                dto.setIn_date(rs.getString("in_date"));
-                dto.setManager(rs.getString("manager"));
-                list.add(dto);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return list;
-    }
-    
-    public List<InboundOrdersDto> selectApprovedOrRejected(int limit) {
-        List<InboundOrdersDto> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "SELECT * FROM inbound_orders WHERE approval IN ('승인', '반려') ORDER BY in_date DESC FETCH FIRST ? ROWS ONLY";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, limit);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                InboundOrdersDto dto = new InboundOrdersDto();
-                dto.setOrder_id(rs.getInt("order_id"));
-                dto.setBranch_id(rs.getInt("branch_id"));
-                dto.setApproval(rs.getString("approval"));
-                dto.setIn_date(rs.getString("in_date"));
-                dto.setManager(rs.getString("manager"));
-                list.add(dto);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if(rs != null) rs.close();
-                if(pstmt != null) pstmt.close();
-                if(conn != null) conn.close();
-            } catch(Exception e) {}
-        }
-        return list;
-    }
- // 승인 or 반려된 입고 목록 (최근 N건)
-    public List<InboundOrdersDto> selectProcessed(int limit) {
-        List<InboundOrdersDto> list = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = """
-                    SELECT * FROM (
-                        SELECT * FROM inbound_orders
-                        WHERE approval IN ('승인', '반려')
-                        ORDER BY in_date DESC
-                    )
-                    WHERE ROWNUM <= ?
-                """;
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, limit);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                InboundOrdersDto dto = new InboundOrdersDto();
-                dto.setOrder_id(rs.getInt("order_id"));
-                dto.setBranch_id(rs.getInt("branch_id"));
-                dto.setApproval(rs.getString("approval"));
-                dto.setIn_date(rs.getString("in_date"));
-                dto.setManager(rs.getString("manager"));
-                list.add(dto);
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if(rs != null) rs.close();
-                if(pstmt != null) pstmt.close();
-                if(conn != null) conn.close();
-            } catch(Exception e) {}
-        }
-        return list;
-    }
-    
-    public boolean updateApproval(int orderId, String approval) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        int flag = 0;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "UPDATE inbound_orders SET approval = ? WHERE order_id = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, approval);
-            pstmt.setInt(2, orderId);
-            flag = pstmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {}
-        }
-        return flag > 0;
-}
-    public InboundOrdersDto select(int orderId) {
-        InboundOrdersDto dto = null;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "SELECT * FROM inbound_orders WHERE order_id = ?";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, orderId);
-            rs = pstmt.executeQuery();
-            if (rs.next()) {
-                dto = new InboundOrdersDto();
-                dto.setOrder_id(rs.getInt("order_id"));
-                dto.setBranch_id(rs.getInt("branch_id"));
-                dto.setIn_date(rs.getString("in_date"));
-                dto.setApproval(rs.getString("approval"));
-                dto.setManager(rs.getString("manager"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try { if (rs != null) rs.close(); } catch (Exception e) {}
-            try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
-            try { if (conn != null) conn.close(); } catch (Exception e) {}
-        }
-        return dto;
-    }
-    
-    public void insert(int orderId, int branchId, String approval, String inDate, String manager) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        try {
-            conn = new DbcpBean().getConn();
-            String sql = "INSERT INTO inbound_orders (order_id, branch_id, approval, in_date, manager) VALUES (?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)";
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, orderId);
-            pstmt.setInt(2, branchId);
-            pstmt.setString(3, approval);
-            pstmt.setString(4, inDate);
-            pstmt.setString(5, manager);
-            pstmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if(pstmt != null) pstmt.close();
-                if(conn != null) conn.close();
-            } catch(Exception e) {}
-        }
-    
-    }
-    
-    public List<InboundOrdersDto> selectProcessedWithKeyword(int limit) {
-        List<InboundOrdersDto> list = new ArrayList<>();
-        String sql = """
-            SELECT * FROM (
-                SELECT order_id, branch_id, approval, TO_CHAR(in_date, 'YYYY-MM-DD') AS in_date, manager
-                FROM inbound_orders
-                WHERE approval IN ('승인', '완료')
-                ORDER BY order_id DESC
-            )
-            WHERE ROWNUM <= ?
-        """;
+	// 최근 N건 조회
+	public List<InboundOrdersDto> selectLatest(int limit) {
+	    List<InboundOrdersDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = "SELECT * FROM (SELECT order_id, branch_id, approval, in_date, manager FROM inbound_orders ORDER BY in_date DESC) WHERE ROWNUM <= ?";
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, limit);
+	        rs = pstmt.executeQuery();
+	        while(rs.next()) {
+	            InboundOrdersDto dto = new InboundOrdersDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setApproval(rs.getString("approval"));
+	            dto.setIn_date(rs.getString("in_date"));
+	            dto.setManager(rs.getString("manager"));
+	            list.add(dto);
+	        }
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if(rs != null) rs.close(); } catch (Exception e) { }
+	        try { if(pstmt != null) pstmt.close(); } catch (Exception e) { }
+	        try { if(conn != null) conn.close(); } catch (Exception e) { }
+	    }
+	    return list;
+	}
 
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	public List<InboundOrdersDto> selectByApproval(String approval) {
+	    List<InboundOrdersDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = "SELECT * FROM inbound_orders WHERE approval = ? ORDER BY in_date DESC";
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, approval);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            InboundOrdersDto dto = new InboundOrdersDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setApproval(rs.getString("approval"));
+	            dto.setIn_date(rs.getString("in_date"));
+	            dto.setManager(rs.getString("manager"));
+	            list.add(dto);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if(rs != null) rs.close(); } catch (Exception e) { }
+	        try { if(pstmt != null) pstmt.close(); } catch (Exception e) { }
+	        try { if(conn != null) conn.close(); } catch (Exception e) { }
+	    }
+	    return list;
+	}
 
-            pstmt.setInt(1, limit);
+	public List<InboundOrdersDto> selectApprovedOrRejected(int limit) {
+	    List<InboundOrdersDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = "SELECT * FROM inbound_orders WHERE approval IN ('승인', '반려') ORDER BY in_date DESC FETCH FIRST ? ROWS ONLY";
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, limit);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            InboundOrdersDto dto = new InboundOrdersDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setApproval(rs.getString("approval"));
+	            dto.setIn_date(rs.getString("in_date"));
+	            dto.setManager(rs.getString("manager"));
+	            list.add(dto);
+	        }
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if(rs != null) rs.close(); } catch (Exception e) { }
+	        try { if(pstmt != null) pstmt.close(); } catch (Exception e) { }
+	        try { if(conn != null) conn.close(); } catch (Exception e) { }
+	    }
+	    return list;
+	}
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    InboundOrdersDto dto = new InboundOrdersDto();
-                    dto.setOrder_id(rs.getInt("order_id"));
-                    dto.setBranch_id(rs.getInt("branch_id"));
-                    dto.setApproval(rs.getString("approval"));
-                    dto.setIn_date(rs.getString("in_date"));
-                    dto.setManager(rs.getString("manager"));
-                    list.add(dto);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
-    
-    public List<InboundOrdersDto> selectByManagerWithPaging(String managerKeyword, int page, int pageSize) {
-        List<InboundOrdersDto> list = new ArrayList<>();
-
-        String sql = """
-            SELECT * FROM (
-                SELECT ROWNUM AS rnum, tmp.* FROM (
-                    SELECT order_id, branch_id, approval, TO_CHAR(in_date, 'YYYY-MM-DD') AS in_date, manager
-                    FROM inbound_orders
-                    WHERE approval IN ('승인', '완료')
-                    AND manager LIKE ?
-                    ORDER BY order_id DESC
-                ) tmp
+	// 승인 or 반려된 입고 목록 (최근 N건)
+	public List<InboundOrdersDto> selectProcessed(int limit) {
+	    List<InboundOrdersDto> list = new ArrayList<>();
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = """
+                SELECT * FROM (
+                    SELECT * FROM inbound_orders
+                    WHERE approval IN ('승인', '반려')
+                    ORDER BY in_date DESC
+                )
                 WHERE ROWNUM <= ?
-            )
-            WHERE rnum >= ?
-        """;
+            """;
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, limit);
+	        rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            InboundOrdersDto dto = new InboundOrdersDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setApproval(rs.getString("approval"));
+	            dto.setIn_date(rs.getString("in_date"));
+	            dto.setManager(rs.getString("manager"));
+	            list.add(dto);
+	        }
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if(rs != null) rs.close(); } catch (Exception e) { }
+	        try { if(pstmt != null) pstmt.close(); } catch (Exception e) { }
+	        try { if(conn != null) conn.close(); } catch (Exception e) { }
+	    }
+	    return list;
+	}
 
-        int end = page * pageSize;
-        int start = end - pageSize + 1;
+	public boolean updateApproval(int orderId, String approval) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    int flag = 0;
+	    String sql = "UPDATE inbound_orders SET approval = ? WHERE order_id = ?";
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setString(1, approval);
+	        pstmt.setInt(2, orderId);
+	        flag = pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if(pstmt != null) pstmt.close(); } catch (Exception e) { }
+	        try { if(conn != null) conn.close(); } catch (Exception e) { }
+	    }
+	    return flag > 0;
+	}
+	public InboundOrdersDto select(int orderId) {
+	    InboundOrdersDto dto = null;
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    String sql = "SELECT * FROM inbound_orders WHERE order_id = ?";
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, orderId);
+	        rs = pstmt.executeQuery();
+	        if (rs.next()) {
+	            dto = new InboundOrdersDto();
+	            dto.setOrder_id(rs.getInt("order_id"));
+	            dto.setBranch_id(rs.getInt("branch_id"));
+	            dto.setIn_date(rs.getString("in_date"));
+	            dto.setApproval(rs.getString("approval"));
+	            dto.setManager(rs.getString("manager"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch (Exception e) {}
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+	    }
+	    return dto;
+	}
 
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	public void insert(int orderId, int branchId, String approval, String inDate, String manager) {
+	    Connection conn = null;
+	    PreparedStatement pstmt = null;
+	    String sql = "INSERT INTO inbound_orders (order_id, branch_id, approval, in_date, manager) VALUES (?, ?, ?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)";
+	    try {
+	        conn = new DbcpBean().getConn();
+	        
+	        pstmt = conn.prepareStatement(sql);
+	        pstmt.setInt(1, orderId);
+	        pstmt.setInt(2, branchId);
+	        pstmt.setString(3, approval);
+	        pstmt.setString(4, inDate);
+	        pstmt.setString(5, manager);
+	        pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (pstmt != null) pstmt.close(); } catch (Exception e) {}
+	        try { if (conn != null) conn.close(); } catch (Exception e) {}
+	    }
+	}
 
-            pstmt.setString(1, "%" + managerKeyword + "%");
-            pstmt.setInt(2, end);
-            pstmt.setInt(3, start);
+	public List<InboundOrdersDto> selectProcessedWithKeyword(int limit) {
+	    List<InboundOrdersDto> list = new ArrayList<>();
+	    String sql = """
+	        SELECT * FROM (
+	            SELECT order_id, branch_id, approval, TO_CHAR(in_date, 'YYYY-MM-DD') AS in_date, manager
+	            FROM inbound_orders
+	            WHERE approval IN ('승인', '완료')
+	            ORDER BY order_id DESC
+	        )
+	        WHERE ROWNUM <= ?
+	    """;
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    InboundOrdersDto dto = new InboundOrdersDto();
-                    dto.setOrder_id(rs.getInt("order_id"));
-                    dto.setBranch_id(rs.getInt("branch_id"));
-                    dto.setApproval(rs.getString("approval"));
-                    dto.setIn_date(rs.getString("in_date"));
-                    dto.setManager(rs.getString("manager"));
-                    list.add(dto);
-                }
-            }
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	        pstmt.setInt(1, limit);
 
-        return list;
-    }
-    public int countByManager(String managerKeyword) {
-        int count = 0;
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                InboundOrdersDto dto = new InboundOrdersDto();
+	                dto.setOrder_id(rs.getInt("order_id"));
+	                dto.setBranch_id(rs.getInt("branch_id"));
+	                dto.setApproval(rs.getString("approval"));
+	                dto.setIn_date(rs.getString("in_date"));
+	                dto.setManager(rs.getString("manager"));
+	                list.add(dto);
+	            }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 
-        String sql = "SELECT COUNT(*) FROM inbound_orders WHERE approval IN ('승인', '완료') AND manager LIKE ?";
+	    return list;
+	}
 
-        try (Connection conn = new DbcpBean().getConn();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	public List<InboundOrdersDto> selectByManagerWithPaging(String managerKeyword, int page, int pageSize) {
+	    List<InboundOrdersDto> list = new ArrayList<>();
 
-            pstmt.setString(1, "%" + managerKeyword + "%");
+	    String sql = """
+	        SELECT * FROM (
+	            SELECT ROWNUM AS rnum, tmp.* FROM (
+	                SELECT order_id, branch_id, approval, TO_CHAR(in_date, 'YYYY-MM-DD') AS in_date, manager
+	                FROM inbound_orders
+	                WHERE approval IN ('승인', '완료')
+	                AND manager LIKE ?
+	                ORDER BY order_id DESC
+	            ) tmp
+	            WHERE ROWNUM <= ?
+	        )
+	        WHERE rnum >= ?
+	    """;
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    count = rs.getInt(1);
-                }
-            }
+	    int end = page * pageSize;
+	    int start = end - pageSize + 1;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-        return count;
-    }
-    
+	        pstmt.setString(1, "%" + managerKeyword + "%");
+	        pstmt.setInt(2, end);
+	        pstmt.setInt(3, start);
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                InboundOrdersDto dto = new InboundOrdersDto();
+	                dto.setOrder_id(rs.getInt("order_id"));
+	                dto.setBranch_id(rs.getInt("branch_id"));
+	                dto.setApproval(rs.getString("approval"));
+	                dto.setIn_date(rs.getString("in_date"));
+	                dto.setManager(rs.getString("manager"));
+	                list.add(dto);
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return list;
+	}
+
+	public int countByManager(String managerKeyword) {
+	    int count = 0;
+
+	    String sql = "SELECT COUNT(*) FROM inbound_orders WHERE approval IN ('승인', '완료') AND manager LIKE ?";
+
+	    try (Connection conn = new DbcpBean().getConn();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setString(1, "%" + managerKeyword + "%");
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                count = rs.getInt(1);
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return count;
+	}    
     
 
 }

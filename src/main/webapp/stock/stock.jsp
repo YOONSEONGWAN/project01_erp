@@ -1,85 +1,95 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>재고 관리 메인</title>
-<jsp:include page="/WEB-INF/include/resource.jsp"/>
-<!-- 부트스트랩 CDN이 resource.jsp에 없다면 아래 추가하세요 -->
-<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <meta charset="UTF-8" />
+    <title>발주 관리</title>
 
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        background-color: #f8f9fa; /* Bootstrap의 bg-light */
-    }
-
-    .main-wrapper {
-        min-height: calc(100vh - 70px); /* 네비바 높이 고려 (예: 70px) */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 70px; /* 네비바 높이만큼 위쪽 여백 확보 */
-        padding-bottom: 30px;
-    }
-
-    .menu-box {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        flex-wrap: wrap;
-        margin-top: 30px;
-    }
-
-    .menu-card {
-        width: 180px;
-        height: 200px;
-        border-radius: 12px;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 1.2rem;
-        text-decoration: none;
-        transition: transform 0.2s ease-in-out;
-    }
-
-    .menu-card:hover {
-        transform: scale(1.05);
-        text-decoration: none;
-    }
-
-    .bg-gray { background-color: #6c757d; }   /* Bootstrap 'secondary' */
-    .bg-blue { background-color: #007bff; }   /* Bootstrap 'primary' */
-    .bg-green { background-color: #28a745; }  /* Bootstrap 'success' */
-</style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .container {
+        max-width: 600px;
+        margin: 120px auto 0;
+        text-align: center;
+    }
+    h1 {
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #000;
+    }
+    p.subtitle {
+        color: #666;
+        margin-bottom: 48px;
+        font-size: 1rem;
+    }
+
+    .btn-large {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 200px;
+        height: 200px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: white;
+        border-radius: 16px;
+        text-decoration: none;
+        user-select: none;
+        margin: 0 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .btn-large:hover {
+        opacity: 0.9;
+        text-decoration: none;
+    }
+
+    .btn-stock-list {
+        background-color: #003366; /* 기준 남색 */
+    }
+
+    .btn-stock-list:hover {
+        background-color: #002244;
+    }
+
+    .btn-inout {
+        background-color: #6c757d; /* Bootstrap secondary */
+    }
+
+    .btn-inout:hover {
+        background-color: #5c636a; /* Bootstrap secondary hover */
+    }
+
+    @media (max-width: 576px) {
+        .btn-large {
+            width: 100%;
+            height: 140px;
+            margin-bottom: 20px;
+        }
+    }
+</style>
 <body>
+    <div class="container">
+        <h1>재고 관리 메뉴</h1>
+        <p class="subtitle">&nbsp;</p>
 
-   
-    <div class="main-wrapper">
-        <div class="container text-center">
-            <h1 class="fw-bold mb-3">재고 관리 시스템</h1>
-            <p class="text-muted">원하는 메뉴를 선택하세요</p>
-
-            <div class="menu-box">
-                <a href="stocklist.jsp" class="menu-card bg-gray">
-                    재고 리스트
-                </a>
-                <a href="inandout.jsp" class="menu-card bg-blue">
-                    입고 / 출고
-                </a>
-            </div>
+        <div class="d-flex justify-content-center flex-wrap gap-3">
+            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/stocklist.jsp" class="btn-large btn-stock-list">
+                재고 현황
+            </a>
+            <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/inandout.jsp" class="btn-large btn-inout">
+                입고 / 출고
+            </a>
         </div>
     </div>
 
+    <!-- Bootstrap JS Bundle (Popper 포함) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

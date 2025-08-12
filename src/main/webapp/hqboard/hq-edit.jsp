@@ -7,9 +7,6 @@
 <%
 
 
-    out.println("num param: " + request.getParameter("num"));
-    out.println("title param: " + request.getParameter("title"));
-    out.println("content param: " + request.getParameter("content"));
     // 수정 할 글의 정보를 얻어와서 
     int num = Integer.parseInt(request.getParameter("num"));
     HqBoardDto dto = HqBoardDao.getInstance().getByNum(num);
@@ -22,15 +19,133 @@
 <head>
 <meta charset="UTF-8">
 <title>/hqboard/hq-edit.jsp</title>
+<jsp:include page="/WEB-INF/include/resource.jsp"></jsp:include>
 <!-- Toast UI Editor CSS/JS 필요시 include 추가 -->
 <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.js"></script>
+
+<style>
+/* HQ 공통 폰트/굵기 */
+body, .container, .form-label, .form-control, .drop-zone, .preview, .btn {
+    font-family: 'Segoe UI', '맑은 고딕', 'Malgun Gothic', Arial, sans-serif;
+    font-weight: 500;
+    color: #222;
+    letter-spacing: 0.01em;
+}
+.form-control, .form-label {
+    font-size: 1.05rem;
+}
+
+/* 제목(h1/h3) HQ 스타일 */
+.h3.mb-4, h1.h3 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #000000 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* HQ색 버튼 (수정) */
+.btn-hq, .btn-hq:focus {
+    background-color: #003366;
+    border-color: #003366;
+    color: #fff; !important;
+    font-weight: 500;
+}
+.btn-hq:hover {
+    background-color: #002855;
+    border-color: #002855;
+    color: #fff;
+}
+
+/* 소프트 레드(취소) */
+.btn-soft-danger, .btn-soft-danger:focus {
+    background-color: #ffe5e5;
+    border-color: #ffa3a3;
+    color: #e05252;
+    font-weight: 500;
+}
+.btn-soft-danger:hover {
+    background-color: #ffb3b3;
+    border-color: #e05252;
+    color: #a51212;
+}
+
+/* 드롭존 HQ 테두리 */
+.drop-zone {
+    border: 2.5px dashed #003366;
+    cursor: pointer;
+    border-radius: 12px;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #003366;
+    font-size: 1.04rem;
+    font-weight: 500;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 2px 12px 0 #00336615;
+    transition: background 0.2s, border-color 0.16s;
+}
+.drop-zone.dragover {
+    background-color: #eaf3fb;
+    border-color: #003366;
+}
+
+/* 파일 썸네일 HQ 테두리 */
+.preview img {
+    max-width: 120px;
+    margin: 10px;
+    border: 1.5px solid #003366;
+    border-radius: 7px;
+    box-shadow: 0 2px 6px #00336611;
+    background: #fff;
+}
+.preview-item {
+    position: relative;
+    display: inline-block;
+}
+.remove-btn {
+    position: absolute;
+    top: 11px;
+    right: 11px;
+    background-color: #ffffffcc;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s, color 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.09);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.remove-btn:hover {
+    background-color: #003366;
+    color: #fff;
+}
+
+/* 첨부파일/삭제 체크 */
+.list-unstyled li {
+    font-size: 1.01rem;
+    margin-bottom: 6px;
+}
+
+/* 버튼 우측정렬 */
+.d-flex.gap-2.justify-content-end {
+    margin-top: 1.1rem;
+}
+</style>
 </head>
 <body>
 	<div class="container my-5">
 	    <h1 class="h3 mb-4">글 수정</h1>
-	    <form action="${pageContext.request.contextPath}/hqboard/update" method="post" id="editForm" enctype="multipart/form-data">
+	    <form action="<%=request.getContextPath()%>/hqboard/update" method="post" id="editForm" enctype="multipart/form-data">
 	        <div class="mb-3">
 	            <label for="num" class="form-label">글 번호</label>
 	            <input type="text" class="form-control" name="num" id="num" value="<%=dto.getNum() %>" readonly/>
@@ -70,10 +185,10 @@
 			    <label class="form-label">새 파일 추가</label>
 			    <input type="file" name="myFile" multiple>
 			</div>	        
-	        <div class="d-flex gap-2">
-	            <button class="btn btn-primary" type="submit">수정 확인</button>
-	            <button type="reset" class="btn btn-outline-secondary">리셋</button>
-	        </div>
+			<div class="d-flex gap-2 justify-content-end">
+				<button class="btn btn-hq" type="submit">수정하기</button>
+			    <a class="btn btn-soft-danger" href="<%=request.getContextPath()%>/headquater.jsp?page=hqboard/hq-list.jsp">취소</a>
+			</div>
 	    </form>
 	</div>
 	<script>

@@ -44,9 +44,8 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//폼 전송되는 내용 추출
+		String userId = (String) req.getSession().getAttribute("userId");
 		
-		
-		String userName=req.getParameter("userName");
 		String userLocation=req.getParameter("userLocation");
 		String userPhone=req.getParameter("userPhone");
 		String userRole=req.getParameter("userRole");
@@ -58,7 +57,7 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 		//파일데이터 (<input type="file" name="profileImage">)
 		Part filePart=req.getPart("profileImage");
 		//DB 에서 사용자 정보를 불러온다.
-		UserDto dto=UserDao.getInstance().getByUserId(userName);
+		UserDto dto=UserDao.getInstance().getByUserId(userId);
 		
 		//만일 업로드된 프로필 이미지가 있다면 (수정하지 않았으면 없다)
 		if(filePart!=null && filePart.getSize() > 0) {
@@ -105,21 +104,13 @@ public class Userp_InfoUpdateServlet extends HttpServlet{
 		}
 		
 		//리다일렉트 응답
-		String cPath=req.getContextPath();
-		resp.sendRedirect(cPath+"/userp/userpinfo.jsp");
+		String cPath = req.getContextPath();
+		String branchId = (String) req.getSession().getAttribute("branchId");
+
+		if ("HQ".equalsIgnoreCase(branchId)) {
+		    resp.sendRedirect(cPath + "/headquater.jsp?page=userp/userpinfo.jsp");
+		} else {
+		    resp.sendRedirect(cPath + "/branch.jsp?page=userp/userpinfo.jsp");
+		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

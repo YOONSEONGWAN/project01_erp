@@ -34,15 +34,12 @@
             background-color: #f8f9fa;
         }
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
             min-height: 100vh;
+            margin: 0;
+            padding: 0px;
         }
         h2 {
-            text-align: center;
+            text-align: left; /* 좌측 정렬 */
             margin-bottom: 30px;
             font-weight: 700;
         }
@@ -59,47 +56,67 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 10px;
+            text-align: center; /* 모든 테이블 텍스트 중앙 */
         }
         table tr th {
-            background-color: #007bff !important;
-            color: white !important;
-            text-align: center;
+            background-color: #e2e3e5; /* table-secondary 배경색 */
+            color: #212529;
             vertical-align: middle;
             width: 110px;
             white-space: nowrap;
             padding: 10px 8px;
-            border-radius: 5px 0 0 5px;
         }
         table tr td {
             vertical-align: middle;
-            text-align: center;
             padding: 10px 8px;
-            border-radius: 0 5px 5px 0;
-            background-color: #fdfdfd;
+            text-align: center;
         }
         input[type="number"], select.form-select {
-            max-width: 150px;
+            max-width: 120px;
             margin: 0 auto;
             display: block;
         }
         .btn-group {
+            display: flex;
+            justify-content: space-between; /* 좌우 끝 정렬 */
             margin-top: 20px;
-            text-align: center;
+            max-width: 480px; /* form-container 폭과 맞춤 */
         }
-        .btn-group .btn + .btn {
-            margin-left: 10px;
+        .btn-primary {
+            background-color: #003366 !important;
+            border-color: #003366 !important;
+            color: white !important;
+            font-weight: 500;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
+        .btn-primary:hover {
+            background-color: #002244 !important; /* 더 어두운 남색 */
+            border-color: #002244 !important;
+            color: white !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+         .btn-soft-danger, .btn-soft-danger:focus {
+	       background-color: #ffe5e5;
+	       border-color: #ffa3a3;
+	       color: #e05252;
+	   }
+	   	 .btn-soft-danger:hover {
+	       background-color: #ffb3b3;
+	       border-color: #e05252;
+	       color: #a51212;
+	   }
     </style>
 </head>
 <body>
 
-    <div>
-        <h2>지점 발주 내역 수정 (Order ID: <%= orderId %>)</h2>
+    <div style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+        <h2 style="align-self: flex-start; width: 480px;">발주 내역 수정 (Order ID: <%= orderId %>)</h2>
 
-        <div class="form-container">
-            <form action="placeorder_branch_edit.jsp" method="post">
-                <input type="hidden" name="detail_id" value="<%= detailId %>">
-                <input type="hidden" name="order_id" value="<%= orderId %>">
+        <div class="form-container mt-5">
+            <form action="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_edit.jsp" method="post">
+                <input type="hidden" name="detail_id" value="<%= detailId %>" />
+                <input type="hidden" name="order_id" value="<%= orderId %>" />
 
                 <table>
                     <tr>
@@ -113,14 +130,13 @@
                     <tr>
                         <th>신청 수량</th>
                         <td>
-                            <input type="number" name="request_quantity" value="<%= dto.getRequest_quantity() %>" min="1" required class="form-control">
+                            <input type="number" name="request_quantity" value="<%= dto.getRequest_quantity() %>" min="1" required class="form-control" />
                         </td>
                     </tr>
                     <tr>
                         <th>승인 상태</th>
                         <td>
-                            <select name="approval_status" required class="form-select mx-auto" style="max-width: 150px;">
-                                <option value="">--선택--</option>
+                            <select name="approval_status" class="form-select">
                                 <option value="승인" <%= "승인".equals(dto.getApproval_status()) ? "selected" : "" %>>승인</option>
                                 <option value="반려" <%= "반려".equals(dto.getApproval_status()) ? "selected" : "" %>>반려</option>
                             </select>
@@ -128,16 +144,22 @@
                     </tr>
                 </table>
 
-                <div class="btn-group d-flex justify-content-center mt-4">
-                    <button type="submit" class="btn btn-primary">수정 완료</button>
-                    <a href="placeorder_branch_detail.jsp?order_id=<%= orderId %>" class="btn btn-secondary ms-3">취소</a>
+                <div class="d-flex justify-content-end gap-2 mt-3" style="max-width: 480px; margin: auto;">
+                    <a href="${pageContext.request.contextPath}/headquater.jsp?page=/stock/placeorder_branch_detail.jsp?order_id=<%=orderId %>" class="btn btn-soft-danger" margin: 0 10px;">
+				        취소
+				    </a>
+                    <button type="submit" class="btn btn-primary">확인</button>
+                    
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
+    <!-- Bootstrap JS (Optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
+
+
+
+
