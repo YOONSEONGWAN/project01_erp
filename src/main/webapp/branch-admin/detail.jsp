@@ -45,6 +45,9 @@
         border-color: #002244 !important;
         color: white !important;
     }
+   .bg-primary {
+       background-color: #003366 !important;
+   }
 </style>
 </head>
 <body>

@@ -28,162 +28,182 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <title>전체 출고 내역</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            background-color: #f8f9fa;
-        }
-        body {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 960px;
-            width: 100%;
-            max-height: calc(100vh - 80px);
-            overflow-y: auto;
-            background: #fff;
-            padding: 20px 30px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            border-radius: 4px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-        }
-        /* 크럼브 + 제목 영역 */
-        .header-section {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .header-section nav.breadcrumb {
-            margin-bottom: 8px;
-            padding-left: 0;
-        }
-        .header-section h2 {
-            font-weight: 700;
-            font-size: 24px;
-            margin-top: 0;
-            margin-bottom: 0;
-            color: #212529;
-        }
+<meta charset="UTF-8" />
+<title>전체 출고 내역</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+  html, body {
+      height: 100%;
+      margin: 0;
+      padding:0;
+      background-color: #f8f9fa;
+  }
+  body {
+      background-color: #f8f9fa;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0px;
+  }
+  .container {
+      max-width: 960px;
+      width: 100%;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: #fff;
+      padding: 10px 15px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      border-radius: 4px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+  }
+  /* 크럼브 + 제목 영역 */
+  .header-section {
+      text-align: left;
+      margin-bottom: 20px;
+  }
+  .header-section nav.breadcrumb {
+      margin-bottom: 8px;
+      padding-left: 0;
+  }
+  .header-section h2 {
+      font-weight: 700;
+      font-size: 24px;
+      margin-top: 0;
+      margin-bottom: 0;
+      color: #212529;
+  }
 
-        .search-form input[type="text"] {
-            max-width: 200px;
-        }
-        .d-flex.justify-content-end.mb-3 {
-            gap: 8px;
-        }
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-            text-align: center; /* 모든 테이블 텍스트 중앙 */
-        }
-        thead tr {
-            background-color: #e2e3e5; /* table-secondary 배경색 */
-        }
-        thead th {
-            color: #212529;
-            padding: 0.5rem 0.75rem;
-            font-weight: 600;
-            border-bottom: 2px solid #dee2e6;
-            vertical-align: middle;
-            white-space: nowrap;
-        }
-        tbody td {
-            padding: 10px 8px;
-            border-top: none;
-            vertical-align: middle;
-        }
-        tbody tr {
-            background-color: #fff;
-            border-radius: 6px;
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
-            margin-bottom: 10px;
-        }
-        .btn {
-            cursor: pointer;
-            border: 1px solid transparent;
-            padding: 0.25rem 0.6rem;
-            font-size: 0.875rem;
-            border-radius: 4px;
-            transition: all 0.2s ease-in-out;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-primary {
-            background-color: #003366 !important;
-            border-color: #003366 !important;
-            color: white !important;
-            font-weight: 500;
-        }
-        .btn-primary:hover {
-            background-color: #002244 !important;
-            border-color: #002244 !important;
-            color: white !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
+  .search-form input[type="text"] {
+      max-width: 200px;
+  }
+  .d-flex.justify-content-end.mb-3 {
+      gap: 8px;
+  }
+  table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      text-align: center; /* 모든 테이블 텍스트 중앙 */
+  }
+  thead tr {
+      background-color: #e2e3e5; /* table-secondary 배경색 */
+  }
+  thead th {
+      color: #212529;
+      padding: 0.5rem 0.75rem;
+      font-weight: 600;
+      border-bottom: 2px solid #dee2e6;
+      vertical-align: middle;
+      white-space: nowrap;
+  }
+  tbody td {
+      padding: 10px 8px;
+      border-top: none;
+      vertical-align: middle;
+  }
+  tbody tr {
+      background-color: #fff;
+      border-radius: 6px;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+      margin-bottom: 10px;
+  }
+  .btn {
+      cursor: pointer;
+      border: 1px solid transparent;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.875rem;
+      border-radius: 4px;
+      transition: all 0.2s ease-in-out;
+      text-decoration: none;
+      display: inline-block;
+  }
+  .btn-primary {
+      background-color: #003366 !important;
+      border-color: #003366 !important;
+      color: white !important;
+      font-weight: 500;
+  }
+  .btn-primary:hover {
+      background-color: #002244 !important;
+      border-color: #002244 !important;
+      color: white !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
 
-        .pagination {
-		    display: inline-flex;        /* 버튼들이 한 줄에 붙게 */
-		    border: 1px solid #1a2c49;  /* 전체 테두리 */
-		    border-radius: 6px;          /* 전체 둥근 테두리 */
-		    overflow: hidden;            /* 둥근 테두리에서 버튼 넘치지 않도록 */
-		    padding: 0;
-		    margin-top: 20px;
-		    justify-content: center !important;
-		}
-		
-		.pagination .page-item {
-		    margin: 0;                   /* 버튼 사이 간격 제거 */
-		}
-		
-		.pagination .page-link {
-		    border: none;                /* 개별 버튼 테두리 제거 */
-		    padding: 6px 16px;
-		    font-size: 14px;
-		    color: #1a2c49;
-		    background-color: white;
-		    cursor: pointer;
-		    user-select: none;
-		    display: block;
-		    transition: background-color 0.2s ease;
-		}
-		
-		.pagination .page-item.active .page-link {
-		    background-color: #1a2c49;
-		    color: white;
-		    cursor: default;
-		    pointer-events: none;
-		}
-		
-		.pagination .page-item.disabled .page-link {
-		    color: #6c757d;
-		    background-color: white;
-		    cursor: default;
-		    pointer-events: none;
-		}
-		
-		.pagination .page-link:hover:not(.disabled):not(.active) {
-		    background-color: #e9ecef;
-		    color: #1a2c49;
-		}
-		
-		/* 버튼들 사이에만 좌우 구분선 추가 */
-		.pagination .page-item:not(:last-child) .page-link {
-		    border-right: 1px solid #1a2c49;
-		}
-		.pagination .page-item:first-child .page-link,
-		.pagination .page-item:last-child .page-link {
-    		color: #1a2c49 !important;
-		}
-    </style>
+  .pagination {
+    display: inline-flex;        /* 버튼들이 한 줄에 붙게 */
+    border: 1px solid #1a2c49;  /* 전체 테두리 */
+    border-radius: 6px;          /* 전체 둥근 테두리 */
+    overflow: hidden;            /* 둥근 테두리에서 버튼 넘치지 않도록 */
+    padding: 0;
+    margin-top: 20px;
+    justify-content: center !important;
+}
+
+.pagination .page-item {
+    margin: 0;                   /* 버튼 사이 간격 제거 */
+}
+
+.pagination .page-link {
+    border: none;                /* 개별 버튼 테두리 제거 */
+    padding: 6px 16px;
+    font-size: 14px;
+    color: #1a2c49;
+    background-color: white;
+    cursor: pointer;
+    user-select: none;
+    display: block;
+    transition: background-color 0.2s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #1a2c49;
+    color: white;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: white;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination .page-link:hover:not(.disabled):not(.active) {
+    background-color: #e9ecef;
+    color: #1a2c49;
+}
+
+/* 버튼들 사이에만 좌우 구분선 추가 */
+.pagination .page-item:not(:last-child) .page-link {
+    border-right: 1px solid #1a2c49;
+}
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    color: #1a2c49 !important;
+}
+
+.sidebar{
+   padding:0;
+   margin: 0;
+   width: 200px;
+}
+
+.btn-outline-light {
+  color: white !important;
+  border-color: white !important;
+}
+.btn-outline-light:hover {
+  background-color: white !important;
+  color: #003366 !important;
+  border-color: white !important;
+}
+
+
+</style>
 </head>
 <body class="bg-light">
 <div class="container py-5">
